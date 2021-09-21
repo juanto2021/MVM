@@ -161,7 +161,7 @@ public abstract class KodkodModelValidator {
 				solution = kodkodSolver.solveJuanto(model);
 
 				strCombinacion += " - ["+ solution.outcome()+"]";
-				System.out.println("JG: " + strCombinacion);
+				System.out.println("JGCambio2: " + strCombinacion);
 				if (solution.outcome().toString() == "SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
 				}else if (solution.outcome().toString() == "UNSATISFIABLE") {

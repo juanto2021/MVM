@@ -105,6 +105,7 @@
 	
 	<target name="deployDebug" depends="jar">
 		<copy file="dist/${filename}" todir="${use.path}/lib/plugins"/>
-		<copy file="dist/${filename}" todir="../use/lib/plugins"/>
+		<copy file="dist/${filename}" todir="../../JuantoUse/use/lib/plugins"/>
+		
 	</target>
 </project>
