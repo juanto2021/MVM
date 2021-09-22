@@ -202,8 +202,9 @@ public abstract class KodkodModelValidator {
 
 			// Ordenar lista antes de enviara validar 
 			List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
+			List<String> listSortedByCmb = listSorted;
 			// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
-			List<String> listSortedByCmb = sortByCmbNumber(listSorted);
+			listSortedByCmb = sortByCmbNumber(listSorted);
 //			Collections.sort(listSorted);
 
 			sendToValidate(listSortedByCmb , invClassTotal ); //JG	
@@ -227,7 +228,38 @@ public abstract class KodkodModelValidator {
 		List<String> listRes = new ArrayList<>();
 		// Provis
 		listRes=listSorted;
-		return listRes;
+		HashMap<String, String> listRk = new HashMap<>();
+		for (String strCmb: listSorted) {
+			int nGrupos = listSorted.size() - (strCmb.length()-strCmb.replace("-","").length())+1;
+			System.out.println("JG length : " + nGrupos + " "+ strCmb);
+			
+			// Hallar Key que le corresponde si ordenamos sus partes
+			String keyOrdenada = nGrupos + " - " + strCmb;
+
+			String valor="";
+			// Averiguar si dicha Key ya esta usada anteriormente
+			if (listRk.containsKey(keyOrdenada)) {
+				// Si esta usada, guardamos la key que la representa
+				valor=strCmb;
+				listRk.put(keyOrdenada, valor);
+			}else {
+				// Si no esta usada, almacenamos con valor 'N' (Nueva)
+				valor="N";  
+				listRk.put(keyOrdenada, valor);
+
+			}
+			
+			
+		}
+		listRes = new ArrayList<>(listRk.keySet());
+		Collections.sort(listRes);
+		List<String> listResLimpia = new ArrayList<>();
+		for (String strCmb: listRes) {
+			String valor=strCmb.split(" ")[2];
+			listResLimpia.add(valor);
+		}
+		
+		return listResLimpia;
 	}
 	
 	private void showResult(Collection<IInvariant> invClassSatisfiables, 
