@@ -202,9 +202,11 @@ public abstract class KodkodModelValidator {
 
 			// Ordenar lista antes de enviara validar 
 			List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
-			Collections.sort(listSorted);
+			// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
+			List<String> listSortedByCmb = sortByCmbNumber(listSorted);
+//			Collections.sort(listSorted);
 
-			sendToValidate(listSorted , invClassTotal ); //JG	
+			sendToValidate(listSortedByCmb , invClassTotal ); //JG	
 			showResultGral();
 			ValidatorJuantoDialog validatorJuantoDialog= 
 					new ValidatorJuantoDialog(MainWindow.instance(), 
@@ -220,7 +222,14 @@ public abstract class KodkodModelValidator {
 		}
 
 	}
-
+	
+	private List<String> sortByCmbNumber(List<String> listSorted) {
+		List<String> listRes = new ArrayList<>();
+		// Provis
+		listRes=listSorted;
+		return listRes;
+	}
+	
 	private void showResult(Collection<IInvariant> invClassSatisfiables, 
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers) {
