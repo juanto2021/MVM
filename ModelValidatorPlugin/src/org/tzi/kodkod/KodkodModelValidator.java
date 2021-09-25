@@ -42,26 +42,8 @@ public abstract class KodkodModelValidator {
 	public static List<String> listSatisfiables= new ArrayList<String>();
 	public static List<String> listUnSatisfiables= new ArrayList<String>();
 	public static List<String> listOthers= new ArrayList<String>();
-	
-	// Definir clase interna para resultado con:
-	// - Combinacion
-	// - Resultado (sat/unsat)
-	// Explicacion
 
-//	public class ResComb {
-//		String combinacion;
-//		String resultado;
-//		String comentario;
-//		public ResComb(String strCombinacion, String strResultado, String strComentario) {
-//
-//			this.combinacion = strCombinacion;
-//			this.resultado = strResultado;
-//			this.comentario = strComentario;
-//		}
-//		
-//	}
-
-	private boolean debJG=false;
+	private boolean debMMV=false;
 
 	public static boolean showResultMix  = true;
 	/**
@@ -180,7 +162,7 @@ public abstract class KodkodModelValidator {
 				System.out.println("MMV: Invariants State: " + strCombinacion);
 				if (solution.outcome().toString() == "SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
-					
+
 				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
 				} else {
@@ -201,7 +183,7 @@ public abstract class KodkodModelValidator {
 			}
 
 			mixInvariants(samples); 
-			if (debJG) {
+			if (debMMV) {
 				for (Object obj : listCmbSel.entrySet()) 
 				{
 					Entry<String, String> cmb= (Entry<String, String>) obj;
@@ -223,8 +205,9 @@ public abstract class KodkodModelValidator {
 			// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
 			listSortedByCmb = sortByCmbNumber(listSorted);
 
-			sendToValidate(listSortedByCmb , invClassTotal ); //JG	
+			sendToValidate(listSortedByCmb , invClassTotal ); 
 			showResultGral();
+			
 			ValidatorJuantoDialog validatorJuantoDialog= 
 					new ValidatorJuantoDialog(MainWindow.instance(), 
 							invClassSatisfiables, 
@@ -237,7 +220,7 @@ public abstract class KodkodModelValidator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-// Calcular el tiempo final
+		// Calcular el tiempo final
 	}
 
 	private List<String> sortByCmbNumber(List<String> listSorted) {
@@ -322,6 +305,22 @@ public abstract class KodkodModelValidator {
 				System.out.println("MMV: " + cmbOther);
 			}
 		}
+		
+		if(listCmbRes.size()>0) {
+
+			System.out.println();
+			System.out.println("MMV: calculation summary ["+ listCmbRes.size()+"]");
+			int lenCmb = ((ResComb) listCmbRes.get(0)).combinacion.length()+2;
+						
+			System.out.println("========================================================");
+			for (ResComb cmbRes: listCmbRes) {
+				String linea = "";
+				linea= String.format("%-"+lenCmb+"s",cmbRes.combinacion);
+				linea+=" "+String.format("%-15s",cmbRes.resultado);
+				linea+=" "+String.format("%-25s",cmbRes.comentario);
+				System.out.println("MMV: " + linea);
+			}
+		}
 	}
 
 	/**
@@ -401,12 +400,12 @@ public abstract class KodkodModelValidator {
 		}
 
 	}
-	
+
 	public static void storeResultCmb(String combination, String resultado, String comentario) {
 		ResComb res = new ResComb(combination, resultado, comentario);
 		listCmbRes.add(res);
-		
-//		ResComb
+
+		//		ResComb
 	}
 
 	public static String sortCombination(String combinacion) {
@@ -571,12 +570,12 @@ public abstract class KodkodModelValidator {
 		return bRes;
 	}
 
-/**
- * Si hay alguna combinacion unsatisfactible contenida en la combinacion a tratar, diremos que la 
- * combinacion tambien es insatisfactible
- * @param combinacion
- * @return
- */
+	/**
+	 * Si hay alguna combinacion unsatisfactible contenida en la combinacion a tratar, diremos que la 
+	 * combinacion tambien es insatisfactible
+	 * @param combinacion
+	 * @return
+	 */
 
 	private boolean unsatisIncludedInCombination(String combinacion) {
 
@@ -597,7 +596,7 @@ public abstract class KodkodModelValidator {
 			for (int nCmb=0;nCmb<aCmbUnSat.length;nCmb++) {
 				String parte = aCmbUnSat[nCmb];
 				// Si una parte de la combinacion a tratar no existe hay que tratar la combinacion
-				
+
 				if (!lCmbATratar.contains(parte)) {
 					todasExisten=false;
 					nCmb=aCmbTratar.length;
@@ -628,7 +627,7 @@ public abstract class KodkodModelValidator {
 	protected abstract void trivially_unsatisfiable();
 
 	protected abstract void unsatisfiable();
-	
+
 
 }
 
@@ -648,5 +647,5 @@ class ResComb {
 		this.resultado = strResultado;
 		this.comentario = strComentario;
 	}
-	
+
 }
