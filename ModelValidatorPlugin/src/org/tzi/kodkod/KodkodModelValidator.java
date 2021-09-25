@@ -205,7 +205,6 @@ public abstract class KodkodModelValidator {
 			List<String> listSortedByCmb = listSorted;
 			// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
 			listSortedByCmb = sortByCmbNumber(listSorted);
-//			Collections.sort(listSorted);
 
 			sendToValidate(listSortedByCmb , invClassTotal ); //JG	
 			showResultGral();
@@ -223,7 +222,7 @@ public abstract class KodkodModelValidator {
 		}
 
 	}
-	
+
 	private List<String> sortByCmbNumber(List<String> listSorted) {
 		List<String> listRes = new ArrayList<>();
 		// Provis
@@ -232,7 +231,7 @@ public abstract class KodkodModelValidator {
 		for (String strCmb: listSorted) {
 			int nGrupos = listSorted.size() - (strCmb.length()-strCmb.replace("-","").length())+1;
 			System.out.println("JG length : " + nGrupos + " "+ strCmb);
-			
+
 			// Hallar Key que le corresponde si ordenamos sus partes
 			String keyOrdenada = nGrupos + " - " + strCmb;
 
@@ -248,8 +247,8 @@ public abstract class KodkodModelValidator {
 				listRk.put(keyOrdenada, valor);
 
 			}
-			
-			
+
+
 		}
 		listRes = new ArrayList<>(listRk.keySet());
 		Collections.sort(listRes);
@@ -258,10 +257,10 @@ public abstract class KodkodModelValidator {
 			String valor=strCmb.split(" ")[2];
 			listResLimpia.add(valor);
 		}
-		
+
 		return listResLimpia;
 	}
-	
+
 	private void showResult(Collection<IInvariant> invClassSatisfiables, 
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers) {
@@ -432,58 +431,131 @@ public abstract class KodkodModelValidator {
 		List<IInvariant> listInv = new ArrayList<IInvariant>();
 		for (String combinacion: listSorted) 
 		{
-			// Buscar invariantes de la combinacion
-			listInv.clear();
-			String[] invs = combinacion.split("-");	
-			for (String invStrID: invs) {
-				int invID=Integer.parseInt(invStrID);  
-				if (samples.containsKey(invID)) {
-					IInvariant inv = (IInvariant) samples.get(invID);
-					listInv.add(inv);				
-				}
-			}
+			// Ver si la combinacion se halla incluida en una satisfactible
+			//listSatisfiables
+			boolean calculate=true;
+			calculate= !existInSatisfactible(combinacion);
 
-			// Activar solo las de la combinacion
-			String listaActivas="";
-			for (IInvariant invClass: invClassTotal) {
-				if (listInv.contains(invClass)) {
-					invClass.activate();
-					if (listaActivas != "") {
-						listaActivas += "\n";
+			// Ver si la combinacion se halla incluida en una insatisfactible
+			//listUnSatisfiables
+
+			if (calculate) {
+				// Buscar invariantes de la combinacion
+				listInv=splitInvCombination( combinacion);
+
+
+				// Activar solo las de la combinacion
+				String listaActivas="";
+				for (IInvariant invClass: invClassTotal) {
+					if (listInv.contains(invClass)) {
+						invClass.activate();
+						if (listaActivas != "") {
+							listaActivas += "\n";
+						}
+						listaActivas+="    " + invClass.name();
+					}else {
+						invClass.deactivate();
 					}
-					listaActivas+="    " + invClass.name();
-				}else {
-					invClass.deactivate();
+
 				}
 
-			}
+				try {
+					solution = kodkodSolver.solveJuanto(model);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				String resultado = String.format("%-20s",combinacion);
+				//			combinacion = String.format("%-20s",combinacion);
+				resultado += " - ["+ solution.outcome()+"]";
+				System.out.println("JG: " + resultado);
+				if (showCmbSendToValidator) {
+					System.out.println(listaActivas);
+				}
+				if (solution.outcome().toString() == "SATISFIABLE") {
+					listSatisfiables.add(combinacion);
+				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
+					listUnSatisfiables.add(combinacion);
+				} else {
+					listOthers.add(combinacion);
+				}
 
-			try {
-				solution = kodkodSolver.solveJuanto(model);
-			} catch (Exception e) {
-				e.printStackTrace();
+				// Store result of that validation
+				ResValidation resValidation = new ResValidation( listInv, solution.outcome().toString());
+				listResValidation.add(resValidation);
 			}
-			String resultado = String.format("%-20s",combinacion);
-			//			combinacion = String.format("%-20s",combinacion);
-			resultado += " - ["+ solution.outcome()+"]";
-			System.out.println("JG: " + resultado);
-			if (showCmbSendToValidator) {
-				System.out.println(listaActivas);
-			}
-			if (solution.outcome().toString() == "SATISFIABLE") {
-				listSatisfiables.add(combinacion);
-			}else if (solution.outcome().toString() == "UNSATISFIABLE") {
-				listUnSatisfiables.add(combinacion);
-			} else {
-				listOthers.add(combinacion);
-			}
-
-			// Store result of that validation
-			ResValidation resValidation = new ResValidation( listInv, solution.outcome().toString());
-			listResValidation.add(resValidation);
-
 		}
 	}
+
+	/**
+	 * Buscar invariantes de la combinacion
+	 * @param combinacion
+	 * @return
+	 */
+	private List<IInvariant> splitInvCombination(String combinacion) {
+		List<IInvariant> listInvW = new ArrayList<IInvariant>();
+		// Buscar invariantes de la combinacion
+		listInvW.clear();
+		String[] invs = combinacion.split("-");	
+		for (String invStrID: invs) {
+			int invID=Integer.parseInt(invStrID);  
+			if (samples.containsKey(invID)) {
+				IInvariant inv = (IInvariant) samples.get(invID);
+				listInvW.add(inv);				
+			}
+		}
+		return listInvW;
+	}
+
+	/**
+	 * Chek if combinations existe in listSatisfiables list
+	 * @param combinacion
+	 * @return
+	 */
+
+	private boolean existInSatisfactible(String combinacion) {
+
+		boolean bRes=false;
+
+		// Partes de la combinacion a valorar
+
+		String[] aCmbTratar = combinacion.split("-");	
+
+		for (String cmbSatisfiable: listSatisfiables) {
+
+			// Invariantes de cada combinacion satisfactible
+			String[] aCmbSat = cmbSatisfiable.split("-");	
+
+			List<String> lCmbSat=new ArrayList<String>();
+			Collections.addAll(lCmbSat, aCmbSat);
+			boolean todasExisten=true;
+			for (int nCmb=0;nCmb<aCmbTratar.length;nCmb++) {
+				String parte = aCmbTratar[nCmb];
+
+				// Si una parte de la combinacion a tratar no existe hay que tratar la combinacion
+				if (lCmbSat.contains(parte)) {
+					System.out.println("nameInv ( " + parte + ") Hallada en (" + cmbSatisfiable +")");
+				}else {
+					System.out.println("nameInv ( " + parte + ") NO Hallada en (" + cmbSatisfiable +")");
+					//					System.out.println("Combinacion ( " + combinacion + ") Hallada en (" + cmbSatisfiable +")");
+					todasExisten=false;
+					nCmb=aCmbTratar.length;
+					continue;
+				}
+			}
+			if (todasExisten) {
+				System.out.println("Combinacion ( " + combinacion + ") Hallada en (" + cmbSatisfiable +")");
+				return true;
+			}
+
+		}
+
+		return bRes;
+	}
+
+	/**
+	 * 
+	 * @param kodkodSolver
+	 */
 
 	private void storeEvaluator(KodkodSolver kodkodSolver) {
 		evaluator = kodkodSolver.evaluator();
