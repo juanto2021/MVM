@@ -34,14 +34,32 @@ public abstract class KodkodModelValidator {
 	protected IModel model;
 	protected Solution solution;
 	protected Evaluator evaluator;
-	//JG
+
 	public static HashMap<String, String> listCmb = new HashMap<>();
 	public static HashMap<String, String> listCmbSel = new HashMap<>();
+	public static List<ResComb> listCmbRes = new ArrayList<ResComb>();
 
 	public static List<String> listSatisfiables= new ArrayList<String>();
 	public static List<String> listUnSatisfiables= new ArrayList<String>();
 	public static List<String> listOthers= new ArrayList<String>();
+	
+	// Definir clase interna para resultado con:
+	// - Combinacion
+	// - Resultado (sat/unsat)
+	// Explicacion
 
+//	public class ResComb {
+//		String combinacion;
+//		String resultado;
+//		String comentario;
+//		public ResComb(String strCombinacion, String strResultado, String strComentario) {
+//
+//			this.combinacion = strCombinacion;
+//			this.resultado = strResultado;
+//			this.comentario = strComentario;
+//		}
+//		
+//	}
 
 	private boolean debJG=false;
 
@@ -71,7 +89,7 @@ public abstract class KodkodModelValidator {
 		evaluator = null;
 
 		KodkodSolver kodkodSolver = new KodkodSolver();
-		LOG.info("JG: Llama a solve desde validate en KodkodModelValidator");
+		LOG.info("MMV: Llama a solve desde validate en KodkodModelValidator");
 		try {
 			solution = kodkodSolver.solve(model);
 		} catch (Exception e) {
@@ -83,7 +101,7 @@ public abstract class KodkodModelValidator {
 		}
 
 		LOG.info(solution.outcome());
-		LOG.info("JG: Llega solution en validate en KodkodModelValidator " + solution.outcome());
+		LOG.info("MMV: Llega solution en validate en KodkodModelValidator " + solution.outcome());
 
 		Statistics statistics = solution.stats();
 		LOG.info(LogMessages.kodkodStatistics(statistics));
@@ -120,6 +138,7 @@ public abstract class KodkodModelValidator {
 	 * @param model
 	 */
 	public void validateVariable(IModel model, MModel mModel) {
+		// Guardar tiempo inicial para posteriormente calcular el tiempo que se tarda
 		this.model = model;
 		evaluator = null;
 		listCmb.clear();
@@ -136,7 +155,7 @@ public abstract class KodkodModelValidator {
 		Collection<IInvariant> invClassOthers = new ArrayList<IInvariant>();
 
 		try {
-			LOG.info("JG: (2) Llama a solveJuanto desde validate en KodkodModelValidator");
+			LOG.info("MMV: (2) Llama a solve desde validateVariable en KodkodModelValidator");
 			Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
 
 			for (IClass oClass: model.classes()) {
@@ -155,12 +174,13 @@ public abstract class KodkodModelValidator {
 				}
 
 				kodkodSolver = new KodkodSolver();
-				solution = kodkodSolver.solveJuanto(model);
+				solution = kodkodSolver.solve(model);
 
 				strCombinacion += " - ["+ solution.outcome()+"]";
-				System.out.println("JGCambio2: " + strCombinacion);
+				System.out.println("MMV: Invariants State: " + strCombinacion);
 				if (solution.outcome().toString() == "SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
+					
 				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
 				} else {
@@ -217,17 +237,15 @@ public abstract class KodkodModelValidator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+// Calcular el tiempo final
 	}
 
 	private List<String> sortByCmbNumber(List<String> listSorted) {
 		List<String> listRes = new ArrayList<>();
-		// Provis
-//		listRes=listSorted;
+
 		HashMap<String, String> listRk = new HashMap<>();
 		for (String strCmb: listSorted) {
 			int nGrupos = listSorted.size() - (strCmb.length()-strCmb.replace("-","").length())+1;
-			System.out.println("JG length : " + nGrupos + " "+ strCmb);
 
 			// Hallar Key que le corresponde si ordenamos sus partes
 			String keyOrdenada = nGrupos + " - " + strCmb;
@@ -244,7 +262,6 @@ public abstract class KodkodModelValidator {
 				listRk.put(keyOrdenada, valor);
 
 			}
-
 
 		}
 		listRes = new ArrayList<>(listRk.keySet());
@@ -263,22 +280,22 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassOthers) {
 
 		System.out.println();
-		System.out.println("JG: SATISFIABLES");
+		System.out.println("MMV: SATISFIABLES");
 		for (IInvariant invClass: invClassSatisfiables) {
-			System.out.println("JG: " + invClass.name());
+			System.out.println("MMV: " + invClass.name());
 		}
 
 		System.out.println();
-		System.out.println("JG: UNSATISFIABLES");
+		System.out.println("MMV: UNSATISFIABLES");
 		for (IInvariant invClass: invClassUnSatisfiables) {
-			System.out.println("JG: " + invClass.name());
+			System.out.println("MMV: " + invClass.name());
 		}
 
 		if(invClassOthers.size()>0) {
 			System.out.println();
-			System.out.println("JG: OTHERS");
+			System.out.println("MMV: OTHERS");
 			for (IInvariant invClass: invClassOthers) {
-				System.out.println("JG: " + invClass.name());
+				System.out.println("MMV: " + invClass.name());
 			}
 		}
 	}
@@ -287,22 +304,22 @@ public abstract class KodkodModelValidator {
 	private void showResultGral() {
 
 		System.out.println();
-		System.out.println("JG: SATISFIABLES ["+ listSatisfiables.size()+"]");
+		System.out.println("MMV: SATISFIABLES ["+ listSatisfiables.size()+"]");
 		for (String cmbSatisfiable: listSatisfiables) {
-			System.out.println("JG: " + cmbSatisfiable);
+			System.out.println("MMV: " + cmbSatisfiable);
 		}
 
 		System.out.println();
-		System.out.println("JG: UNSATISFIABLES ["+ listUnSatisfiables.size()+"]");
+		System.out.println("MMV: UNSATISFIABLES ["+ listUnSatisfiables.size()+"]");
 		for (String cmbUnSatisfiable: listUnSatisfiables) {
-			System.out.println("JG: " + cmbUnSatisfiable);
+			System.out.println("MMV: " + cmbUnSatisfiable);
 		}
 
 		if(listOthers.size()>0) {
 			System.out.println();
-			System.out.println("JG: OTHERS ["+ listOthers.size()+"]");
+			System.out.println("MMV: OTHERS ["+ listOthers.size()+"]");
 			for (String cmbOther: listOthers) {
-				System.out.println("JG: " + cmbOther);
+				System.out.println("MMV: " + cmbOther);
 			}
 		}
 	}
@@ -321,7 +338,7 @@ public abstract class KodkodModelValidator {
 		for (Entry<Integer, IInvariant> obj : samples.entrySet()) 
 		{
 			nTrata+=1;
-			System.out.println("JG: a tratar " +nTrata+" " + obj.getValue().name());
+			System.out.println("MMV: a tratar " +nTrata+" " + obj.getValue().name());
 		}
 
 		System.out.println("----------------------------");
@@ -384,6 +401,13 @@ public abstract class KodkodModelValidator {
 		}
 
 	}
+	
+	public static void storeResultCmb(String combination, String resultado, String comentario) {
+		ResComb res = new ResComb(combination, resultado, comentario);
+		listCmbRes.add(res);
+		
+//		ResComb
+	}
 
 	public static String sortCombination(String combinacion) {
 		String key="";
@@ -443,7 +467,6 @@ public abstract class KodkodModelValidator {
 				// Buscar invariantes de la combinacion
 				listInv=splitInvCombination( combinacion);
 
-
 				// Activar solo las de la combinacion
 				String listaActivas="";
 				for (IInvariant invClass: invClassTotal) {
@@ -459,21 +482,22 @@ public abstract class KodkodModelValidator {
 				}
 
 				try {
-					solution = kodkodSolver.solveJuanto(model);
+					solution = kodkodSolver.solve(model);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				String resultado = String.format("%-20s",combinacion);
-				//			combinacion = String.format("%-20s",combinacion);
 				resultado += " - ["+ solution.outcome()+"]";
-				System.out.println("JG: " + resultado);
+				System.out.println("MMV: " + resultado);
 				if (showCmbSendToValidator) {
 					System.out.println(listaActivas);
 				}
 				if (solution.outcome().toString() == "SATISFIABLE") {
 					listSatisfiables.add(combinacion);
+					storeResultCmb(combinacion, "SATISFIABLE", "Calculo directo");
 				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
 					listUnSatisfiables.add(combinacion);
+					storeResultCmb(combinacion, "UNSATISFIABLE", "Calculo directo");
 				} else {
 					listOthers.add(combinacion);
 				}
@@ -530,17 +554,6 @@ public abstract class KodkodModelValidator {
 			for (int nCmb=0;nCmb<aCmbTratar.length;nCmb++) {
 				String parte = aCmbTratar[nCmb];
 
-//				// Si una parte de la combinacion a tratar no existe hay que tratar la combinacion
-//				if (lCmbSat.contains(parte)) {
-//					System.out.println("nameInv ( " + parte + ") Hallada en (" + cmbSatisfiable +")");
-//				}else {
-//					System.out.println("nameInv ( " + parte + ") NO Hallada en (" + cmbSatisfiable +")");
-//					//					System.out.println("Combinacion ( " + combinacion + ") Hallada en (" + cmbSatisfiable +")");
-//					todasExisten=false;
-//					nCmb=aCmbTratar.length;
-//					continue;
-//				}
-				
 				// Si una parte de la combinacion a tratar no existe hay que tratar la combinacion
 				if (!lCmbSat.contains(parte)) {
 					todasExisten=false;
@@ -549,7 +562,7 @@ public abstract class KodkodModelValidator {
 				}
 			}
 			if (todasExisten) {
-//				System.out.println("Combinacion ( " + combinacion + ") Hallada en (" + cmbSatisfiable +")");
+				storeResultCmb(combinacion, "SATISFIABLE", "Calculo indirecto. Ya existe en combinacion ("+cmbSatisfiable+")");
 				return true;
 			}
 
@@ -584,27 +597,14 @@ public abstract class KodkodModelValidator {
 			for (int nCmb=0;nCmb<aCmbUnSat.length;nCmb++) {
 				String parte = aCmbUnSat[nCmb];
 				// Si una parte de la combinacion a tratar no existe hay que tratar la combinacion
-//				if (lCmbATratar.contains(parte)) {
-//					System.out.println("nameInv ( " + parte + ") Hallada en (" + combinacion +")");
-//				}else {
-//					System.out.println("nameInv ( " + parte + ") NO Hallada en (" + combinacion +")");
-//
-//					todasExisten=false;
-//					nCmb=aCmbTratar.length;
-//					continue;
-//				}
 				
 				if (!lCmbATratar.contains(parte)) {
-//					System.out.println("nameInv ( " + parte + ") Hallada en (" + combinacion +")");
-//				}else {
-//					System.out.println("nameInv ( " + parte + ") NO Hallada en (" + combinacion +")");
 					todasExisten=false;
 					nCmb=aCmbTratar.length;
 					continue;
 				}
 			}
 			if (todasExisten) {
-//				System.out.println("Combinacion ( " + cmbUnSatisfiable  + ") Hallada en (" + combinacion +")");
 				return true;
 			}
 		}
@@ -628,4 +628,25 @@ public abstract class KodkodModelValidator {
 	protected abstract void trivially_unsatisfiable();
 
 	protected abstract void unsatisfiable();
+	
+
+}
+
+/**
+ * Clase destinada a almacenar el resultado y comentario de cada combinacion
+ * @author Juanto
+ *
+ */
+
+class ResComb {
+	String combinacion;
+	String resultado;
+	String comentario;
+	public ResComb(String strCombinacion, String strResultado, String strComentario) {
+
+		this.combinacion = strCombinacion;
+		this.resultado = strResultado;
+		this.comentario = strComentario;
+	}
+	
 }
