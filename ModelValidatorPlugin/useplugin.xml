@@ -10,10 +10,12 @@
 			toolbaritem="plugins"
 			id="org.tzi.use.kodkod.plugin.KodkodValidateJuanto">
 		</action>
-		<action label="Kodkod Validation" icon="resources/kodkod.png"
+		<action label="Kodkod Validation"
+			icon="resources/kodkod.png"
 			class="org.tzi.use.kodkod.plugin.KodkodValidatePropertyAction"
 			tooltip="Choose a properties file and validate the current model."
-			menu="Model Validator (JG1)" menuitem="Validation"
+			menu="Model Validator"
+			menuitem="Validation"
 			toolbaritem="plugins"
 			id="org.tzi.use.kodkod.plugin.KodkodValidatePropertyAction">
 		</action>
@@ -21,10 +23,11 @@
 			icon="resources/kodkod-gui.png"
 			class="org.tzi.use.kodkod.plugin.KodkodValidateConfigurationAction"
 			tooltip="Create a configuration and validate the current model."
-			menu="Model Validator (JG2)" menuitem="Configuration"
+			menu="Model Validator"
+			menuitem="Configuration"
 			toolbaritem="plugins"
 			id="org.tzi.use.kodkod.plugin.KodkodValidateConfigurationAction">
-		</action>
+		</action>			
 	</actions>
 	<commands>
 		<command id="org.tzi.use.kodkod.plugin.KodkodValidateCmd"

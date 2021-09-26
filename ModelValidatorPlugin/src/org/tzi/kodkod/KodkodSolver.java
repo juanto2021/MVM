@@ -7,7 +7,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IClass;
-import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.kodkod.model.type.IntegerType;
 import org.tzi.kodkod.model.type.TypeAtoms;
@@ -40,16 +39,8 @@ public class KodkodSolver {
 		if(configuration.satFactory() == null){
 			throw new IOException("No solver loaded. Load a solver using the configuration command. See command `plugins' for help.");
 		}
-//		System.out.println("Aqui JG 41");
+		
 		Bounds bounds = createBounds(model);
-//		System.out.println("Aqui JG model "+model.name());
-//		System.out.println("Aqui JG model "+model.classInvariants().size());
-		//--
-		for (IInvariant inv:model.classInvariants()) {
-//			System.out.println("inv "+inv.name()+ " inv.formula().toString() "+inv.formula().toString());
-//			System.out.println("inv "+inv.name());
-		}
-			//--
 		Formula constraint = createConstraint(model);
 		
 		if(configuration.isDebugBoundsPrint()){
@@ -63,10 +54,9 @@ public class KodkodSolver {
 
 		solver.options().setSolver(configuration.satFactory());
 		solver.options().setBitwidth(configuration.bitwidth());
-//		System.out.println("Aqui JG 421 constraint"+constraint.toString());
 		
 		Solution solution = solver.solve(constraint, bounds);
-//		System.out.println("Aqui JG 42");
+		
 		createEvaluator(solver, solution);
 
 		if (Options.getDebug()) {
@@ -121,7 +111,6 @@ public class KodkodSolver {
 	}
 
 	private void createEvaluator(final Solver solver, Solution solution) {
-//		System.out.println("Aqui JG 43");
 		if (solution.outcome() == (Outcome.SATISFIABLE) || solution.outcome() == (Outcome.TRIVIALLY_SATISFIABLE)) {
 			evaluator = new Evaluator(solution.instance(), solver.options());
 		} else {

@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.swing.JOptionPane;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.tzi.kodkod.KodkodModelValidator;
@@ -30,7 +28,6 @@ public class KodkodValidateCmd extends ConfigurablePlugin implements IPluginShel
 	
 	@Override
 	public void performCommand(IPluginShellCmd pluginCommand) {
-		LOG.warn("JG KodkodValidateCmd	");
 		if(!pluginCommand.getSession().hasSystem()){
 			LOG.error("No model loaded.");
 			return;

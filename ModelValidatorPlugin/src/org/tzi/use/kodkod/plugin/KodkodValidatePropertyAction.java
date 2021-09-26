@@ -20,7 +20,6 @@ public class KodkodValidatePropertyAction extends KodkodValidateCmd implements I
 
 	@Override
 	public void performAction(IPluginAction pluginAction) {
-//		JOptionPane.showMessageDialog(pluginAction.getParent(), "JG2 en validation.");
 		if(!pluginAction.getSession().hasSystem()){
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
 					"No model present.", "No Model", JOptionPane.ERROR_MESSAGE);

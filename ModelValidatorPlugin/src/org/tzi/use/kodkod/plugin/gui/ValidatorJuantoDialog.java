@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,6 +49,8 @@ public class ValidatorJuantoDialog extends JDialog {
 	Map<Integer, IInvariant> mapInvSAT;
 
 	MModel mModel;
+	Duration timeElapsed;
+	
 	public ValidatorJuantoDialog(final JFrame parent, 
 			Collection<IInvariant> listInvSatisfiables, 
 			Collection<IInvariant> listInvUnSatisfiables,
@@ -55,7 +58,8 @@ public class ValidatorJuantoDialog extends JDialog {
 			List<String> listStrSatisfiables,
 			List<String> listStrUnSatisfiables,
 			List<String> listStrOthers,
-			MModel mModel) {
+			MModel mModel,
+			Duration timeElapsed) {
 
 		this.listInvSatisfiables = listInvSatisfiables;
 		this.listInvUnSatisfiables = listInvUnSatisfiables;
@@ -63,6 +67,7 @@ public class ValidatorJuantoDialog extends JDialog {
 		this.listStrSatisfiables = listStrSatisfiables;
 		this.listStrUnSatisfiables = listStrUnSatisfiables;
 		this.listStrOthers = listStrOthers;
+		this.timeElapsed = timeElapsed;
 
 		mapInvSAT = new HashMap<>();
 		int i = 0;
@@ -82,7 +87,7 @@ public class ValidatorJuantoDialog extends JDialog {
 		JPanel p = new JPanel();
 		p.setLayout(new BorderLayout());
 
-		p.add(makeComun(listStrSatisfiables.size() , listStrUnSatisfiables.size()),BorderLayout.NORTH);
+		p.add(makeComun(listStrSatisfiables.size() , listStrUnSatisfiables.size(), timeElapsed),BorderLayout.NORTH);
 
 		JTabbedPane  tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		pack();
@@ -103,7 +108,7 @@ public class ValidatorJuantoDialog extends JDialog {
 		frame.setLocationRelativeTo(this);
 		frame.setEnabled(true);
 	}
-	private JPanel makeComun(int nSAT, int nUNSAT) {
+	private JPanel makeComun(int nSAT, int nUNSAT, Duration timeElapsed) {
 		JPanel p1 = new JPanel();
 		p1.setLayout(new FlowLayout(FlowLayout.LEFT));
 		Dimension d = new Dimension();
@@ -130,6 +135,15 @@ public class ValidatorJuantoDialog extends JDialog {
 		idUNSAT.setPreferredSize(d);
 		idUNSAT.setEditable(false);
 		idUNSAT.setHorizontalAlignment(JTextField.RIGHT);
+		
+		JLabel idLabelTimeElapsed = new JLabel("Time elapsed: ");
+		JTextField idTimeElapsed = new JTextField(timeElapsed.toMillis() +" milliseconds"); 
+		d = new Dimension();
+		d.height=20;
+		d.width=150;
+		idTimeElapsed.setPreferredSize(d);
+		idTimeElapsed.setEditable(false);
+		idTimeElapsed.setHorizontalAlignment(JTextField.RIGHT);
 
 		p1.add(idLabelNC);
 		p1.add(idNC);
@@ -139,6 +153,9 @@ public class ValidatorJuantoDialog extends JDialog {
 
 		p1.add(idLabelUNSAT);
 		p1.add(idUNSAT);
+
+		p1.add(idLabelTimeElapsed);
+		p1.add(idTimeElapsed);
 
 		return p1;
 	}
