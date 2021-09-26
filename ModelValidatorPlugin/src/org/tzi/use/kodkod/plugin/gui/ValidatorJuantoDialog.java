@@ -3,6 +3,7 @@ package org.tzi.use.kodkod.plugin.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -68,6 +70,11 @@ public class ValidatorJuantoDialog extends JDialog {
 		this.listStrUnSatisfiables = listStrUnSatisfiables;
 		this.listStrOthers = listStrOthers;
 		this.timeElapsed = timeElapsed;
+		
+//		ImageIcon icon = new ImageIcon("resources/MvMJG.png",
+//                "MvM");
+//		Image img = (new ImageIcon(icon)).getImage();
+//		setIconImage(icon);
 
 		mapInvSAT = new HashMap<>();
 		int i = 0;

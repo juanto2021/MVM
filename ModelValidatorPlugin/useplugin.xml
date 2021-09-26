@@ -3,9 +3,9 @@
 <plugin name="ModelValidatorPlugin" version="5.1.0-r1"
 	publisher="Hendrik Reitmann">
 	<actions>
-		<action label="Validation Juanto" icon="resources/juanto.png"
+		<action label="Validation Juanto" icon="resources/MvMJG.png"
 			class="org.tzi.use.kodkod.plugin.KodkodValidateJuantoAction"
-			tooltip="Busca combinaciones SATISFIABLES." menu="ValidationJuanto"
+			tooltip="Look for combinations SATISFIABLES." menu="ValidationJuanto"
 			menuitem="ValidationJuanto" 
 			toolbaritem="plugins"
 			id="org.tzi.use.kodkod.plugin.KodkodValidateJuanto">

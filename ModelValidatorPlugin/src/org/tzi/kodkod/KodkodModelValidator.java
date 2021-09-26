@@ -142,7 +142,7 @@ public abstract class KodkodModelValidator {
 		Collection<IInvariant> invClassOthers = new ArrayList<IInvariant>();
 
 		try {
-			LOG.info("MVM: (2) Llama a solve desde validateVariable en KodkodModelValidator");
+			LOG.info("MVM: (2) Llama a solve desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
 			Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
 
 			for (IClass oClass: model.classes()) {
@@ -151,7 +151,8 @@ public abstract class KodkodModelValidator {
 			// Primera pasada para ver que invariantes ya no son satisfiables aunque esten solas
 			for (IInvariant invClass: invClassTotal) {
 				invClass.activate();
-				String strCombinacion = invClass.clazz().name()+": [A] " + invClass.name();
+//				String strCombinacion = invClass.clazz().name()+": [A] " + invClass.name();
+				String strCombinacion = " - [A] " + invClass.name();
 				// Deshabilitamos las demas
 				for (IInvariant invClass2: invClassTotal) {
 					if (invClass2.name()!=invClass.name()) {
@@ -163,7 +164,8 @@ public abstract class KodkodModelValidator {
 				kodkodSolver = new KodkodSolver();
 				solution = kodkodSolver.solve(model);
 
-				strCombinacion += " - ["+ solution.outcome()+"]";
+//				strCombinacion += " - ["+ solution.outcome()+"]";
+				strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "] "+ strCombinacion;
 				System.out.println("MVM: Invariants State: " + strCombinacion);
 				if (solution.outcome().toString() == "SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
@@ -184,7 +186,6 @@ public abstract class KodkodModelValidator {
 			for (IInvariant invClass: invClassSatisfiables) {
 				i+=1;
 				samples.put(i, invClass);
-
 			}
 
 			mixInvariants(samples); 
