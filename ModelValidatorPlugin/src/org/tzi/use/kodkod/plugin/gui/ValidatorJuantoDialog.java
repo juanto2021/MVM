@@ -4,10 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -75,6 +78,23 @@ public class ValidatorJuantoDialog extends JDialog {
 //                "MvM");
 //		Image img = (new ImageIcon(icon)).getImage();
 //		setIconImage(icon);
+		
+//		Image im = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\MvMJG.png");
+//		try {
+//			Image img = ImageIO.read(getClass().getResource("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\\\MvMJG.png"));
+//			this.setIconImage(img);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		Image icon = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\MvMJG.png");    
+////		f.setIconImage(icon); 
+////		this.frame.setIconImage(icon);
+//		
+//		setIconImage(icon);
+		
+
 
 		mapInvSAT = new HashMap<>();
 		int i = 0;
@@ -85,6 +105,9 @@ public class ValidatorJuantoDialog extends JDialog {
 
 		this.mModel=mModel;
 		frame = new JFrame("Validator con combinaciones");
+		
+		Image icono = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\MvMJG.png");  
+		frame.setIconImage(icono);
 
 		frame.setSize(820, 280);
 		frame.setVisible(true);
