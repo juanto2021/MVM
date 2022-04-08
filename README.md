@@ -8,7 +8,7 @@ The code is developed in Java as an Eclipse plug-in. The output ".jar" file can 
 Author: Juan Antonio Gomez (2021)
 
 ----
-# Instructions for test
+# Instructions for installation and testing
 
 
 In order to test **MVM** you need to have **Eclipse IDE for Java Developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
@@ -84,4 +84,12 @@ This tab shows the satisfiable combinations with the highest number of invariant
 The computation of unsatisfiable cores relies on USE’s Model Validator to check if a given combination of invariants is satisfiable or not. If a combination of invariants is deemed unsatisfiable, supersets of this combination will also be unsatisfiable. Similarly, if a combination is found to be satisfiable, it is not necessary to explore subsets of this combination. Thus, it is not necessary to invoke the Model Validator for each combination: many calls can be pruned.
 
   This tab shows information about the computation of unsatisfiable cores and sample instances. It describes the CPU time spent searching for combinations, the number of calls to the solver, and the number of calls that produced a satisfiable/unsatisfiable result.
-  
+
+## Acknowledgment
+Special thanks to Robert Clariso for his invaluable help and perseverance and to Jordi Cabot for his many advices and suggestions.
+   
+## References
+
+    * Eclipse - https://www.eclipse.org/downloads/
+    * GitHub  - https://desktop.github.com/
+
