@@ -92,7 +92,7 @@ The computation of unsatisfiable cores relies on USE’s Model Validator to chec
   This tab shows information about the computation of unsatisfiable cores and sample instances. It describes the CPU time spent searching for combinations, the number of calls to the solver, and the number of calls that produced a satisfiable/unsatisfiable result.
 
 ## ACKNOWLEDGMENT
-Special thanks to ***Robert Clariso*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and suggestions.
+Special thanks to ***Robert Clariso*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
 
 ## CITATION
 
