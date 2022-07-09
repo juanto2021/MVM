@@ -17,7 +17,7 @@
 		<!-- DO NOT ENABLE DEBUG HERE!
 		     To enable debug LOCALLY, run ant with argument '-Djavac.debug=true' -->
 		<property name="javac.debug" value="off" />
-		<property name="use.path" value="..\..\JuantoUseCompi\usecompi" />
+		<property name="use.path" value="..\..\MVMUseCompi\usecompi" />
 		<property name="useplugin.file" value="useplugin.xml" />
 		<property name="use.classes" value="${use.path}/build/classes" />
 		<property name="plugin.lib" value="lib" />
@@ -105,7 +105,7 @@
 	
 	<target name="deployDebug" depends="jar">
 		<copy file="dist/${filename}" todir="${use.path}/lib/plugins"/>
-		<copy file="dist/${filename}" todir="../../JuantoUse/use/lib/plugins"/>
+		<copy file="dist/${filename}" todir="../../MVMUse/use/lib/plugins"/>
 		
 	</target>
 </project>

@@ -63,7 +63,7 @@
 			}
 	
 			UseKodkodModelValidator uk = new UseKodkodModelValidator(session);
-			uk.validateVariable(model, mModel);
+			uk.validateVariable(model, mModel,session);
 	
 		}
 	

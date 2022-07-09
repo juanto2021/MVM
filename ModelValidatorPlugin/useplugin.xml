@@ -3,12 +3,12 @@
 <plugin name="ModelValidatorPlugin" version="5.1.0-r1"
 	publisher="Hendrik Reitmann">
 	<actions>
-		<action label="Validation Juanto" icon="resources/MvMJG.png"
-			class="org.tzi.use.kodkod.plugin.KodkodValidateJuantoAction"
-			tooltip="Look for combinations SATISFIABLES." menu="ValidationJuanto"
-			menuitem="ValidationJuanto" 
+		<action label="Validation MVM" icon="resources/MvMJG.png"
+			class="org.tzi.use.kodkod.plugin.KodkodValidateMVMAction"
+			tooltip="Look for combinations SATISFIABLES." menu="ValidationMVM"
+			menuitem="ValidationMVM" 
 			toolbaritem="plugins"
-			id="org.tzi.use.kodkod.plugin.KodkodValidateJuanto">
+			id="org.tzi.use.kodkod.plugin.KodkodValidateMVM">
 		</action>
 		<action label="Kodkod Validation"
 			icon="resources/kodkod.png"
