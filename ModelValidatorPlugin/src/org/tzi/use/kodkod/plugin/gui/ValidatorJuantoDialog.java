@@ -108,7 +108,7 @@ public class ValidatorJuantoDialog extends JDialog {
 		
 //		Image icono = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\MvMJG.png");  
 		Image icono = Toolkit.getDefaultToolkit().getImage("resources/MvMJG.png");
-		frame.setIconImage(icono);
+		frame.setIconImage(icono); 
 
 		frame.setSize(820, 280);
 		frame.setVisible(true);
