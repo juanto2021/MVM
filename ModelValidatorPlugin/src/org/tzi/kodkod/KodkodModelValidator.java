@@ -1,5 +1,9 @@
 package org.tzi.kodkod;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -8,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
@@ -15,11 +20,21 @@ import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.mvm.StrengthenVisitor;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
+import org.tzi.use.kodkod.transform.ocl.DefaultExpressionVisitor;
 import org.tzi.use.main.Session;
+import org.tzi.use.parser.ocl.OCLCompiler;
+import org.tzi.use.uml.mm.MClassInvariant;
+import org.tzi.use.uml.mm.MMPrintVisitor;
+import org.tzi.use.uml.mm.MMVisitor;
 import org.tzi.use.uml.mm.MModel;
+import org.tzi.use.uml.ocl.expr.Expression;
+import org.tzi.use.uml.sys.MSystem;
 
+import kodkod.ast.Node;
+import kodkod.ast.Variable;
 import kodkod.engine.Evaluator;
 import kodkod.engine.Solution;
 import kodkod.engine.Statistics;
@@ -88,7 +103,7 @@ public abstract class KodkodModelValidator {
 		evaluator = null;
 
 		KodkodSolver kodkodSolver = new KodkodSolver();
-		LOG.info("MVM: Llama a solve desde validate en KodkodModelValidator");
+		LOG.info("MVM: Llama a solver desde validate en KodkodModelValidator");
 		try {
 			solution = kodkodSolver.solve(model);
 		} catch (Exception e) {
@@ -171,11 +186,11 @@ public abstract class KodkodModelValidator {
 			for (IClass oClass: model.classes()) {
 				invClassTotal.addAll(oClass.invariants());
 			}
-			// Primera pasada para ver que invariantes ya no son satisfiables aunque esten solas
+			// First pass to see which invariants are no longer satisfiable even if they are alone
 			for (IInvariant invClass: invClassTotal) {
 				invClass.activate();
 				String strCombinacion = " - [A] " + invClass.name();
-				// Deshabilitamos las demas
+				// We disable the others
 				for (IInvariant invClass2: invClassTotal) {
 					if (invClass2.name()!=invClass.name()) {
 						invClass2.deactivate();
@@ -198,10 +213,10 @@ public abstract class KodkodModelValidator {
 				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
 					invRes = new ResInv(strNameInv, "SATISFIABLE", nOrdenInv,invClass);
-					
-//					int totalInv = invClassTotal.size();
-//					String strNOrdenInv = String.format("%0"+String.valueOf(totalInv).length()+"d",nOrdenInv);
-//					listSatisfiables.add(String.valueOf(strNOrdenInv));
+
+					//					int totalInv = invClassTotal.size();
+					//					String strNOrdenInv = String.format("%0"+String.valueOf(totalInv).length()+"d",nOrdenInv);
+					//					listSatisfiables.add(String.valueOf(strNOrdenInv));
 				}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
 					invRes = new ResInv(strNameInv, "UNSATISFIABLE", nOrdenInv,invClass);
@@ -221,85 +236,172 @@ public abstract class KodkodModelValidator {
 					mapInvRes.put(strNameInv, invRes);
 				}
 			}
-			// Resultados Individuales
+			// Individual Results
 			showResult(invClassSatisfiables,  invClassUnSatisfiables, invClassOthers);
 
-			//Hacer combinaciones
-			LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
-			samples = new HashMap<>();
-			int i = 0;
-			for (IInvariant invClass: invClassSatisfiables) {
-				// Buscar la inv satis en listInvRes para obtener el orden
-				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
-				if (mapInvRes.containsKey(strNameInv)) {
-					ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
-					i=invRes.intOrden;
-				}
-				samples.put(i, invClass);
-				String cmb= String.valueOf(i);
-				listSatisfiables.add(cmb);
-				storeResultCmb(cmb, "SATISFIABLE", "Direct calculation");
-			}
+			// We look for variables of each OCL expression
+			LOG.info("MVM: Tratamiento OCL");
+			//analysis_OCL(model, mModel,invClassSatisfiables);
+			analysis_OCL2(model, mModel,invClassSatisfiables);			
 
-			mixInvariants(samples); 
-			if (debMVM) {
-				for (Object obj : listCmbSel.entrySet()) 
-				{
-					Entry<String, String> cmb= (Entry<String, String>) obj;
-					String comment="";
-					if (cmb.getValue().equals("N")) {
-						comment = "New";
-					}else {
-						comment = "Detect in " +cmb.getValue();
+			if (false) {
+
+				//Hacer combinaciones
+				LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
+				samples = new HashMap<>();
+				int i = 0;
+				for (IInvariant invClass: invClassSatisfiables) {
+					// Buscar la inv satis en listInvRes para obtener el orden
+					String strNameInv = invClass.clazz().name()+"::"+invClass.name();
+					if (mapInvRes.containsKey(strNameInv)) {
+						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
+						i=invRes.intOrden;
 					}
-
-					System.out.println(String.format("%20s",cmb.getKey()) + " - " + comment);			
+					samples.put(i, invClass);
+					String cmb= String.valueOf(i);
+					listSatisfiables.add(cmb);
+					storeResultCmb(cmb, "SATISFIABLE", "Direct calculation");
 				}
-				System.out.println();
-			}
-			LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
-			// Ordenar lista antes de enviar a validar 
-			List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
-			List<String> listSortedByCmb = listSorted;
-			// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
-			listSortedByCmb = sortByCmbNumber(listSorted, invClassTotal.size());
-			LOG.info("MVM: Envio a sendToValidate.");
-			sendToValidate(listSortedByCmb , invClassTotal ); 
 
-			// Compactacion de resultados
-			// Si 1-2-3 es SAT y 1-2-4 tambien tenemos el grupo (1-2) que puede ser SAT con 3 o con 4
-			busca_grupos_SAT_MAX();
+				mixInvariants(samples); 
+				if (debMVM) {
+					for (Object obj : listCmbSel.entrySet()) 
+					{
+						Entry<String, String> cmb= (Entry<String, String>) obj;
+						String comment="";
+						if (cmb.getValue().equals("N")) {
+							comment = "New";
+						}else {
+							comment = "Detect in " +cmb.getValue();
+						}
 
-			showResultGral();
-			Instant end = Instant.now();
-			Duration timeElapsed = Duration.between(start, end);
-			LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+						System.out.println(String.format("%20s",cmb.getKey()) + " - " + comment);			
+					}
+					System.out.println();
+				}
+				LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
+				// Ordenar lista antes de enviar a validar 
+				List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
+				List<String> listSortedByCmb = listSorted;
+				// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
+				listSortedByCmb = sortByCmbNumber(listSorted, invClassTotal.size());
+				LOG.info("MVM: Envio a sendToValidate.");
+				sendToValidate(listSortedByCmb , invClassTotal ); 
 
-			//			ValidatorMVMDialog validatorMVMDialog= 
-			//					new ValidatorMVMDialog(MainWindow.instance(), 
-			ValidatorMVMDialogSimple validatorMVMDialog= 
-					new ValidatorMVMDialogSimple(MainWindow.instance(), 
-							this,
-							invClassSatisfiables, 
-							invClassUnSatisfiables, 
-							invClassOthers,
-							mapGRP_SAT_MAX,
-							listSatisfiables,
-							listUnSatisfiables,
-							listOthers,
-							mapInvRes,
-							mModel,
-							invClassTotal,
-							timeElapsed,
-							numCallSolver,
-							numCallSolverSAT,
-							numCallSolverUNSAT);
+				// Compactacion de resultados
+				// Si 1-2-3 es SAT y 1-2-4 tambien tenemos el grupo (1-2) que puede ser SAT con 3 o con 4
+				busca_grupos_SAT_MAX();
+
+				showResultGral();
+				Instant end = Instant.now();
+				Duration timeElapsed = Duration.between(start, end);
+				LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+
+				//			ValidatorMVMDialog validatorMVMDialog= 
+				//					new ValidatorMVMDialog(MainWindow.instance(), 
+				ValidatorMVMDialogSimple validatorMVMDialog= 
+						new ValidatorMVMDialogSimple(MainWindow.instance(), 
+								this,
+								invClassSatisfiables, 
+								invClassUnSatisfiables, 
+								invClassOthers,
+								mapGRP_SAT_MAX,
+								listSatisfiables,
+								listUnSatisfiables,
+								listOthers,
+								mapInvRes,
+								mModel,
+								invClassTotal,
+								timeElapsed,
+								numCallSolver,
+								numCallSolverSAT,
+								numCallSolverUNSAT);
+			}// este sobra cuando se 'reviva el codigo'
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
+	private void analysis_OCL(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
+		MMVisitor v = new MMPrintVisitor(new PrintWriter(
+				System.out, true));
+		mModel.processWithVisitor(v);					
+	}
+	private void analysis_OCL2(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
+		String outFile = "c:\\temp\\jg.txt";
+		generateClassifyingTerms(mModel, outFile);					
+	}
 
+	//--
+
+	private static void generateClassifyingTerms(MModel model, String fileName) {
+		// Obtain a list of the invariants in the model 
+		Collection<MClassInvariant> col = model.classInvariants();
+		
+		// Generate classifying terms for each invariant
+		Map<MClassInvariant, List<Expression>> classifyingTerms = new HashMap<MClassInvariant, List<Expression>>();
+		for(MClassInvariant inv: col) {
+			// Generate classifying terms for this invariant
+			Expression exp = inv.bodyExpression();
+			List<Expression> ct = computeClassifyingTerms(exp);
+			classifyingTerms.put(inv, ct);
+		}
+		
+		
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(fileName);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("Cannot create output file '" + fileName + "'");
+		}
+		// Do something with the classifying terms
+		for(Map.Entry<MClassInvariant, List<Expression>> item: classifyingTerms.entrySet()) {
+			out.println("Invariant " + item.getKey().qualifiedName());
+			System.out.println( item.getKey().qualifiedName());
+			out.println();
+			out.println(" --Original body: ");
+			out.println(" --" + item.getKey().bodyExpression().toString());
+			out.println();
+			for(Expression exp: item.getValue()) {
+				out.println(exp.toString());
+				System.out.println( exp.toString());
+				// out.println(OptimizationVisitor.optimize(exp).toString());
+			}
+			out.println();
+		}
+		out.close();
+	}	
+	private static List<Expression> computeClassifyingTerms(Expression exp) {
+		StrengthenVisitor visitor = new StrengthenVisitor();
+		exp.processWithVisitor(visitor);
+		return visitor.getMutatedExpr();
+	}
+	
+	//--
+	
+	
+	private void analysis_OCL_Sample(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
+		for (IInvariant invClass: invClassSatisfiables) {
+			// Buscar la inv satis en listInvRes para obtener el orden
+			String strNameInv = invClass.clazz().name()+"::"+invClass.name();
+			System.out.println(invClass.formula());
+			//			System.out.println(invClass.bodyExpression().toString());
+
+			LOG.info("MVM: Trato " + strNameInv);
+
+
+
+			for (MClassInvariant invariant: mModel.classInvariants()) {
+				String strInvariant = invariant.cls().name()+"::"+invariant.name();
+				if (strInvariant.equals(strNameInv)) {
+					//				descInvs=strNameInv;
+					//				descInvs+="\n   "+invariant.bodyExpression().toString();
+					System.out.println(invariant.bodyExpression().toString());
+				}
+			}
+		}
+	}
+	
 	private void busca_grupos_SAT_MAX() {
 		int maxCmb=0;
 		mapGRP_SAT_MAX.clear();
