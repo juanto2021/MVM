@@ -20,6 +20,7 @@ import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.mvm.MVMStatisticsVisitor;
 import org.tzi.mvm.StrengthenVisitor;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
@@ -337,49 +338,59 @@ public abstract class KodkodModelValidator {
 	private static void generateClassifyingTerms(MModel model, String fileName) {
 		// Obtain a list of the invariants in the model 
 		Collection<MClassInvariant> col = model.classInvariants();
-		
+
 		// Generate classifying terms for each invariant
 		Map<MClassInvariant, List<Expression>> classifyingTerms = new HashMap<MClassInvariant, List<Expression>>();
+
 		for(MClassInvariant inv: col) {
 			// Generate classifying terms for this invariant
 			Expression exp = inv.bodyExpression();
-			List<Expression> ct = computeClassifyingTerms(exp);
+			List<Expression> ct = searchTerms(exp);
+
 			classifyingTerms.put(inv, ct);
+
 		}
-		
-		
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(fileName);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Cannot create output file '" + fileName + "'");
-		}
-		// Do something with the classifying terms
+
+		//		// Do something with the classifying terms
 		for(Map.Entry<MClassInvariant, List<Expression>> item: classifyingTerms.entrySet()) {
-			out.println("Invariant " + item.getKey().qualifiedName());
-			System.out.println( item.getKey().qualifiedName());
-			out.println();
-			out.println(" --Original body: ");
-			out.println(" --" + item.getKey().bodyExpression().toString());
-			out.println();
+			//			for(Map.Entry<MClassInvariant, List<String>> item: classifyingTerms.entrySet()) {			
+			System.out.println("Invariant " + item.getKey().qualifiedName());
+			//			System.out.println( item.getKey().qualifiedName());
+			//			out.println();
+			//			out.println(" --Original body: ");
+			System.out.println(" --" + item.getKey().bodyExpression().toString());
+			System.out.println();
 			for(Expression exp: item.getValue()) {
-				out.println(exp.toString());
+				//							out.println(exp.toString());
 				System.out.println( exp.toString());
 				// out.println(OptimizationVisitor.optimize(exp).toString());
 			}
-			out.println();
+			//			out.println();
 		}
-		out.close();
+		//		out.close();
 	}	
+	//	private static List<Expression> computeClassifyingTerms(Expression exp) {
+	////		StrengthenVisitor visitor = new StrengthenVisitor();
+	//		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
+	//		exp.processWithVisitor(visitor);
+	//		return visitor.getExpr();
+	//	}
+
 	private static List<Expression> computeClassifyingTerms(Expression exp) {
-		StrengthenVisitor visitor = new StrengthenVisitor();
+		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
 		exp.processWithVisitor(visitor);
-		return visitor.getMutatedExpr();
+		return visitor.getExpr();
 	}
-	
+	// Busca elementos para cada expresion	
+	private static List<Expression> searchTerms(Expression exp) {
+		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
+		exp.processWithVisitor(visitor);
+		return visitor.getExpr();
+	}	
+
 	//--
-	
-	
+
+
 	private void analysis_OCL_Sample(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
 		for (IInvariant invClass: invClassSatisfiables) {
 			// Buscar la inv satis en listInvRes para obtener el orden
@@ -401,7 +412,7 @@ public abstract class KodkodModelValidator {
 			}
 		}
 	}
-	
+
 	private void busca_grupos_SAT_MAX() {
 		int maxCmb=0;
 		mapGRP_SAT_MAX.clear();

@@ -107,6 +107,7 @@ public abstract class BooleanVisitor implements ExpressionVisitor {
 	@Override
 	public void visitConstBoolean(ExpConstBoolean exp) {
 		// Boolean expression
+		System.out.println("Booleano");
 	}
 
 	@Override
