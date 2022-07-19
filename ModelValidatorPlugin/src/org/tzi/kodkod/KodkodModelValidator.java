@@ -243,7 +243,7 @@ public abstract class KodkodModelValidator {
 			// We look for variables of each OCL expression
 			LOG.info("MVM: Tratamiento OCL");
 			//analysis_OCL(model, mModel,invClassSatisfiables);
-			analysis_OCL2(model, mModel,invClassSatisfiables);			
+			analysis_OCL(model, mModel,invClassSatisfiables);			
 
 			if (false) {
 
@@ -323,12 +323,12 @@ public abstract class KodkodModelValidator {
 		}
 
 	}
+//	private void analysis_OCL(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
+//		MMVisitor v = new MMPrintVisitor(new PrintWriter(
+//				System.out, true));
+//		mModel.processWithVisitor(v);					
+//	}
 	private void analysis_OCL(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
-		MMVisitor v = new MMPrintVisitor(new PrintWriter(
-				System.out, true));
-		mModel.processWithVisitor(v);					
-	}
-	private void analysis_OCL2(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
 		String outFile = "c:\\temp\\jg.txt";
 		generateClassifyingTerms(mModel, outFile);					
 	}
@@ -338,49 +338,31 @@ public abstract class KodkodModelValidator {
 	private static void generateClassifyingTerms(MModel model, String fileName) {
 		// Obtain a list of the invariants in the model 
 		Collection<MClassInvariant> col = model.classInvariants();
-
-		// Generate classifying terms for each invariant
 		Map<MClassInvariant, List<Expression>> classifyingTerms = new HashMap<MClassInvariant, List<Expression>>();
 
 		for(MClassInvariant inv: col) {
 			// Generate classifying terms for this invariant
 			Expression exp = inv.bodyExpression();
 			List<Expression> ct = searchTerms(exp);
-
 			classifyingTerms.put(inv, ct);
-
 		}
 
 		//		// Do something with the classifying terms
 		for(Map.Entry<MClassInvariant, List<Expression>> item: classifyingTerms.entrySet()) {
-			//			for(Map.Entry<MClassInvariant, List<String>> item: classifyingTerms.entrySet()) {			
 			System.out.println("Invariant " + item.getKey().qualifiedName());
-			//			System.out.println( item.getKey().qualifiedName());
-			//			out.println();
-			//			out.println(" --Original body: ");
 			System.out.println(" --" + item.getKey().bodyExpression().toString());
 			System.out.println();
 			for(Expression exp: item.getValue()) {
-				//							out.println(exp.toString());
 				System.out.println( exp.toString());
-				// out.println(OptimizationVisitor.optimize(exp).toString());
 			}
-			//			out.println();
 		}
-		//		out.close();
 	}	
+
 	//	private static List<Expression> computeClassifyingTerms(Expression exp) {
-	////		StrengthenVisitor visitor = new StrengthenVisitor();
 	//		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
 	//		exp.processWithVisitor(visitor);
 	//		return visitor.getExpr();
 	//	}
-
-	private static List<Expression> computeClassifyingTerms(Expression exp) {
-		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
-		exp.processWithVisitor(visitor);
-		return visitor.getExpr();
-	}
 	// Busca elementos para cada expresion	
 	private static List<Expression> searchTerms(Expression exp) {
 		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
@@ -391,27 +373,7 @@ public abstract class KodkodModelValidator {
 	//--
 
 
-	private void analysis_OCL_Sample(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
-		for (IInvariant invClass: invClassSatisfiables) {
-			// Buscar la inv satis en listInvRes para obtener el orden
-			String strNameInv = invClass.clazz().name()+"::"+invClass.name();
-			System.out.println(invClass.formula());
-			//			System.out.println(invClass.bodyExpression().toString());
 
-			LOG.info("MVM: Trato " + strNameInv);
-
-
-
-			for (MClassInvariant invariant: mModel.classInvariants()) {
-				String strInvariant = invariant.cls().name()+"::"+invariant.name();
-				if (strInvariant.equals(strNameInv)) {
-					//				descInvs=strNameInv;
-					//				descInvs+="\n   "+invariant.bodyExpression().toString();
-					System.out.println(invariant.bodyExpression().toString());
-				}
-			}
-		}
-	}
 
 	private void busca_grupos_SAT_MAX() {
 		int maxCmb=0;
