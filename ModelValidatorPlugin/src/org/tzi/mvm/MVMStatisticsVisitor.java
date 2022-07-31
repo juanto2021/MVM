@@ -314,6 +314,10 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 		VarDeclList decl = exp.getVariableDeclarations();
+		
+		for (VarDecl var: decl) {
+			System.out.println("var " + var + " " + var.name()+ " " + var.type());
+		}
 
 		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
 		visitor1 = preVisitor( visitor1);
