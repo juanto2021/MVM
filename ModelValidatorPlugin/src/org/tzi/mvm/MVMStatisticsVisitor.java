@@ -1,8 +1,16 @@
 package org.tzi.mvm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
+
+import org.tzi.use.uml.mm.MAssociation;
+import org.tzi.use.uml.mm.MAttribute;
+import org.tzi.use.uml.mm.MClass;
+import org.tzi.use.uml.mm.MClassInvariant;
+import org.tzi.use.uml.mm.MNavigableElement;
 import org.tzi.use.uml.ocl.expr.ExpAllInstances;
 import org.tzi.use.uml.ocl.expr.ExpAny;
 import org.tzi.use.uml.ocl.expr.ExpAsType;
@@ -21,6 +29,7 @@ import org.tzi.use.uml.ocl.expr.ExpEmptyCollection;
 import org.tzi.use.uml.ocl.expr.ExpExists;
 import org.tzi.use.uml.ocl.expr.ExpForAll;
 import org.tzi.use.uml.ocl.expr.ExpIf;
+import org.tzi.use.uml.ocl.expr.ExpInvalidException;
 import org.tzi.use.uml.ocl.expr.ExpIsKindOf;
 import org.tzi.use.uml.ocl.expr.ExpIsTypeOf;
 import org.tzi.use.uml.ocl.expr.ExpIsUnique;
@@ -54,99 +63,75 @@ import org.tzi.use.uml.ocl.expr.ExpressionVisitor;
 import org.tzi.use.uml.ocl.expr.ExpressionWithValue;
 import org.tzi.use.uml.ocl.expr.VarDecl;
 import org.tzi.use.uml.ocl.expr.VarDeclList;
+import org.tzi.use.uml.ocl.type.Type;
 
 public class MVMStatisticsVisitor implements ExpressionVisitor{
 
-	//	private List<Expression> expression;
-	private List<classes_inv> lClasses_inv;
-	//	private boolean trace = false;
-	private String nomClase;
+	List<String> mLogs = new ArrayList<String>();
+	int mConLog=-1;
+	MClassInvariant mClassInv = null;
+	HashMap<MClass, List<KeyAttrInv>> mMapCAI = new HashMap<>();
 
 	public MVMStatisticsVisitor() {
-		//		expression = new LinkedList<Expression>();
-		lClasses_inv = new ArrayList<classes_inv>();
+		mLogs.add("Entro en visitor ");
 	}
 
-	public List<classes_inv> getClasses_inv(){
-		return lClasses_inv;
+	public void setClassInv(MClassInvariant pClassInv) {
+		mClassInv=pClassInv;	
 	}
 
-	public void setNomClase(String nom) {
-		nomClase = nom;
+	public MClassInvariant getClassInv(){
+		return mClassInv;
+	}
+	
+	public void setMapCAI(HashMap<MClass, List<KeyAttrInv>> pMapCAI) {
+		mMapCAI=pMapCAI;
+	}
+	
+	public HashMap<MClass, List<KeyAttrInv>> getMapCAI() {
+		return mMapCAI;
+	}
+	
+	public void setLogs(List<String> pLogs) {
+		mLogs=pLogs;	
 	}
 
-	public void analisis_exp(Expression query, Expression range,VarDeclList decl ) {
-		int posiSpc = query.toString().indexOf(" ");
-		String izq = query.toString().substring(1, posiSpc);
-
-		int posiPunto = izq.toString().indexOf(".")+1;
-		String atributo = izq.toString().substring(posiPunto, izq.length());
-
-		for(VarDecl d: decl) {
-			String clase ="";
-			int posi2p = d.toString().indexOf(":");
-			if (posi2p>0) {
-				clase = d.toString().substring(posi2p+1, d.toString().length());
-				guarda_clase(clase, atributo);
-			}
-		}
+	public List<String> getLogs(){
+		return mLogs;
 	}
 
-	private void guarda_clase(String nameClass, String nameAttr) {
-		nameClass=nameClass.trim();
-		// Busca clase en lista
-
-		int nClss = lClasses_inv.size();
-		int posiCls = -1;
-		boolean hallaCls = false;
-		for (int nCls = 1; nCls < nClss; nCls++) {
-			classes_inv clase = new classes_inv();
-			clase = lClasses_inv.get(nCls);
-			if (clase.getName().equals(nameClass)){
-				posiCls=nCls;
-				hallaCls=true;
-				continue;
-			}
-		}
-		if (!hallaCls) {
-			// Si la clase no existe, se incluye
-			classes_inv clase = new classes_inv();
-			clase.setName(nameClass);
-			List<String> attrs = new ArrayList<String>();
-
-			// Se incluye atributo tambien
-			attrs.add(nameAttr);
-			clase.setInv_attr(attrs);
-			lClasses_inv.add(clase);
-		} else {
-			// Si la clave existe, se actualiza con atributos
-			classes_inv clase = new classes_inv();
-			clase = lClasses_inv.get(posiCls);
-			List<String> attrs = new ArrayList<String>();
-			attrs = clase.getInv_attr();
-			// Busca atributo
-			int nAttrs = attrs.size();
-			//			int posiAttr = -1;
-			boolean hallaAttr = false;		
-			for (int nAttr = 0; nAttr < nAttrs; nAttr++) {
-				if (attrs.get(nAttrs).equals(nameAttr)){
-					hallaAttr=true;
-					continue;
-				}
-			}
-			if (!hallaAttr) {
-				attrs.add(nameAttr);
-				clase.setInv_attr(attrs);
-				lClasses_inv.set(posiCls, clase);
-			}
-		}
-
-		//		System.out.println("guardo clase " + nameClass + " atri " + nameAttr);	
+	public void setConLog(int pmConLog) {
+		mConLog=pmConLog;	
 	}
+
+	public int getConLog(){
+		return mConLog;
+	}
+
+	public void storeLog(String log) {
+		mConLog+=1;
+		mLogs.add(mConLog +" - " + log);
+	}
+
+	public MVMStatisticsVisitor preVisitor(MVMStatisticsVisitor visitor) {
+		visitor.setLogs(mLogs);
+		visitor.setConLog(mConLog);
+		visitor.setMapCAI(mMapCAI);
+		visitor.setClassInv(mClassInv);
+		return visitor;
+	}
+
+	public MVMStatisticsVisitor postVisitor(MVMStatisticsVisitor visitor) {
+		mLogs = visitor.getLogs();
+		mConLog=visitor.getConLog();
+		mMapCAI=visitor.getMapCAI();
+		mClassInv=visitor.getClassInv();
+		return visitor;
+	}	
 
 	@Override
 	public void visitAllInstances(ExpAllInstances exp) {
-		System.out.println("visitAllInstances");
+		// TODO Auto-generated method stub
 
 	}
 
@@ -162,10 +147,17 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	}
 
+	//Aqui
 	@Override
 	public void visitAttrOp(ExpAttrOp exp) {
 		// TODO Auto-generated method stub
+		System.out.println("visitAttrOp [" + exp.toString() + "] attr [" +exp.attr() +"] ");
+		MAttribute attr = exp.attr();
+		//		logs.add("visitAttrOp exp ["+ exp+ "] attr["+attr+"]");
+		storeLog("visitAttrOp exp ["+ exp+ "] attr["+attr+"]");
+		System.out.println("Guardar clase ["+mClassInv.cls().name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
 
+		//		guarda_clase(mainClass, attr);	
 	}
 
 	@Override
@@ -200,7 +192,10 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitConstInteger(ExpConstInteger exp) {
-		// TODO Auto-generated method stub
+		// Don't do nothing
+		System.out.println("visitConstInteger exp [" + exp + "] No hacer nada");
+		//		logs.add("visitConstInteger exp ["+ exp+ "] ");
+		storeLog("visitConstInteger exp ["+ exp+ "] ");
 
 	}
 
@@ -225,32 +220,35 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitExists(ExpExists exp) {
 		// TODO Auto-generated method stub
-		System.out.println("visitExists , exp ["+exp+"]" );
-		Expression query = exp.getQueryExpression();
-		Expression range = exp.getRangeExpression();	
-		VarDeclList decl = exp.getVariableDeclarations();
 
-		//		System.out.println("visitForAll - exp ( " + exp + ")");
-		//		System.out.println("visitForAll - query ( " + query + ")");	
-		//		System.out.println("visitForAll - range ( " + range + ")");	
-		//		System.out.println("visitForAll - decl ( " + decl.toString() + ")");
-
-		analisis_exp(query, range, decl);
 	}
 
 	@Override
 	public void visitForAll(ExpForAll exp) {
-		//		 TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+
 		Expression query = exp.getQueryExpression();
-		Expression range = exp.getRangeExpression();	
+		Expression range = exp.getRangeExpression();
 		VarDeclList decl = exp.getVariableDeclarations();
 
-		//		System.out.println("visitForAll - exp ( " + exp + ")");
-		//		System.out.println("visitForAll - query ( " + query + ")");	
-		//		System.out.println("visitForAll - range ( " + range + ")");	
-		//		System.out.println("visitForAll - decl ( " + decl.toString() + ")");
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		//		visitor1.setLogs(mLogs);
+		//		visitor1.setConLog(mConLog);
+		query.processWithVisitor(visitor1);
+		//		mLogs = visitor1.getLogs();
+		//		mConLog=visitor1.getConLog();
+		visitor1 = postVisitor(visitor1);
 
-		analisis_exp(query, range, decl);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		//		visitor2.setLogs(mLogs);
+		//		visitor2.setConLog(mConLog);
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		//		mLogs = visitor2.getLogs();		
+		//		mConLog=visitor2.getConLog();
+		visitor2 = postVisitor(visitor2);
 
 	}
 
@@ -293,7 +291,22 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitNavigation(ExpNavigation exp) {
 		// TODO Auto-generated method stub
+		System.out.println("Es una visitNavigation [" + exp + "]");
+		MNavigableElement nav = exp.getDestination();
+		MAssociation assoc = nav.association();
+		MClass navClass = nav.cls();
+		Expression navExp = nav.getDeriveExpression();
 
+		Expression objExp = exp.getObjectExpression();
+
+		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
+		//		visitor.setLogs(mLogs);
+		//		visitor.setConLog(mConLog);
+		visitor = preVisitor( visitor);
+		objExp.processWithVisitor(visitor);
+		//		mLogs = visitor.getLogs();
+		//		mConLog=visitor.getConLog();
+		visitor = postVisitor(visitor);
 	}
 
 	@Override
@@ -370,69 +383,96 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitStdOp(ExpStdOp exp) {
+		Expression left=null;
+		Expression right=null;
+		System.out.println("Es una ExpStdOp [" + exp +"]");
+		//		MVMStatisticsVisitor vis = new MVMStatisticsVisitor();
+		//		exp.processWithVisitor(vis);
 		String opName = exp.opname();
+		Expression[] args = exp.args();
+
+		// Retrieve subexpressions
+		// Sanity check: "or" is a binary expression
+		System.out.println("args.length [" + args.length + "]");
+		int nArgs = args.length;
+		left  = args[0];
+		if (nArgs>1) {
+			right = args[1];
+		}
+
+
 		switch(opName) {
 		case "or":
-			//			expression(exp);
+			//			mutateOrExp(exp);
 			break;	
 		case "xor":
 			//			mutateXorExp(exp); 
 			break;
 		case "and":
 			//			mutateAndExp(exp);
-			analysis_exp_std(exp);
 			break;
 		case "not":
-			//			mutateNotExp(exp);
+			//		mutateNotExp(exp);
 			break;	
 		case "implies":
-			//			mutateImpliesExp(exp);
+			//		mutateImpliesExp(exp);
 			break;	
 		case "=":
-			// De momento no ponemos nada
-			//			defaultStrengthening();
-			analysis_exp_std(exp);
+			//		defaultStrengthening();
 			break;	
 		case "<=":
-			//			mutateLessEqualExp(exp); 
-			analysis_exp_std(exp);
+			//		mutateLessEqualExp(exp); 
 			break;	
 		case ">=":
-			//			mutateGreaterEqualExp(exp);
-			analysis_exp_std(exp);
+			//		mutateGreaterEqualExp(exp);
 			break;	
 		case "<":
-			//			mutateLessExp(exp);
-			analysis_exp_std(exp);
+			//		mutateLessExp(exp);
 			break;	
 		case ">":
-			//			mutateGreaterExp(exp);
-			analysis_exp_std(exp);
+			//		mutateGreaterExp(exp);
+			MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+			//			visitor1.setLogs(mLogs);
+			//			visitor1.setConLog(mConLog);
+			visitor1 = preVisitor( visitor1);
+			left.processWithVisitor(visitor1);
+			//			mLogs = visitor1.getLogs();
+			//			mConLog=visitor1.getConLog();
+			visitor1 = postVisitor(visitor1);
+			if (nArgs>1) {
+				MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+				//				visitor2.setLogs(mLogs);
+				//				visitor2.setConLog(mConLog);
+				visitor2 = preVisitor( visitor2);
+				right.processWithVisitor(visitor2);		
+				//				mLogs = visitor2.getLogs();
+				//				mConLog=visitor2.getConLog();
+				visitor2 = postVisitor(visitor2);
+			}			
 			break;	
 		case "<>":
 			//			mutateNotEqualsExp(exp); 
-			analysis_exp_std(exp);
 			break;	
 		case "isEmpty":
 			//			mutateIsEmptyExp(exp);
 			break;	
 		case "notEmpty":
-			//			mutateNotEmptyExp(exp);
+			//		mutateNotEmptyExp(exp);
 			break;	
 		case "includes":
-			//			mutateIncludesExp(exp);
+			//		mutateIncludesExp(exp);
 			break;	
 		case "excludes":
-			//			mutateExcludesExp(exp);
+			//		mutateExcludesExp(exp);
 			break;	
 		case "includesAll":
 			//			mutateIncludesAllExp(exp);
 			break;	
 		case "excludesAll":
-			//			mutateExcludesAllExp(exp);
+			//		mutateExcludesAllExp(exp);
 			break;	
 		default:
-			//			wrongTypeError("unsupported operation type '" + opName + "'");
+			//		wrongTypeError("unsupported operation type '" + opName + "'");
 		}		
 
 	}
@@ -458,6 +498,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitVariable(ExpVariable exp) {
 		// TODO Auto-generated method stub
+		String varname = exp.getVarname();
+		//		logs.add("visitVariable exp ["+ exp+ "] varname["+varname+"]");
+		storeLog("visitVariable exp ["+ exp+ "] varname["+varname+"]");
 
 	}
 
@@ -520,51 +563,4 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		// TODO Auto-generated method stub
 
 	}
-
-	private void analysis_exp_std(ExpStdOp exp) {
-		Expression[] args = exp.args();
-
-		assert(args.length == 2);
-		Expression exp1 = args[0];
-		Expression exp2 = args[1];
-
-		analiza_punto(exp1);
-		analiza_punto(exp2);
-
-	}
-
-
-	private void analiza_punto(Expression exp) {
-		String strExp = exp.toString();
-
-		int posiPunto = strExp.indexOf(".");
-		System.out.println(exp.name() + "[" + strExp + "] posiPunto  ["+posiPunto+"]");
-
-		if (posiPunto>-1) {
-			String atributo = strExp.substring(posiPunto+1, strExp.length());
-			//			System.out.println("Clase " + nomClase + " atributo [" + atributo + "]");
-
-			// Recursivo
-			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
-			visitor.setNomClase(nomClase);
-			exp.processWithVisitor(visitor);
-			List<classes_inv> lClasses = new ArrayList<classes_inv>();
-			lClasses = visitor.getClasses_inv();
-			if (lClasses.size()==0) {
-				guarda_clase(nomClase, atributo);
-			}else {
-				for(classes_inv clase: lClasses) {
-					for(String attr: clase.getInv_attr()) {
-						guarda_clase(clase.getName(), attr);
-					}
-				}
-			}
-
-		}
-	}
-
-	private void defaultStrengthening() {
-
-	}
-
 }
