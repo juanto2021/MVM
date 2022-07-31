@@ -1,10 +1,11 @@
 package org.tzi.mvm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Map;
 
 import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
@@ -70,7 +71,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	List<String> mLogs = new ArrayList<String>();
 	int mConLog=-1;
 	MClassInvariant mClassInv = null;
-	HashMap<MClass, List<KeyAttrInv>> mMapCAI = new HashMap<>();
+	HashMap<MClass, List<KeyClassAttr>> mMapCAI = new HashMap<>();
 
 	public MVMStatisticsVisitor() {
 		mLogs.add("Entro en visitor ");
@@ -83,15 +84,15 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public MClassInvariant getClassInv(){
 		return mClassInv;
 	}
-	
-	public void setMapCAI(HashMap<MClass, List<KeyAttrInv>> pMapCAI) {
+
+	public void setMapCAI(HashMap<MClass, List<KeyClassAttr>> pMapCAI) {
 		mMapCAI=pMapCAI;
 	}
-	
-	public HashMap<MClass, List<KeyAttrInv>> getMapCAI() {
+
+	public HashMap<MClass, List<KeyClassAttr>> getMapCAI() {
 		return mMapCAI;
 	}
-	
+
 	public void setLogs(List<String> pLogs) {
 		mLogs=pLogs;	
 	}
@@ -111,6 +112,89 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public void storeLog(String log) {
 		mConLog+=1;
 		mLogs.add(mConLog +" - " + log);
+	}
+	public void storeCAI(MClass pClass, MAttribute pAttr, MClassInvariant pInv) {
+		// Busca clase en mMapCAI
+		boolean existClass=false;
+//		int indexClass=-1;
+		List<KeyClassAttr> lKCAs = new ArrayList<KeyClassAttr>();
+		List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
+		List<KeyAttrInv> lKAIs = new ArrayList<KeyAttrInv>();
+
+		for (Map.Entry<MClass, List<KeyClassAttr>> entry : mMapCAI.entrySet()) {
+			MClass mClass = entry.getKey();
+            System.out.println("mClass.name() " + mClass.name() + " pClass.name() " +pClass.name());
+			if (mClass.name().equals(pClass.name())) {
+				System.out.println("=== Clases iguales");
+				existClass=true;
+//				lKCAs = (List<KeyClassAttr>) mMapCAI.get(entry.getValue());
+				lKCAs = mMapCAI.get(mClass);
+				// Miramos si existe atributo
+				boolean existAttr=false;
+				int idxKCA=-1;
+				for (KeyClassAttr kCA : lKCAs) {
+					idxKCA+=1;
+					lKAIs = kCA.getlAttr();
+					int idxKAI=-1;
+					for (KeyAttrInv kAI : lKAIs) {
+						idxKAI+=1;
+						if (kAI.attr.name().equals(pAttr.name())) {
+							existAttr=true;
+							lInvAttr=kAI.getlInv();
+							// Miramos si existe invariante
+							boolean existInv=false;
+							int idxINV=-1;
+							for (MClassInvariant inv : lInvAttr) {
+								idxINV+=1;
+								if (inv.name().equals(pInv.name())) {
+									existInv=true;
+									break;
+								}
+							}
+							if (!existInv){
+								System.out.println("!!! No existe invariante " + pInv.name());
+								lInvAttr.add(pInv); 
+								kAI.setlInv(lInvAttr);
+							}
+							lKAIs.set(idxKAI, kAI);
+							break;
+						}
+						// Si no existe atributo, lo insertamos
+					}
+					if (!existAttr){
+						System.out.println("!!! No existe atributo " + pAttr.name());
+						lInvAttr.add(pInv); 
+//						lInvAttr.add(pInv);
+//						kAI.setlInv(lInvAttr);
+						KeyAttrInv kAI = new KeyAttrInv(pAttr,lInvAttr);
+						lKAIs.add(kAI);		
+						kCA.setlAttr(lKAIs);
+					}
+					
+					lKCAs.set(idxKCA, kCA);
+				}
+				mMapCAI.replace(mClass, lKCAs);
+				break;
+			}
+		}
+
+		if (!existClass){
+			System.out.println("!!! No existe clase " + pClass.name());
+			lInvAttr.add(pInv);
+
+			KeyAttrInv kAI = new KeyAttrInv(pAttr,lInvAttr);
+
+			lKAIs.add(kAI);
+			// Include list of KeyAttrInv on KeyClassAttr
+			KeyClassAttr kCA = new KeyClassAttr(pClass, lKAIs);
+
+			// Add KeyClassAttr on list of KeyClassAttr
+			lKCAs.add(kCA);
+
+			// Put on Map a Class with elements finded
+			mMapCAI.put(pClass, lKCAs);
+		}
+
 	}
 
 	public MVMStatisticsVisitor preVisitor(MVMStatisticsVisitor visitor) {
@@ -155,8 +239,8 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		MAttribute attr = exp.attr();
 		//		logs.add("visitAttrOp exp ["+ exp+ "] attr["+attr+"]");
 		storeLog("visitAttrOp exp ["+ exp+ "] attr["+attr+"]");
-		System.out.println("Guardar clase ["+mClassInv.cls().name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
-
+		System.out.println("******* Guardar clase ["+mClassInv.cls().name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
+		storeCAI(mClassInv.cls(), attr,  mClassInv);
 		//		guarda_clase(mainClass, attr);	
 	}
 
@@ -233,21 +317,12 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
 		visitor1 = preVisitor( visitor1);
-		//		visitor1.setLogs(mLogs);
-		//		visitor1.setConLog(mConLog);
 		query.processWithVisitor(visitor1);
-		//		mLogs = visitor1.getLogs();
-		//		mConLog=visitor1.getConLog();
 		visitor1 = postVisitor(visitor1);
 
-
 		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		//		visitor2.setLogs(mLogs);
-		//		visitor2.setConLog(mConLog);
 		visitor2 = preVisitor( visitor2);
 		range.processWithVisitor(visitor2);
-		//		mLogs = visitor2.getLogs();		
-		//		mConLog=visitor2.getConLog();
 		visitor2 = postVisitor(visitor2);
 
 	}

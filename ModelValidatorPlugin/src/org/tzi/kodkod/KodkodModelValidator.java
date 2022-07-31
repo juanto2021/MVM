@@ -16,6 +16,7 @@ import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.mvm.KeyAttrInv;
+import org.tzi.mvm.KeyClassAttr;
 import org.tzi.mvm.MVMStatisticsVisitor;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
@@ -50,7 +51,7 @@ public abstract class KodkodModelValidator {
 	public static HashMap<String, ResInv> mapInvRes = new HashMap<>();
 
 	//	public static HashMap<KeyClassAttr, Collection<MClassInvariant>> mapResVis = new HashMap<>();
-	public static HashMap<MClass, List<KeyAttrInv>> mapCAI = new HashMap<>();	
+	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	
 
 	public static List<ResComb> listCmbRes = new ArrayList<ResComb>();
 	public static List<ResInv> listInvRes = new ArrayList<ResInv>();
@@ -325,7 +326,7 @@ public abstract class KodkodModelValidator {
 		Collection<MClassInvariant> col = mModel.classInvariants();
 
 		// Generate classifying terms for each invariant
-		Map<MClassInvariant, List<Expression>> classifyingTerms = new HashMap<MClassInvariant, List<Expression>>();
+//		Map<MClassInvariant, List<Expression>> classifyingTerms = new HashMap<MClassInvariant, List<Expression>>();
 		int contador = 0;
 		int conLog=0;
 		List<String> logs = new ArrayList<String>();
@@ -342,108 +343,34 @@ public abstract class KodkodModelValidator {
 			logs = visitor.getLogs();
 			conLog=visitor.getConLog();
 			mapCAI = visitor.getMapCAI();
-			//			for(String log: logs) {
-			//				System.out.println("log [" + log + "]");
-			//			}
-			//			visitor.setlevelDepth(levelDepth-1);
 			contador+=1;
 
 			System.out.println("contador [" + contador + "]");
-			//			List<Expression> ct = computeClassifyingTerms(exp);
-			//			classifyingTerms.put(inv, ct);
 		}
 		for(String log: logs) {
 			System.out.println("log [" + log + "]");
 		}
-
-		//		PrintWriter out = null;
-		//		try {
-		//			out = new PrintWriter(fileName);
-		//		} catch (FileNotFoundException e) {
-		//			throw new RuntimeException("Cannot create output file '" + fileName + "'");
-		//		}
-		// Do something with the classifying terms
-//		for(Map.Entry<MClassInvariant, List<Expression>> item: classifyingTerms.entrySet()) {
-//			System.out.println("Invariant " + item.getKey().qualifiedName());
-//			System.out.println();
-//			System.out.println(" --Original body: ");
-//			System.out.println(" --" + item.getKey().bodyExpression().toString());
-//			System.out.println();
-//			for(Expression exp: item.getValue()) {
-//				System.out.println(exp.toString());
-//				// out.println(OptimizationVisitor.optimize(exp).toString());
-//			}
-//			System.out.println();
-//		}
-
+		//Aqui3
+		for (Map.Entry<MClass, List<KeyClassAttr>> entry : mapCAI.entrySet()) {
+			MClass mClass = entry.getKey();
+			System.out.println("mClass [" + mClass.name() + "]");
+			List<KeyClassAttr> lKCAs = new ArrayList<KeyClassAttr>();
+			lKCAs = mapCAI.get(mClass);
+			for (KeyClassAttr kCA : lKCAs) {
+				System.out.println("  kCA [" + kCA.getClassAttr().name() + "]");
+				List<KeyAttrInv> lKAIs = new ArrayList<KeyAttrInv>();
+				lKAIs = kCA.getlAttr();
+				for (KeyAttrInv kAI : lKAIs) {
+					System.out.println("    kAI [" + kAI.getAttr().name() + "]");
+					List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
+					lInvAttr=kAI.getlInv();
+					for (MClassInvariant inv : lInvAttr) {
+						System.out.println("      inv [" + inv.name() + "]");
+					}
+				}
+			}
+		}
 	}
-
-	//	private static List<Expression> computeClassifyingTerms(Expression exp) {
-	//		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-	//		exp.processWithVisitor(visitor);
-	//		return visitor.getMutatedExpr();
-	//	}
-	//	private void analysis_OCL2(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
-	//		mapResVis.clear();
-	//		Collection<MClassInvariant> col = mModel.classInvariants();
-	////		Map<MClassInvariant, List<Expression>> classifyingTerms = new HashMap<MClassInvariant, List<Expression>>();
-	//
-	//		for(MClassInvariant inv: col) {
-	//
-	//			List<classes_inv> lClasses = new ArrayList<classes_inv>();
-	//			
-	//			Expression exp = inv.bodyExpression();
-	//			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();		
-	//			visitor.setNomClase(inv.cls().name());
-	//			visitor.setClasses_inv(lClasses);
-	//			exp.processWithVisitor(visitor);
-	//
-	//			lClasses = visitor.getClasses_inv();
-	//			System.out.println("Para inv ["+inv.name()+"] exp ["+exp+"] halla ["+lClasses.size()+"]");
-	//			for(classes_inv clase: lClasses) {
-	//				for(String attr: clase.getInv_attr()) {
-	//					KeyClassAttr key = new KeyClassAttr(clase.getName(),attr);
-	//					// Ver si existe key en mapResVis
-	//					boolean existKey=false;
-	//					for (Map.Entry<KeyClassAttr, Collection<MClassInvariant>> entry : mapResVis.entrySet()) {
-	//						KeyClassAttr keyEx = entry.getKey();
-	//						if (key.nomClase.equals(keyEx.nomClase) && key.nomAttr.equals(keyEx.nomAttr)) {
-	//							existKey=true;
-	//							
-	//							Collection<MClassInvariant> invs = new ArrayList<MClassInvariant>();
-	//							invs = entry.getValue();
-	//							if (!invs.contains(inv)){
-	//								invs.add(inv);
-	//							}
-	//							mapResVis.replace(key, invs);
-	//							
-	//							continue ;
-	//						}
-	//					}
-	//					//					if (mapResVis.containsKey(key)) {
-	//					if (!existKey) {
-	//						Collection<MClassInvariant> invs = new ArrayList<MClassInvariant>();
-	//						invs.add(inv);
-	//						mapResVis.put(key, invs);
-	//					}
-	//				}
-	//			}
-	//		}
-
-	//		// Listado segun map
-	//		System.out.println();
-	//		System.out.println( "Resultado ------------------------------");
-	//		for (Map.Entry<KeyClassAttr, Collection<MClassInvariant>> entry : mapResVis.entrySet()) {
-	//			KeyClassAttr key = entry.getKey();
-	//			System.out.println( "Clase " + key.nomClase);
-	//			System.out.println( "Attr  " + key.nomAttr);
-	//			Collection<MClassInvariant> invs = new ArrayList<MClassInvariant>();
-	//			invs = entry.getValue();
-	//			for(MClassInvariant inv: invs) {
-	//				System.out.println( "      inv " + inv.name());
-	//			}
-	//		}
-	//	}	
 
 	private void busca_grupos_SAT_MAX() {
 		int maxCmb=0;
