@@ -1,9 +1,7 @@
 package org.tzi.mvm;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +28,6 @@ import org.tzi.use.uml.ocl.expr.ExpEmptyCollection;
 import org.tzi.use.uml.ocl.expr.ExpExists;
 import org.tzi.use.uml.ocl.expr.ExpForAll;
 import org.tzi.use.uml.ocl.expr.ExpIf;
-import org.tzi.use.uml.ocl.expr.ExpInvalidException;
 import org.tzi.use.uml.ocl.expr.ExpIsKindOf;
 import org.tzi.use.uml.ocl.expr.ExpIsTypeOf;
 import org.tzi.use.uml.ocl.expr.ExpIsUnique;
@@ -64,7 +61,6 @@ import org.tzi.use.uml.ocl.expr.ExpressionVisitor;
 import org.tzi.use.uml.ocl.expr.ExpressionWithValue;
 import org.tzi.use.uml.ocl.expr.VarDecl;
 import org.tzi.use.uml.ocl.expr.VarDeclList;
-import org.tzi.use.uml.ocl.type.Type;
 
 public class MVMStatisticsVisitor implements ExpressionVisitor{
 
@@ -116,18 +112,16 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public void storeCAI(MClass pClass, MAttribute pAttr, MClassInvariant pInv) {
 		// Busca clase en mMapCAI
 		boolean existClass=false;
-//		int indexClass=-1;
 		List<KeyClassAttr> lKCAs = new ArrayList<KeyClassAttr>();
 		List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
 		List<KeyAttrInv> lKAIs = new ArrayList<KeyAttrInv>();
 
 		for (Map.Entry<MClass, List<KeyClassAttr>> entry : mMapCAI.entrySet()) {
 			MClass mClass = entry.getKey();
-            System.out.println("mClass.name() " + mClass.name() + " pClass.name() " +pClass.name());
+			System.out.println("mClass.name() " + mClass.name() + " pClass.name() " +pClass.name());
 			if (mClass.name().equals(pClass.name())) {
 				System.out.println("=== Clases iguales");
 				existClass=true;
-//				lKCAs = (List<KeyClassAttr>) mMapCAI.get(entry.getValue());
 				lKCAs = mMapCAI.get(mClass);
 				// Miramos si existe atributo
 				boolean existAttr=false;
@@ -164,13 +158,10 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 					if (!existAttr){
 						System.out.println("!!! No existe atributo " + pAttr.name());
 						lInvAttr.add(pInv); 
-//						lInvAttr.add(pInv);
-//						kAI.setlInv(lInvAttr);
 						KeyAttrInv kAI = new KeyAttrInv(pAttr,lInvAttr);
 						lKAIs.add(kAI);		
 						kCA.setlAttr(lKAIs);
 					}
-					
 					lKCAs.set(idxKCA, kCA);
 				}
 				mMapCAI.replace(mClass, lKCAs);
@@ -300,10 +291,27 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		// TODO Auto-generated method stub
 
 	}
-
+	//Aqui
 	@Override
 	public void visitExists(ExpExists exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitExists " + exp);
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+		VarDeclList decl = exp.getVariableDeclarations();
+
+		for (VarDecl var: decl) {
+			System.out.println("var " + var + " " + var.name()+ " " + var.type());
+		}
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
 
 	}
 
@@ -314,7 +322,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 		VarDeclList decl = exp.getVariableDeclarations();
-		
+
 		for (VarDecl var: decl) {
 			System.out.println("var " + var + " " + var.name()+ " " + var.type());
 		}
@@ -333,7 +341,25 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitIf(ExpIf exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitIf");
+		Expression condition = exp.getCondition();
+		Expression pElse = exp.getElseExpression();
+		Expression pThen = exp.getThenExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		condition.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		pElse.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);		
+
+		MVMStatisticsVisitor visitor3 = new MVMStatisticsVisitor();
+		visitor3 = preVisitor( visitor3);
+		pThen.processWithVisitor(visitor3);
+		visitor3 = postVisitor(visitor3);	
 
 	}
 
@@ -348,22 +374,58 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		// TODO Auto-generated method stub
 
 	}
-
+	//aqui4
 	@Override
 	public void visitIsUnique(ExpIsUnique exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitIsUnique");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);		
 
 	}
 
 	@Override
 	public void visitIterate(ExpIterate exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitIterate");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);	
 
 	}
 
 	@Override
 	public void visitLet(ExpLet exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitLet");
+		Expression pInt = exp.getInExpression();
+		Expression pVar = exp.getVarExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		pInt.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		pVar.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);	
 
 	}
 
@@ -379,12 +441,8 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression objExp = exp.getObjectExpression();
 
 		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-		//		visitor.setLogs(mLogs);
-		//		visitor.setConLog(mConLog);
 		visitor = preVisitor( visitor);
 		objExp.processWithVisitor(visitor);
-		//		mLogs = visitor.getLogs();
-		//		mConLog=visitor.getConLog();
 		visitor = postVisitor(visitor);
 	}
 
@@ -396,68 +454,163 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitObjOp(ExpObjOp exp) {
-		// TODO Auto-generated method stub
-
+		System.out.println("visitObjOp");
+		Expression args[] = exp.getArguments();
+		int nArgs = args.length;
+		for (int nArg = 0; nArg < nArgs; nArg++) {
+			Expression arg=args[nArg];
+			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
+			visitor = preVisitor( visitor);
+			arg.processWithVisitor(visitor);
+			visitor = postVisitor(visitor);
+		}
 	}
 
 	@Override
 	public void visitObjRef(ExpObjRef exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitObjRef");
+
 
 	}
 
 	@Override
 	public void visitOne(ExpOne exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitOne");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
 
 	}
 
 	@Override
 	public void visitOrderedSetLiteral(ExpOrderedSetLiteral exp) {
-		// TODO Auto-generated method stub
-
+		System.out.println("visitOrderedSetLiteral");
+		Expression args[] = exp.getElemExpr();
+		int nArgs = args.length;
+		for (int nArg = 0; nArg < nArgs; nArg++) {
+			Expression arg=args[nArg];
+			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
+			visitor = preVisitor( visitor);
+			arg.processWithVisitor(visitor);
+			visitor = postVisitor(visitor);
+		}
 	}
 
 	@Override
 	public void visitQuery(ExpQuery exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitQuery");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
 
 	}
 
 	@Override
 	public void visitReject(ExpReject exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitReject");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
 
 	}
 
 	@Override
 	public void visitWithValue(ExpressionWithValue exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitWithValue");
+
 
 	}
 
 	@Override
 	public void visitSelect(ExpSelect exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitSelect");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
 
 	}
 
 	@Override
 	public void visitSequenceLiteral(ExpSequenceLiteral exp) {
-		// TODO Auto-generated method stub
-
+		System.out.println("visitSequenceLiteral");
+		Expression args[] = exp.getElemExpr();
+		int nArgs = args.length;
+		for (int nArg = 0; nArg < nArgs; nArg++) {
+			Expression arg=args[nArg];
+			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
+			visitor = preVisitor( visitor);
+			arg.processWithVisitor(visitor);
+			visitor = postVisitor(visitor);
+		}
 	}
 
 	@Override
 	public void visitSetLiteral(ExpSetLiteral exp) {
-		// TODO Auto-generated method stub
 
+		System.out.println("visitSetLiteral");
+		Expression args[] = exp.getElemExpr();
+		int nArgs = args.length;
+		for (int nArg = 0; nArg < nArgs; nArg++) {
+			Expression arg=args[nArg];
+			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
+			visitor = preVisitor( visitor);
+			arg.processWithVisitor(visitor);
+			visitor = postVisitor(visitor);
+		}
 	}
 
 	@Override
 	public void visitSortedBy(ExpSortedBy exp) {
-		// TODO Auto-generated method stub
 
+		System.out.println("visitSortedBy");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
 	}
 
 	@Override
@@ -465,8 +618,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression left=null;
 		Expression right=null;
 		System.out.println("Es una ExpStdOp [" + exp +"]");
-		//		MVMStatisticsVisitor vis = new MVMStatisticsVisitor();
-		//		exp.processWithVisitor(vis);
 		String opName = exp.opname();
 		Expression[] args = exp.args();
 
@@ -585,14 +736,32 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitClosure(ExpClosure exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitClosure");
+		Expression query = exp.getQueryExpression();
+		Expression range = exp.getRangeExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		query.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		range.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
+
 
 	}
 
 	@Override
 	public void visitOclInState(ExpOclInState exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitOclInState");
+		Expression source = exp.getSourceExpr();
 
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		source.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
 	}
 
 	@Override
@@ -609,7 +778,13 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitObjectByUseId(ExpObjectByUseId exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitObjectByUseId");
+		Expression idExp = exp.getIdExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		idExp.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
 
 	}
 
@@ -621,25 +796,61 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitSelectByKind(ExpSelectByKind exp) {
-		// TODO Auto-generated method stub
 
+		System.out.println("visitSelectByKind");
+		Expression source = exp.getSourceExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		source.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
 	}
 
 	@Override
 	public void visitExpSelectByType(ExpSelectByType exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitExpSelectByType");
+		Expression source = exp.getSourceExpression();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		source.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
 
 	}
 
 	@Override
 	public void visitRange(ExpRange exp) {
-		// TODO Auto-generated method stub
+		System.out.println("visitRange");
+		Expression pEnd = exp.getEnd();
+		Expression pStart = exp.getStart();
+
+		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		visitor1 = preVisitor( visitor1);
+		pEnd.processWithVisitor(visitor1);
+		visitor1 = postVisitor(visitor1);
+
+		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		visitor2 = preVisitor( visitor2);
+		pStart.processWithVisitor(visitor2);
+		visitor2 = postVisitor(visitor2);
+
 
 	}
 
 	@Override
 	public void visitNavigationClassifierSource(ExpNavigationClassifierSource exp) {
 		// TODO Auto-generated method stub
+		System.out.println("visitNavigationClassifierSource [" + exp + "]");
+		MNavigableElement nav = exp.getDestination();
+		MAssociation assoc = nav.association();
+		MClass navClass = nav.cls();
+		Expression navExp = nav.getDeriveExpression();
 
+		Expression objExp = exp.getObjectExpression();
+
+		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
+		visitor = preVisitor( visitor);
+		objExp.processWithVisitor(visitor);
+		visitor = postVisitor(visitor);
 	}
 }

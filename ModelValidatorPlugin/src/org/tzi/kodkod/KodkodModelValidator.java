@@ -319,20 +319,14 @@ public abstract class KodkodModelValidator {
 
 	}
 	private void analysis_OCL(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
-		//		generateClassifyingTerms(mModel);
-		//	}
-		//	private static void generateClassifyingTerms(MModel model) {
-		// Obtain a list of the invariants in the model 
 		Collection<MClassInvariant> col = mModel.classInvariants();
 
-		// Generate classifying terms for each invariant
-//		Map<MClassInvariant, List<Expression>> classifyingTerms = new HashMap<MClassInvariant, List<Expression>>();
 		int contador = 0;
 		int conLog=0;
 		List<String> logs = new ArrayList<String>();
 
 		for(MClassInvariant inv: col) {
-			// Generate classifying terms for this invariant
+			
 			Expression exp = inv.bodyExpression();
 			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
 			visitor.setLogs(logs);
@@ -1013,21 +1007,4 @@ class KeyClassAttrOld {
 	}
 }
 
-//class KeyClassAttr {
-//	MClass mClass;
-//	List<KeyAttrInv> lAttr;
-//	public KeyClassAttr(MClass pClase, List<KeyAttrInv> pLattrInv) {
-//		this.mClass = pClase;
-//		this.lAttr = pLattrInv;
-//	}
-//}
-//
-//class KeyAttrInv {
-//	MAttribute attr;
-//	List<MClassInvariant> lInv;
-//	public KeyAttrInv(MAttribute pAttr, List<MClassInvariant> pLinv) {
-//		this.attr = pAttr;
-//		this.lInv = pLinv;
-//
-//	}
-//}
+
