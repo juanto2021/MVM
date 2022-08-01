@@ -118,9 +118,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 		for (Map.Entry<MClass, List<KeyClassAttr>> entry : mMapCAI.entrySet()) {
 			MClass mClass = entry.getKey();
-			System.out.println("mClass.name() " + mClass.name() + " pClass.name() " +pClass.name());
+			//			System.out.println("mClass.name() " + mClass.name() + " pClass.name() " +pClass.name());
 			if (mClass.name().equals(pClass.name())) {
-				System.out.println("=== Clases iguales");
+				//				System.out.println("=== Clases iguales");
 				existClass=true;
 				lKCAs = mMapCAI.get(mClass);
 				// Miramos si existe atributo
@@ -146,7 +146,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 								}
 							}
 							if (!existInv){
-								System.out.println("!!! No existe invariante " + pInv.name());
 								lInvAttr.add(pInv); 
 								kAI.setlInv(lInvAttr);
 							}
@@ -156,7 +155,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 						// Si no existe atributo, lo insertamos
 					}
 					if (!existAttr){
-						System.out.println("!!! No existe atributo " + pAttr.name());
 						lInvAttr.add(pInv); 
 						KeyAttrInv kAI = new KeyAttrInv(pAttr,lInvAttr);
 						lKAIs.add(kAI);		
@@ -170,7 +168,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		}
 
 		if (!existClass){
-			System.out.println("!!! No existe clase " + pClass.name());
+			//			System.out.println("!!! No existe clase " + pClass.name());
 			lInvAttr.add(pInv);
 
 			KeyAttrInv kAI = new KeyAttrInv(pAttr,lInvAttr);
@@ -313,22 +311,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression pElse = exp.getElseExpression();
 		Expression pThen = exp.getThenExpression();
 
-		//		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		//		visitor1 = preVisitor( visitor1);
-		//		condition.processWithVisitor(visitor1);
-		//		visitor1 = postVisitor(visitor1);
-		//
-		//		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		//		visitor2 = preVisitor( visitor2);
-		//		pElse.processWithVisitor(visitor2);
-		//		visitor2 = postVisitor(visitor2);		
-		//
-		//		MVMStatisticsVisitor visitor3 = new MVMStatisticsVisitor();
-		//		visitor3 = preVisitor( visitor3);
-		//		pThen.processWithVisitor(visitor3);
-		//		visitor3 = postVisitor(visitor3);	
 		visitTernaryExpression (condition, pElse, pThen);		
-
 	}
 
 	@Override
@@ -374,7 +357,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitNavigation(ExpNavigation exp) {
-		// TODO Auto-generated method stub
+
 		System.out.println("Es una visitNavigation [" + exp + "]");
 		MNavigableElement nav = exp.getDestination();
 		MAssociation assoc = nav.association();
@@ -398,12 +381,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitObjOp(ExpObjOp exp) {
 		System.out.println("visitObjOp");
-		Expression args[] = exp.getArguments();
-		int nArgs = args.length;
-		for (int nArg = 0; nArg < nArgs; nArg++) {
-			Expression arg=args[nArg];
-			visitUnaryExpression(arg);
-		}
+		visitMultiExpression (exp.getArguments());		
 	}
 
 	@Override
@@ -423,13 +401,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitOrderedSetLiteral(ExpOrderedSetLiteral exp) {
-		System.out.println("visitOrderedSetLiteral");
-		Expression args[] = exp.getElemExpr();
-		int nArgs = args.length;
-		for (int nArg = 0; nArg < nArgs; nArg++) {
-			Expression arg=args[nArg];
-			visitUnaryExpression(arg);			
-		}
+		visitMultiExpression (exp.getElemExpr());
 	}
 
 	@Override
@@ -469,24 +441,16 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitSequenceLiteral(ExpSequenceLiteral exp) {
 		System.out.println("visitSequenceLiteral");
-		Expression args[] = exp.getElemExpr();
-		int nArgs = args.length;
-		for (int nArg = 0; nArg < nArgs; nArg++) {
-			Expression arg=args[nArg];
-			visitUnaryExpression(arg); 
-		}
+
+		visitMultiExpression (exp.getElemExpr());
 	}
 
 	@Override
 	public void visitSetLiteral(ExpSetLiteral exp) {
 
 		System.out.println("visitSetLiteral");
-		Expression args[] = exp.getElemExpr();
-		int nArgs = args.length;
-		for (int nArg = 0; nArg < nArgs; nArg++) {
-			Expression arg=args[nArg];
-			visitUnaryExpression(arg); 			
-		}
+
+		visitMultiExpression (exp.getElemExpr());
 	}
 
 	@Override
@@ -501,91 +465,75 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitStdOp(ExpStdOp exp) {
-		Expression left=null;
-		Expression right=null;
+		//		Expression left=null;
+		//		Expression right=null;
 		System.out.println("Es una ExpStdOp [" + exp +"]");
-		String opName = exp.opname();
-		Expression[] args = exp.args();
-
-		System.out.println("args.length [" + args.length + "]");
-		int nArgs = args.length;
-		left  = args[0];
-		if (nArgs>1) {
-			right = args[1];
-		}
-
-		// Ver si se pueden pasar todos los argumentos como expresiones
-		// independientemente de la operacion que sea
-
-		for (int nArg = 0; nArg < nArgs; nArg++) {
-			Expression arg=args[nArg];
-			visitUnaryExpression(arg);
-		}	
+		visitMultiExpression (exp.args());
 		// lo siguiente se podra eliminar
-		if (false) {
-			switch(opName) {
-			case "or":
-				//			mutateOrExp(exp);
-				break;	
-			case "xor":
-				//			mutateXorExp(exp); 
-				break;
-			case "and":
-				//			mutateAndExp(exp);
-				visitUnaryExpression(left);
-				if (nArgs>1) {
-					visitUnaryExpression(right);				
-				}	
-				break;
-			case "not":
-				//		mutateNotExp(exp);
-				break;	
-			case "implies":
-				//		mutateImpliesExp(exp);
-				break;	
-			case "=":
-				//		defaultStrengthening();
-				break;	
-			case "<=":
-				//		mutateLessEqualExp(exp); 
-				break;	
-			case ">=":
-				//		mutateGreaterEqualExp(exp);
-				break;	
-			case "<":
-				//		mutateLessExp(exp);
-				break;	
-			case ">":
-				visitUnaryExpression(left);
-				if (nArgs>1) {
-					visitUnaryExpression(right);				
-				}			
-				break;	
-			case "<>":
-				//			mutateNotEqualsExp(exp); 
-				break;	
-			case "isEmpty":
-				//			mutateIsEmptyExp(exp);
-				break;	
-			case "notEmpty":
-				//		mutateNotEmptyExp(exp);
-				break;	
-			case "includes":
-				//		mutateIncludesExp(exp);
-				break;	
-			case "excludes":
-				//		mutateExcludesExp(exp);
-				break;	
-			case "includesAll":
-				//			mutateIncludesAllExp(exp);
-				break;	
-			case "excludesAll":
-				//		mutateExcludesAllExp(exp);
-				break;	
-			default:
-				//		wrongTypeError("unsupported operation type '" + opName + "'");
-			}		
-		}
+		//		if (false) {
+		//			switch(opName) {
+		//			case "or":
+		//				//			mutateOrExp(exp);
+		//				break;	
+		//			case "xor":
+		//				//			mutateXorExp(exp); 
+		//				break;
+		//			case "and":
+		//				//			mutateAndExp(exp);
+		//				visitUnaryExpression(left);
+		//				if (nArgs>1) {
+		//					visitUnaryExpression(right);				
+		//				}	
+		//				break;
+		//			case "not":
+		//				//		mutateNotExp(exp);
+		//				break;	
+		//			case "implies":
+		//				//		mutateImpliesExp(exp);
+		//				break;	
+		//			case "=":
+		//				//		defaultStrengthening();
+		//				break;	
+		//			case "<=":
+		//				//		mutateLessEqualExp(exp); 
+		//				break;	
+		//			case ">=":
+		//				//		mutateGreaterEqualExp(exp);
+		//				break;	
+		//			case "<":
+		//				//		mutateLessExp(exp);
+		//				break;	
+		//			case ">":
+		//				visitUnaryExpression(left);
+		//				if (nArgs>1) {
+		//					visitUnaryExpression(right);				
+		//				}			
+		//				break;	
+		//			case "<>":
+		//				//			mutateNotEqualsExp(exp); 
+		//				break;	
+		//			case "isEmpty":
+		//				//			mutateIsEmptyExp(exp);
+		//				break;	
+		//			case "notEmpty":
+		//				//		mutateNotEmptyExp(exp);
+		//				break;	
+		//			case "includes":
+		//				//		mutateIncludesExp(exp);
+		//				break;	
+		//			case "excludes":
+		//				//		mutateExcludesExp(exp);
+		//				break;	
+		//			case "includesAll":
+		//				//			mutateIncludesAllExp(exp);
+		//				break;	
+		//			case "excludesAll":
+		//				//		mutateExcludesAllExp(exp);
+		//				break;	
+		//			default:
+		//				//		wrongTypeError("unsupported operation type '" + opName + "'");
+		//			}		
+		//		}
 
 	}
 
@@ -713,6 +661,13 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		visitUnaryExpression(exp2);
 		visitUnaryExpression(exp3);		
 	}		
+	public void visitMultiExpression (Expression[] exp) {
+		int nArgs = exp.length;
+		for (int nArg = 0; nArg < nArgs; nArg++) {
+			Expression expSingle=exp[nArg];
+			visitUnaryExpression(expSingle);
+		}		
+	}	
 	public void doNothing() {
 		// No hacer nada
 	}
