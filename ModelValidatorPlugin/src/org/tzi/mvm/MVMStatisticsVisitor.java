@@ -222,17 +222,14 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	}
 
-	//Aqui
 	@Override
 	public void visitAttrOp(ExpAttrOp exp) {
-		// TODO Auto-generated method stub
 		System.out.println("visitAttrOp [" + exp.toString() + "] attr [" +exp.attr() +"] ");
 		MAttribute attr = exp.attr();
-		//		logs.add("visitAttrOp exp ["+ exp+ "] attr["+attr+"]");
 		storeLog("visitAttrOp exp ["+ exp+ "] attr["+attr+"]");
-		System.out.println("******* Guardar clase ["+mClassInv.cls().name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
-		storeCAI(mClassInv.cls(), attr,  mClassInv);
-		//		guarda_clase(mainClass, attr);	
+		MClass classAttr = attr.owner();
+		System.out.println("******* Guardar clase ["+classAttr.name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
+		storeCAI(classAttr, attr,  mClassInv);		
 	}
 
 	@Override
@@ -255,43 +252,34 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitConstBoolean(ExpConstBoolean exp) {
-		// TODO Auto-generated method stub
-
+		doNothing();
 	}
 
 	@Override
 	public void visitConstEnum(ExpConstEnum exp) {
-		// TODO Auto-generated method stub
-
+		doNothing();
 	}
 
 	@Override
 	public void visitConstInteger(ExpConstInteger exp) {
-		// Don't do nothing
-		System.out.println("visitConstInteger exp [" + exp + "] No hacer nada");
-		//		logs.add("visitConstInteger exp ["+ exp+ "] ");
-		storeLog("visitConstInteger exp ["+ exp+ "] ");
-
+		doNothing();
 	}
 
 	@Override
 	public void visitConstReal(ExpConstReal exp) {
-		// TODO Auto-generated method stub
-
+		doNothing();
 	}
 
 	@Override
 	public void visitConstString(ExpConstString exp) {
-		// TODO Auto-generated method stub
-
+		doNothing();
 	}
 
 	@Override
 	public void visitEmptyCollection(ExpEmptyCollection exp) {
-		// TODO Auto-generated method stub
-
+		doNothing();
 	}
-	//Aqui
+
 	@Override
 	public void visitExists(ExpExists exp) {
 		System.out.println("visitExists " + exp);
@@ -302,22 +290,11 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		for (VarDecl var: decl) {
 			System.out.println("var " + var + " " + var.name()+ " " + var.type());
 		}
-
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
-
+		visitBinaryExpression (query, range);
 	}
 
 	@Override
 	public void visitForAll(ExpForAll exp) {
-		// TODO Auto-generated method stub
 
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
@@ -326,19 +303,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		for (VarDecl var: decl) {
 			System.out.println("var " + var + " " + var.name()+ " " + var.type());
 		}
-
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
-
+		visitBinaryExpression (query, range);	
 	}
-
+	//aqui3
 	@Override
 	public void visitIf(ExpIf exp) {
 		System.out.println("visitIf");
@@ -346,20 +313,21 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression pElse = exp.getElseExpression();
 		Expression pThen = exp.getThenExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		condition.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		pElse.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);		
-
-		MVMStatisticsVisitor visitor3 = new MVMStatisticsVisitor();
-		visitor3 = preVisitor( visitor3);
-		pThen.processWithVisitor(visitor3);
-		visitor3 = postVisitor(visitor3);	
+		//		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
+		//		visitor1 = preVisitor( visitor1);
+		//		condition.processWithVisitor(visitor1);
+		//		visitor1 = postVisitor(visitor1);
+		//
+		//		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
+		//		visitor2 = preVisitor( visitor2);
+		//		pElse.processWithVisitor(visitor2);
+		//		visitor2 = postVisitor(visitor2);		
+		//
+		//		MVMStatisticsVisitor visitor3 = new MVMStatisticsVisitor();
+		//		visitor3 = preVisitor( visitor3);
+		//		pThen.processWithVisitor(visitor3);
+		//		visitor3 = postVisitor(visitor3);	
+		visitTernaryExpression (condition, pElse, pThen);		
 
 	}
 
@@ -381,15 +349,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);		
+		visitBinaryExpression (query, range);
 
 	}
 
@@ -399,15 +359,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);	
+		visitBinaryExpression (query, range);		
 
 	}
 
@@ -417,16 +369,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression pInt = exp.getInExpression();
 		Expression pVar = exp.getVarExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		pInt.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		pVar.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);	
-
+		visitBinaryExpression (pInt, pVar);		
 	}
 
 	@Override
@@ -459,17 +402,13 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		int nArgs = args.length;
 		for (int nArg = 0; nArg < nArgs; nArg++) {
 			Expression arg=args[nArg];
-			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-			visitor = preVisitor( visitor);
-			arg.processWithVisitor(visitor);
-			visitor = postVisitor(visitor);
+			visitUnaryExpression(arg);
 		}
 	}
 
 	@Override
 	public void visitObjRef(ExpObjRef exp) {
 		System.out.println("visitObjRef");
-
 
 	}
 
@@ -479,16 +418,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
-
+		visitBinaryExpression (query, range);
 	}
 
 	@Override
@@ -498,10 +428,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		int nArgs = args.length;
 		for (int nArg = 0; nArg < nArgs; nArg++) {
 			Expression arg=args[nArg];
-			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-			visitor = preVisitor( visitor);
-			arg.processWithVisitor(visitor);
-			visitor = postVisitor(visitor);
+			visitUnaryExpression(arg);			
 		}
 	}
 
@@ -510,16 +437,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		System.out.println("visitQuery");
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
-
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
+		visitBinaryExpression (query, range);		
 
 	}
 
@@ -529,22 +447,13 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
+		visitBinaryExpression (query, range);		
 
 	}
 
 	@Override
 	public void visitWithValue(ExpressionWithValue exp) {
 		System.out.println("visitWithValue");
-
 
 	}
 
@@ -554,16 +463,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
-
+		visitBinaryExpression (query, range);		
 	}
 
 	@Override
@@ -573,10 +473,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		int nArgs = args.length;
 		for (int nArg = 0; nArg < nArgs; nArg++) {
 			Expression arg=args[nArg];
-			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-			visitor = preVisitor( visitor);
-			arg.processWithVisitor(visitor);
-			visitor = postVisitor(visitor);
+			visitUnaryExpression(arg); 
 		}
 	}
 
@@ -588,10 +485,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		int nArgs = args.length;
 		for (int nArg = 0; nArg < nArgs; nArg++) {
 			Expression arg=args[nArg];
-			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-			visitor = preVisitor( visitor);
-			arg.processWithVisitor(visitor);
-			visitor = postVisitor(visitor);
+			visitUnaryExpression(arg); 			
 		}
 	}
 
@@ -602,15 +496,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
+		visitBinaryExpression (query, range);		
 	}
 
 	@Override
@@ -621,8 +507,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		String opName = exp.opname();
 		Expression[] args = exp.args();
 
-		// Retrieve subexpressions
-		// Sanity check: "or" is a binary expression
 		System.out.println("args.length [" + args.length + "]");
 		int nArgs = args.length;
 		left  = args[0];
@@ -630,80 +514,78 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 			right = args[1];
 		}
 
+		// Ver si se pueden pasar todos los argumentos como expresiones
+		// independientemente de la operacion que sea
 
-		switch(opName) {
-		case "or":
-			//			mutateOrExp(exp);
-			break;	
-		case "xor":
-			//			mutateXorExp(exp); 
-			break;
-		case "and":
-			//			mutateAndExp(exp);
-			break;
-		case "not":
-			//		mutateNotExp(exp);
-			break;	
-		case "implies":
-			//		mutateImpliesExp(exp);
-			break;	
-		case "=":
-			//		defaultStrengthening();
-			break;	
-		case "<=":
-			//		mutateLessEqualExp(exp); 
-			break;	
-		case ">=":
-			//		mutateGreaterEqualExp(exp);
-			break;	
-		case "<":
-			//		mutateLessExp(exp);
-			break;	
-		case ">":
-			//		mutateGreaterExp(exp);
-			MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-			//			visitor1.setLogs(mLogs);
-			//			visitor1.setConLog(mConLog);
-			visitor1 = preVisitor( visitor1);
-			left.processWithVisitor(visitor1);
-			//			mLogs = visitor1.getLogs();
-			//			mConLog=visitor1.getConLog();
-			visitor1 = postVisitor(visitor1);
-			if (nArgs>1) {
-				MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-				//				visitor2.setLogs(mLogs);
-				//				visitor2.setConLog(mConLog);
-				visitor2 = preVisitor( visitor2);
-				right.processWithVisitor(visitor2);		
-				//				mLogs = visitor2.getLogs();
-				//				mConLog=visitor2.getConLog();
-				visitor2 = postVisitor(visitor2);
-			}			
-			break;	
-		case "<>":
-			//			mutateNotEqualsExp(exp); 
-			break;	
-		case "isEmpty":
-			//			mutateIsEmptyExp(exp);
-			break;	
-		case "notEmpty":
-			//		mutateNotEmptyExp(exp);
-			break;	
-		case "includes":
-			//		mutateIncludesExp(exp);
-			break;	
-		case "excludes":
-			//		mutateExcludesExp(exp);
-			break;	
-		case "includesAll":
-			//			mutateIncludesAllExp(exp);
-			break;	
-		case "excludesAll":
-			//		mutateExcludesAllExp(exp);
-			break;	
-		default:
-			//		wrongTypeError("unsupported operation type '" + opName + "'");
-		}		
+		for (int nArg = 0; nArg < nArgs; nArg++) {
+			Expression arg=args[nArg];
+			visitUnaryExpression(arg);
+		}	
+		// lo siguiente se podra eliminar
+		if (false) {
+			switch(opName) {
+			case "or":
+				//			mutateOrExp(exp);
+				break;	
+			case "xor":
+				//			mutateXorExp(exp); 
+				break;
+			case "and":
+				//			mutateAndExp(exp);
+				visitUnaryExpression(left);
+				if (nArgs>1) {
+					visitUnaryExpression(right);				
+				}	
+				break;
+			case "not":
+				//		mutateNotExp(exp);
+				break;	
+			case "implies":
+				//		mutateImpliesExp(exp);
+				break;	
+			case "=":
+				//		defaultStrengthening();
+				break;	
+			case "<=":
+				//		mutateLessEqualExp(exp); 
+				break;	
+			case ">=":
+				//		mutateGreaterEqualExp(exp);
+				break;	
+			case "<":
+				//		mutateLessExp(exp);
+				break;	
+			case ">":
+				visitUnaryExpression(left);
+				if (nArgs>1) {
+					visitUnaryExpression(right);				
+				}			
+				break;	
+			case "<>":
+				//			mutateNotEqualsExp(exp); 
+				break;	
+			case "isEmpty":
+				//			mutateIsEmptyExp(exp);
+				break;	
+			case "notEmpty":
+				//		mutateNotEmptyExp(exp);
+				break;	
+			case "includes":
+				//		mutateIncludesExp(exp);
+				break;	
+			case "excludes":
+				//		mutateExcludesExp(exp);
+				break;	
+			case "includesAll":
+				//			mutateIncludesAllExp(exp);
+				break;	
+			case "excludesAll":
+				//		mutateExcludesAllExp(exp);
+				break;	
+			default:
+				//		wrongTypeError("unsupported operation type '" + opName + "'");
+			}		
+		}
 
 	}
 
@@ -729,7 +611,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public void visitVariable(ExpVariable exp) {
 		// TODO Auto-generated method stub
 		String varname = exp.getVarname();
-		//		logs.add("visitVariable exp ["+ exp+ "] varname["+varname+"]");
 		storeLog("visitVariable exp ["+ exp+ "] varname["+varname+"]");
 
 	}
@@ -740,17 +621,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		query.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		range.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
-
-
+		visitBinaryExpression (query, range);
 	}
 
 	@Override
@@ -758,10 +629,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		System.out.println("visitOclInState");
 		Expression source = exp.getSourceExpr();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		source.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
+		visitUnaryExpression(source);
 	}
 
 	@Override
@@ -781,11 +649,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		System.out.println("visitObjectByUseId");
 		Expression idExp = exp.getIdExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		idExp.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
+		visitUnaryExpression(idExp);
 	}
 
 	@Override
@@ -800,10 +664,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		System.out.println("visitSelectByKind");
 		Expression source = exp.getSourceExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		source.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
+		visitUnaryExpression(source);
 	}
 
 	@Override
@@ -811,10 +672,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		System.out.println("visitExpSelectByType");
 		Expression source = exp.getSourceExpression();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		source.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
+		visitUnaryExpression(source);
 
 	}
 
@@ -824,17 +682,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression pEnd = exp.getEnd();
 		Expression pStart = exp.getStart();
 
-		MVMStatisticsVisitor visitor1 = new MVMStatisticsVisitor();
-		visitor1 = preVisitor( visitor1);
-		pEnd.processWithVisitor(visitor1);
-		visitor1 = postVisitor(visitor1);
-
-		MVMStatisticsVisitor visitor2 = new MVMStatisticsVisitor();
-		visitor2 = preVisitor( visitor2);
-		pStart.processWithVisitor(visitor2);
-		visitor2 = postVisitor(visitor2);
-
-
+		visitBinaryExpression (pEnd, pStart);
 	}
 
 	@Override
@@ -844,13 +692,28 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		MNavigableElement nav = exp.getDestination();
 		MAssociation assoc = nav.association();
 		MClass navClass = nav.cls();
+		// ojo porque con navexp entramos en un bucle infinito al llamar a visitor
 		Expression navExp = nav.getDeriveExpression();
-
 		Expression objExp = exp.getObjectExpression();
 
+		visitUnaryExpression(objExp);
+	}
+	public void visitUnaryExpression(Expression exp) {
 		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
 		visitor = preVisitor( visitor);
-		objExp.processWithVisitor(visitor);
+		exp.processWithVisitor(visitor);
 		visitor = postVisitor(visitor);
+	}
+	public void visitBinaryExpression (Expression exp1, Expression exp2) {
+		visitUnaryExpression(exp1);
+		visitUnaryExpression(exp2);		
+	}	
+	public void visitTernaryExpression (Expression exp1, Expression exp2, Expression exp3) {
+		visitUnaryExpression(exp1);
+		visitUnaryExpression(exp2);
+		visitUnaryExpression(exp3);		
+	}		
+	public void doNothing() {
+		// No hacer nada
 	}
 }

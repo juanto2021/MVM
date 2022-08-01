@@ -320,7 +320,7 @@ public abstract class KodkodModelValidator {
 	}
 	private void analysis_OCL(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
 		Collection<MClassInvariant> col = mModel.classInvariants();
-
+		mapCAI.clear();
 		int contador = 0;
 		int conLog=0;
 		List<String> logs = new ArrayList<String>();
