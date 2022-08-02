@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.tzi.use.uml.mm.MAssociation;
+import org.tzi.use.uml.mm.MAssociationEnd;
 import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
 import org.tzi.use.uml.mm.MClassInvariant;
@@ -64,10 +65,11 @@ import org.tzi.use.uml.ocl.expr.VarDeclList;
 
 public class MVMStatisticsVisitor implements ExpressionVisitor{
 
-	List<String> mLogs = new ArrayList<String>();
-	int mConLog=-1;
-	MClassInvariant mClassInv = null;
-	HashMap<MClass, List<KeyClassAttr>> mMapCAI = new HashMap<>();
+	public List<String> mLogs = new ArrayList<String>();
+	public int mConLog=-1;
+	public MClassInvariant mClassInv = null;
+	public HashMap<MClass, List<KeyClassAttr>> mMapCAI = new HashMap<>();
+	public HashMap<MClassInvariant, InfoInv> mMapInfoInv = new HashMap<>();
 
 	public MVMStatisticsVisitor() {
 		mLogs.add("Entro en visitor ");
@@ -87,6 +89,14 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	public HashMap<MClass, List<KeyClassAttr>> getMapCAI() {
 		return mMapCAI;
+	}
+
+	public void setMapInfoInv(HashMap<MClassInvariant, InfoInv> pMapInfoInv) {
+		mMapInfoInv=pMapInfoInv;
+	}
+
+	public HashMap<MClassInvariant, InfoInv> getMapInfoInv() {
+		return mMapInfoInv;
 	}
 
 	public void setLogs(List<String> pLogs) {
@@ -109,6 +119,29 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		mConLog+=1;
 		mLogs.add(mConLog +" - " + log);
 	}
+	public void storeInfoInvAttr(MClassInvariant inv, MAttribute attr) {
+		// busca inv en map
+		// si la encuentra actualiza lista
+		List<MAttribute> lAttr = new ArrayList<MAttribute>();
+		if (mMapInfoInv.containsKey(inv)) {
+			InfoInv oInfoInv = mMapInfoInv.get(inv);
+//			List<MAttribute> lAttr = new ArrayList<MAttribute>();
+			if (!lAttr.contains(attr)) {
+				lAttr.add(attr);
+			}
+			oInfoInv.setlAttr(lAttr);
+			mMapInfoInv.replace(inv, oInfoInv);
+		}else {
+			InfoInv oInfoInv = new InfoInv();
+			lAttr.add(attr);
+			oInfoInv.setlAttr(lAttr);
+			mMapInfoInv.put(inv, oInfoInv);
+		}
+		
+		// Si no la encuentra, incluye clave en MAP
+
+	}
+
 	public void storeCAI(MClass pClass, MAttribute pAttr, MClassInvariant pInv) {
 		// Busca clase en mMapCAI
 		boolean existClass=false;
@@ -191,6 +224,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		visitor.setConLog(mConLog);
 		visitor.setMapCAI(mMapCAI);
 		visitor.setClassInv(mClassInv);
+		visitor.setMapInfoInv(mMapInfoInv);
 		return visitor;
 	}
 
@@ -199,6 +233,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		mConLog=visitor.getConLog();
 		mMapCAI=visitor.getMapCAI();
 		mClassInv=visitor.getClassInv();
+		mMapInfoInv=visitor.getMapInfoInv();
 		return visitor;
 	}	
 
@@ -228,6 +263,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		MClass classAttr = attr.owner();
 		System.out.println("******* Guardar clase ["+classAttr.name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
 		storeCAI(classAttr, attr,  mClassInv);		
+		storeInfoInvAttr(mClassInv,  attr);
 	}
 
 	@Override
@@ -359,8 +395,11 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public void visitNavigation(ExpNavigation exp) {
 
 		System.out.println("Es una visitNavigation [" + exp + "]");
+
 		MNavigableElement nav = exp.getDestination();
+
 		MAssociation assoc = nav.association();
+		List<MAssociationEnd> lMAssocEnd = assoc.associationEnds();
 		MClass navClass = nav.cls();
 		Expression navExp = nav.getDeriveExpression();
 

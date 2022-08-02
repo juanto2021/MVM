@@ -15,9 +15,6 @@ public class KeyClassAttr {
 		this.mClass = pClase;
 		this.lAttr = pLattrInv;
 	}
-//	public void setClass(MClass pClass) {
-//		mClass=pClass;
-//	}
 	public MClass getClassAttr() {
 		return mClass;
 	}

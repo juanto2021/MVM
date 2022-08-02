@@ -15,6 +15,7 @@ import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.mvm.InfoInv;
 import org.tzi.mvm.KeyAttrInv;
 import org.tzi.mvm.KeyClassAttr;
 import org.tzi.mvm.MVMStatisticsVisitor;
@@ -52,6 +53,7 @@ public abstract class KodkodModelValidator {
 
 	//	public static HashMap<KeyClassAttr, Collection<MClassInvariant>> mapResVis = new HashMap<>();
 	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	
+	public static HashMap<MClassInvariant, InfoInv> mapInfoInv = new HashMap<>();	
 
 	public static List<ResComb> listCmbRes = new ArrayList<ResComb>();
 	public static List<ResInv> listInvRes = new ArrayList<ResInv>();
@@ -321,6 +323,7 @@ public abstract class KodkodModelValidator {
 	private void analysis_OCL(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
 		Collection<MClassInvariant> col = mModel.classInvariants();
 		mapCAI.clear();
+		mapInfoInv.clear();
 		int contador = 0;
 		int conLog=0;
 		List<String> logs = new ArrayList<String>();
@@ -332,11 +335,14 @@ public abstract class KodkodModelValidator {
 			visitor.setLogs(logs);
 			visitor.setConLog(conLog);
 			visitor.setMapCAI(mapCAI);
+			// mapInfoInv
+			visitor.setMapInfoInv(mapInfoInv);
 			visitor.setClassInv(inv);
 			exp.processWithVisitor(visitor);
 			logs = visitor.getLogs();
 			conLog=visitor.getConLog();
 			mapCAI = visitor.getMapCAI();
+			mapInfoInv=visitor.getMapInfoInv();
 			contador+=1;
 
 			System.out.println("contador [" + contador + "]");
