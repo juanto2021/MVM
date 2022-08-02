@@ -54,6 +54,9 @@ public abstract class KodkodModelValidator {
 	//	public static HashMap<KeyClassAttr, Collection<MClassInvariant>> mapResVis = new HashMap<>();
 	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	
 	public static HashMap<MClassInvariant, InfoInv> mapInfoInv = new HashMap<>();	
+	
+	// guardar en Visitor *********************************
+	public static HashMap<MAttribute, List<MClassInvariant>> mapInfoAttr = new HashMap<>();	
 
 	public static List<ResComb> listCmbRes = new ArrayList<ResComb>();
 	public static List<ResInv> listInvRes = new ArrayList<ResInv>();
