@@ -71,6 +71,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public HashMap<MClass, List<KeyClassAttr>> mMapCAI = new HashMap<>();
 	public HashMap<MClassInvariant, InfoInv> mMapInfoInv = new HashMap<>();
 	public HashMap<MAttribute, InfoAttr> mMapInfoAttr = new HashMap<>();	
+	public HashMap<MAssociation, InfoAssoc> mMapInfoAssoc = new HashMap<>();
 
 	public MVMStatisticsVisitor() {
 		mLogs.add("Entro en visitor ");
@@ -108,6 +109,14 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		return mMapInfoAttr;
 	}
 
+	public void setMapInfoAssoc(HashMap<MAssociation, InfoAssoc> pMapInfoAssoc) {
+		mMapInfoAssoc=pMapInfoAssoc;
+	}
+
+	public HashMap<MAssociation, InfoAssoc> getMapInfoAssoc() {
+		return mMapInfoAssoc;
+	}
+
 	public void setLogs(List<String> pLogs) {
 		mLogs=pLogs;	
 	}
@@ -134,20 +143,40 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		List<MAttribute> lAttr = new ArrayList<MAttribute>();
 		if (mMapInfoInv.containsKey(inv)) {
 			InfoInv oInfoInv = mMapInfoInv.get(inv);
-			//			List<MAttribute> lAttr = new ArrayList<MAttribute>();
+			lAttr = oInfoInv.getlAttr();
 			if (!lAttr.contains(attr)) {
 				lAttr.add(attr);
 			}
 			oInfoInv.setlAttr(lAttr);
 			mMapInfoInv.replace(inv, oInfoInv);
 		}else {
+			// Si no la encuentra, incluye clave en MAP
 			InfoInv oInfoInv = new InfoInv();
 			lAttr.add(attr);
 			oInfoInv.setlAttr(lAttr);
 			mMapInfoInv.put(inv, oInfoInv);
 		}
 
-		// Si no la encuentra, incluye clave en MAP
+	}
+	public void storeInfoInvAssoc(MClassInvariant inv, MAssociation assoc) {
+		// busca inv en map
+		// si la encuentra actualiza lista
+		List<MAssociation> lAssoc = new ArrayList<MAssociation>();
+		if (mMapInfoInv.containsKey(inv)) {
+			InfoInv oInfoInv = mMapInfoInv.get(inv);
+			lAssoc = oInfoInv.getlAssoc();
+			if (!lAssoc.contains(assoc)) {
+				lAssoc.add(assoc);
+			}
+			oInfoInv.setlAssoc(lAssoc);
+			mMapInfoInv.replace(inv, oInfoInv);
+		}else {
+			// Si no la encuentra, incluye clave en MAP
+			InfoInv oInfoInv = new InfoInv();
+			lAssoc.add(assoc);
+			oInfoInv.setlAssoc(lAssoc);
+			mMapInfoInv.put(inv, oInfoInv);
+		}
 
 	}
 	public void storeInfoAttrInv(MAttribute attr, MClassInvariant inv) {
@@ -169,6 +198,25 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 			mMapInfoAttr.put(attr, oInfoAttr);
 		}
 	}
+	public void storeInfoAssocInv(MAssociation assoc, MClassInvariant inv) {
+		// busca attr en mapInfoAttr
+		// si lo encuentra actualiza lista
+		List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
+		if (mMapInfoAssoc.containsKey(assoc)) {
+			InfoAssoc oInfoAssoc = mMapInfoAssoc.get(assoc);
+			lInv = oInfoAssoc.getlInv();
+			if (!lInv.contains(inv)) {
+				lInv.add(inv);
+			}
+			mMapInfoAssoc.replace(assoc, oInfoAssoc);
+		}else
+		{
+			// Si no lo encuentra lo inserta en map
+			lInv.add(inv);
+			InfoAssoc oInfoAssoc = new InfoAssoc(lInv);
+			mMapInfoAssoc.put(assoc, oInfoAssoc);
+		}
+	}	
 
 	public void storeCAI(MClass pClass, MAttribute pAttr, MClassInvariant pInv) {
 		// Busca clase en mMapCAI
@@ -254,6 +302,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		visitor.setClassInv(mClassInv);
 		visitor.setMapInfoInv(mMapInfoInv);
 		visitor.setMapInfoAttr(mMapInfoAttr);
+		visitor.setMapInfoAssoc(mMapInfoAssoc);
 		return visitor;
 	}
 
@@ -264,7 +313,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		mClassInv=visitor.getClassInv();
 		mMapInfoInv=visitor.getMapInfoInv();
 		mMapInfoAttr=visitor.getMapInfoAttr();
-
+		mMapInfoAssoc=visitor.getMapInfoAssoc();
 		return visitor;
 	}	
 
@@ -371,7 +420,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		}
 		visitBinaryExpression (query, range);	
 	}
-	//aqui3
+
 	@Override
 	public void visitIf(ExpIf exp) {
 		System.out.println("visitIf");
@@ -393,7 +442,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		// TODO Auto-generated method stub
 
 	}
-	//aqui4
+
 	@Override
 	public void visitIsUnique(ExpIsUnique exp) {
 		System.out.println("visitIsUnique");
@@ -423,6 +472,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		visitBinaryExpression (pInt, pVar);		
 	}
 
+	//Aqui
 	@Override
 	public void visitNavigation(ExpNavigation exp) {
 
@@ -437,10 +487,10 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 		Expression objExp = exp.getObjectExpression();
 
-		MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-		visitor = preVisitor( visitor);
-		objExp.processWithVisitor(visitor);
-		visitor = postVisitor(visitor);
+		visitUnaryExpression(objExp);	
+		
+		storeInfoAssocInv( assoc,  mClassInv);
+		storeInfoInvAssoc(mClassInv,  assoc);
 	}
 
 	@Override

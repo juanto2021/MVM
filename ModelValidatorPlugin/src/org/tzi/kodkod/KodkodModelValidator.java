@@ -15,6 +15,7 @@ import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.mvm.InfoAssoc;
 import org.tzi.mvm.InfoAttr;
 import org.tzi.mvm.InfoInv;
 import org.tzi.mvm.KeyAttrInv;
@@ -23,6 +24,7 @@ import org.tzi.mvm.MVMStatisticsVisitor;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.main.Session;
+import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
 import org.tzi.use.uml.mm.MClassInvariant;
@@ -55,10 +57,8 @@ public abstract class KodkodModelValidator {
 	//	public static HashMap<KeyClassAttr, Collection<MClassInvariant>> mapResVis = new HashMap<>();
 	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	
 	public static HashMap<MClassInvariant, InfoInv> mapInfoInv = new HashMap<>();	
-	
-	
-	// guardar en Visitor *********************************
 	public static HashMap<MAttribute, InfoAttr> mapInfoAttr = new HashMap<>();	
+	public static HashMap<MAssociation, InfoAssoc> mapInfoAssoc = new HashMap<>();
 
 	public static List<ResComb> listCmbRes = new ArrayList<ResComb>();
 	public static List<ResInv> listInvRes = new ArrayList<ResInv>();
@@ -334,7 +334,7 @@ public abstract class KodkodModelValidator {
 		List<String> logs = new ArrayList<String>();
 
 		for(MClassInvariant inv: col) {
-			
+
 			Expression exp = inv.bodyExpression();
 			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
 			visitor.setLogs(logs);
@@ -343,6 +343,7 @@ public abstract class KodkodModelValidator {
 			// mapInfoInv
 			visitor.setMapInfoInv(mapInfoInv);
 			visitor.setMapInfoAttr(mapInfoAttr);
+			visitor.setMapInfoAssoc(mapInfoAssoc);
 			visitor.setClassInv(inv);
 			exp.processWithVisitor(visitor);
 			logs = visitor.getLogs();
@@ -350,6 +351,7 @@ public abstract class KodkodModelValidator {
 			mapCAI = visitor.getMapCAI();
 			mapInfoInv=visitor.getMapInfoInv();
 			mapInfoAttr=visitor.getMapInfoAttr();
+			mapInfoAssoc=visitor.getMapInfoAssoc();
 			contador+=1;
 
 			System.out.println("contador [" + contador + "]");
@@ -357,37 +359,55 @@ public abstract class KodkodModelValidator {
 		for(String log: logs) {
 			System.out.println("log [" + log + "]");
 		}
-		//Aqui3
-		for (Map.Entry<MClass, List<KeyClassAttr>> entry : mapCAI.entrySet()) {
-			MClass mClass = entry.getKey();
-			System.out.println("mClass [" + mClass.name() + "]");
-			List<KeyClassAttr> lKCAs = new ArrayList<KeyClassAttr>();
-			lKCAs = mapCAI.get(mClass);
-			for (KeyClassAttr kCA : lKCAs) {
-				System.out.println("  kCA [" + kCA.getClassAttr().name() + "]");
-				List<KeyAttrInv> lKAIs = new ArrayList<KeyAttrInv>();
-				lKAIs = kCA.getlAttr();
-				for (KeyAttrInv kAI : lKAIs) {
-					System.out.println("    kAI [" + kAI.getAttr().name() + "]");
-					List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
-					lInvAttr=kAI.getlInv();
-					for (MClassInvariant inv : lInvAttr) {
-						System.out.println("      inv [" + inv.name() + "]");
+		// Classes, Attributes & Invariants
+		if (false) {
+			for (Map.Entry<MClass, List<KeyClassAttr>> entry : mapCAI.entrySet()) {
+				MClass mClass = entry.getKey();
+				System.out.println("mClass [" + mClass.name() + "]");
+				List<KeyClassAttr> lKCAs = new ArrayList<KeyClassAttr>();
+				lKCAs = mapCAI.get(mClass);
+				for (KeyClassAttr kCA : lKCAs) {
+					System.out.println("  kCA [" + kCA.getClassAttr().name() + "]");
+					List<KeyAttrInv> lKAIs = new ArrayList<KeyAttrInv>();
+					lKAIs = kCA.getlAttr();
+					for (KeyAttrInv kAI : lKAIs) {
+						System.out.println("    kAI [" + kAI.getAttr().name() + "]");
+						List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
+						lInvAttr=kAI.getlInv();
+						for (MClassInvariant inv : lInvAttr) {
+							System.out.println("      inv [" + inv.name() + "]");
+						}
 					}
 				}
 			}
 		}
+		// Attributes & Assoc of Invariants
 		System.out.println();
 		for (Map.Entry<MClassInvariant, InfoInv> entry : mapInfoInv.entrySet()) {
 			MClassInvariant inv = entry.getKey();
+			// Attributes & Assoc of Invariants
 			System.out.println("inv [" + inv.name() + "]");
 			List<MAttribute> lAttr = new ArrayList<MAttribute>();
 			InfoInv oInfoInv = mapInfoInv.get(inv);
+			// Attributes
 			lAttr = oInfoInv.getlAttr();
-			for (MAttribute attr : lAttr) {
-				System.out.println("     attr [" + attr.name() + "]");
+			if (lAttr.size()>0) {
+				for (MAttribute attr : lAttr) {
+					System.out.println("     attr [" + attr.name() + "]");
+				}				
 			}
+			// Assoc
+			List<MAssociation> lAssoc = new ArrayList<MAssociation>();
+			lAssoc = oInfoInv.getlAssoc();
+			if (lAssoc.size()>0) {
+				for (MAssociation assoc : lAssoc) {
+					System.out.println("     assoc [" + assoc.name() + "]");
+				}				
+			}			
+
+
 		}
+		// Invariants of Attributes
 		System.out.println();
 		for (Map.Entry<MAttribute, InfoAttr> entry : mapInfoAttr.entrySet()) {
 			MAttribute attr = entry.getKey();
@@ -399,7 +419,19 @@ public abstract class KodkodModelValidator {
 				System.out.println("     inv [" + inv.name() + "]");
 			}
 		}		
-		
+		// Invariants of Assoc
+		System.out.println();
+		for (Map.Entry<MAssociation, InfoAssoc> entry : mapInfoAssoc.entrySet()) {
+			MAssociation assoc = entry.getKey();
+			System.out.println("assoc [" + assoc.name() + "]");
+			List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
+			InfoAssoc oInfoAssoc = mapInfoAssoc.get(assoc);
+			lInv = oInfoAssoc.getlInv();
+			for (MClassInvariant inv : lInv) {
+				System.out.println("     inv [" + inv.name() + "]");
+			}
+		}			
+
 	}
 
 	private void busca_grupos_SAT_MAX() {
