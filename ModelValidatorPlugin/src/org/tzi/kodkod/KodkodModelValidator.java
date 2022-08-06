@@ -15,6 +15,7 @@ import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.mvm.InfoAttr;
 import org.tzi.mvm.InfoInv;
 import org.tzi.mvm.KeyAttrInv;
 import org.tzi.mvm.KeyClassAttr;
@@ -55,8 +56,9 @@ public abstract class KodkodModelValidator {
 	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	
 	public static HashMap<MClassInvariant, InfoInv> mapInfoInv = new HashMap<>();	
 	
+	
 	// guardar en Visitor *********************************
-	public static HashMap<MAttribute, List<MClassInvariant>> mapInfoAttr = new HashMap<>();	
+	public static HashMap<MAttribute, InfoAttr> mapInfoAttr = new HashMap<>();	
 
 	public static List<ResComb> listCmbRes = new ArrayList<ResComb>();
 	public static List<ResInv> listInvRes = new ArrayList<ResInv>();
@@ -340,12 +342,14 @@ public abstract class KodkodModelValidator {
 			visitor.setMapCAI(mapCAI);
 			// mapInfoInv
 			visitor.setMapInfoInv(mapInfoInv);
+			visitor.setMapInfoAttr(mapInfoAttr);
 			visitor.setClassInv(inv);
 			exp.processWithVisitor(visitor);
 			logs = visitor.getLogs();
 			conLog=visitor.getConLog();
 			mapCAI = visitor.getMapCAI();
 			mapInfoInv=visitor.getMapInfoInv();
+			mapInfoAttr=visitor.getMapInfoAttr();
 			contador+=1;
 
 			System.out.println("contador [" + contador + "]");
@@ -373,6 +377,29 @@ public abstract class KodkodModelValidator {
 				}
 			}
 		}
+		System.out.println();
+		for (Map.Entry<MClassInvariant, InfoInv> entry : mapInfoInv.entrySet()) {
+			MClassInvariant inv = entry.getKey();
+			System.out.println("inv [" + inv.name() + "]");
+			List<MAttribute> lAttr = new ArrayList<MAttribute>();
+			InfoInv oInfoInv = mapInfoInv.get(inv);
+			lAttr = oInfoInv.getlAttr();
+			for (MAttribute attr : lAttr) {
+				System.out.println("     attr [" + attr.name() + "]");
+			}
+		}
+		System.out.println();
+		for (Map.Entry<MAttribute, InfoAttr> entry : mapInfoAttr.entrySet()) {
+			MAttribute attr = entry.getKey();
+			System.out.println("attr [" + attr.name() + "]");
+			List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
+			InfoAttr InfoAttr = mapInfoAttr.get(attr);
+			lInv = InfoAttr.getlInv();
+			for (MClassInvariant inv : lInv) {
+				System.out.println("     inv [" + inv.name() + "]");
+			}
+		}		
+		
 	}
 
 	private void busca_grupos_SAT_MAX() {

@@ -70,6 +70,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public MClassInvariant mClassInv = null;
 	public HashMap<MClass, List<KeyClassAttr>> mMapCAI = new HashMap<>();
 	public HashMap<MClassInvariant, InfoInv> mMapInfoInv = new HashMap<>();
+	public HashMap<MAttribute, InfoAttr> mMapInfoAttr = new HashMap<>();	
 
 	public MVMStatisticsVisitor() {
 		mLogs.add("Entro en visitor ");
@@ -99,6 +100,14 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		return mMapInfoInv;
 	}
 
+	public void setMapInfoAttr(HashMap<MAttribute, InfoAttr> pMapInfoAttr) {
+		mMapInfoAttr=pMapInfoAttr;
+	}
+
+	public HashMap<MAttribute, InfoAttr> getMapInfoAttr() {
+		return mMapInfoAttr;
+	}
+
 	public void setLogs(List<String> pLogs) {
 		mLogs=pLogs;	
 	}
@@ -125,7 +134,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		List<MAttribute> lAttr = new ArrayList<MAttribute>();
 		if (mMapInfoInv.containsKey(inv)) {
 			InfoInv oInfoInv = mMapInfoInv.get(inv);
-//			List<MAttribute> lAttr = new ArrayList<MAttribute>();
+			//			List<MAttribute> lAttr = new ArrayList<MAttribute>();
 			if (!lAttr.contains(attr)) {
 				lAttr.add(attr);
 			}
@@ -137,9 +146,28 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 			oInfoInv.setlAttr(lAttr);
 			mMapInfoInv.put(inv, oInfoInv);
 		}
-		
+
 		// Si no la encuentra, incluye clave en MAP
 
+	}
+	public void storeInfoAttrInv(MAttribute attr, MClassInvariant inv) {
+		// busca attr en mapInfoAttr
+		// si lo encuentra actualiza lista
+		List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
+		if (mMapInfoAttr.containsKey(attr)) {
+			InfoAttr oInfoAttr = mMapInfoAttr.get(attr);
+			lInv = oInfoAttr.getlInv();
+			if (!lInv.contains(inv)) {
+				lInv.add(inv);
+			}
+			mMapInfoAttr.replace(attr, oInfoAttr);
+		}else
+		{
+			// Si no lo encuentra lo inserta en map
+			lInv.add(inv);
+			InfoAttr oInfoAttr = new InfoAttr(lInv);
+			mMapInfoAttr.put(attr, oInfoAttr);
+		}
 	}
 
 	public void storeCAI(MClass pClass, MAttribute pAttr, MClassInvariant pInv) {
@@ -225,6 +253,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		visitor.setMapCAI(mMapCAI);
 		visitor.setClassInv(mClassInv);
 		visitor.setMapInfoInv(mMapInfoInv);
+		visitor.setMapInfoAttr(mMapInfoAttr);
 		return visitor;
 	}
 
@@ -234,6 +263,8 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		mMapCAI=visitor.getMapCAI();
 		mClassInv=visitor.getClassInv();
 		mMapInfoInv=visitor.getMapInfoInv();
+		mMapInfoAttr=visitor.getMapInfoAttr();
+
 		return visitor;
 	}	
 
@@ -264,6 +295,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		System.out.println("******* Guardar clase ["+classAttr.name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
 		storeCAI(classAttr, attr,  mClassInv);		
 		storeInfoInvAttr(mClassInv,  attr);
+		storeInfoAttrInv(attr,  mClassInv);
 	}
 
 	@Override
