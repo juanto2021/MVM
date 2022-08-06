@@ -137,10 +137,14 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		mConLog+=1;
 		mLogs.add(mConLog +" - " + log);
 	}
+	/**
+	 * Store list of attributes treated by every invariant
+	 * @param inv
+	 * @param attr
+	 */
 	public void storeInfoInvAttr(MClassInvariant inv, MAttribute attr) {
-		// busca inv en map
-		// si la encuentra actualiza lista
 		List<MAttribute> lAttr = new ArrayList<MAttribute>();
+		// If inv exist, include attribute on list
 		if (mMapInfoInv.containsKey(inv)) {
 			InfoInv oInfoInv = mMapInfoInv.get(inv);
 			lAttr = oInfoInv.getlAttr();
@@ -150,7 +154,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 			oInfoInv.setlAttr(lAttr);
 			mMapInfoInv.replace(inv, oInfoInv);
 		}else {
-			// Si no la encuentra, incluye clave en MAP
+			// If invariant does not exist, include invariant and attribute
 			InfoInv oInfoInv = new InfoInv();
 			lAttr.add(attr);
 			oInfoInv.setlAttr(lAttr);
@@ -158,10 +162,15 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		}
 
 	}
+	/**
+	 * Store list of associations treated by every invariant
+	 * @param inv
+	 * @param assoc
+	 */
+	
 	public void storeInfoInvAssoc(MClassInvariant inv, MAssociation assoc) {
-		// busca inv en map
-		// si la encuentra actualiza lista
 		List<MAssociation> lAssoc = new ArrayList<MAssociation>();
+		// If inv exist, include association on list
 		if (mMapInfoInv.containsKey(inv)) {
 			InfoInv oInfoInv = mMapInfoInv.get(inv);
 			lAssoc = oInfoInv.getlAssoc();
@@ -171,7 +180,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 			oInfoInv.setlAssoc(lAssoc);
 			mMapInfoInv.replace(inv, oInfoInv);
 		}else {
-			// Si no la encuentra, incluye clave en MAP
+			// If invariant does not exist, include invariant and association
 			InfoInv oInfoInv = new InfoInv();
 			lAssoc.add(assoc);
 			oInfoInv.setlAssoc(lAssoc);
@@ -180,9 +189,8 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	}
 	public void storeInfoAttrInv(MAttribute attr, MClassInvariant inv) {
-		// busca attr en mapInfoAttr
-		// si lo encuentra actualiza lista
 		List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
+		
 		if (mMapInfoAttr.containsKey(attr)) {
 			InfoAttr oInfoAttr = mMapInfoAttr.get(attr);
 			lInv = oInfoAttr.getlInv();
@@ -692,7 +700,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		MClass navClass = nav.cls();
 		// ojo porque con navexp entramos en un bucle infinito al llamar a visitor
 		Expression navExp = nav.getDeriveExpression();
-		
+
 		Expression objExp = exp.getObjectExpression();
 
 		visitUnaryExpression(objExp);
