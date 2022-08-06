@@ -73,7 +73,7 @@ public abstract class KodkodModelValidator {
 	private boolean debMVM=false;
 
 	public static boolean showResultMix  = true;
-	
+
 	/**
 	 * Show the result of NOT repeated combinations
 	 */
@@ -248,7 +248,7 @@ public abstract class KodkodModelValidator {
 			analysis_OCL(model, mModel,invClassSatisfiables);		
 
 			// Metodo antiguo (Leuven)
-			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start) ;
+//			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -343,7 +343,7 @@ public abstract class KodkodModelValidator {
 				}
 			}
 		}
-		
+
 		// Here We have a collection of MClassInvariant all them satisfiables
 
 		mapCAI.clear();
@@ -366,7 +366,7 @@ public abstract class KodkodModelValidator {
 			visitor.setMapInfoAttr(mapInfoAttr);
 			visitor.setMapInfoAssoc(mapInfoAssoc);
 			visitor.setClassInv(inv);
-			
+
 			exp.processWithVisitor(visitor);
 
 			// Collect results
@@ -376,7 +376,7 @@ public abstract class KodkodModelValidator {
 			mapInfoInv=visitor.getMapInfoInv();
 			mapInfoAttr=visitor.getMapInfoAttr();
 			mapInfoAssoc=visitor.getMapInfoAssoc();
-			
+
 			contador+=1;
 
 			System.out.println("contador [" + contador + "]");
@@ -384,30 +384,83 @@ public abstract class KodkodModelValidator {
 		for(String log: logs) {
 			System.out.println("log [" + log + "]");
 		}
-//		// Classes, Attributes & Invariants
-//		if (false) {
-//			for (Map.Entry<MClass, List<KeyClassAttr>> entry : mapCAI.entrySet()) {
-//				MClass mClass = entry.getKey();
-//				System.out.println("mClass [" + mClass.name() + "]");
-//				List<KeyClassAttr> lKCAs = new ArrayList<KeyClassAttr>();
-//				lKCAs = mapCAI.get(mClass);
-//				for (KeyClassAttr kCA : lKCAs) {
-//					System.out.println("  kCA [" + kCA.getClassAttr().name() + "]");
-//					List<KeyAttrInv> lKAIs = new ArrayList<KeyAttrInv>();
-//					lKAIs = kCA.getlAttr();
-//					for (KeyAttrInv kAI : lKAIs) {
-//						System.out.println("    kAI [" + kAI.getAttr().name() + "]");
-//						List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
-//						lInvAttr=kAI.getlInv();
-//						for (MClassInvariant inv : lInvAttr) {
-//							System.out.println("      inv [" + inv.name() + "]");
-//						}
-//					}
-//				}
-//			}
-//		}
+		 
+		// Print results
+		printCAI(); // Classes, Attributes & Invariants
+		printMapInfoInv(); // Attributes & Assoc of Invariants 
+		printMapInfoAttr(); // Invariants of Attributes
+		printMapInfoAssoc(); // Invariants of Assoc
+
+		// Calculate the combination obtained in alg1
+		samples = new HashMap<>();
+		List<String> listSorted = new ArrayList<String>();
+		// ic es la lista de combinaciones que no tienen nada en comun
+		List<MClassInvariant> ic = alg1(col);		
+		System.out.println("Invariants collection (ic): " + ic.size());
+		String strCmb="";
+		for (MClassInvariant inv:ic) {
+			int nCmb=1;
+			for (IInvariant iin:invClassTotal) {
+				if (iin.name().equals(inv.name())) {
+					String strNameInv = iin.clazz().name()+"::"+iin.name();
+					// Searching number of invariant depends on invClassTotal 
+					if (mapInvRes.containsKey(strNameInv)) {
+						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
+						nCmb=invRes.intOrden;
+						System.out.println("  Trato inv [" + nCmb+ "] [" + strNameInv +"]");
+					}
+					samples.put(nCmb, iin);								
+					if (!strCmb.equals("")) {
+						strCmb=strCmb+"-";
+					}
+					strCmb=strCmb+nCmb;
+				}
+				nCmb+=1;
+			}
+		}
+
+		listSorted.add(strCmb);
+		LOG.info("MVM: Envio a sendToValidate.");
+		// Send to Validate (sendToValidate)
+		sendToValidate(listSorted , invClassTotal); 
+		samples.clear();
+	}
+
+	private void printCAI() {
+		System.out.println();
+		System.out.println("============================================");
+		System.out.println("Class, Attributes and Invariants");
+		System.out.println("============================================");
+		// Classes, Attributes & Invariants
+		for (Map.Entry<MClass, List<KeyClassAttr>> entry : mapCAI.entrySet()) {
+			MClass mClass = entry.getKey();
+			System.out.println("mClass [" + mClass.name() + "]");
+			List<KeyClassAttr> lKCAs = new ArrayList<KeyClassAttr>();
+			lKCAs = mapCAI.get(mClass);
+			for (KeyClassAttr kCA : lKCAs) {
+				System.out.println("  kCA [" + kCA.getClassAttr().name() + "]");
+				List<KeyAttrInv> lKAIs = new ArrayList<KeyAttrInv>();
+				lKAIs = kCA.getlAttr();
+				for (KeyAttrInv kAI : lKAIs) {
+					System.out.println("    kAI [" + kAI.getAttr().name() + "]");
+					List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
+					lInvAttr=kAI.getlInv();
+					for (MClassInvariant inv : lInvAttr) {
+						System.out.println("      inv [" + inv.name() + "]");
+					}
+				}
+				System.out.println();
+			}
+		}
+		System.out.println("============================================");
+	}
+
+	private void printMapInfoInv() {
 		// Attributes & Assoc of Invariants
 		System.out.println();
+		System.out.println("============================================");
+		System.out.println("Attributes & Assoc of Invariants");
+		System.out.println("============================================");
 		for (Map.Entry<MClassInvariant, InfoInv> entry : mapInfoInv.entrySet()) {
 			MClassInvariant inv = entry.getKey();
 			// Attributes & Assoc of Invariants
@@ -428,12 +481,18 @@ public abstract class KodkodModelValidator {
 				for (MAssociation assoc : lAssoc) {
 					System.out.println("     assoc [" + assoc.name() + "]");
 				}				
-			}			
-
-
+			}	
+			System.out.println();
 		}
-		// Invariants of Attributes
+		System.out.println("============================================");
+	}
+	
+	// Invariants of Attr
+	private void printMapInfoAttr(){
 		System.out.println();
+		System.out.println("============================================");
+		System.out.println("Invariants of Attr");
+		System.out.println("============================================");	
 		for (Map.Entry<MAttribute, InfoAttr> entry : mapInfoAttr.entrySet()) {
 			MAttribute attr = entry.getKey();
 			System.out.println("attr [" + attr.name() + "]");
@@ -443,9 +502,17 @@ public abstract class KodkodModelValidator {
 			for (MClassInvariant inv : lInv) {
 				System.out.println("     inv [" + inv.name() + "]");
 			}
+			System.out.println();
 		}		
-		// Invariants of Assoc
+		System.out.println("============================================");
+	}
+	
+	// Invariants of Assoc
+	private void printMapInfoAssoc() {
 		System.out.println();
+		System.out.println("============================================");
+		System.out.println("Invariants of Assoc");
+		System.out.println("============================================");		
 		for (Map.Entry<MAssociation, InfoAssoc> entry : mapInfoAssoc.entrySet()) {
 			MAssociation assoc = entry.getKey();
 			System.out.println("assoc [" + assoc.name() + "]");
@@ -453,46 +520,13 @@ public abstract class KodkodModelValidator {
 			InfoAssoc oInfoAssoc = mapInfoAssoc.get(assoc);
 			lInv = oInfoAssoc.getlInv();
 			for (MClassInvariant inv : lInv) {
-				System.out.println("     inv [" + inv.name() + "]");
+				System.out.println("      inv [" + inv.name() + "]");
 			}
-		}		
-
-
-		samples = new HashMap<>();
-
-		List<String> listSorted = new ArrayList<String>();
-		// ic es la lista de combinaciones que no tienen nada en comun
-		List<MClassInvariant> ic = alg1(col);		
-		System.out.println("ic " + ic.size());
-		System.out.println("No deben tener nada en comun");
-		String strCmb="";
-		for (MClassInvariant inv:ic) {
-			int nCmb=1;
-			for (IInvariant iin:invClassTotal) {
-				if (iin.name().equals(inv.name())) {
-					String strNameInv = iin.clazz().name()+"::"+iin.name();
-					// Searchinv number of invariant depends on invClassTotal 
-					if (mapInvRes.containsKey(strNameInv)) {
-						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
-						nCmb=invRes.intOrden;
-					}
-					samples.put(nCmb, iin);								
-					if (!strCmb.equals("")) {
-						strCmb=strCmb+"-";
-					}
-					strCmb=strCmb+nCmb;
-				}
-				nCmb+=1;
-			}
-		}
-
-		listSorted.add(strCmb);
-		LOG.info("MVM: Envio a sendToValidate.");
-		// Send to Validate (sendToValidate)
-		sendToValidate(listSorted , invClassTotal); 
-		samples.clear();
+			System.out.println();
+		}	
+		System.out.println("============================================");
 	}
-
+	
 	/**
 	 * Algorithm 1 propose by Robert Clariso
 	 * @param col
@@ -505,7 +539,7 @@ public abstract class KodkodModelValidator {
 		//      el conjunto de invariantes posibles es { I -> col}. Invariants possibles
 
 		List<MClassInvariant> ic = new ArrayList<MClassInvariant>();  // Invariants collection
-		List<MClassInvariant> ip = new ArrayList<MClassInvariant>();	// Invariants possibles
+		List<MClassInvariant> ip = new ArrayList<MClassInvariant>();  // Invariants possibles
 		//		ip = col.; // Al principio, ip contiene todas las invariantes a tratar
 		ip.addAll(col);
 
@@ -534,7 +568,7 @@ public abstract class KodkodModelValidator {
 						lInv = oInfoAttr.getlInv();
 						for (MClassInvariant inv: lInv) {
 							if (!inv.name().equals(X.name())) {
-								System.out.println("Inv "+inv.name());
+//								System.out.println("Inv "+inv.name());
 								// 5.	Eliminamos de {I} los invariantes de {Y}.
 								// Eliminar de ip el inv hallado 
 								if (ip.contains(inv)) {
