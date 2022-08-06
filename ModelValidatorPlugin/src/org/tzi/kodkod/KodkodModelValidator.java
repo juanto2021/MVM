@@ -57,7 +57,6 @@ public abstract class KodkodModelValidator {
 	public static HashMap<String, String> mapGRP_SAT_MAX = new HashMap<>();
 	public static HashMap<String, ResInv> mapInvRes = new HashMap<>();
 
-	//	public static HashMap<KeyClassAttr, Collection<MClassInvariant>> mapResVis = new HashMap<>();
 	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	
 	public static HashMap<MClassInvariant, InfoInv> mapInfoInv = new HashMap<>();	
 	public static HashMap<MAttribute, InfoAttr> mapInfoAttr = new HashMap<>();	
@@ -74,6 +73,7 @@ public abstract class KodkodModelValidator {
 	private boolean debMVM=false;
 
 	public static boolean showResultMix  = true;
+	
 	/**
 	 * Show the result of NOT repeated combinations
 	 */
