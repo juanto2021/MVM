@@ -49,6 +49,8 @@ public abstract class KodkodModelValidator {
 	protected Solution solution;
 	protected Evaluator evaluator;
 
+	Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
+
 	public static HashMap<String, String> listCmb = new HashMap<>();
 	public static HashMap<String, String> listCmbSel = new HashMap<>();
 	public static HashMap<String, String> mapGRP_SAT_MAX = new HashMap<>();
@@ -165,6 +167,7 @@ public abstract class KodkodModelValidator {
 		listCmbRes.clear();
 		mapInvRes.clear();
 
+		invClassTotal.clear();
 		listSatisfiables.clear();
 		listUnSatisfiables.clear();
 		listUnSatisfiablesTotal.clear();
@@ -184,7 +187,7 @@ public abstract class KodkodModelValidator {
 		try {
 			LOG.info("MVM: (2) Llama a solver desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
 			LOG.info("MVM: (2) Analisis de invariantes de forma individual.");
-			Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
+			//			Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
 
 			for (IClass oClass: model.classes()) {
 				invClassTotal.addAll(oClass.invariants());
@@ -216,10 +219,6 @@ public abstract class KodkodModelValidator {
 				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
 					invRes = new ResInv(strNameInv, "SATISFIABLE", nOrdenInv,invClass);
-
-					//					int totalInv = invClassTotal.size();
-					//					String strNOrdenInv = String.format("%0"+String.valueOf(totalInv).length()+"d",nOrdenInv);
-					//					listSatisfiables.add(String.valueOf(strNOrdenInv));
 				}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
 					invRes = new ResInv(strNameInv, "UNSATISFIABLE", nOrdenInv,invClass);
@@ -244,91 +243,185 @@ public abstract class KodkodModelValidator {
 
 			// We look for variables of each OCL expression
 			LOG.info("MVM: Tratamiento OCL");
-			//analysis_OCL(model, mModel,invClassSatisfiables);
-			analysis_OCL(model, mModel,invClassSatisfiables);			
 
-			if (false) {
+			// Metodo nuevo
+			analysis_OCL(model, mModel,invClassSatisfiables);		
 
-				//Hacer combinaciones
-				LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
-				samples = new HashMap<>();
-				int i = 0;
-				for (IInvariant invClass: invClassSatisfiables) {
-					// Buscar la inv satis en listInvRes para obtener el orden
-					String strNameInv = invClass.clazz().name()+"::"+invClass.name();
-					if (mapInvRes.containsKey(strNameInv)) {
-						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
-						i=invRes.intOrden;
-					}
-					samples.put(i, invClass);
-					String cmb= String.valueOf(i);
-					listSatisfiables.add(cmb);
-					storeResultCmb(cmb, "SATISFIABLE", "Direct calculation");
-				}
+			// Metodo antiguo (Leuven)
+			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start) ;
 
-				mixInvariants(samples); 
-				if (debMVM) {
-					for (Object obj : listCmbSel.entrySet()) 
-					{
-						Entry<String, String> cmb= (Entry<String, String>) obj;
-						String comment="";
-						if (cmb.getValue().equals("N")) {
-							comment = "New";
-						}else {
-							comment = "Detect in " +cmb.getValue();
-						}
-
-						System.out.println(String.format("%20s",cmb.getKey()) + " - " + comment);			
-					}
-					System.out.println();
-				}
-				LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
-				// Ordenar lista antes de enviar a validar 
-				List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
-				List<String> listSortedByCmb = listSorted;
-				// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
-				listSortedByCmb = sortByCmbNumber(listSorted, invClassTotal.size());
-				LOG.info("MVM: Envio a sendToValidate.");
-				sendToValidate(listSortedByCmb , invClassTotal ); 
-
-				// Compactacion de resultados
-				// Si 1-2-3 es SAT y 1-2-4 tambien tenemos el grupo (1-2) que puede ser SAT con 3 o con 4
-				busca_grupos_SAT_MAX();
-
-				showResultGral();
-				Instant end = Instant.now();
-				Duration timeElapsed = Duration.between(start, end);
-				LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
-
-				//			ValidatorMVMDialog validatorMVMDialog= 
-				//					new ValidatorMVMDialog(MainWindow.instance(), 
-				ValidatorMVMDialogSimple validatorMVMDialog= 
-						new ValidatorMVMDialogSimple(MainWindow.instance(), 
-								this,
-								invClassSatisfiables, 
-								invClassUnSatisfiables, 
-								invClassOthers,
-								mapGRP_SAT_MAX,
-								listSatisfiables,
-								listUnSatisfiables,
-								listOthers,
-								mapInvRes,
-								mModel,
-								invClassTotal,
-								timeElapsed,
-								numCallSolver,
-								numCallSolverSAT,
-								numCallSolverUNSAT);
-			}// este sobra cuando se 'reviva el codigo'
+			//			if (false) {
+			//
+			//				//Hacer combinaciones
+			//				LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
+			//				samples = new HashMap<>();
+			//				int i = 0;
+			//				for (IInvariant invClass: invClassSatisfiables) {
+			//					// Buscar la inv satis en listInvRes para obtener el orden
+			//					String strNameInv = invClass.clazz().name()+"::"+invClass.name();
+			//					if (mapInvRes.containsKey(strNameInv)) {
+			//						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
+			//						i=invRes.intOrden;
+			//					}
+			//					samples.put(i, invClass);
+			//					String cmb= String.valueOf(i);
+			//					listSatisfiables.add(cmb);
+			//					storeResultCmb(cmb, "SATISFIABLE", "Direct calculation");
+			//				}
+			//
+			//				mixInvariants(samples); 
+			//				if (debMVM) {
+			//					for (Object obj : listCmbSel.entrySet()) 
+			//					{
+			//						Entry<String, String> cmb= (Entry<String, String>) obj;
+			//						String comment="";
+			//						if (cmb.getValue().equals("N")) {
+			//							comment = "New";
+			//						}else {
+			//							comment = "Detect in " +cmb.getValue();
+			//						}
+			//
+			//						System.out.println(String.format("%20s",cmb.getKey()) + " - " + comment);			
+			//					}
+			//					System.out.println();
+			//				}
+			//				LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
+			//				// Ordenar lista antes de enviar a validar 
+			//				List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
+			//				List<String> listSortedByCmb = listSorted;
+			//				// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
+			//				listSortedByCmb = sortByCmbNumber(listSorted, invClassTotal.size());
+			//				LOG.info("MVM: Envio a sendToValidate.");
+			//				sendToValidate(listSortedByCmb , invClassTotal); 
+			//
+			//				// Compactacion de resultados
+			//				// Si 1-2-3 es SAT y 1-2-4 tambien tenemos el grupo (1-2) que puede ser SAT con 3 o con 4
+			//				busca_grupos_SAT_MAX();
+			//
+			//				showResultGral();
+			//				Instant end = Instant.now();
+			//				Duration timeElapsed = Duration.between(start, end);
+			//				LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+			//
+			//				//			ValidatorMVMDialog validatorMVMDialog= 
+			//				//					new ValidatorMVMDialog(MainWindow.instance(), 
+			//				ValidatorMVMDialogSimple validatorMVMDialog= 
+			//						new ValidatorMVMDialogSimple(MainWindow.instance(), 
+			//								this,
+			//								invClassSatisfiables, 
+			//								invClassUnSatisfiables, 
+			//								invClassOthers,
+			//								mapGRP_SAT_MAX,
+			//								listSatisfiables,
+			//								listUnSatisfiables,
+			//								listOthers,
+			//								mapInvRes,
+			//								mModel,
+			//								invClassTotal,
+			//								timeElapsed,
+			//								numCallSolver,
+			//								numCallSolverSAT,
+			//								numCallSolverUNSAT);
+			//			}// este sobra cuando se 'reviva el codigo'
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
 
+	private void firstMethod(MModel mModel,Collection<IInvariant> invClassSatisfiables,
+			Collection<IInvariant> invClassUnSatisfiables,
+			Collection<IInvariant> invClassOthers,
+			Instant start) {
+		//Hacer combinaciones
+		LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
+		samples = new HashMap<>();
+		int i = 0;
+		for (IInvariant invClass: invClassSatisfiables) {
+			// Buscar la inv satis en listInvRes para obtener el orden
+			String strNameInv = invClass.clazz().name()+"::"+invClass.name();
+			if (mapInvRes.containsKey(strNameInv)) {
+				ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
+				i=invRes.intOrden;
+			}
+			samples.put(i, invClass);
+			String cmb= String.valueOf(i);
+			listSatisfiables.add(cmb);
+			storeResultCmb(cmb, "SATISFIABLE", "Direct calculation");
+		}
+
+		mixInvariants(samples); 
+		if (debMVM) {
+			for (Object obj : listCmbSel.entrySet()) 
+			{
+				Entry<String, String> cmb= (Entry<String, String>) obj;
+				String comment="";
+				if (cmb.getValue().equals("N")) {
+					comment = "New";
+				}else {
+					comment = "Detect in " +cmb.getValue();
+				}
+
+				System.out.println(String.format("%20s",cmb.getKey()) + " - " + comment);			
+			}
+			System.out.println();
+		}
+		LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
+		// Ordenar lista antes de enviar a validar 
+		List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
+		List<String> listSortedByCmb = listSorted;
+		// Aqui hemos de ordenar por numero de combinaciones de mayor a menor
+		listSortedByCmb = sortByCmbNumber(listSorted, invClassTotal.size());
+		LOG.info("MVM: Envio a sendToValidate.");
+		sendToValidate(listSortedByCmb , invClassTotal); 
+
+		// Compactacion de resultados
+		// Si 1-2-3 es SAT y 1-2-4 tambien tenemos el grupo (1-2) que puede ser SAT con 3 o con 4
+		busca_grupos_SAT_MAX();
+
+		showResultGral();
+		Instant end = Instant.now();
+		Duration timeElapsed = Duration.between(start, end);
+		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+		ValidatorMVMDialogSimple validatorMVMDialog= 
+				new ValidatorMVMDialogSimple(MainWindow.instance(), 
+						this,
+						invClassSatisfiables, 
+						invClassUnSatisfiables, 
+						invClassOthers,
+						mapGRP_SAT_MAX,
+						listSatisfiables,
+						listUnSatisfiables,
+						listOthers,
+						mapInvRes,
+						mModel,
+						invClassTotal,
+						timeElapsed,
+						numCallSolver,
+						numCallSolverSAT,
+						numCallSolverUNSAT);
 	}
 	private void analysis_OCL(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables) {
-		Collection<MClassInvariant> col = mModel.classInvariants();
+		//		Collection<MClassInvariant> col = mModel.classInvariants();
+		// En este punto debemos tratar solo las que de forma individual son satisfiables
+		//Aqui2
+		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
+		for (MClassInvariant invClass: mModel.classInvariants()) {
+			// Mira a ver si la invariante es satisfiable
+			for (IInvariant inv: invClassSatisfiables) {
+				// Mira a ver si la invariante es satisfiable
+				if (invClass.name().equals(inv.name())){
+					col.add(invClass);
+					continue;
+				}
+			}
+		}
+		// Aqui tenemos una coleccion de MClassInvariant todas ellas satisfiables.
+		// Esta coleccion representa al grupo de invariantes llamado CITotal
+
 		mapCAI.clear();
 		mapInfoInv.clear();
+		mapInfoAttr.clear();
+		mapInfoAssoc.clear();
 		int contador = 0;
 		int conLog=0;
 		List<String> logs = new ArrayList<String>();
@@ -430,7 +523,124 @@ public abstract class KodkodModelValidator {
 			for (MClassInvariant inv : lInv) {
 				System.out.println("     inv [" + inv.name() + "]");
 			}
-		}			
+		}		
+
+
+		samples = new HashMap<>();
+
+		List<String> listSorted = new ArrayList<String>();
+		// ic es la lista de combinaciones que no tienen nada en comun
+		List<MClassInvariant> ic = alg1(col);		
+		System.out.println("ic " + ic.size());
+		System.out.println("No deben tener nada en comun");
+		String strCmb="";
+		for (MClassInvariant inv:ic) {
+			int nCmb=1;
+			//			for (IInvariant iin:invClassTotal) {
+			////				if (iin.name().equals(inv.name())) {
+			////					String strNameInv = iin.clazz().name()+"::"+iin.name();
+			////					if (mapInvRes.containsKey(strNameInv)) {
+			////						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
+			////						nCmb=invRes.intOrden;
+			////					}
+			////					samples.put(nCmb, iin);
+			////				}
+			//			}			
+
+			//			String strNameInv = inv.name();
+			//			String strNameInv = inv.clazz().name()+"::"+inv.name();
+			//			System.out.println("Inv "+strNameInv);
+
+			//			if (mapInvRes.containsKey(strNameInv)) {
+			//				ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
+			//				nCmb=invRes.intOrden;
+			//				for (IInvariant iin:invClassTotal) {
+			//					if (iin.name().equals(inv.name())) {
+			//						samples.put(nCmb, iin);
+			//					}
+			//				}
+			//			}
+
+			for (IInvariant iin:invClassTotal) {
+				if (iin.name().equals(inv.name())) {
+					String strNameInv = iin.clazz().name()+"::"+iin.name();
+					if (mapInvRes.containsKey(strNameInv)) {
+						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
+						nCmb=invRes.intOrden;
+					}
+					samples.put(nCmb, iin);								
+					//								samples.put(nCmb, iin);
+					if (!strCmb.equals("")) {
+						strCmb=strCmb+"-";
+					}
+					strCmb=strCmb+nCmb;
+				}
+				nCmb+=1;
+			}
+		}
+
+		// buscamos el numero de inv que corresponde segun invClassTotal
+
+		listSorted.add(strCmb);
+
+		//		List<String> listSortedByCmb = listSorted;
+		LOG.info("MVM: Envio a sendToValidate.");
+		sendToValidate(listSorted , invClassTotal); 
+		samples.clear();
+	}
+
+	private List<MClassInvariant> alg1(Collection<MClassInvariant> col){
+		// col -> Coleccion total de invariantes satisfiables
+
+		// 1.	Inicialmente nuestra combinacion de invariantes esta vacia, y 
+		//      el conjunto de invariantes posibles es { I -> col}. Invariants possibles
+
+		List<MClassInvariant> ic = new ArrayList<MClassInvariant>();  // Invariants collection
+		List<MClassInvariant> ip = new ArrayList<MClassInvariant>();	// Invariants possibles
+		//		ip = col.; // Al principio, ip contiene todas las invariantes a tratar
+		ip.addAll(col);
+
+		// 2.	Anyadimos a nuestra combinacion un invariante X elegido al azar dentro de { I -> ip}. 
+
+		while(ip.size()>0) {
+			MClassInvariant X = (MClassInvariant) ip.get(0);
+			ic.add(X);
+			// 3.	Eliminamos X de { I }.
+			ip.remove(0);
+			// 4.	Consultamos los invariantes { Y } que tienen relacion 
+			//      (acceden a algun elemento comun) con el invariante X. 
+
+			// aqui3
+
+			List<MAssociation> lAssoc = new ArrayList<MAssociation>();
+			if (mapInfoInv.containsKey(X)) {
+				InfoInv oInfoInv = mapInfoInv.get(X);
+
+				// Primero vemos que atributos y que invariantes asociadas a cada atributo tiene
+				List<MAttribute> lAttr = new ArrayList<MAttribute>();
+				lAttr = oInfoInv.getlAttr();
+				for (MAttribute attr: lAttr) {
+					List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
+					if (mapInfoAttr.containsKey(attr)) {
+						// Vemos invaroantes asociadas a cada atributo
+						InfoAttr oInfoAttr = mapInfoAttr.get(attr);
+						lInv = oInfoAttr.getlInv();
+						for (MClassInvariant inv: lInv) {
+							if (!inv.name().equals(X.name())) {
+								System.out.println("Inv "+inv.name());
+								// 5.	Eliminamos de {I} los invariantes de {Y}.
+								// Eliminar de ip el inv hallado (HAY QUE PROBAR!!!)
+								if (ip.contains(inv)) {
+									ip.remove(inv);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return ic;
+		// el ip que queda es conjunto "maximo" de invariantes que no tienen elementos en comun
 
 	}
 

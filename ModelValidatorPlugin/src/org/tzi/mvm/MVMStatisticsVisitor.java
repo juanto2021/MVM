@@ -277,9 +277,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		}
 
 		if (!existClass){
-			//			System.out.println("!!! No existe clase " + pClass.name());
 			lInvAttr.add(pInv);
-
 			KeyAttrInv kAI = new KeyAttrInv(pAttr,lInvAttr);
 
 			lKAIs.add(kAI);
@@ -472,7 +470,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		visitBinaryExpression (pInt, pVar);		
 	}
 
-	//Aqui
 	@Override
 	public void visitNavigation(ExpNavigation exp) {
 
@@ -488,7 +485,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression objExp = exp.getObjectExpression();
 
 		visitUnaryExpression(objExp);	
-		
+
 		storeInfoAssocInv( assoc,  mClassInv);
 		storeInfoInvAssoc(mClassInv,  assoc);
 	}
@@ -586,76 +583,8 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitStdOp(ExpStdOp exp) {
-		//		Expression left=null;
-		//		Expression right=null;
 		System.out.println("Es una ExpStdOp [" + exp +"]");
 		visitMultiExpression (exp.args());
-		// lo siguiente se podra eliminar
-		//		if (false) {
-		//			switch(opName) {
-		//			case "or":
-		//				//			mutateOrExp(exp);
-		//				break;	
-		//			case "xor":
-		//				//			mutateXorExp(exp); 
-		//				break;
-		//			case "and":
-		//				//			mutateAndExp(exp);
-		//				visitUnaryExpression(left);
-		//				if (nArgs>1) {
-		//					visitUnaryExpression(right);				
-		//				}	
-		//				break;
-		//			case "not":
-		//				//		mutateNotExp(exp);
-		//				break;	
-		//			case "implies":
-		//				//		mutateImpliesExp(exp);
-		//				break;	
-		//			case "=":
-		//				//		defaultStrengthening();
-		//				break;	
-		//			case "<=":
-		//				//		mutateLessEqualExp(exp); 
-		//				break;	
-		//			case ">=":
-		//				//		mutateGreaterEqualExp(exp);
-		//				break;	
-		//			case "<":
-		//				//		mutateLessExp(exp);
-		//				break;	
-		//			case ">":
-		//				visitUnaryExpression(left);
-		//				if (nArgs>1) {
-		//					visitUnaryExpression(right);				
-		//				}			
-		//				break;	
-		//			case "<>":
-		//				//			mutateNotEqualsExp(exp); 
-		//				break;	
-		//			case "isEmpty":
-		//				//			mutateIsEmptyExp(exp);
-		//				break;	
-		//			case "notEmpty":
-		//				//		mutateNotEmptyExp(exp);
-		//				break;	
-		//			case "includes":
-		//				//		mutateIncludesExp(exp);
-		//				break;	
-		//			case "excludes":
-		//				//		mutateExcludesExp(exp);
-		//				break;	
-		//			case "includesAll":
-		//				//			mutateIncludesAllExp(exp);
-		//				break;	
-		//			case "excludesAll":
-		//				//		mutateExcludesAllExp(exp);
-		//				break;	
-		//			default:
-		//				//		wrongTypeError("unsupported operation type '" + opName + "'");
-		//			}		
-		//		}
-
 	}
 
 	@Override
@@ -763,6 +692,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		MClass navClass = nav.cls();
 		// ojo porque con navexp entramos en un bucle infinito al llamar a visitor
 		Expression navExp = nav.getDeriveExpression();
+		
 		Expression objExp = exp.getObjectExpression();
 
 		visitUnaryExpression(objExp);
