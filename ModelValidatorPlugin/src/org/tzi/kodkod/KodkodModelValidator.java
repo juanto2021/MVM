@@ -39,7 +39,7 @@ import kodkod.engine.Statistics;
  * Abstract base class for all validation functionalities.
  * 
  * @author Hendrik Reitmann 
- *         modified by Juanto....
+ *         modified by Juanto.
  */
 public abstract class KodkodModelValidator {
 
