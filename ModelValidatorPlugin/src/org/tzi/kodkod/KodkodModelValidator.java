@@ -243,12 +243,12 @@ public abstract class KodkodModelValidator {
 
 			// We look for variables of each OCL expression
 			LOG.info("MVM: Tratamiento OCL");
-
+			// Tipo Metodo
 			// Metodo nuevo
 			analysis_OCL(model, mModel,invClassSatisfiables);		
 
 			// Metodo antiguo (Leuven)
-			//			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
+			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -398,7 +398,7 @@ public abstract class KodkodModelValidator {
 		List<MClassInvariant> ic = alg1(col);		
 		System.out.println("Invariants collection (ic): " + ic.size());
 		String strCmb="";
-		
+
 		for (MClassInvariant inv:ic) {
 			int nCmb=1; // Contador general
 			int nCmbb=1; // Contador para bucle
@@ -499,7 +499,7 @@ public abstract class KodkodModelValidator {
 		System.out.println("============================================");	
 		for (Map.Entry<MAttribute, InfoAttr> entry : mapInfoAttr.entrySet()) {
 			MAttribute attr = entry.getKey();
-			System.out.println("attr [" + attr.name() + "]");
+			System.out.println("attr [" +attr.owner().name()+ "] ["+ attr.name() + "]");
 			List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
 			InfoAttr InfoAttr = mapInfoAttr.get(attr);
 			lInv = InfoAttr.getlInv();
