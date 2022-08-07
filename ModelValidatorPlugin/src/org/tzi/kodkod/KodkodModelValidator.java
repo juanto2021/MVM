@@ -248,7 +248,7 @@ public abstract class KodkodModelValidator {
 			analysis_OCL(model, mModel,invClassSatisfiables);		
 
 			// Metodo antiguo (Leuven)
-//			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
+			//			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -384,7 +384,7 @@ public abstract class KodkodModelValidator {
 		for(String log: logs) {
 			System.out.println("log [" + log + "]");
 		}
-		 
+
 		// Print results
 		printCAI(); // Classes, Attributes & Invariants
 		printMapInfoInv(); // Attributes & Assoc of Invariants 
@@ -398,8 +398,10 @@ public abstract class KodkodModelValidator {
 		List<MClassInvariant> ic = alg1(col);		
 		System.out.println("Invariants collection (ic): " + ic.size());
 		String strCmb="";
+		
 		for (MClassInvariant inv:ic) {
-			int nCmb=1;
+			int nCmb=1; // Contador general
+			int nCmbb=1; // Contador para bucle
 			for (IInvariant iin:invClassTotal) {
 				if (iin.name().equals(inv.name())) {
 					String strNameInv = iin.clazz().name()+"::"+iin.name();
@@ -408,6 +410,8 @@ public abstract class KodkodModelValidator {
 						ResInv invRes = (ResInv) mapInvRes.get(strNameInv);
 						nCmb=invRes.intOrden;
 						System.out.println("  Trato inv [" + nCmb+ "] [" + strNameInv +"]");
+					}else {
+						nCmb=nCmbb;
 					}
 					samples.put(nCmb, iin);								
 					if (!strCmb.equals("")) {
@@ -415,7 +419,7 @@ public abstract class KodkodModelValidator {
 					}
 					strCmb=strCmb+nCmb;
 				}
-				nCmb+=1;
+				nCmbb+=1;
 			}
 		}
 
@@ -486,7 +490,7 @@ public abstract class KodkodModelValidator {
 		}
 		System.out.println("============================================");
 	}
-	
+
 	// Invariants of Attr
 	private void printMapInfoAttr(){
 		System.out.println();
@@ -506,7 +510,7 @@ public abstract class KodkodModelValidator {
 		}		
 		System.out.println("============================================");
 	}
-	
+
 	// Invariants of Assoc
 	private void printMapInfoAssoc() {
 		System.out.println();
@@ -526,7 +530,7 @@ public abstract class KodkodModelValidator {
 		}	
 		System.out.println("============================================");
 	}
-	
+
 	/**
 	 * Algorithm 1 propose by Robert Clariso
 	 * @param col
@@ -568,7 +572,7 @@ public abstract class KodkodModelValidator {
 						lInv = oInfoAttr.getlInv();
 						for (MClassInvariant inv: lInv) {
 							if (!inv.name().equals(X.name())) {
-//								System.out.println("Inv "+inv.name());
+								//								System.out.println("Inv "+inv.name());
 								// 5.	Eliminamos de {I} los invariantes de {Y}.
 								// Eliminar de ip el inv hallado 
 								if (ip.contains(inv)) {
