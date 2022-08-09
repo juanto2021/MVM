@@ -248,14 +248,14 @@ public abstract class KodkodModelValidator {
 			analysis_OCL(model, mModel,invClassSatisfiables);		
 
 			// Metodo antiguo (Leuven)
-			firstMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
+//			bruteForceMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void firstMethod(MModel mModel,Collection<IInvariant> invClassSatisfiables,
+	private void bruteForceMethod(MModel mModel,Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers,
 			Instant start) {
@@ -391,11 +391,11 @@ public abstract class KodkodModelValidator {
 		printMapInfoAttr(); // Invariants of Attributes
 		printMapInfoAssoc(); // Invariants of Assoc
 
-		// Calculate the combination obtained in alg1
+		// Calculate the combination obtained in greedyMethod
 		samples = new HashMap<>();
 		List<String> listSorted = new ArrayList<String>();
 		// ic es la lista de combinaciones que no tienen nada en comun
-		List<MClassInvariant> ic = alg1(col);		
+		List<MClassInvariant> ic = greedyMethod(col);		
 		System.out.println("Invariants collection (ic): " + ic.size());
 		String strCmb="";
 
@@ -536,7 +536,7 @@ public abstract class KodkodModelValidator {
 	 * @param col
 	 * @return
 	 */
-	private List<MClassInvariant> alg1(Collection<MClassInvariant> col){
+	private List<MClassInvariant> greedyMethod(Collection<MClassInvariant> col){
 		// col -> Coleccion total de invariantes satisfiables
 
 		// 1.	Inicialmente nuestra combinacion de invariantes esta vacia, y 
