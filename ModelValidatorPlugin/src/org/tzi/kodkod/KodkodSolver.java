@@ -33,37 +33,38 @@ public class KodkodSolver {
 	private static final Logger LOG = Logger.getLogger(KodkodSolver.class);
 
 	private Evaluator evaluator;
+	private boolean debMVM=false;
 
 	public Solution solve(IModel model) throws Exception {
 		KodkodModelValidatorConfiguration configuration = KodkodModelValidatorConfiguration.getInstance();
 		if(configuration.satFactory() == null){
 			throw new IOException("No solver loaded. Load a solver using the configuration command. See command `plugins' for help.");
 		}
-		
+
 		Bounds bounds = createBounds(model);
 		Formula constraint = createConstraint(model);
-		
+
 		if(configuration.isDebugBoundsPrint()){
 			LOG.info(bounds);
 		}
-		
+
 		final Solver solver = new Solver();
 		solver.options().setLogTranslation(1);
-		
-		LOG.info(LogMessages.searchSolution(configuration.satFactory().toString(), configuration.bitwidth()));
-
+		if (debMVM) {
+			LOG.info(LogMessages.searchSolution(configuration.satFactory().toString(), configuration.bitwidth()));
+		}
 		solver.options().setSolver(configuration.satFactory());
 		solver.options().setBitwidth(configuration.bitwidth());
-		
+
 		Solution solution = solver.solve(constraint, bounds);
-		
+
 		createEvaluator(solver, solution);
 
 		if (Options.getDebug()) {
 			Log.println();
 			Log.println(solution.toString());
 		}
-		
+
 		return solution;
 	}
 
@@ -106,7 +107,7 @@ public class KodkodSolver {
 		for (IClass clazz : model.classes()) {
 			atoms.addAll(clazz.objectType().atoms());
 		}
-		
+
 		return new Universe(atoms);
 	}
 
