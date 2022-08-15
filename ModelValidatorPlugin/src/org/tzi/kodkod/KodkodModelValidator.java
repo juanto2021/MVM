@@ -80,7 +80,6 @@ public abstract class KodkodModelValidator {
 	private static boolean debMVM=false;
 
 	private static IInvariant tabInv[];
-	//	private static CAttrRel [][] matProb;
 	private static Map<String,List<MAttribute>> matP;
 	private static int matProb[][];
 	private static MClassInvariant invXazar;
