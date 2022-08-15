@@ -73,6 +73,8 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	public HashMap<MAttribute, InfoAttr> mMapInfoAttr = new HashMap<>();	
 	public HashMap<MAssociation, InfoAssoc> mMapInfoAssoc = new HashMap<>();
 
+	private static boolean debMVM=false;
+
 	public MVMStatisticsVisitor() {
 		mLogs.add("Entro en visitor ");
 	}
@@ -167,7 +169,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	 * @param inv
 	 * @param assoc
 	 */
-	
+
 	public void storeInfoInvAssoc(MClassInvariant inv, MAssociation assoc) {
 		List<MAssociation> lAssoc = new ArrayList<MAssociation>();
 		// If inv exist, include association on list
@@ -190,7 +192,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	}
 	public void storeInfoAttrInv(MAttribute attr, MClassInvariant inv) {
 		List<MClassInvariant> lInv = new ArrayList<MClassInvariant>();
-		
+
 		if (mMapInfoAttr.containsKey(attr)) {
 			InfoAttr oInfoAttr = mMapInfoAttr.get(attr);
 			lInv = oInfoAttr.getlInv();
@@ -235,9 +237,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 		for (Map.Entry<MClass, List<KeyClassAttr>> entry : mMapCAI.entrySet()) {
 			MClass mClass = entry.getKey();
-			//			System.out.println("mClass.name() " + mClass.name() + " pClass.name() " +pClass.name());
 			if (mClass.name().equals(pClass.name())) {
-				//				System.out.println("=== Clases iguales");
 				existClass=true;
 				lKCAs = mMapCAI.get(mClass);
 				// Miramos si existe atributo
@@ -343,11 +343,15 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitAttrOp(ExpAttrOp exp) {
-		System.out.println("visitAttrOp [" + exp.toString() + "] attr [" +exp.attr() +"] ");
+		if (debMVM) {
+			System.out.println("visitAttrOp [" + exp.toString() + "] attr [" +exp.attr() +"] ");
+		}
 		MAttribute attr = exp.attr();
 		storeLog("visitAttrOp exp ["+ exp+ "] attr["+attr+"]");
 		MClass classAttr = attr.owner();
-		System.out.println("******* Guardar clase ["+classAttr.name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
+		if (debMVM) {
+			System.out.println("******* Guardar clase ["+classAttr.name()+"] [" + attr.name() + "] inv [" + mClassInv.name() +"]");
+		}
 		storeCAI(classAttr, attr,  mClassInv);		
 		storeInfoInvAttr(mClassInv,  attr);
 		storeInfoAttrInv(attr,  mClassInv);
@@ -403,13 +407,17 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitExists(ExpExists exp) {
-		System.out.println("visitExists " + exp);
+		if (debMVM) {
+			System.out.println("visitExists " + exp);
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 		VarDeclList decl = exp.getVariableDeclarations();
 
 		for (VarDecl var: decl) {
-			System.out.println("var " + var + " " + var.name()+ " " + var.type());
+			if (debMVM) {
+				System.out.println("var " + var + " " + var.name()+ " " + var.type());
+			}
 		}
 		visitBinaryExpression (query, range);
 	}
@@ -422,14 +430,18 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		VarDeclList decl = exp.getVariableDeclarations();
 
 		for (VarDecl var: decl) {
-			System.out.println("var " + var + " " + var.name()+ " " + var.type());
+			if (debMVM) {
+				System.out.println("var " + var + " " + var.name()+ " " + var.type());
+			}
 		}
 		visitBinaryExpression (query, range);	
 	}
 
 	@Override
 	public void visitIf(ExpIf exp) {
-		System.out.println("visitIf");
+		if (debMVM) {
+			System.out.println("visitIf");
+		}
 		Expression condition = exp.getCondition();
 		Expression pElse = exp.getElseExpression();
 		Expression pThen = exp.getThenExpression();
@@ -451,7 +463,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitIsUnique(ExpIsUnique exp) {
-		System.out.println("visitIsUnique");
+		if (debMVM) {
+			System.out.println("visitIsUnique");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
@@ -461,7 +475,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitIterate(ExpIterate exp) {
-		System.out.println("visitIterate");
+		if (debMVM) {
+			System.out.println("visitIterate");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 

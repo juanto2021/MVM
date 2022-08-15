@@ -82,7 +82,7 @@ public abstract class KodkodModelValidator {
 	private static IInvariant tabInv[];
 	//	private static CAttrRel [][] matProb;
 	private static Map<String,List<MAttribute>> matP;
-	private static  int matProb[][];
+	private static int matProb[][];
 	private static MClassInvariant invXazar;
 
 	/**
@@ -234,8 +234,9 @@ public abstract class KodkodModelValidator {
 				nOrdenInv+=1;
 
 				ResInv invRes=null;
-
-				System.out.println("MVM: Invariants State: " + strCombinacion);
+				if (debMVM) {
+					System.out.println("MVM: Invariants State: " + strCombinacion);
+				}
 				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
 					invRes = new ResInv(strNameInv, "SATISFIABLE", nOrdenInv,invClass);
@@ -259,9 +260,11 @@ public abstract class KodkodModelValidator {
 				}
 			}
 			// hacer for para ver tabla invariantes
-			LOG.info("Tabla de invariantes");
-			for (int nInv = 0; nInv < tabInv.length; nInv++) {
-				System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
+			if (debMVM) {
+				LOG.info("Tabla de invariantes");
+				for (int nInv = 0; nInv < tabInv.length; nInv++) {
+					System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
+				}
 			}
 			// Individual Results
 			if (bShowResult) {
@@ -272,11 +275,13 @@ public abstract class KodkodModelValidator {
 			// New Method 
 			// We look for variables of each OCL expression
 			// ************************************************************************
-			LOG.info("MVM: Tratamiento OCL");			
+			if (debMVM) {
+				LOG.info("MVM: Tratamiento OCL");
+			}
 			analysis_OCL(model, mModel,invClassSatisfiables,start);		
 			// ************************************************************************
 			// Old method (Leuven)
-			//			bruteForceMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
+						bruteForceMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
 			// ************************************************************************
 
 		} catch (Exception e) {
@@ -424,11 +429,14 @@ public abstract class KodkodModelValidator {
 			mapInfoAssoc=visitor.getMapInfoAssoc();
 
 			contador+=1;
-
-			System.out.println("contador [" + contador + "]");
+			if (debMVM) {
+				System.out.println("contador [" + contador + "]");
+			}
 		}
-		for(String log: logs) {
-			System.out.println("log [" + log + "]");
+		if (debMVM) {
+			for(String log: logs) {
+				System.out.println("log [" + log + "]");
+			}
 		}
 		// Preparation of Map of invariants with Set of invariants
 		// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
@@ -441,10 +449,11 @@ public abstract class KodkodModelValidator {
 
 		if (showStructuresAO) {
 			// Print results
-			printCAI(); // Classes, Attributes & Invariants
-			printMapInfoInv(); // Attributes & Assoc of Invariants 
-			printMapInfoAttr(); // Invariants of Attributes
-			printMapInfoAssoc(); // Invariants of Assoc
+			printCAI();           // Classes, Attributes & Invariants
+			printMapInfoInv();    // Attributes & Assoc of Invariants 
+			printMapInfoAttr();   // Invariants of Attributes
+			printMapInfoAssoc();  // Invariants of Assoc
+			printMapInfoInvSet(); // invariants related to invariants
 		}
 		printMatProb();
 		//		List<MClassInvariant> listInvFault = new ArrayList<MClassInvariant>();
@@ -492,6 +501,12 @@ public abstract class KodkodModelValidator {
 			}else {
 				// invXazar
 				colInvFault.add(invXazar);
+				// Si la colección de inv que fallan en greedyMethod es mayor o igual
+				// a la lista de invariantes validas, detenemos busqueda para evitar 
+				// bucles infinitos
+				if (colInvFault.size()>= invClassTotal.size()) {
+					useGreedy=false;
+				}
 			}
 		}
 
@@ -504,6 +519,11 @@ public abstract class KodkodModelValidator {
 
 		samples.clear();
 	}
+	/**
+	 * Find the order number of the invariant in the general table of invariants of the model
+	 * @param inv
+	 * @return
+	 */
 	private int searchNumInv(MClassInvariant inv) {
 		int numInvGral=-1;
 		for (int nInv = 0; nInv < tabInv.length; nInv++) {
@@ -515,6 +535,10 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}
 
+	/**
+	 * Prepare structure and matrix for the calculation of probabilities that one invariant interferes with another
+	 * @param col
+	 */
 	private void preparaProbMat(Collection<MClassInvariant> col) {
 		int nInvs = invClassTotal.size();		
 		String strFormat="%0"+String.valueOf(nInvs).length()+"d";
@@ -525,10 +549,8 @@ public abstract class KodkodModelValidator {
 		for (int X=1;X<=nInvs;X++) {
 			for (int Y=1;Y<=nInvs;Y++) {
 				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
-				//				String KeyMatP2 = String.format(strFormat,Y)+"-"+String.format(strFormat,X);
 				attrComun=new ArrayList<MAttribute>();
 				matP.put(KeyMatP, attrComun);
-				//				matP.put(KeyMatP2, attrComun);
 				matProb[X-1][Y-1]=0;
 			}
 		}
@@ -542,7 +564,6 @@ public abstract class KodkodModelValidator {
 				InfoInv oInfoInvPral = mapInfoInv.get(invPral);
 				lAttrPral = oInfoInvPral.getlAttr();
 			}else {
-				//				System.out.println("invPral ["+invPral+"] no tiene mapInfoInv");
 				revPral=false;
 			}
 			if (revPral) {
@@ -555,7 +576,6 @@ public abstract class KodkodModelValidator {
 						InfoInv oInfoInvRel = mapInfoInv.get(invRel);
 						lAttrRel = oInfoInvRel.getlAttr();
 					}else {
-						//						System.out.println("invPral ["+numInvRel+"] no tiene mapInfoInv");
 						revRel=false;
 					}				
 
@@ -572,7 +592,6 @@ public abstract class KodkodModelValidator {
 
 						// Busca atributos comunes
 						if (bRel) {
-							System.out.println("Estan relacionados [" + KeyMatP + "]");
 							attrComun = new ArrayList<MAttribute>();
 							if (matP.get(KeyMatP)!=null) {
 								attrComun = (List<MAttribute>) matP.get(KeyMatP);
@@ -591,7 +610,6 @@ public abstract class KodkodModelValidator {
 													attrComun.add(attrPral);
 												}
 											}
-											//											attrComun.add(attrPral);
 											matP.put(KeyMatP2, attrComun);
 										}
 									}
@@ -612,17 +630,23 @@ public abstract class KodkodModelValidator {
 				matProb[X-1][Y-1]=AC.size();
 			}
 		}
-		System.out.println("Fin prob");
 	}
+	
+	/**
+	 * Prints structures for the calculation of probabilities of interference between invariants
+	 */
 	private void printMatProb() {
-		System.out.println("Atributos en comun en invariantes relacionadas");
-		System.out.println("==============================================");		
+		System.out.println();
+		System.out.println("Atributos comunes en invariantes relacionadas");
+		System.out.println("=============================================");		
 		for (Map.Entry<String,List<MAttribute>> entry : matP.entrySet()) {
 			String key = entry.getKey();
 			List<MAttribute> lAttrs = matP.get(key);
-
-			System.out.println("Key ["+key+"] [" + lAttrs.size() + "] [" + lAttrs.toString() + "]");
+			if (lAttrs.size()>0) {
+				System.out.println("Key ["+key+"] [" + lAttrs.size() + "] [" + lAttrs.toString() + "]");
+			}
 		}
+		System.out.println();
 		int nInvs = matProb.length;		
 		String strFormat="%"+String.valueOf(nInvs).length()+"d";
 		for (int X=0;X<nInvs;X++) {
@@ -649,6 +673,8 @@ public abstract class KodkodModelValidator {
 			}
 			System.out.println(linea);
 		}
+		System.out.println("============================================");
+		System.out.println("                *---*---*");
 	}
 	/**
 	 * Print class structure, attributes, invariants
@@ -680,6 +706,7 @@ public abstract class KodkodModelValidator {
 			}
 		}
 		System.out.println("============================================");
+		System.out.println("                *---*---*");
 	}
 	/**
 	 * Print mapInfoInv structure (attributes and associations of an invariant)
@@ -714,6 +741,7 @@ public abstract class KodkodModelValidator {
 			System.out.println();
 		}
 		System.out.println("============================================");
+		System.out.println("                *---*---*");
 	}
 
 	/**
@@ -736,6 +764,7 @@ public abstract class KodkodModelValidator {
 			System.out.println();
 		}		
 		System.out.println("============================================");
+		System.out.println("                *---*---*");
 	}
 
 	/**
@@ -758,6 +787,7 @@ public abstract class KodkodModelValidator {
 			System.out.println();
 		}	
 		System.out.println("============================================");
+		System.out.println("                *---*---*");
 	}
 
 	/**
@@ -825,6 +855,27 @@ public abstract class KodkodModelValidator {
 		return result;
 
 	}
+	
+	/**
+	 * Print content of mapInfoInvSet
+	 */
+	private void printMapInfoInvSet() {
+		System.out.println();
+		System.out.println("Invariantes relacionadas entre si (mapInfoInvSet)");
+		System.out.println();
+		for (Map.Entry<MClassInvariant, Set<MClassInvariant>> entry : mapInfoInvSet.entrySet()) {
+			MClassInvariant invKey = entry.getKey();
+			System.out.println("Inv [" + invKey +"]");
+			Set<MClassInvariant> lInvRrel = entry.getValue();
+			for (MClassInvariant invRel: lInvRrel) {
+				System.out.println("   * [" + invRel +"]");
+			}
+			System.out.println();
+		}
+		System.out.println("============================================");
+		System.out.println("                *---*---*");
+	}	
+	
 	/**
 	 * Preparation structure to store invariants related to each invariant
 	 */
@@ -869,21 +920,11 @@ public abstract class KodkodModelValidator {
 				}
 			}
 		}
-		// at this point we have to have the map of invariants
-		// and for each invariant the invariants related to it by their attributes
-		System.out.println();
-		System.out.println("Invariantes relacionadas entre si (mapInfoInvSet)");
-		System.out.println();
-		for (Map.Entry<MClassInvariant, Set<MClassInvariant>> entry : mapInfoInvSet.entrySet()) {
-			MClassInvariant invKey = entry.getKey();
-			System.out.println("Inv [" + invKey +"]");
-			Set<MClassInvariant> lInvRrel = entry.getValue();
-			for (MClassInvariant invRel: lInvRrel) {
-				System.out.println("   * [" + invRel +"]");
-			}
-			System.out.println();
-		}
 	}
+
+/**
+ * Search for groups of satisfiable combinations
+ */
 	private void busca_grupos_SAT_MAX() {
 		int maxCmb=0;
 		mapGRP_SAT_MAX.clear();
@@ -940,6 +981,12 @@ public abstract class KodkodModelValidator {
 		}
 	}
 
+	/**
+	 * Sort combinations
+	 * @param listSorted
+	 * @param numInvs
+	 * @return
+	 */
 	private List<String> sortByCmbNumber(List<String> listSorted, int numInvs) {
 		List<String> listRes = new ArrayList<>();
 
@@ -972,6 +1019,12 @@ public abstract class KodkodModelValidator {
 		return listResLimpia;
 	}
 
+	/**
+	 * Show list of invariants 
+	 * @param invClassSatisfiables
+	 * @param invClassUnSatisfiables
+	 * @param invClassOthers
+	 */
 	private void showResult(Collection<IInvariant> invClassSatisfiables, 
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers) {
@@ -1005,9 +1058,13 @@ public abstract class KodkodModelValidator {
 				System.out.println("MVM: " + invClass.name());
 			}
 		}
-
+		System.out.println("============================================");
+		System.out.println("                *---*---*");
 	}
 
+	/**
+	 * Shows overall result 
+	 */
 	private void showResultGral() {
 		System.out.println();
 		System.out.println("MVM: SATISFIABLES ["+ listSatisfiables.size()+"]");
@@ -1054,6 +1111,8 @@ public abstract class KodkodModelValidator {
 			System.out.println();
 		}
 		System.out.println("MVM: llamadas a Solver: " + numCallSolver);
+		System.out.println("============================================");
+		System.out.println("                *---*---*");
 	}
 
 	/**
@@ -1062,21 +1121,23 @@ public abstract class KodkodModelValidator {
 	 */
 	public static void mixInvariants(Map<Integer, IInvariant> samples) {
 		int nInvs = samples.size();
+		if (debMVM) {
+			System.out.println("\nInvariants to treat: (" + nInvs + ")");
+			System.out.println("----------------------------");
 
-		System.out.println("\nInvariants to treat: (" + nInvs + ")");
-		System.out.println("----------------------------");
+			int nTrata = 0;
+			for (Entry<Integer, IInvariant> obj : samples.entrySet()) 
+			{
+				nTrata = obj.getKey();
+				String nameInv = obj.getValue().name();
 
-		int nTrata = 0;
-		for (Entry<Integer, IInvariant> obj : samples.entrySet()) 
-		{
-			nTrata = obj.getKey();
-			String nameInv = obj.getValue().name();
-			System.out.println("MVM: a tratar " +nTrata+" " + nameInv);
+				System.out.println("MVM: a tratar " +nTrata+" " + nameInv);
+
+			}
+
+			System.out.println("============================================");
+			System.out.println("                *---*---*");
 		}
-
-		System.out.println("----------------------------");
-		System.out.println();
-
 		// Desarrolla combinaciones desde un nivel (1) a otro (nInvs)
 		extend("", 1, nInvs); 
 	}
@@ -1150,7 +1211,9 @@ public abstract class KodkodModelValidator {
 			// Si esta usada, guardamos la key que la representa
 			valor=combination;
 			listCmb.put(combination, keyOrdenada);
-			System.out.println("Encuentra " + keyOrdenada + " y guarda "+combination);
+			if (debMVM) {
+				System.out.println("Encuentra " + keyOrdenada + " y guarda "+combination);
+			}
 		}else {
 			// Si no esta usada, almacenamos con valor 'N' (Nueva)
 			valor="N";  
@@ -1238,9 +1301,9 @@ public abstract class KodkodModelValidator {
 					acumVal+=1;
 					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combinacion);
 					resultado += " - ["+ solution.outcome()+"]";
-					//					if (debMVM) {
+					//										if (debMVM) {
 					System.out.println("MVM: " + resultado);
-					//					}
+					//										}
 					if (solution.outcome().toString() == "SATISFIABLE") {
 						listSatisfiables.add(combinacion);
 						storeResultCmb(combinacion, "SATISFIABLE", "Direct calculation");
@@ -1522,20 +1585,6 @@ class KeyClassAttrOld {
 		this.nomAttr = vNomAttr;
 	}
 }
-//class CAttrRel {
-//	Set<MAttribute> lAttrComun;
-//	public CAttrRel() {
-//		this.lAttrComun = new HashSet<MAttribute>();
-//	}
-//	public CAttrRel(Set<MAttribute> pLattrComun) {
-//		this.lAttrComun = pLattrComun;
-//	}
-//	public Set<MAttribute> getlAttrComun() {
-//		return lAttrComun;
-//	}
-//	public void setlAttrComun(Set<MAttribute> lAttrComun) {
-//		this.lAttrComun = lAttrComun;
-//	}
-//}
+
 
 
