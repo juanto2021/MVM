@@ -80,8 +80,9 @@ public abstract class KodkodModelValidator {
 	private static boolean debMVM=false;
 
 	private static IInvariant tabInv[];
-//	private static CAttrRel [][] matProb;
+	//	private static CAttrRel [][] matProb;
 	private static Map<String,List<MAttribute>> matP;
+	private static  int matProb[][];
 	private static MClassInvariant invXazar;
 
 	/**
@@ -515,17 +516,20 @@ public abstract class KodkodModelValidator {
 	}
 
 	private void preparaProbMat(Collection<MClassInvariant> col) {
-		String strFormat="%0"+String.valueOf(col.size()).length()+"d";
-		int n = col.size();		
+		int nInvs = invClassTotal.size();		
+		String strFormat="%0"+String.valueOf(nInvs).length()+"d";
+
 		List<MAttribute> attrComun=new ArrayList<MAttribute>();
 		matP = new HashMap<String,List<MAttribute>>();
-		for (int X=0;X<n;X++) {
-			for (int Y=0;Y<n;Y++) {
+		matProb = new int[nInvs][nInvs];
+		for (int X=1;X<=nInvs;X++) {
+			for (int Y=1;Y<=nInvs;Y++) {
 				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
-				String KeyMatP2 = String.format(strFormat,Y)+"-"+String.format(strFormat,X);
+				//				String KeyMatP2 = String.format(strFormat,Y)+"-"+String.format(strFormat,X);
 				attrComun=new ArrayList<MAttribute>();
 				matP.put(KeyMatP, attrComun);
-				matP.put(KeyMatP2, attrComun);
+				//				matP.put(KeyMatP2, attrComun);
+				matProb[X-1][Y-1]=0;
 			}
 		}
 
@@ -538,7 +542,7 @@ public abstract class KodkodModelValidator {
 				InfoInv oInfoInvPral = mapInfoInv.get(invPral);
 				lAttrPral = oInfoInvPral.getlAttr();
 			}else {
-				System.out.println("invPral ["+invPral+"] no tiene mapInfoInv");
+				//				System.out.println("invPral ["+invPral+"] no tiene mapInfoInv");
 				revPral=false;
 			}
 			if (revPral) {
@@ -551,14 +555,10 @@ public abstract class KodkodModelValidator {
 						InfoInv oInfoInvRel = mapInfoInv.get(invRel);
 						lAttrRel = oInfoInvRel.getlAttr();
 					}else {
-						System.out.println("invPral ["+numInvRel+"] no tiene mapInfoInv");
+						//						System.out.println("invPral ["+numInvRel+"] no tiene mapInfoInv");
 						revRel=false;
 					}				
-					if (numInvPral==6||numInvPral==7) {
-						if (numInvRel==6||numInvRel==7) {
-							System.out.println("Aqui");;
-						}
-					}
+
 					if (revRel) {
 						// Miramos si ambas inv tienen relacion
 						boolean bRel=false;
@@ -577,9 +577,6 @@ public abstract class KodkodModelValidator {
 							if (matP.get(KeyMatP)!=null) {
 								attrComun = (List<MAttribute>) matP.get(KeyMatP);
 							}
-							if (KeyMatP.equals("06-07")||KeyMatP.equals("07-06")) {
-								System.out.println("Recupero ["+KeyMatP+"] ["+attrComun+"]");
-							}
 							for (MAttribute attrPral: lAttrPral) {
 								// comparamos por nombre
 								for (MAttribute attrRel: lAttrRel) {
@@ -587,6 +584,14 @@ public abstract class KodkodModelValidator {
 										if (!attrComun.contains(attrPral)) {
 											attrComun.add(attrPral);
 											matP.put(KeyMatP, attrComun);
+											attrComun = new ArrayList<MAttribute>();
+											if (matP.get(KeyMatP2)!=null) {
+												attrComun = (List<MAttribute>) matP.get(KeyMatP2);
+												if (!attrComun.contains(attrPral)) {
+													attrComun.add(attrPral);
+												}
+											}
+											//											attrComun.add(attrPral);
 											matP.put(KeyMatP2, attrComun);
 										}
 									}
@@ -600,12 +605,49 @@ public abstract class KodkodModelValidator {
 		TreeMap<String, List<MAttribute>> sorted = new TreeMap<>();
 		sorted.putAll(matP);
 		matP=sorted;
+		for (int X=1;X<=nInvs;X++) {
+			for (int Y=1;Y<=nInvs;Y++) {
+				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
+				List<MAttribute> AC=(List<MAttribute>) matP.get(KeyMatP);
+				matProb[X-1][Y-1]=AC.size();
+			}
+		}
+		System.out.println("Fin prob");
 	}
 	private void printMatProb() {
+		System.out.println("Atributos en comun en invariantes relacionadas");
+		System.out.println("==============================================");		
 		for (Map.Entry<String,List<MAttribute>> entry : matP.entrySet()) {
 			String key = entry.getKey();
 			List<MAttribute> lAttrs = matP.get(key);
-			System.out.println("Key ["+key+"] ["+lAttrs.toString()+"]");
+
+			System.out.println("Key ["+key+"] [" + lAttrs.size() + "] [" + lAttrs.toString() + "]");
+		}
+		int nInvs = matProb.length;		
+		String strFormat="%"+String.valueOf(nInvs).length()+"d";
+		for (int X=0;X<nInvs;X++) {
+			String linea="";
+			if (X==0) {
+				linea = String.format("%"+String.valueOf(nInvs).length()+"s","")+"  ";
+				for (int Y=0;Y<nInvs;Y++) {
+					String part = String.format(strFormat,Y+1);
+					if (linea!="") {
+						linea+="  ";
+					}
+					linea+=part;
+				}
+				System.out.println(linea);
+			}
+			linea = String.format(strFormat,X+1)+" -";
+			for (int Y=0;Y<nInvs;Y++) {
+				int nAttrComun=	matProb[X][Y];
+				String part = String.format(strFormat,nAttrComun);
+				if (linea!="") {
+					linea+="  ";
+				}
+				linea+=part;
+			}
+			System.out.println(linea);
 		}
 	}
 	/**
@@ -789,7 +831,7 @@ public abstract class KodkodModelValidator {
 	private void preparaMapInfoInvSet() {
 		// Preparo Map de invariantes con Set de invariantes
 		// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
-//		List<MClassInvariant> result = new ArrayList<MClassInvariant>();
+		//		List<MClassInvariant> result = new ArrayList<MClassInvariant>();
 		mapInfoInvSet.clear();
 		for (Map.Entry<MClassInvariant, InfoInv> entry : mapInfoInv.entrySet()) {
 			MClassInvariant invKey = entry.getKey();
@@ -1295,8 +1337,8 @@ public abstract class KodkodModelValidator {
 			}
 
 			if (calculate) {
-//				List<IInvariant> listInv = new ArrayList<IInvariant>();
-//				listInv=splitInvCombination( newCmb);
+				//				List<IInvariant> listInv = new ArrayList<IInvariant>();
+				//				listInv=splitInvCombination( newCmb);
 				Solution solution = null;
 				try {
 					solution = calcular( newCmb,  invClassTotal,  kodkodSolver);
