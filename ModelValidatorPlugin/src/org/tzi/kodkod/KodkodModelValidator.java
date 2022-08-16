@@ -488,6 +488,7 @@ public abstract class KodkodModelValidator {
 				}
 			}
 
+			
 			listSorted.add(strCmb);
 			LOG.info("MVM: Envio a sendToValidate.");
 			// Send to Validate (sendToValidate)
