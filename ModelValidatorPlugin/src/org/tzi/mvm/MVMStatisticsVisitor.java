@@ -254,9 +254,7 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 							lInvAttr=kAI.getlInv();
 							// Miramos si existe invariante
 							boolean existInv=false;
-							int idxINV=-1;
 							for (MClassInvariant inv : lInvAttr) {
-								idxINV+=1;
 								if (inv.name().equals(pInv.name())) {
 									existInv=true;
 									break;
@@ -298,7 +296,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 			// Put on Map a Class with elements finded
 			mMapCAI.put(pClass, lKCAs);
 		}
-
 	}
 
 	public MVMStatisticsVisitor preVisitor(MVMStatisticsVisitor visitor) {
@@ -326,19 +323,16 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitAllInstances(ExpAllInstances exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitAny(ExpAny exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitAsType(ExpAsType exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -360,19 +354,16 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitBagLiteral(ExpBagLiteral exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitCollect(ExpCollect exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitCollectNested(ExpCollectNested exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -452,13 +443,11 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitIsKindOf(ExpIsKindOf exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitIsTypeOf(ExpIsTypeOf exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -470,7 +459,6 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression range = exp.getRangeExpression();
 
 		visitBinaryExpression (query, range);
-
 	}
 
 	@Override
@@ -482,12 +470,13 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		Expression range = exp.getRangeExpression();
 
 		visitBinaryExpression (query, range);		
-
 	}
 
 	@Override
 	public void visitLet(ExpLet exp) {
-		System.out.println("visitLet");
+		if (debMVM) {
+			System.out.println("visitLet");
+		}
 		Expression pInt = exp.getInExpression();
 		Expression pVar = exp.getVarExpression();
 
@@ -496,9 +485,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitNavigation(ExpNavigation exp) {
-
-		System.out.println("Es una visitNavigation [" + exp + "]");
-
+		if (debMVM) {
+			System.out.println("Es una visitNavigation [" + exp + "]");
+		}
 		MNavigableElement nav = exp.getDestination();
 
 		MAssociation assoc = nav.association();
@@ -517,24 +506,28 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitObjAsSet(ExpObjAsSet exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitObjOp(ExpObjOp exp) {
-		System.out.println("visitObjOp");
+		if (debMVM) {
+			System.out.println("visitObjOp");
+		}
 		visitMultiExpression (exp.getArguments());		
 	}
 
 	@Override
 	public void visitObjRef(ExpObjRef exp) {
-		System.out.println("visitObjRef");
-
+		if (debMVM) {
+			System.out.println("visitObjRef");
+		}
 	}
 
 	@Override
 	public void visitOne(ExpOne exp) {
-		System.out.println("visitOne");
+		if (debMVM) {
+			System.out.println("visitOne");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
@@ -548,32 +541,37 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitQuery(ExpQuery exp) {
-		System.out.println("visitQuery");
+		if (debMVM) {
+			System.out.println("visitQuery");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 		visitBinaryExpression (query, range);		
-
 	}
 
 	@Override
 	public void visitReject(ExpReject exp) {
-		System.out.println("visitReject");
+		if (debMVM) {
+			System.out.println("visitReject");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
 		visitBinaryExpression (query, range);		
-
 	}
 
 	@Override
 	public void visitWithValue(ExpressionWithValue exp) {
-		System.out.println("visitWithValue");
-
+		if (debMVM) {
+			System.out.println("visitWithValue");
+		}
 	}
 
 	@Override
 	public void visitSelect(ExpSelect exp) {
-		System.out.println("visitSelect");
+		if (debMVM) {
+			System.out.println("visitSelect");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
@@ -582,23 +580,26 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitSequenceLiteral(ExpSequenceLiteral exp) {
-		System.out.println("visitSequenceLiteral");
+		if (debMVM) {
+			System.out.println("visitSequenceLiteral");
+		}
 
 		visitMultiExpression (exp.getElemExpr());
 	}
 
 	@Override
 	public void visitSetLiteral(ExpSetLiteral exp) {
-
-		System.out.println("visitSetLiteral");
-
+		if (debMVM) {
+			System.out.println("visitSetLiteral");
+		}
 		visitMultiExpression (exp.getElemExpr());
 	}
 
 	@Override
 	public void visitSortedBy(ExpSortedBy exp) {
-
-		System.out.println("visitSortedBy");
+		if (debMVM) {
+			System.out.println("visitSortedBy");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
@@ -607,26 +608,25 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitStdOp(ExpStdOp exp) {
-		System.out.println("Es una ExpStdOp [" + exp +"]");
+		if (debMVM) {
+			System.out.println("Es una ExpStdOp [" + exp +"]");
+		}
 		visitMultiExpression (exp.args());
 	}
 
 	@Override
 	public void visitTupleLiteral(ExpTupleLiteral exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitTupleSelectOp(ExpTupleSelectOp exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitUndefined(ExpUndefined exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -634,12 +634,13 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 		// TODO Auto-generated method stub
 		String varname = exp.getVarname();
 		storeLog("visitVariable exp ["+ exp+ "] varname["+varname+"]");
-
 	}
 
 	@Override
 	public void visitClosure(ExpClosure exp) {
-		System.out.println("visitClosure");
+		if (debMVM) {
+			System.out.println("visitClosure");
+		}
 		Expression query = exp.getQueryExpression();
 		Expression range = exp.getRangeExpression();
 
@@ -648,7 +649,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitOclInState(ExpOclInState exp) {
-		System.out.println("visitOclInState");
+		if (debMVM) {
+			System.out.println("visitOclInState");
+		}
 		Expression source = exp.getSourceExpr();
 
 		visitUnaryExpression(source);
@@ -657,18 +660,18 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitVarDeclList(VarDeclList varDeclList) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitVarDecl(VarDecl varDecl) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitObjectByUseId(ExpObjectByUseId exp) {
-		System.out.println("visitObjectByUseId");
+		if (debMVM) {
+			System.out.println("visitObjectByUseId");
+		}
 		Expression idExp = exp.getIdExpression();
 
 		visitUnaryExpression(idExp);
@@ -677,13 +680,13 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitConstUnlimitedNatural(ExpConstUnlimitedNatural exp) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visitSelectByKind(ExpSelectByKind exp) {
-
-		System.out.println("visitSelectByKind");
+		if (debMVM) {
+			System.out.println("visitSelectByKind");
+		}
 		Expression source = exp.getSourceExpression();
 
 		visitUnaryExpression(source);
@@ -691,16 +694,19 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 
 	@Override
 	public void visitExpSelectByType(ExpSelectByType exp) {
-		System.out.println("visitExpSelectByType");
+		if (debMVM) {
+			System.out.println("visitExpSelectByType");
+		}
 		Expression source = exp.getSourceExpression();
 
 		visitUnaryExpression(source);
-
 	}
 
 	@Override
 	public void visitRange(ExpRange exp) {
-		System.out.println("visitRange");
+		if (debMVM) {
+			System.out.println("visitRange");
+		}
 		Expression pEnd = exp.getEnd();
 		Expression pStart = exp.getStart();
 
@@ -710,7 +716,9 @@ public class MVMStatisticsVisitor implements ExpressionVisitor{
 	@Override
 	public void visitNavigationClassifierSource(ExpNavigationClassifierSource exp) {
 		// TODO Auto-generated method stub
-		System.out.println("visitNavigationClassifierSource [" + exp + "]");
+		if (debMVM) {
+			System.out.println("visitNavigationClassifierSource [" + exp + "]");
+		}
 		MNavigableElement nav = exp.getDestination();
 		MAssociation assoc = nav.association();
 		MClass navClass = nav.cls();
