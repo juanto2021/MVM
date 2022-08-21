@@ -3,13 +3,24 @@
 <plugin name="ModelValidatorPlugin" version="5.1.0-r1"
 	publisher="Hendrik Reitmann">
 	<actions>
-		<action label="Validation MVM" icon="resources/MvMJG.png"
-			class="org.tzi.use.kodkod.plugin.KodkodValidateMVMAction"
-			tooltip="Look for combinations SATISFIABLES." menu="ValidationMVM"
-			menuitem="ValidationMVM" 
+		<action label="Validation MVM-L" 
+		    icon="resources/MvMJG.png"
+			class="org.tzi.use.kodkod.plugin.KodkodValidateMVMActionL"
+			tooltip="Look for combinations SATISFIABLES (bruteForceMethod)." 
+			menu="ValidationMVM"
+			menuitem="ValidationMVML" 
 			toolbaritem="plugins"
-			id="org.tzi.use.kodkod.plugin.KodkodValidateMVM">
+			id="org.tzi.use.kodkod.plugin.KodkodValidateMVML">
 		</action>
+		<action label="Validation MVM-G" 
+		    icon="resources/MvMGreedy.png"
+			class="org.tzi.use.kodkod.plugin.KodkodValidateMVMActionG"
+			tooltip="Look for combinations SATISFIABLES (analysis_OCL)." 
+			menu="ValidationMVM"
+			menuitem="ValidationMVMG" 
+			toolbaritem="plugins"
+			id="org.tzi.use.kodkod.plugin.KodkodValidateMVMG">
+		</action>		
 		<action label="Kodkod Validation"
 			icon="resources/kodkod.png"
 			class="org.tzi.use.kodkod.plugin.KodkodValidatePropertyAction"

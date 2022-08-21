@@ -21,11 +21,11 @@ import org.tzi.use.uml.sys.MSystem;
 /**
  * Action-Class to extend the toolbar with a button to call the model validator
  * with a configuration file.
- * 
+ * Using analysis_OCL method to find MSS
  * @author Juanto
  * 
  */
-public class KodkodValidateMVMAction  implements IPluginActionDelegate {
+public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 
 	@Override
 	public void performAction(IPluginAction pluginAction) {
@@ -66,7 +66,8 @@ public class KodkodValidateMVMAction  implements IPluginActionDelegate {
 		// Activamos hourglass
 		MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		UseKodkodModelValidator uk = new UseKodkodModelValidator(session);
-		uk.validateVariable(model, mModel,session);
+		String tipoSearchMSS = "G";
+		uk.validateVariable(model, mModel, session, tipoSearchMSS);
 		// Desactivamos hourglass
 		MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 
