@@ -514,21 +514,21 @@ public abstract class KodkodModelValidator {
 				}
 			}
 		}
-
+		mixInvariants(samples); // nose
 		// TODO 
 		// En este punto, samples tiene una combinacion satisfiable con el maximo de invariantes que se ha podido conseguir
 		// Deberiamos guardar esta combinacion y volver a poblar samples con las combinaciones del resto de invariantes no tratadas
 		// 1 averiguar invariantes pendientes de tratar
 		// 2 Buscar samples de dicho resto de invariantes
 
-		List<String> listSatisfiablesBase = new ArrayList<String>();
-		for (String combinacion: listSatisfiables ) {
-			listSatisfiablesBase.add(combinacion);
-		}
-		List<String> lResGreedy = new ArrayList<String>();
-		for (String combinacion: listSatisfiables ) {
-			lResGreedy.add(combinacion);
-		}
+//		List<String> listSatisfiablesBase = new ArrayList<String>();
+//		for (String combinacion: listSatisfiables ) {
+//			listSatisfiablesBase.add(combinacion);
+//		}
+//		List<String> lResGreedy = new ArrayList<String>();
+//		for (String combinacion: listSatisfiables ) {
+//			lResGreedy.add(combinacion);
+//		}
 
 		String cmbGreedy = listSatisfiables.get(0);
 		System.out.println("cmbGreedy [" + cmbGreedy + "] Hay [" + listSatisfiables.size() + "]" );		
@@ -536,10 +536,9 @@ public abstract class KodkodModelValidator {
 		String[] strCmbGreedy=cmbGreedy.split("-");
 		int nInvsGreedy = strCmbGreedy.length;
 		// De samples eliminamos las invariantes de ic 
-		samples.clear();
-		listSatisfiables.clear();
-		//		String strRestoInv = "";
-		int i = 0;
+		samples.clear();//provis
+//		listSatisfiables.clear();//provis
+
 		for (IInvariant invClass: invClassSatisfiables) {
 			// busca orden 
 			int nInvClass = searchNumInvII(invClass);
@@ -553,7 +552,10 @@ public abstract class KodkodModelValidator {
 				}
 			}
 			if (guardarSample) {
-				samples.put(nInvClass, invClass);
+				if (!samples.containsKey(nInvClass)) {
+					samples.put(nInvClass, invClass);
+				}
+				
 				String strNinv = String.format("%0"+String.valueOf(invClassTotal.size()).length()+"d",nInvClass);
 				storeResult(String.valueOf(strNinv));//???
 			}
