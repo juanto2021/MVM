@@ -160,11 +160,9 @@ public abstract class KodkodModelValidator {
 		default:
 			throw new IllegalStateException("Kodkod returned unknown solution outcome.");
 		}
-
 		if(KodkodQueryCache.INSTANCE.isQueryEnabled()){ 
 			KodkodQueryCache.INSTANCE.setEvaluator(evaluator); 
 		}
-
 	}
 
 	/**
@@ -390,7 +388,7 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassOthers,			
 			Instant start) {
 		samples.clear();
-		String strCmbTotal = "";//Aqui
+		String strCmbTotal = "";
 		// In this point We must to treat only the invariants that are satisfiables alone
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		for (MClassInvariant invClass: mModel.classInvariants()) {
@@ -502,7 +500,6 @@ public abstract class KodkodModelValidator {
 					}
 				}
 			}
-//aqui2
 			strCmbBase= ordenaCmb(strCmb);
 			listSorted.add(strCmb);
 			LOG.info("MVM: Envio a sendToValidate.");
@@ -536,8 +533,6 @@ public abstract class KodkodModelValidator {
 		resGral = combina(strCmbResto);
 		resGral = ordenaByNumInv(resGral);
 
-//		String cmbGreedy = listSatisfiables.get(0);
-//		System.out.println("cmbGreedy [" + cmbGreedy + "] Hay [" + listSatisfiables.size() + "]" );		
 		String cmbGreedy = strCmbBase;
 		System.out.println("cmbGreedy [" + cmbGreedy + "]" );			
 
@@ -545,7 +540,6 @@ public abstract class KodkodModelValidator {
 		int nInvsGreedy = strCmbGreedy.length;
 		// De samples eliminamos las invariantes de ic 
 		samples.clear();//provis
-//		listSatisfiables.clear();//provis
 
 		for (IInvariant invClass: invClassSatisfiables) {
 			// busca orden 
@@ -563,7 +557,7 @@ public abstract class KodkodModelValidator {
 				if (!samples.containsKey(nInvClass)) {
 					samples.put(nInvClass, invClass);
 				}
-				
+
 				String strNinv = String.format("%0"+String.valueOf(invClassTotal.size()).length()+"d",nInvClass);
 				storeResult(String.valueOf(strNinv));//???
 			}
@@ -572,20 +566,10 @@ public abstract class KodkodModelValidator {
 
 		// en samples pondremos el resto de invariantes no tratadas
 		mixInvariants(samples); 
-
-//		List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
-//		List<String> listSorted = new ArrayList<>(resGral.));
 		List<String> listSortedAmpliada = new ArrayList<>();
 
 		// Finalmente incluiremos a cada resultado la combinacion base MSS obtenida en el paso greedy
 
-//		for (String strCmb: listSorted) {
-//			String strNewCmb = strCmb + "-" + cmbGreedy;
-//			strNewCmb = sortCombination(strNewCmb); 
-//			listSortedAmpliada.add(strNewCmb);
-//			storeResult( strNewCmb);//??
-//		}
-		//aqui3
 		for (String strCmb: resGral) {
 			System.out.println("strCmb " + strCmb);
 		}		
@@ -596,9 +580,6 @@ public abstract class KodkodModelValidator {
 			storeResult( strNewCmb);//??
 			System.out.println("strNewCmb " + strNewCmb);
 		}
-
-//		List<String> listSortedByCmb = new ArrayList<>();
-//		listSortedByCmb = sortByCmbNumber(listSortedAmpliada, invClassTotal.size());// provis	
 
 		LOG.info("MVM: Envio a sendToValidate despues greedy.");
 		// Send to Validate (sendToValidate)
@@ -989,6 +970,12 @@ public abstract class KodkodModelValidator {
 		return result;
 
 	}
+	/** 
+	 * Ordena invariantes de menor a mayor formateando con 0 por la izquierda
+	 * @param strCmb
+	 * @return
+	 */
+	
 	private static String ordenaCmb(String strCmb) {
 		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		String resCmb = "";
@@ -997,7 +984,6 @@ public abstract class KodkodModelValidator {
 		int nInvs = aInvs.length;
 		for(int nInv = 0;nInv<nInvs;nInv++) {
 			String inv = aInvs[nInv];
-			//			String fmt = "%0"+String.valueOf(totalInv).length()+"d";
 			String invF = String.format(fmt,Integer.parseInt(inv));			
 			listRes.add(invF);
 		}
@@ -1011,6 +997,13 @@ public abstract class KodkodModelValidator {
 
 		return resCmb;
 	}
+	/**
+	 * Dada una combinacion base obtenida con greedy, busca relacion de invariantes
+	 * restantes y devuelve una combinacion con todas ellas 
+	 * @param strCmbBase
+	 * @param strCmbTotal
+	 * @return
+	 */
 
 	private static String fabCmbResto(String strCmbBase, String strCmbTotal) {
 		List<String> listRes = new ArrayList<String>();
@@ -1044,7 +1037,12 @@ public abstract class KodkodModelValidator {
 		}		
 		return resCmb;
 	}
-	
+	/**
+	 * Busca todas las combinaciones de un grupo de invariantes
+	 * @param strCmb
+	 * @return
+	 */
+
 	private static List<String> combina(String strCmb) {
 		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		List<String> resGral = new ArrayList<String>();
@@ -1083,6 +1081,12 @@ public abstract class KodkodModelValidator {
 		}
 		return resGral;
 	}
+	/**
+	 * Ordena lista de invariantes colocando en el primer elemento
+	 * la combinacion con mas invariantes y asi sucesivamente
+	 * @param listCmb
+	 * @return
+	 */
 	private static List<String> ordenaByNumInv(List<String> listCmb) {
 		int nOrdenMax = 100000;
 		String fmtG = "%06d";	
@@ -1102,7 +1106,7 @@ public abstract class KodkodModelValidator {
 			String cmb = aWinvs[1];
 			listRes.add(cmb);
 		}
-		
+
 		return listRes;
 	}
 	/**
@@ -1241,7 +1245,6 @@ public abstract class KodkodModelValidator {
 
 		HashMap<String, String> listRk = new HashMap<>();
 		for (String strCmb: listSorted) {
-			//			int nGrupos = numInvs - (strCmb.length()-strCmb.replace("-","").length())+1;
 			int nGrupos = numInvs - (strCmb.length()-strCmb.replace("-","").length()+1);// no se
 			// Hallar Key que le corresponde si ordenamos sus partes
 			String keyOrdenada = nGrupos + " " + strCmb;
@@ -1369,8 +1372,6 @@ public abstract class KodkodModelValidator {
 	 * @param invariantes to mix
 	 */
 	public  void mixInvariants(Map<Integer, IInvariant> samples) {
-		//		int nInvs = samples.size();
-		// extend("", 1, nInvs); // Antes
 		int nInvs = invClassTotal.size();
 		if (debMVM) {
 			System.out.println("\nInvariants to treat: (" + nInvs + ")");
@@ -1526,14 +1527,13 @@ public abstract class KodkodModelValidator {
 
 		int cmbSel = listCmbSel.size();
 		int acumVal=0;
-		//		int acumTrata=0;
-		if (true) {
+
+		if (debMVM) {
 			String head="Send to Validator ("+ listSorted+") combinations. (listSorted)";
 			System.out.println(head);
 			System.out.println(("-").repeat(head.length()));
 		}
 		KodkodSolver kodkodSolver = new KodkodSolver();
-		List<IInvariant> listInv = new ArrayList<IInvariant>();
 
 		try {
 			for (String combinacion: listSorted) 
@@ -1553,7 +1553,8 @@ public abstract class KodkodModelValidator {
 
 				if (calculate) {
 					// Buscar invariantes de la combinacion
-					listInv=splitInvCombination( combinacion);
+					//					List<IInvariant> listInv = new ArrayList<IInvariant>();//nose
+					//					listInv=splitInvCombination( combinacion);// nose
 					Solution solution=null;
 					try {
 						solution = calcular( combinacion,  invClassTotal,  kodkodSolver);
@@ -1564,9 +1565,9 @@ public abstract class KodkodModelValidator {
 					acumVal+=1;
 					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combinacion);
 					resultado += " - ["+ solution.outcome()+"]";
-					//										if (debMVM) {
-					System.out.println("MVM: " + resultado);
-					//										}
+					if (debMVM) {
+						System.out.println("MVM: " + resultado);
+					}
 					if (solution.outcome().toString() == "SATISFIABLE") {
 						listSatisfiables.add(combinacion);
 						storeResultCmb(combinacion, "SATISFIABLE", "Direct calculation");
@@ -1593,7 +1594,6 @@ public abstract class KodkodModelValidator {
 		// Buscar invariantes de la combinacion
 		List<IInvariant> listInv = new ArrayList<IInvariant>();
 		listInv=splitInvCombination( combinacion);
-		int numInvs = listInv.size();
 
 		// Activar solo las de la combinacion
 		String listaActivas="";
@@ -1673,7 +1673,7 @@ public abstract class KodkodModelValidator {
 
 				String resultado = cmbSel + " " + acumVal+ " " + String.format("%-20s",newCmb);
 				resultado += " - ["+ solution.outcome()+"]";
-				if (true) {
+				if (debMVM) {
 					System.out.println("MVM - calcularRec: " + resultado);
 				}
 				if (solution.outcome().toString() == "SATISFIABLE") {
@@ -1699,16 +1699,15 @@ public abstract class KodkodModelValidator {
 	 * @return
 	 */
 	private List<IInvariant> splitInvCombination(String combinacion) {
+		// aqui5
 		List<IInvariant> listInvW = new ArrayList<IInvariant>();
 		// Buscar invariantes de la combinacion
 		listInvW.clear();
 		String[] invs = combinacion.split("-");	
 		for (String invStrID: invs) {
 			int invID=Integer.parseInt(invStrID);  
-			if (samples.containsKey(invID)) {
-				IInvariant inv = (IInvariant) samples.get(invID);
-				listInvW.add(inv);				
-			}
+			IInvariant inv = (IInvariant) tabInv[invID-1];
+			listInvW.add(inv);				
 		}
 		return listInvW;
 	}
