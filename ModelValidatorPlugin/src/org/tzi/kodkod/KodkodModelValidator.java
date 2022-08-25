@@ -407,7 +407,7 @@ public abstract class KodkodModelValidator {
 				}
 			}
 		}
-		strCmbTotal= ordenaCmb(strCmbTotal);
+		strCmbTotal= sortCmb(strCmbTotal);
 		// Here We have a collection of MClassInvariant all them satisfiables
 
 		mapCAI.clear();
@@ -500,7 +500,7 @@ public abstract class KodkodModelValidator {
 					}
 				}
 			}
-			strCmbBase= ordenaCmb(strCmb);
+			strCmbBase= sortCmb(strCmb);
 			listSorted.add(strCmb);
 			LOG.info("MVM: Envio a sendToValidate.");
 			// Send to Validate (sendToValidate)
@@ -528,10 +528,13 @@ public abstract class KodkodModelValidator {
 		// 1 averiguar invariantes pendientes de tratar
 		// 2 Buscar samples de dicho resto de invariantes
 
-		String strCmbResto = fabCmbResto(strCmbBase, strCmbTotal);
+		String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
 		List<String> resGral = new ArrayList<String>();
-		resGral = combina(strCmbResto);
-		resGral = ordenaByNumInv(resGral);
+		if (!strCmbResto.equals("")) {
+			resGral = combines(strCmbResto);
+			resGral = ordenaByNumInv(resGral);		
+		}
+
 
 		String cmbGreedy = strCmbBase;
 		System.out.println("cmbGreedy [" + cmbGreedy + "]" );			
@@ -567,15 +570,16 @@ public abstract class KodkodModelValidator {
 		// en samples pondremos el resto de invariantes no tratadas
 		mixInvariants(samples); 
 		List<String> listSortedAmpliada = new ArrayList<>();
-
+		listSortedAmpliada.add(cmbGreedy);
 		// Finalmente incluiremos a cada resultado la combinacion base MSS obtenida en el paso greedy
 
 		for (String strCmb: resGral) {
 			System.out.println("strCmb " + strCmb);
 		}		
+
 		for (String strCmb: resGral) {
 			String strNewCmb = strCmb + "-" + cmbGreedy;
-			strNewCmb = ordenaCmb(strNewCmb); 
+			strNewCmb = sortCmb(strNewCmb); 
 			listSortedAmpliada.add(strNewCmb);
 			storeResult( strNewCmb);//??
 			System.out.println("strNewCmb " + strNewCmb);
@@ -975,8 +979,8 @@ public abstract class KodkodModelValidator {
 	 * @param strCmb
 	 * @return
 	 */
-	
-	private static String ordenaCmb(String strCmb) {
+
+	private static String sortCmb(String strCmb) {
 		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		String resCmb = "";
 		List<String> listRes = new ArrayList<String>();
@@ -1005,10 +1009,10 @@ public abstract class KodkodModelValidator {
 	 * @return
 	 */
 
-	private static String fabCmbResto(String strCmbBase, String strCmbTotal) {
+	private static String makeRestCmb(String strCmbBase, String strCmbTotal) {
 		List<String> listRes = new ArrayList<String>();
-		strCmbBase=ordenaCmb(strCmbBase);
-		strCmbTotal=ordenaCmb(strCmbTotal);
+		strCmbBase=sortCmb(strCmbBase);
+		strCmbTotal=sortCmb(strCmbTotal);
 		String resCmb="";
 		String[] aInvsBase=strCmbBase.split("-");
 		int nInvsBase = aInvsBase.length;
@@ -1043,7 +1047,7 @@ public abstract class KodkodModelValidator {
 	 * @return
 	 */
 
-	private static List<String> combina(String strCmb) {
+	private static List<String> combines(String strCmb) {
 		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		List<String> resGral = new ArrayList<String>();
 		String[] aInvs=strCmb.split("-");
@@ -1074,7 +1078,7 @@ public abstract class KodkodModelValidator {
 			}
 			String cmbFinal=invF + "-"+cmb;
 			System.out.println("cmbFinal [" + cmbFinal + "]");
-			cmbFinal = ordenaCmb(cmbFinal);
+			cmbFinal = sortCmb(cmbFinal);
 			if (!resGral.contains(cmbFinal)) {
 				resGral.add(cmbFinal);
 			}
