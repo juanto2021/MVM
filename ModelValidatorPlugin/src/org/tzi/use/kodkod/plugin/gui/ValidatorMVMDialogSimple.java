@@ -151,7 +151,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			Duration timeElapsed,
 			int pNumCallSolver,
 			int pNumCallSolverSAT,
-			int pNumCallSolverUNSAT) {
+			int pNumCallSolverUNSAT,
+			String tipoSearchMSS) {
 
 		this.parent=parent;
 		this.kodParent=kodParent;
@@ -201,7 +202,13 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		}
 
 		this.mModel=mModel;
-		frame = new JFrame("Validator with combinations");
+		String titleFrame = "Validator with combinations";
+		if (tipoSearchMSS.equals("L")){
+			titleFrame+=" (Brute)";
+		}else {
+			titleFrame+=" (Greedy)";
+		}
+		frame = new JFrame(titleFrame);
 
 		//JG Cambiar url resource MvMJG.png
 
@@ -782,7 +789,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				textAreaOCLSat.setText(textOCL);
 				textAreaOCLSat.setCaretPosition(0);
 				// Crear object diagram
-				
+
 				if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
 
 					Solution solution=null;
@@ -1011,10 +1018,13 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 	private void createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
 		ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session	
+		//Juanto1
 		try {
 			odc.create(solution.instance().relationTuples());
 		} catch (UseApiException e) {
-			e.printStackTrace();
+			if (!e.getMessage().contains("Link creation failed!")) {
+				e.printStackTrace();
+			}
 		}
 
 		NewObjectDiagramView odv = new NewObjectDiagramView(parent, session.system());
