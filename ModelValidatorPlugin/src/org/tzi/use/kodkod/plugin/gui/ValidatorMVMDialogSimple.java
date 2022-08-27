@@ -662,7 +662,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					Solution solution=null;
 					KodkodSolver kodkodSolver = new KodkodSolver();
 					try {
-						solution = kodParent.calcular( combinacion,  invClassTotal,  kodkodSolver);
+						solution = kodParent.calcular( combinacion,  invClassTotal);
 						if (solution.outcome().toString() == "SATISFIABLE") {
 							Session session = kodParent.getSession();
 							try {
@@ -795,7 +795,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					Solution solution=null;
 					KodkodSolver kodkodSolver = new KodkodSolver();
 					try {
-						solution = kodParent.calcular( strCmbSAT,  invClassTotal,  kodkodSolver);
+						solution = kodParent.calcular( strCmbSAT,  invClassTotal);
 						if (solution.outcome().toString() == "SATISFIABLE") {
 							Session session = kodParent.getSession();
 							try {
