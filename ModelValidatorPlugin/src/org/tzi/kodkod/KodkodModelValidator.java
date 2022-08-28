@@ -85,6 +85,7 @@ public abstract class KodkodModelValidator {
 	private static Map<String,List<MAttribute>> matP;
 	private static int matProb[][];
 	private static MClassInvariant invXazar;
+	private static String fmt="";
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -389,70 +390,19 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers,			
 			Instant start) {
+		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		samples.clear();
-		String strCmbTotal = "";
+		//		String strCmbTotal = "";
 		// In this point We must to treat only the invariants that are satisfiables alone
+		// Make col collection and strCmbTotal
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
-		for (MClassInvariant invClass: mModel.classInvariants()) {
-
-			for (IInvariant inv: invClassSatisfiables) {
-				// Check is invariant is satisfiable
-				if (invClass.name().equals(inv.name())){
-					col.add(invClass);
-					int nCmb = searchNumInvII(inv);
-					String strNinv = String.format("%0"+String.valueOf(invClassTotal.size()).length()+"d",nCmb);
-					if (strCmbTotal!="") {
-						strCmbTotal+="-";
-					}
-					strCmbTotal+=strNinv;					
-					continue;
-				}
-			}
-		}
+		col = makeCollectionInvs(invClassSatisfiables);
+		String strCmbTotal = makeTotalCmb(col);
 		strCmbTotal= sortCmb(strCmbTotal);
+
 		// Here We have a collection of MClassInvariant all them satisfiables
+		buildTreeVisitor(col);
 
-		mapCAI.clear();
-		mapInfoInv.clear();
-		mapInfoAttr.clear();
-		mapInfoAssoc.clear();
-		int contador = 0;
-		int conLog=0;
-		List<String> logs = new ArrayList<String>();
-
-		for(MClassInvariant inv: col) {
-
-			Expression exp = inv.bodyExpression();
-			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
-			// Init previous
-			visitor.setLogs(logs);
-			visitor.setConLog(conLog);
-			visitor.setMapCAI(mapCAI);
-			visitor.setMapInfoInv(mapInfoInv);
-			visitor.setMapInfoAttr(mapInfoAttr);
-			visitor.setMapInfoAssoc(mapInfoAssoc);
-			visitor.setClassInv(inv);
-
-			exp.processWithVisitor(visitor);
-
-			// Collect results
-			logs = visitor.getLogs();
-			conLog=visitor.getConLog();
-			mapCAI = visitor.getMapCAI();
-			mapInfoInv=visitor.getMapInfoInv();
-			mapInfoAttr=visitor.getMapInfoAttr();
-			mapInfoAssoc=visitor.getMapInfoAssoc();
-
-			contador+=1;
-			if (debMVM) {
-				System.out.println("contador [" + contador + "]");
-			}
-		}
-		if (debMVM) {
-			for(String log: logs) {
-				System.out.println("log [" + log + "]");
-			}
-		}
 		// Preparation of Map of invariants with Set of invariants
 		// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
 		preparaMapInfoInvSet();
@@ -461,14 +411,9 @@ public abstract class KodkodModelValidator {
 		preparaProbMat(mModel.classInvariants());
 
 		if (showStructuresAO) {
-			// Print results
-			printCAI();           // Classes, Attributes & Invariants
-			printMapInfoInv();    // Attributes & Assoc of Invariants 
-			printMapInfoAttr();   // Invariants of Attributes
-			printMapInfoAssoc();  // Invariants of Assoc
-			printMapInfoInvSet(); // invariants related to invariants
-			printMatProb();
+			printStructuresAO();
 		}
+		
 		String strCmbBase ="";
 		List<MClassInvariant> ic = new ArrayList<MClassInvariant>();
 		colInvFault.clear();
@@ -503,22 +448,28 @@ public abstract class KodkodModelValidator {
 				}
 			}
 			strCmbBase= sortCmb(strCmb);
-			if (!listSorted.contains(strCmb)) {
-				listSorted.add(strCmb);
-			}
+			//			if (!listSorted.contains(strCmb)) {
+			//				listSorted.add(strCmb);
+			//			}
 
-			LOG.info("MVM: Envio a sendToValidate.");
+			//			LOG.info("MVM: Envio a sendToValidate.");
 			// Send to Validate (sendToValidate)
-			sendToValidate(listSorted , invClassTotal); 
+			//			sendToValidate(listSorted , invClassTotal); 
+			String solucion="";
+			LOG.info("MVM: Envio a calcularGreedy.");
+			solucion = calcularGreedy( strCmbBase,  invClassTotal);	
+			addSolutionG(strCmbBase, solucion);
 			// si el resultado es UNSATISFIABLE hay que volver a enviarlo a greedyMethod
 			// pero indicando la lista de invariantes que han fallado en las busquedas anteriores
 			// Sabemos que es satisfiable si en la lista listSatisfiables hay resultados.
-			if (listSatisfiables.size()>0) {
+			//			if (listSatisfiables.size()>0) {
+			if (solucion.equals("SATISFIABLE")){
 				useGreedy=false;
+
 			}else {
 				// invXazar
 				colInvFault.add(invXazar);
-				// Si la colección de inv que fallan en greedyMethod es mayor o igual
+				// Si la coleccion de inv que fallan en greedyMethod es mayor o igual
 				// a la lista de invariantes validas, detenemos busqueda para evitar 
 				// bucles infinitos
 				if (colInvFault.size()>= invClassTotal.size()) {
@@ -528,7 +479,7 @@ public abstract class KodkodModelValidator {
 		}
 		// ver strCmbBase
 		mixInvariants(samples); // nose
-		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
+		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
 
 		List<String> resGral = new ArrayList<String>();
@@ -564,7 +515,7 @@ public abstract class KodkodModelValidator {
 							solucion = calcularGreedy( newCmb,  invClassTotal);
 							if (solucion=="SATISFIABLE") {
 								numCallSolverSAT+=1;
-								addSolution(newCmb, solution);
+								addSolutionG(newCmb, solucion);
 								resSat.add(newCmb);
 								if (newResto!="") {
 									newResto+="-";
@@ -587,10 +538,10 @@ public abstract class KodkodModelValidator {
 									if (solucion == "SATISFIABLE") {
 										numCallSolverSAT+=1;
 										//								resGral.add(cmbMUS);
-										addSolution(cmbMUS, solution);
+										addSolutionG(cmbMUS, solucion);
 									}else if (solucion ==  "UNSATISFIABLE") {
 										numCallSolverUNSAT+=1;
-										addSolution(cmbMUS, solution);
+										addSolutionG(cmbMUS, solucion);
 									}
 
 								}
@@ -602,7 +553,7 @@ public abstract class KodkodModelValidator {
 			}
 			resGral.clear();
 			for (String cmb:resSat) {
-//				System.out.println("resSat cmb [" + cmb + "]");
+				//				System.out.println("resSat cmb [" + cmb + "]");
 				resGral.add(cmb);
 			}	
 		}
@@ -646,12 +597,68 @@ public abstract class KodkodModelValidator {
 						numCallSolverUNSAT,
 						tipoSearchMSS);
 	}
+
+	private static Collection<MClassInvariant> makeCollectionInvs(Collection<IInvariant> invClassSatisfiables) {
+		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
+		for (int nInv=0;nInv<invClassTotal.size();nInv++) {
+			IInvariant inv = tabInv[nInv];
+			if (invClassSatisfiables.contains(inv)) {
+				MClassInvariant invClass=tabInvMClass[nInv];
+				col.add(invClass);
+			}
+		}
+		return col;
+	}
+
+	private static void buildTreeVisitor(Collection<MClassInvariant> col) {
+		mapCAI.clear();
+		mapInfoInv.clear();
+		mapInfoAttr.clear();
+		mapInfoAssoc.clear();
+		int contador = 0;
+		int conLog=0;
+		List<String> logs = new ArrayList<String>();
+		for(MClassInvariant inv: col) {
+
+			Expression exp = inv.bodyExpression();
+			MVMStatisticsVisitor visitor = new MVMStatisticsVisitor();
+			// Init previous
+			visitor.setLogs(logs);
+			visitor.setConLog(conLog);
+			visitor.setMapCAI(mapCAI);
+			visitor.setMapInfoInv(mapInfoInv);
+			visitor.setMapInfoAttr(mapInfoAttr);
+			visitor.setMapInfoAssoc(mapInfoAssoc);
+			visitor.setClassInv(inv);
+
+			exp.processWithVisitor(visitor);
+
+			// Collect results
+			logs = visitor.getLogs();
+			conLog=visitor.getConLog();
+			mapCAI = visitor.getMapCAI();
+			mapInfoInv=visitor.getMapInfoInv();
+			mapInfoAttr=visitor.getMapInfoAttr();
+			mapInfoAssoc=visitor.getMapInfoAssoc();
+
+			contador+=1;
+			if (debMVM) {
+				System.out.println("contador [" + contador + "]");
+			}
+
+		}
+		if (debMVM) {
+			for(String log: logs) {
+				System.out.println("log [" + log + "]");
+			}
+		}
+	}
 	/**
 	 * Find the order number of the invariant in the general table of invariants of the model
 	 * @param inv
 	 * @return
 	 */
-	private int searchNumInv(MClassInvariant inv) {
+	private static int searchNumInv(MClassInvariant inv) {
 		int numInvGral=-1;
 		for (int nInv = 0; nInv < tabInv.length; nInv++) {
 			if(inv.name().equals(tabInv[nInv].name())) {
@@ -669,7 +676,7 @@ public abstract class KodkodModelValidator {
 	 * @param inv
 	 * @return
 	 */
-	private int searchNumInvII(IInvariant inv) {
+	private static int searchNumInvII(IInvariant inv) {
 		int numInvGral=-1;
 		for (int nInv = 0; nInv < tabInv.length; nInv++) {
 			IInvariant invCmp = tabInv[nInv];
@@ -781,10 +788,20 @@ public abstract class KodkodModelValidator {
 		}
 	}
 
+	private static void printStructuresAO() {
+		// Print results
+		printCAI();           // Classes, Attributes & Invariants
+		printMapInfoInv();    // Attributes & Assoc of Invariants 
+		printMapInfoAttr();   // Invariants of Attributes
+		printMapInfoAssoc();  // Invariants of Assoc
+		printMapInfoInvSet(); // invariants related to invariants
+		printMatProb();
+	}
+	
 	/**
 	 * Prints structures for the calculation of probabilities of interference between invariants
 	 */
-	private void printMatProb() {
+	private static void printMatProb() {
 		System.out.println();
 		System.out.println("Atributos comunes en invariantes relacionadas");
 		System.out.println("=============================================");		
@@ -828,7 +845,7 @@ public abstract class KodkodModelValidator {
 	/**
 	 * Print class structure, attributes, invariants
 	 */
-	private void printCAI() {
+	private static void printCAI() {
 		System.out.println();
 		System.out.println("============================================");
 		System.out.println("Class, Attributes and Invariants");
@@ -860,7 +877,7 @@ public abstract class KodkodModelValidator {
 	/**
 	 * Print mapInfoInv structure (attributes and associations of an invariant)
 	 */
-	private void printMapInfoInv() {
+	private static void printMapInfoInv() {
 		// Attributes & Assoc of Invariants
 		System.out.println();
 		System.out.println("============================================");
@@ -896,7 +913,7 @@ public abstract class KodkodModelValidator {
 	/**
 	 * Print mapInfoAttr structure (invariants of an attribute)
 	 */
-	private void printMapInfoAttr(){
+	private static void printMapInfoAttr(){
 		System.out.println();
 		System.out.println("============================================");
 		System.out.println("Invariants of Attr");
@@ -919,7 +936,7 @@ public abstract class KodkodModelValidator {
 	/**
 	 * Print mapInfoAssoc structure (invariants of an association)
 	 */
-	private void printMapInfoAssoc() {
+	private static void printMapInfoAssoc() {
 		System.out.println();
 		System.out.println("============================================");
 		System.out.println("Invariants of Assoc");
@@ -1009,7 +1026,7 @@ public abstract class KodkodModelValidator {
 	 */
 
 	private static String sortCmb(String strCmb) {
-		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
+		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		String resCmb = "";
 		List<String> listRes = new ArrayList<String>();
 		String[] aInvs=strCmb.split("-");
@@ -1029,6 +1046,20 @@ public abstract class KodkodModelValidator {
 
 		return resCmb;
 	}
+
+	private static String makeTotalCmb(Collection<MClassInvariant> col) {
+		String strCmbTotal="";
+		for (MClassInvariant invClass: col) {
+			int nCmb = searchNumInv(invClass);
+			String strNinv = String.format(fmt,nCmb);
+			if (strCmbTotal!="") {
+				strCmbTotal+="-";
+			}
+			strCmbTotal+=strNinv;	
+		}
+		return strCmbTotal;
+	}
+
 	/**
 	 * Dada una combinacion base obtenida con greedy, busca relacion de invariantes
 	 * restantes y devuelve una combinacion con todas ellas 
@@ -1115,7 +1146,7 @@ public abstract class KodkodModelValidator {
 	//	}	
 
 	private static List<String> combines(String strCmb) {
-		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
+		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		List<String> resGral = new ArrayList<String>();
 		String[] aInvs=strCmb.split("-");
 		int nInvs = aInvs.length;
@@ -1179,7 +1210,7 @@ public abstract class KodkodModelValidator {
 	/**
 	 * Print content of mapInfoInvSet
 	 */
-	private void printMapInfoInvSet() {
+	private static void printMapInfoInvSet() {
 		System.out.println();
 		System.out.println("Invariantes relacionadas entre si (mapInfoInvSet)");
 		System.out.println();
@@ -1199,7 +1230,7 @@ public abstract class KodkodModelValidator {
 	/**
 	 * Preparation structure to store invariants related to each invariant
 	 */
-	private void preparaMapInfoInvSet() {
+	private static void preparaMapInfoInvSet() {
 		// Preparo Map de invariantes con Set de invariantes
 		// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
 		//		List<MClassInvariant> result = new ArrayList<MClassInvariant>();
@@ -1628,16 +1659,19 @@ public abstract class KodkodModelValidator {
 					// Buscar invariantes de la combinacion
 					//					List<IInvariant> listInv = new ArrayList<IInvariant>();//nose
 					//					listInv=splitInvCombination( combinacion);// nose
+					String solucion="";
 					Solution solution=null;
 					try {
 						solution = calcular( combinacion,  invClassTotal);
-
+						solucion = calcularGreedy( combinacion,  invClassTotal);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					acumVal+=1;
+					//					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combinacion);
+					//					resultado += " - ["+ solution.outcome()+"]";
 					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combinacion);
-					resultado += " - ["+ solution.outcome()+"]";
+					resultado += " - ["+ solution+"]";
 					// Aqui poner if (debMVM)
 					if (debMVM) {
 						//					if (true) {
@@ -1654,7 +1688,7 @@ public abstract class KodkodModelValidator {
 					//					} else {
 					//						listOthers.add(combinacion);
 					//					}
-					addSolution(combinacion, solution);
+					addSolutionG(combinacion, solucion);
 				}
 			}
 		} catch (Exception e) {
@@ -1664,10 +1698,35 @@ public abstract class KodkodModelValidator {
 
 	public void addSolution(String combinacion, Solution solution) {
 		if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
-			listSatisfiables.add(combinacion);
+			//			listSatisfiables.add(combinacion);
+			if (!listSatisfiables.contains(combinacion)) {
+				listSatisfiables.add(combinacion);
+			}				
 			storeResultCmb(combinacion, "SATISFIABLE", "Direct calculation");
 		}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
-			listUnSatisfiables.add(combinacion);
+			//			listUnSatisfiables.add(combinacion);
+			if (!listUnSatisfiables.contains(combinacion)) {
+				listUnSatisfiables.add(combinacion);
+			}			
+			storeResultCmb(combinacion, "UNSATISFIABLE", "Direct calculation");
+			// Si fuese insatisfactible, valdria la pena hallar los unsatisfactibles cores
+			//						calcularRec(combinacion, invClassTotal,  kodkodSolver, acumVal);//provis
+		} else {
+			listOthers.add(combinacion);
+		}
+	}
+	public void addSolutionG(String combinacion, String solucion) {
+		if (solucion.equals("SATISFIABLE") || solucion.equals("TRIVIALLY_SATISFIABLE")) {
+			//			listSatisfiables.add(combinacion);
+			if (!listSatisfiables.contains(combinacion)) {
+				listSatisfiables.add(combinacion);
+			}							
+			storeResultCmb(combinacion, "SATISFIABLE", "Direct calculation");
+		}else if (solucion.equals("UNSATISFIABLE") || solucion.equals("TRIVIALLY_UNSATISFIABLE")) {
+			//			listUnSatisfiables.add(combinacion);
+			if (!listUnSatisfiables.contains(combinacion)) {
+				listUnSatisfiables.add(combinacion);
+			}
 			storeResultCmb(combinacion, "UNSATISFIABLE", "Direct calculation");
 			// Si fuese insatisfactible, valdria la pena hallar los unsatisfactibles cores
 			//						calcularRec(combinacion, invClassTotal,  kodkodSolver, acumVal);//provis
