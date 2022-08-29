@@ -230,8 +230,6 @@ public abstract class KodkodModelValidator {
 					}
 				}
 
-
-				//				kodkodSolver = new KodkodSolver();// provis
 				Solution solution = kodkodSolver.solve(model);
 
 				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
@@ -421,7 +419,7 @@ public abstract class KodkodModelValidator {
 		String strCmbBase ="";
 		// modeG = "R", se usa random para empezar por una invariante
 		// modeG = "T" se usan todas las invariantes para unir resultados
-		String modeG="T";
+		String modeG="T";// Get the best results
 
 		int iIni, iFin;
 		if (modeG.equals("R")) {
@@ -473,7 +471,6 @@ public abstract class KodkodModelValidator {
 								String solucion="";
 								solucion = calcularGreedy( newCmb,  invClassTotal);
 								if (solucion=="SATISFIABLE") {
-									//									numCallSolverSAT+=1;
 									addSolutionG(newCmb, solucion);
 									resSat.add(newCmb);
 									if (newResto!="") {
@@ -481,7 +478,6 @@ public abstract class KodkodModelValidator {
 									}
 									newResto+=invR;
 								}else {
-									//									numCallSolverUNSAT+=1;
 									// Buscar por parejas
 									String[] aInvsB=cmbA.split("-");
 									int nInvsB = aInvsB.length;
@@ -495,11 +491,6 @@ public abstract class KodkodModelValidator {
 										solucion = calcularGreedy( cmbMUS,  invClassTotal);
 										addSolutionG(cmbMUS, solucion);
 										System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
-										if (solucion == "SATISFIABLE") {
-											//											addSolutionG(cmbMUS, solucion);
-										}else if (solucion ==  "UNSATISFIABLE") {
-											//											addSolutionG(cmbMUS, solucion);
-										}
 									}
 								}
 							}
@@ -1021,10 +1012,6 @@ public abstract class KodkodModelValidator {
 						invXazar = arrInv[0];
 					}
 				}
-				//				Random random = new Random();
-				//				int nRnd = random.nextInt(n);
-				//
-				//				invXazar = arrInv[nRnd];
 				ic.add(invXazar);
 
 				// 3.	Eliminamos X de { I }.
@@ -1130,45 +1117,6 @@ public abstract class KodkodModelValidator {
 	 * @param strCmb
 	 * @return
 	 */
-	//	private static List<String> combines(String strCmb) {
-	//		String fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
-	//		List<String> resGral = new ArrayList<String>();
-	//		String[] aInvs=strCmb.split("-");
-	//		int nInvs = aInvs.length;
-	//		for (int nIni = 1;nIni<=nInvs;nIni++) {
-	//			int ini=nIni;
-	//			for (int ngs=0;ngs<nInvs;ngs++) {
-	//				String cmbI ="";
-	//				int finNgs=ini+ngs-1;
-	//				if (finNgs>nInvs) {
-	//					finNgs=nInvs;
-	//				}
-	//				for (int nIniI = ini;nIniI<=finNgs;nIniI++) {
-	//					if (cmbI!="") {
-	//						cmbI+="-";
-	//					}
-	//					String invFI = String.format(fmt,Integer.parseInt(aInvs[nIniI-1]));	
-	//					cmbI += invFI;
-	//				}
-	//				for (int nFin = ini+ngs;nFin<=nInvs;nFin++) {
-	//					int fin = nFin;
-	//					String cmb = cmbI;
-	//					if (cmb!="") {
-	//						cmb+="-";
-	//					}
-	//					String invF = String.format(fmt,Integer.parseInt(aInvs[fin-1]));	
-	//					cmb += invF;
-	//					System.out.println("combines cmb [" + cmb + "]");
-	//					if (!resGral.contains(cmb)) {
-	//						resGral.add(cmb);
-	//					}
-	//				}
-	//			}
-	//
-	//		}			
-	//		Collections.sort(resGral);
-	//		return resGral;
-	//	}	
 
 	private static List<String> combines(String strCmb) {
 		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
@@ -1667,23 +1615,15 @@ public abstract class KodkodModelValidator {
 				// Si la combinacion esta incluida en alguna combinacion satisfactible
 				// no hace falta calcularla porque tambien sera satisfactible
 				calculate = !includedInSatisfactible(combinacion);
-				//				if (!calculate) {
-				//					System.out.println("Comb ["+combinacion+"] es satisfiable");
-				//				}
 				if (calculate) {
 					// Ver si hay combinaciones insatisfactibles que esten incluidas en la combinacion a tratar
 					// Si la combinacion a tratar contiene una combinacion insatisfactible, sera insatisfactible
 					calculate = !unsatisIncludedInCombination( combinacion);
-					//					if (!calculate) {
-					//						System.out.println("Comb ["+combinacion+"] es unsatisfiable");
-					//					}
 				}
 
 
 				if (calculate) {
 					// Buscar invariantes de la combinacion
-					//					List<IInvariant> listInv = new ArrayList<IInvariant>();//nose
-					//					listInv=splitInvCombination( combinacion);// nose
 					String solucion="";
 					Solution solution=null;
 					try {
@@ -1693,26 +1633,12 @@ public abstract class KodkodModelValidator {
 						e.printStackTrace();
 					}
 					acumVal+=1;
-					//					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combinacion);
-					//					resultado += " - ["+ solution.outcome()+"]";
 					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combinacion);
 					resultado += " - ["+ solution+"]";
 					// Aqui poner if (debMVM)
 					if (debMVM) {
-						//					if (true) {
 						System.out.println("MVM: " + resultado);
 					}
-					//					if (solution.outcome().toString() == "SATISFIABLE") {
-					//						listSatisfiables.add(combinacion);
-					//						storeResultCmb(combinacion, "SATISFIABLE", "Direct calculation");
-					//					}else if (solution.outcome().toString() == "UNSATISFIABLE") {
-					//						listUnSatisfiables.add(combinacion);
-					//						storeResultCmb(combinacion, "UNSATISFIABLE", "Direct calculation");
-					//						// Si fuese insatisfactible, valdria la pena hallar los unsatisfactibles cores
-					//						//						calcularRec(combinacion, invClassTotal,  kodkodSolver, acumVal);//provis
-					//					} else {
-					//						listOthers.add(combinacion);
-					//					}
 					addSolutionG(combinacion, solucion);
 				}
 			}
@@ -1723,19 +1649,15 @@ public abstract class KodkodModelValidator {
 
 	public void addSolution(String combinacion, Solution solution) {
 		if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
-			//			listSatisfiables.add(combinacion);
 			if (!listSatisfiables.contains(combinacion)) {
 				listSatisfiables.add(combinacion);
 			}				
 			storeResultCmb(combinacion, "SATISFIABLE", "Direct calculation");
 		}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
-			//			listUnSatisfiables.add(combinacion);
 			if (!listUnSatisfiables.contains(combinacion)) {
 				listUnSatisfiables.add(combinacion);
 			}			
 			storeResultCmb(combinacion, "UNSATISFIABLE", "Direct calculation");
-			// Si fuese insatisfactible, valdria la pena hallar los unsatisfactibles cores
-			//						calcularRec(combinacion, invClassTotal,  kodkodSolver, acumVal);//provis
 		} else {
 			listOthers.add(combinacion);
 		}
@@ -1749,14 +1671,10 @@ public abstract class KodkodModelValidator {
 			}							
 
 		}else if (solucion.equals("UNSATISFIABLE") || solucion.equals("TRIVIALLY_UNSATISFIABLE")) {
-			//			listUnSatisfiables.add(combinacion);
 			if (!listUnSatisfiables.contains(combinacion)) {
 				listUnSatisfiables.add(combinacion);
 				storeResultCmb(combinacion, "UNSATISFIABLE", "Direct calculation");
 			}
-
-			// Si fuese insatisfactible, valdria la pena hallar los unsatisfactibles cores
-			//						calcularRec(combinacion, invClassTotal,  kodkodSolver, acumVal);//provis
 		} else {
 			listOthers.add(combinacion);
 		}
@@ -1826,7 +1744,6 @@ public abstract class KodkodModelValidator {
 				return solucion;
 			}
 		}
-		//		Solution solution=null;
 		// Buscar invariantes de la combinacion
 		List<IInvariant> listInv = new ArrayList<IInvariant>();
 		listInv=splitInvCombination( combinacion);
@@ -1920,28 +1837,20 @@ public abstract class KodkodModelValidator {
 		// Aqui8
 		List<String> lisWork = new ArrayList<String>();
 		lisWork = combines(combinacion);
-		//		lisWork = sortByNumInv(lisWork,"A"); // Provis
 		lisWork = sortByNumInv(lisWork,"D");
 		int nCmbs=lisWork.size();
 		// Se fabrican tantas combinaciones como invariantes hayan en busca de MUS
 		for (int nCmb = 0; nCmb < nCmbs; nCmb++) {
 			String newCmb = lisWork.get(nCmb);
 			if (newCmb.equals(combinacion)) {
-				//			System.out.println("newCmb ["+newCmb+"] repe");	
 				continue;
 			}
 			boolean calculate=true;
 			calculate = !includedInSatisfactible(newCmb);
-			//			if (!calculate) {
-			//				System.out.println("newCmb ["+newCmb+"] sat");	
-			//			}
 
 			if (calculate) {
 				// Ver si hay combinaciones insatisfactibles que esten incluidas en la combinacion a tratar
 				calculate = !unsatisIncludedInCombination( newCmb);
-				//				if (!calculate) {
-				//					System.out.println("newCmb ["+newCmb+"] unsat");	
-				//				}
 			}
 
 			if (calculate) {
