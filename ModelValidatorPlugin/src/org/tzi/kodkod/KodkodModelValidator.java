@@ -979,39 +979,44 @@ public abstract class KodkodModelValidator {
 	 */
 	private List<MClassInvariant> greedyMethod(String modeG, Collection<MClassInvariant> col, int nInvTratar){
 		//	Preparation of Map of invariants with Set of invariants
-		//	Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
+		//  One inv is related to another because it uses common attributes or associations.		
+		//	(Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes)
+
 
 		List<MClassInvariant> result = new ArrayList<MClassInvariant>();
 
-		// col -> Coleccion total de invariantes satisfiables
+		// col -> Total collection of satisfiable invariants
+		// col -> (Coleccion total de invariantes satisfiables)
 
-		// 1.	Inicialmente nuestra combinacion de invariantes esta vacia, y 
-		//      el conjunto de invariantes posibles es { I -> col}. Invariants possibles
+		// 1. (Inicialmente nuestra combinacion de invariantes esta vacia, y) 
+		//    (el conjunto de invariantes posibles es { I -> col}. Invariants possibles)
+		// 1. Initially our combination of invariants is empty, and
+		// the set of possible invariants is { I -> col}. possible invariants		
 
 		Set<MClassInvariant> ic = new HashSet<MClassInvariant>(); // Invariants collection
 		Set<MClassInvariant> ip = new HashSet<MClassInvariant>(); // Invariants possibles
-		//		ip = col.; // Al principio, ip contiene todas las invariantes a tratar
+		//		ip = col.; // Initially, ip contains all the invariants to deal with
 		ip.addAll(col);
 		boolean pVez=true;
 		boolean searchInv=true;
 		while(searchInv) {
 			if (ip.size()>0) searchInv=true;
-			// Podemos buscar al azar entre los invariantes que previamente no se hayan usado
-			// y hayan fallado.
+			// We can randomly search through invariants that were previously unused and failed.
 			Set<MClassInvariant> ipRandom = new HashSet<MClassInvariant>();
 			ipRandom.addAll(ip);
-			ipRandom.removeAll(colInvFault);// Se eliminan las que hayan podido fallar anteriormente
+			ipRandom.removeAll(colInvFault);// Those that may have previously failed are eliminated
 			if (ipRandom.size()<=0) {
 				searchInv=false;
 			}
 			if (searchInv) {
-				// Convertimos Set en array para obtener elementos mas facilmente
+				// We convert Set to array to get elements more easily
 				int n = ipRandom.size();		
 				MClassInvariant arrInv[] = new MClassInvariant[n];
 				arrInv = ipRandom.toArray(arrInv);			
-				// 2.	Anyadimos a nuestra combinacion un invariante X 
-				// elegida al azar dentro de { I -> ip}.
-
+				// 2. (Anyadimos a nuestra combinacion un invariante X) 
+				//    (elegida al azar dentro de { I -> ip}.))
+				// 2. Add to our combination an invariant X
+				// randomly chosen within { I -> ip}.
 				if (modeG.equals("R")) {
 					Random random = new Random();
 					int nRnd = random.nextInt(n);
@@ -1026,11 +1031,14 @@ public abstract class KodkodModelValidator {
 				}
 				ic.add(invXazar);
 
-				// 3.	Eliminamos X de { I }.
+				// 3. (Eliminamos X de { I }.)
+				// 3. We remove X from { I }.				
 				ip.remove(invXazar);
 
-				// 4.	Consultamos los invariantes { Y } que tienen relacion 
-				//      (acceden a algun elemento comun) con el invariante X. 
+				// 4. (Consultamos los invariantes { Y } que tienen relacion) 
+				//    ((acceden a algun elemento comun) con el invariante X.) 
+				// 4. We consult the invariants { AND } that are related
+				// (access some common element) with the invariant X.				
 				Set<MClassInvariant> lInvY = new HashSet<MClassInvariant>();
 				if (mapInfoInvSet.containsKey(invXazar)) {
 					lInvY=mapInfoInvSet.get(invXazar);
@@ -1038,13 +1046,14 @@ public abstract class KodkodModelValidator {
 				}
 			}
 		}
-		// el ic es el conjunto "maximo" de invariantes que no tienen elementos en comun
+		// (el ic es el conjunto "maximo" de invariantes que no tienen elementos en comun)
+		// the ic is the "maximum" set of invariants that have no elements in common		
 		result.addAll(ic);
 		return result;
 
 	}
 	/** 
-	 * Ordena invariantes de menor a mayor formateando con 0 por la izquierda
+	 * Order invariants from smallest to largest by formatting with 0 from the left
 	 * @param strCmb
 	 * @return
 	 */
