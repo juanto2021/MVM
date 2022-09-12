@@ -396,124 +396,128 @@ public abstract class KodkodModelValidator {
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		col = makeCollectionInvs(invClassSatisfiables);
 		String strCmbTotal = makeTotalCmb(col);
-		strCmbTotal= sortCmb(strCmbTotal);
+		if (strCmbTotal!="") {
+			strCmbTotal= sortCmb(strCmbTotal);
+			//		}
 
-		// Here We have a collection of MClassInvariant all them satisfiables
-		buildTreeVisitor(col);
+			// Here We have a collection of MClassInvariant all them satisfiables
+			buildTreeVisitor(col);
 
-		// Preparation of Map of invariants with Set of invariants
-		// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
-		preparaMapInfoInvSet();
+			// Preparation of Map of invariants with Set of invariants
+			// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
+			preparaMapInfoInvSet();
 
-		// Prepara tabla atributos comunes por cada pareja de invariantes
-		preparaProbMat(mModel.classInvariants());
+			// Prepara tabla atributos comunes por cada pareja de invariantes
+			preparaProbMat(mModel.classInvariants());
 
-		// Muestra estructuras resultantes del Visitor
-		if (showStructuresAO) {
-			printStructuresAO();
-		}
+			// Muestra estructuras resultantes del Visitor
+			if (showStructuresAO) {
+				printStructuresAO();
+			}
 
-		// Calcula una combinacion base segun metodo Greedy
-		List<String> resGreedy = new ArrayList<String>();
-		String strCmbBase ="";
-		// modeG = "R", se usa random para empezar por una invariante
-		// modeG = "T" se usan todas las invariantes para unir resultados
-		String modeG="T";// Get the best results
+			// Calcula una combinacion base segun metodo Greedy
+			List<String> resGreedy = new ArrayList<String>();
+			String strCmbBase ="";
+			// modeG = "R", se usa random para empezar por una invariante
+			// modeG = "T" se usan todas las invariantes para unir resultados
+			String modeG="T";// Get the best results
+			LOG.info("MVM: Start Greedy");
+			int iIni, iFin;
+			if (modeG.equals("R")) {
+				iIni=0;
+				iFin=1;
+			}else {
+				iIni=0;
+				iFin=col.size();	
+			}
+			for(int nInv=iIni;nInv<iFin;nInv++) {
+				int nInvTratar=nInv;
+				strCmbBase = bucleGreedy(modeG, col, nInvTratar);
+				resGreedy.add(strCmbBase);
+			}
 
-		int iIni, iFin;
-		if (modeG.equals("R")) {
-			iIni=0;
-			iFin=1;
-		}else {
-			iIni=0;
-			iFin=col.size();	
-		}
-		for(int nInv=iIni;nInv<iFin;nInv++) {
-			int nInvTratar=nInv;
-			strCmbBase = bucleGreedy(modeG, col, nInvTratar);
-			resGreedy.add(strCmbBase);
-		}
+			for(String strCmbGreedy:resGreedy) {
+				strCmbBase = strCmbGreedy;
+				String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
 
-		for(String strCmbGreedy:resGreedy) {
-			strCmbBase = strCmbGreedy;
-			String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
-
-			List<String> resGral = new ArrayList<String>();
-			List<String> resSat = new ArrayList<String>();
-			resGral.add(strCmbBase);
-			String newResto=strCmbResto;
-			while(newResto!="") {
-				String[] aInvsResto=newResto.split("-");
-				int nInvsR = aInvsResto.length;		
-				newResto="";
-				resSat.clear();
-				for (String cmbA: resGral) {
-					for(int nInvR = 0;nInvR<nInvsR;nInvR++) {
-						String invR = aInvsResto[nInvR];
-						invR = String.format(fmt,Integer.parseInt(invR));
-						// si invR esta dentro de cmbA no se guarda
-						boolean guardar=true;
-						String[] aInvsA=cmbA.split("-");
-						int nInvsA = aInvsA.length;	
-						for(int nInvA = 0;nInvA<nInvsA;nInvA++) {
-							String pA = aInvsA[nInvA];
-							if (pA.equals(invR)) {
-								guardar=false;
-								continue;
+				List<String> resGral = new ArrayList<String>();
+				List<String> resSat = new ArrayList<String>();
+				resGral.add(strCmbBase);
+				String newResto=strCmbResto;
+				while(newResto!="") {
+					String[] aInvsResto=newResto.split("-");
+					int nInvsR = aInvsResto.length;		
+					newResto="";
+					resSat.clear();
+					for (String cmbA: resGral) {
+						for(int nInvR = 0;nInvR<nInvsR;nInvR++) {
+							String invR = aInvsResto[nInvR];
+							invR = String.format(fmt,Integer.parseInt(invR));
+							// si invR esta dentro de cmbA no se guarda
+							boolean guardar=true;
+							String[] aInvsA=cmbA.split("-");
+							int nInvsA = aInvsA.length;	
+							for(int nInvA = 0;nInvA<nInvsA;nInvA++) {
+								String pA = aInvsA[nInvA];
+								if (pA.equals(invR)) {
+									guardar=false;
+									continue;
+								}
 							}
-						}
-						if (guardar) {
-							String newCmb = cmbA + "-" + invR;
-							newCmb=sortCmb(newCmb);
-							if (!resSat.contains(newCmb)) {
-								System.out.println("newCmb [" + newCmb + "]");
-								String solucion="";
-								solucion = calcularGreedy( newCmb,  invClassTotal);
-								if (solucion=="SATISFIABLE") {
-									addSolutionG(newCmb, solucion);
-									resSat.add(newCmb);
-									if (newResto!="") {
-										newResto+="-";
-									}
-									newResto+=invR;
-								}else {
-									// Buscar por parejas
-									String[] aInvsB=cmbA.split("-");
-									int nInvsB = aInvsB.length;
-									for (int nInvB = 1;nInvB<=nInvsB;nInvB++) {
-										String invB=aInvsB[nInvB-1];
-										String cmbMUS=invB + "-" + invR;
-										cmbMUS = sortCmb(cmbMUS) ;
-										if (listSatisfiables.contains(cmbMUS)||listUnSatisfiables.contains(cmbMUS)) {
-											continue;
+							if (guardar) {
+								String newCmb = cmbA + "-" + invR;
+								newCmb=sortCmb(newCmb);
+								if (!resSat.contains(newCmb)) {
+									System.out.println("newCmb [" + newCmb + "]");
+									String solucion="";
+									solucion = calcularGreedy( newCmb,  invClassTotal);
+									if (solucion=="SATISFIABLE") {
+										addSolutionG(newCmb, solucion);
+										resSat.add(newCmb);
+										if (newResto!="") {
+											newResto+="-";
 										}
-										solucion = calcularGreedy( cmbMUS,  invClassTotal);
-										addSolutionG(cmbMUS, solucion);
-										System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
+										newResto+=invR;
+									}else {
+										// Buscar por parejas
+										String[] aInvsB=cmbA.split("-");
+										int nInvsB = aInvsB.length;
+										for (int nInvB = 1;nInvB<=nInvsB;nInvB++) {
+											String invB=aInvsB[nInvB-1];
+											String cmbMUS=invB + "-" + invR;
+											cmbMUS = sortCmb(cmbMUS) ;
+											if (listSatisfiables.contains(cmbMUS)||listUnSatisfiables.contains(cmbMUS)) {
+												continue;
+											}
+											solucion = calcularGreedy( cmbMUS,  invClassTotal);
+											addSolutionG(cmbMUS, solucion);
+											System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
+										}
 									}
 								}
 							}
 						}
 					}
+					resGral.clear();
+					for (String cmb:resSat) {
+						resGral.add(cmb);
+					}	
 				}
-				resGral.clear();
-				for (String cmb:resSat) {
-					resGral.add(cmb);
-				}	
+				// -- Provis Ini
+				//				listSatisfiables = sortByNumInv(listSatisfiables,"D");
+				//				int hay = listSatisfiables.size();
+				//				if (hay>3) hay=3;
+				//				for (int j=0;j<hay;j++) {
+				//					String cmbSat = listSatisfiables.get(j);
+				//					System.out.println("strCmbBase ["+ strCmbBase +"] Sat ["+cmbSat+"]");
+				//				}
+				//				System.out.println("Fin bucle");
+				// -- Provis Fin
 			}
-			// -- Provis Ini
-			listSatisfiables = sortByNumInv(listSatisfiables,"D");
-			int hay = listSatisfiables.size();
-			if (hay>3) hay=5;
-			for (int j=0;j<hay;j++) {
-				String cmbSat = listSatisfiables.get(j);
-				System.out.println("strCmbBase ["+ strCmbBase +"] Sat ["+cmbSat+"]");
-			}
-			System.out.println("Fin bucle");
-			// -- Provis Fin
+
 		}
-
-
+		listSatisfiables = sortByNumInv(listSatisfiables,"D");
+		LOG.info("MVM: End Greedy");
 		if (bShowResultGral) showResultGral();
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
@@ -624,6 +628,7 @@ public abstract class KodkodModelValidator {
 	 * @param col
 	 */
 	private static void buildTreeVisitor(Collection<MClassInvariant> col) {
+		LOG.info("MVM: working on Visitor (in)");
 		mapCAI.clear();
 		mapInfoInv.clear();
 		mapInfoAttr.clear();
@@ -665,6 +670,7 @@ public abstract class KodkodModelValidator {
 				System.out.println("log [" + log + "]");
 			}
 		}
+		LOG.info("MVM: working on Visitor (out)");
 	}
 	/**
 	 * Find the order number of the invariant in the general table of invariants of the model
@@ -977,7 +983,7 @@ public abstract class KodkodModelValidator {
 	 * @param col
 	 * @return
 	 */
-	private List<MClassInvariant> greedyMethod(String modeG, Collection<MClassInvariant> col, int nInvTratar){
+	private List<MClassInvariant> greedyMethod	(String modeG, Collection<MClassInvariant> col, int nInvTratar){
 		//	Preparation of Map of invariants with Set of invariants
 		//  One inv is related to another because it uses common attributes or associations.		
 		//	(Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes)
@@ -1225,6 +1231,7 @@ public abstract class KodkodModelValidator {
 	 * Preparation structure to store invariants related to each invariant
 	 */
 	private static void preparaMapInfoInvSet() {
+		LOG.info("MVM: working on preparaMapInfoInvSet (in)");
 		// Preparo Map de invariantes con Set de invariantes
 		// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
 		mapInfoInvSet.clear();
@@ -1264,6 +1271,7 @@ public abstract class KodkodModelValidator {
 				}
 			}
 		}
+		LOG.info("MVM: working on preparaMapInfoInvSet (out)");
 	}
 
 	/**
