@@ -419,6 +419,7 @@ public abstract class KodkodModelValidator {
 			List<String> resGreedy = new ArrayList<String>();
 			String strCmbBase ="";
 			// modeG = "R", se usa random para empezar por una invariante
+			// modeG = "N", se usa random para empezar por una invariante			
 			// modeG = "T" se usan todas las invariantes para unir resultados
 			String modeG="T";// Get the best results
 			LOG.info("MVM: Start Greedy");
@@ -426,6 +427,9 @@ public abstract class KodkodModelValidator {
 			if (modeG.equals("R")) {
 				iIni=0;
 				iFin=1;
+			}else if (modeG.equals("N")) {
+				iIni=0;
+				iFin=3; // cambiar por numero de ocurrencias variable obtenido por parametro
 			}else {
 				iIni=0;
 				iFin=col.size();	
@@ -435,6 +439,8 @@ public abstract class KodkodModelValidator {
 				strCmbBase = bucleGreedy(modeG, col, nInvTratar);
 				resGreedy.add(strCmbBase);
 			}
+			// La idea es quedarse con la mejor solucion y dar un resultado de forma inmediata
+			// Luego buscar el resto de resultados por la fuerza bruta
 
 			for(String strCmbGreedy:resGreedy) {
 				strCmbBase = strCmbGreedy;
@@ -1023,7 +1029,7 @@ public abstract class KodkodModelValidator {
 				//    (elegida al azar dentro de { I -> ip}.))
 				// 2. Add to our combination an invariant X
 				// randomly chosen within { I -> ip}.
-				if (modeG.equals("R")) {
+				if (modeG.equals("R")|| modeG.equals("N")) {
 					Random random = new Random();
 					int nRnd = random.nextInt(n);
 					invXazar = arrInv[nRnd];
