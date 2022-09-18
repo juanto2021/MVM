@@ -19,6 +19,7 @@ import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.mvm.ConfigMVM;
 import org.tzi.mvm.InfoAssoc;
 import org.tzi.mvm.InfoAttr;
 import org.tzi.mvm.InfoInv;
@@ -72,12 +73,12 @@ public abstract class KodkodModelValidator {
 	public static List<ResComb> listCmbRes = new ArrayList<ResComb>();
 	public static List<ResInv> listInvRes = new ArrayList<ResInv>();
 
-	public static List<String> listSatisfiables= new ArrayList<String>();
-	public static List<String> listUnSatisfiables= new ArrayList<String>();
+	public static List<String> listSatisfiables = new ArrayList<String>();
+	public static List<String> listUnSatisfiables = new ArrayList<String>();
 	public static List<String> listUnSatisfiablesTotal= new ArrayList<String>();
-	public static List<String> listOthers= new ArrayList<String>();
+	public static List<String> listOthers = new ArrayList<String>();
 
-	private static boolean debMVM=false;
+	private static boolean debMVM = false;
 
 	private static IInvariant tabInv[];
 	private static MClassInvariant tabInvMClass[];	
@@ -85,7 +86,8 @@ public abstract class KodkodModelValidator {
 	private static Map<String,List<MAttribute>> matP;
 	private static int matProb[][];
 	private static MClassInvariant invXazar;
-	private static String fmt="";
+	private static String fmt = "";
+	private static int numIterGreedy = ConfigMVM.numIterGreedy;
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -390,6 +392,9 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassOthers,			
 			Instant start) {
 		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
+		Instant end;
+		Duration timeElapsed;
+		String tipoSearchMSS="G";			
 
 		// In this point We must to treat only the invariants that are satisfiables alone
 		// Make col collection and strCmbTotal
@@ -422,6 +427,7 @@ public abstract class KodkodModelValidator {
 			// modeG = "N", se usa random para empezar por una invariante			
 			// modeG = "T" se usan todas las invariantes para unir resultados
 			String modeG="T";// Get the best results
+			modeG="N";//Pruebas
 			LOG.info("MVM: Start Greedy");
 			int iIni, iFin;
 			if (modeG.equals("R")) {
@@ -429,7 +435,7 @@ public abstract class KodkodModelValidator {
 				iFin=1;
 			}else if (modeG.equals("N")) {
 				iIni=0;
-				iFin=3; // cambiar por numero de ocurrencias variable obtenido por parametro
+				iFin=numIterGreedy; // cambiar por numero de ocurrencias variable obtenido por parametro
 			}else {
 				iIni=0;
 				iFin=col.size();	
@@ -437,99 +443,260 @@ public abstract class KodkodModelValidator {
 			for(int nInv=iIni;nInv<iFin;nInv++) {
 				int nInvTratar=nInv;
 				strCmbBase = bucleGreedy(modeG, col, nInvTratar);
-				resGreedy.add(strCmbBase);
+				System.out.println("strCmbBase ("+nInv+") ["+strCmbBase+"]");
+				if (!resGreedy.contains(strCmbBase)) {
+					resGreedy.add(strCmbBase);
+				}
+				System.out.println("1 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
 			}
 			// La idea es quedarse con la mejor solucion y dar un resultado de forma inmediata
 			// Luego buscar el resto de resultados por la fuerza bruta
 
+			// Mejor soluicon es la combinacion que mas invariantes tenga
+			int maxSolution=0;
+			String bestSolution="";
 			for(String strCmbGreedy:resGreedy) {
-				strCmbBase = strCmbGreedy;
-				String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
+				int nInvs = 1;
+				String[] aInvsResGreedy=strCmbGreedy.split("-");
+				int nInvsR = aInvsResGreedy.length;
+				if (nInvsR>maxSolution) {
+					maxSolution=nInvsR;
+					bestSolution = strCmbGreedy;
+				}
+			}
+			System.out.println("Best solution greedy ["+bestSolution+"]");
+			end = Instant.now();
+			timeElapsed = Duration.between(start, end);
+			tipoSearchMSS="G";	
 
-				List<String> resGral = new ArrayList<String>();
-				List<String> resSat = new ArrayList<String>();
-				resGral.add(strCmbBase);
-				String newResto=strCmbResto;
-				while(newResto!="") {
-					String[] aInvsResto=newResto.split("-");
-					int nInvsR = aInvsResto.length;		
-					newResto="";
-					resSat.clear();
-					for (String cmbA: resGral) {
-						for(int nInvR = 0;nInvR<nInvsR;nInvR++) {
-							String invR = aInvsResto[nInvR];
-							invR = String.format(fmt,Integer.parseInt(invR));
-							// si invR esta dentro de cmbA no se guarda
-							boolean guardar=true;
-							String[] aInvsA=cmbA.split("-");
-							int nInvsA = aInvsA.length;	
-							for(int nInvA = 0;nInvA<nInvsA;nInvA++) {
-								String pA = aInvsA[nInvA];
-								if (pA.equals(invR)) {
-									guardar=false;
-									continue;
-								}
+			// Envio a MVMDialogSimple
+			ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
+					invClassUnSatisfiables, 
+					invClassOthers,
+					mModel,
+					timeElapsed,
+					tipoSearchMSS);
+			
+			// Ninguno de estos muestra el doialogo completo 
+//			validatorMVMDialog.show();
+//			validatorMVMDialog.invalidate();
+//			validatorMVMDialog.repaint();
+//			validatorMVMDialog.revalidate();
+//			validatorMVMDialog.validate();
+			
+
+			// A continuacion seguir buscando en background
+			calculateInBackGround(resGreedy, strCmbTotal );// provis comento
+			
+			//						listSatisfiables,
+			//						listUnSatisfiables,
+			//						listOthers,
+			
+			
+//			public void updateInfo(pListStrSatisfiables, pListStrUnSatisfiables, pListStrOthers) {
+			validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+//			validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
+//					invClassUnSatisfiables, 
+//					invClassOthers,
+//					mModel,
+//					timeElapsed,
+//					tipoSearchMSS);
+
+//			for(String strCmbGreedy:resGreedy) {
+//				strCmbBase = strCmbGreedy;
+//				String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
+//
+//				List<String> resGral = new ArrayList<String>();
+//				List<String> resSat = new ArrayList<String>();
+//				resGral.add(strCmbBase);
+//				String newResto=strCmbResto;
+//				while(newResto!="") {
+//					String[] aInvsResto=newResto.split("-");
+//					int nInvsR = aInvsResto.length;		
+//					newResto="";
+//					resSat.clear();
+//					for (String cmbA: resGral) {
+//						for(int nInvR = 0;nInvR<nInvsR;nInvR++) {
+//							String invR = aInvsResto[nInvR];
+//							invR = String.format(fmt,Integer.parseInt(invR));
+//							// si invR esta dentro de cmbA no se guarda
+//							boolean guardar=true;
+//							String[] aInvsA=cmbA.split("-");
+//							int nInvsA = aInvsA.length;	
+//							for(int nInvA = 0;nInvA<nInvsA;nInvA++) {
+//								String pA = aInvsA[nInvA];
+//								if (pA.equals(invR)) {
+//									guardar=false;
+//									continue;
+//								}
+//							}
+//							if (guardar) {
+//								String newCmb = cmbA + "-" + invR;
+//								newCmb=sortCmb(newCmb);
+//								if (!resSat.contains(newCmb)) {
+//									System.out.println("newCmb [" + newCmb + "]");
+//									String solucion="";
+//									solucion = calcularGreedy( newCmb,  invClassTotal);
+//									if (solucion=="SATISFIABLE") {
+//										addSolutionG(newCmb, solucion);
+//										resSat.add(newCmb);
+//										if (newResto!="") {
+//											newResto+="-";
+//										}
+//										newResto+=invR;
+//									}else {
+//										// Buscar por parejas
+//										String[] aInvsB=cmbA.split("-");
+//										int nInvsB = aInvsB.length;
+//										for (int nInvB = 1;nInvB<=nInvsB;nInvB++) {
+//											String invB=aInvsB[nInvB-1];
+//											String cmbMUS=invB + "-" + invR;
+//											cmbMUS = sortCmb(cmbMUS) ;
+//											if (listSatisfiables.contains(cmbMUS)||listUnSatisfiables.contains(cmbMUS)) {
+//												continue;
+//											}
+//											solucion = calcularGreedy( cmbMUS,  invClassTotal);
+//											addSolutionG(cmbMUS, solucion);
+//											System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
+//					resGral.clear();
+//					for (String cmb:resSat) {
+//						resGral.add(cmb);
+//					}	
+//					System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
+//				}
+//			}
+		}
+		
+		// -- Comento lo siguiente (INICIO)
+		
+//		listSatisfiables = sortByNumInv(listSatisfiables,"D");
+//		LOG.info("MVM: End Greedy");
+//		if (bShowResultGral) showResultGral();
+//		//		Instant end = Instant.now();
+//		//		Duration timeElapsed = Duration.between(start, end);
+//		//		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+//
+//		//		String tipoSearchMSS="G";
+//
+//		end = Instant.now();
+//		timeElapsed = Duration.between(start, end);
+//		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+//
+//		tipoSearchMSS="G";		
+		// -- Comento lo anterior (FIN)		
+		
+		//		ValidatorMVMDialogSimple validatorMVMDialog= 
+		//				new ValidatorMVMDialogSimple(MainWindow.instance(), 
+		//						this,
+		//						invClassSatisfiables, 
+		//						invClassUnSatisfiables, 
+		//						invClassOthers,
+		//						mapGRP_SAT_MAX,
+		//						listSatisfiables,
+		//						listUnSatisfiables,
+		//						listOthers,
+		//						mapInvRes,
+		//						mModel,
+		//						invClassTotal,
+		//						timeElapsed,
+		//						numCallSolver,
+		//						numCallSolverSAT,
+		//						numCallSolverUNSAT,
+		//						tipoSearchMSS);
+		
+		
+//		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
+//				invClassUnSatisfiables, 
+//				invClassOthers,
+//				mModel,
+//				timeElapsed,
+//				tipoSearchMSS);
+	}
+	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal ) {
+		String strCmbBase;
+		for(String strCmbGreedy:resGreedy) {
+			strCmbBase = strCmbGreedy;
+			String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
+
+			List<String> resGral = new ArrayList<String>();
+			List<String> resSat = new ArrayList<String>();
+			resGral.add(strCmbBase);
+			String newResto=strCmbResto;
+			while(newResto!="") {
+				String[] aInvsResto=newResto.split("-");
+				int nInvsR = aInvsResto.length;		
+				newResto="";
+				resSat.clear();
+				for (String cmbA: resGral) {
+					for(int nInvR = 0;nInvR<nInvsR;nInvR++) {
+						String invR = aInvsResto[nInvR];
+						invR = String.format(fmt,Integer.parseInt(invR));
+						// si invR esta dentro de cmbA no se guarda
+						boolean guardar=true;
+						String[] aInvsA=cmbA.split("-");
+						int nInvsA = aInvsA.length;	
+						for(int nInvA = 0;nInvA<nInvsA;nInvA++) {
+							String pA = aInvsA[nInvA];
+							if (pA.equals(invR)) {
+								guardar=false;
+								continue;
 							}
-							if (guardar) {
-								String newCmb = cmbA + "-" + invR;
-								newCmb=sortCmb(newCmb);
-								if (!resSat.contains(newCmb)) {
-									System.out.println("newCmb [" + newCmb + "]");
-									String solucion="";
-									solucion = calcularGreedy( newCmb,  invClassTotal);
-									if (solucion=="SATISFIABLE") {
-										addSolutionG(newCmb, solucion);
-										resSat.add(newCmb);
-										if (newResto!="") {
-											newResto+="-";
+						}
+						if (guardar) {
+							String newCmb = cmbA + "-" + invR;
+							newCmb=sortCmb(newCmb);
+							if (!resSat.contains(newCmb)) {
+								System.out.println("newCmb [" + newCmb + "]");
+								String solucion="";
+								solucion = calcularGreedy( newCmb,  invClassTotal);
+								if (solucion=="SATISFIABLE") {
+									addSolutionG(newCmb, solucion);
+									resSat.add(newCmb);
+									if (newResto!="") {
+										newResto+="-";
+									}
+									newResto+=invR;
+								}else {
+									// Buscar por parejas
+									String[] aInvsB=cmbA.split("-");
+									int nInvsB = aInvsB.length;
+									for (int nInvB = 1;nInvB<=nInvsB;nInvB++) {
+										String invB=aInvsB[nInvB-1];
+										String cmbMUS=invB + "-" + invR;
+										cmbMUS = sortCmb(cmbMUS) ;
+										if (listSatisfiables.contains(cmbMUS)||listUnSatisfiables.contains(cmbMUS)) {
+											continue;
 										}
-										newResto+=invR;
-									}else {
-										// Buscar por parejas
-										String[] aInvsB=cmbA.split("-");
-										int nInvsB = aInvsB.length;
-										for (int nInvB = 1;nInvB<=nInvsB;nInvB++) {
-											String invB=aInvsB[nInvB-1];
-											String cmbMUS=invB + "-" + invR;
-											cmbMUS = sortCmb(cmbMUS) ;
-											if (listSatisfiables.contains(cmbMUS)||listUnSatisfiables.contains(cmbMUS)) {
-												continue;
-											}
-											solucion = calcularGreedy( cmbMUS,  invClassTotal);
-											addSolutionG(cmbMUS, solucion);
-											System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
-										}
+										solucion = calcularGreedy( cmbMUS,  invClassTotal);
+										addSolutionG(cmbMUS, solucion);
+										System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
 									}
 								}
 							}
 						}
 					}
-					resGral.clear();
-					for (String cmb:resSat) {
-						resGral.add(cmb);
-					}	
 				}
-				// -- Provis Ini
-				//				listSatisfiables = sortByNumInv(listSatisfiables,"D");
-				//				int hay = listSatisfiables.size();
-				//				if (hay>3) hay=3;
-				//				for (int j=0;j<hay;j++) {
-				//					String cmbSat = listSatisfiables.get(j);
-				//					System.out.println("strCmbBase ["+ strCmbBase +"] Sat ["+cmbSat+"]");
-				//				}
-				//				System.out.println("Fin bucle");
-				// -- Provis Fin
+				resGral.clear();
+				for (String cmb:resSat) {
+					resGral.add(cmb);
+				}	
+				System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
 			}
-
 		}
-		listSatisfiables = sortByNumInv(listSatisfiables,"D");
-		LOG.info("MVM: End Greedy");
-		if (bShowResultGral) showResultGral();
-		Instant end = Instant.now();
-		Duration timeElapsed = Duration.between(start, end);
-		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
-
-		String tipoSearchMSS="G";
+	}
+	
+	private ValidatorMVMDialogSimple showDialogMVM(Collection<IInvariant> invClassSatisfiables,
+			Collection<IInvariant> invClassUnSatisfiables,
+			Collection<IInvariant> invClassOthers ,
+			MModel mModel,
+			Duration timeElapsed,
+			String tipoSearchMSS) {
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(MainWindow.instance(), 
 						this,
@@ -548,7 +715,9 @@ public abstract class KodkodModelValidator {
 						numCallSolverSAT,
 						numCallSolverUNSAT,
 						tipoSearchMSS);
+		return validatorMVMDialog;
 	}
+
 	/**
 	 * Loop to be able to call Greedy randomly or for each invariant
 	 * @param modeG

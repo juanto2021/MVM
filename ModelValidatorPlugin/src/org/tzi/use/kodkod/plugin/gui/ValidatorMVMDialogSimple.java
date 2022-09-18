@@ -253,6 +253,20 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		frame.setEnabled(true);
 	}
 
+	public void updateInfo(List<String> pListStrSatisfiables, List<String> pListStrUnSatisfiables, List<String> pListStrOthers) {
+		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
+		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
+		this.listStrOthers = pListStrOthers;
+		
+		// LANZATAB
+		tabbedPane.addTab("Errors2", makeErrores(listStrUnSatisfiables,"Errors"));
+		tabbedPane.addTab("Best approximate solutions2", makeSolutions(listStrSatisfiables,"Best approximate solutions "));
+		tabbedPane.addTab("Statistics2", makeStatistics("Statistics "));
+		
+		String st = "Actualizo info!!";
+		JOptionPane.showMessageDialog(null, st);
+	}
+	
 	private JPanel makeBottom() {
 		p3 = new JPanel();
 		p3.setLayout(new FlowLayout(FlowLayout.CENTER));
