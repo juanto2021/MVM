@@ -1,5 +1,6 @@
 package org.tzi.kodkod;
 
+import java.awt.Dialog.ModalExclusionType;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -385,12 +386,13 @@ public abstract class KodkodModelValidator {
 	 * @param iModel
 	 * @param mModel
 	 * @param invClassSatisfiables
+	 * @throws Exception 
 	 */
 	private void analysis_OCL(IModel iModel,MModel mModel,
 			Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers,			
-			Instant start) {
+			Instant start) throws Exception {
 		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		Instant end;
 		Duration timeElapsed;
@@ -403,7 +405,6 @@ public abstract class KodkodModelValidator {
 		String strCmbTotal = makeTotalCmb(col);
 		if (strCmbTotal!="") {
 			strCmbTotal= sortCmb(strCmbTotal);
-			//		}
 
 			// Here We have a collection of MClassInvariant all them satisfiables
 			buildTreeVisitor(col);
@@ -470,155 +471,57 @@ public abstract class KodkodModelValidator {
 			tipoSearchMSS="G";	
 
 			// Envio a MVMDialogSimple
+
 			ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
 					invClassUnSatisfiables, 
 					invClassOthers,
 					mModel,
 					timeElapsed,
 					tipoSearchMSS);
-			
-			// Ninguno de estos muestra el doialogo completo 
-//			validatorMVMDialog.show();
-//			validatorMVMDialog.invalidate();
-//			validatorMVMDialog.repaint();
-//			validatorMVMDialog.revalidate();
-//			validatorMVMDialog.validate();
-			
 
 			// A continuacion seguir buscando en background
-			calculateInBackGround(resGreedy, strCmbTotal );// provis comento
-			
-			//						listSatisfiables,
-			//						listUnSatisfiables,
-			//						listOthers,
-			
-			
-//			public void updateInfo(pListStrSatisfiables, pListStrUnSatisfiables, pListStrOthers) {
-			validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
-//			validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
-//					invClassUnSatisfiables, 
-//					invClassOthers,
-//					mModel,
-//					timeElapsed,
-//					tipoSearchMSS);
-
-//			for(String strCmbGreedy:resGreedy) {
-//				strCmbBase = strCmbGreedy;
-//				String strCmbResto = makeRestCmb(strCmbBase, strCmbTotal);
-//
-//				List<String> resGral = new ArrayList<String>();
-//				List<String> resSat = new ArrayList<String>();
-//				resGral.add(strCmbBase);
-//				String newResto=strCmbResto;
-//				while(newResto!="") {
-//					String[] aInvsResto=newResto.split("-");
-//					int nInvsR = aInvsResto.length;		
-//					newResto="";
-//					resSat.clear();
-//					for (String cmbA: resGral) {
-//						for(int nInvR = 0;nInvR<nInvsR;nInvR++) {
-//							String invR = aInvsResto[nInvR];
-//							invR = String.format(fmt,Integer.parseInt(invR));
-//							// si invR esta dentro de cmbA no se guarda
-//							boolean guardar=true;
-//							String[] aInvsA=cmbA.split("-");
-//							int nInvsA = aInvsA.length;	
-//							for(int nInvA = 0;nInvA<nInvsA;nInvA++) {
-//								String pA = aInvsA[nInvA];
-//								if (pA.equals(invR)) {
-//									guardar=false;
-//									continue;
-//								}
-//							}
-//							if (guardar) {
-//								String newCmb = cmbA + "-" + invR;
-//								newCmb=sortCmb(newCmb);
-//								if (!resSat.contains(newCmb)) {
-//									System.out.println("newCmb [" + newCmb + "]");
-//									String solucion="";
-//									solucion = calcularGreedy( newCmb,  invClassTotal);
-//									if (solucion=="SATISFIABLE") {
-//										addSolutionG(newCmb, solucion);
-//										resSat.add(newCmb);
-//										if (newResto!="") {
-//											newResto+="-";
-//										}
-//										newResto+=invR;
-//									}else {
-//										// Buscar por parejas
-//										String[] aInvsB=cmbA.split("-");
-//										int nInvsB = aInvsB.length;
-//										for (int nInvB = 1;nInvB<=nInvsB;nInvB++) {
-//											String invB=aInvsB[nInvB-1];
-//											String cmbMUS=invB + "-" + invR;
-//											cmbMUS = sortCmb(cmbMUS) ;
-//											if (listSatisfiables.contains(cmbMUS)||listUnSatisfiables.contains(cmbMUS)) {
-//												continue;
-//											}
-//											solucion = calcularGreedy( cmbMUS,  invClassTotal);
-//											addSolutionG(cmbMUS, solucion);
-//											System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
-//										}
-//									}
-//								}
-//							}
-//						}
-//					}
-//					resGral.clear();
-//					for (String cmb:resSat) {
-//						resGral.add(cmb);
-//					}	
-//					System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
-//				}
-//			}
+			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog );
 		}
-		
-		// -- Comento lo siguiente (INICIO)
-		
-//		listSatisfiables = sortByNumInv(listSatisfiables,"D");
-//		LOG.info("MVM: End Greedy");
-//		if (bShowResultGral) showResultGral();
-//		//		Instant end = Instant.now();
-//		//		Duration timeElapsed = Duration.between(start, end);
-//		//		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
-//
-//		//		String tipoSearchMSS="G";
-//
-//		end = Instant.now();
-//		timeElapsed = Duration.between(start, end);
-//		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
-//
-//		tipoSearchMSS="G";		
-		// -- Comento lo anterior (FIN)		
-		
-		//		ValidatorMVMDialogSimple validatorMVMDialog= 
-		//				new ValidatorMVMDialogSimple(MainWindow.instance(), 
-		//						this,
-		//						invClassSatisfiables, 
-		//						invClassUnSatisfiables, 
-		//						invClassOthers,
-		//						mapGRP_SAT_MAX,
-		//						listSatisfiables,
-		//						listUnSatisfiables,
-		//						listOthers,
-		//						mapInvRes,
-		//						mModel,
-		//						invClassTotal,
-		//						timeElapsed,
-		//						numCallSolver,
-		//						numCallSolverSAT,
-		//						numCallSolverUNSAT,
-		//						tipoSearchMSS);
-		
-		
-//		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
-//				invClassUnSatisfiables, 
-//				invClassOthers,
-//				mModel,
-//				timeElapsed,
-//				tipoSearchMSS);
 	}
-	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal ) {
+	private void LanzacalculoBck(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog ) throws Exception{
+		System.out.println("Inicio back");
+		EventThreads hilo1 = new EventThreads(false) {
+			@Override
+			public void operacionesRun() {
+				System.out.println("Lanzamos operaciones en tarea background");
+				try {
+					//					operaciones();
+					calculateInBackGround(resGreedy, strCmbTotal, validatorMVMDialog );
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		hilo1.addListenerStarted(new EventThreads.IEventStarted() {
+			@Override
+			public void started() {
+				System.out.println("Arranca tarea background");
+			}
+		});
+
+		hilo1.addListenerEnded(new EventThreads.IEventEnded() {
+			@Override
+			public void finalizado() {
+				System.out.println("Finaliza tarea background");
+				try {
+					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		hilo1.start();
+	}
+
+	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog ) throws Exception {
+
 		String strCmbBase;
 		for(String strCmbGreedy:resGreedy) {
 			strCmbBase = strCmbGreedy;
@@ -689,14 +592,16 @@ public abstract class KodkodModelValidator {
 				System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
 			}
 		}
+		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
 	}
-	
+
 	private ValidatorMVMDialogSimple showDialogMVM(Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers ,
 			MModel mModel,
 			Duration timeElapsed,
 			String tipoSearchMSS) {
+
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(MainWindow.instance(), 
 						this,
@@ -2268,19 +2173,56 @@ class ResComb {
 		this.comentario = strComentario;
 	}
 }
-///**
-// * Stores a class and an attribute (deprecated)
-// * @author Juanto
-// *
-// */
-//class KeyClassAttrOld {
-//	String nomClase;
-//	String nomAttr;
-//	public KeyClassAttrOld(String vNomClase, String vNomAttr) {
-//		this.nomClase = vNomClase;
-//		this.nomAttr = vNomAttr;
-//	}
-//}
+abstract class EventThreads extends Thread {
 
+	private List<IEventStarted> listenersStarted = new ArrayList<>();
+	private List<IEventEnded> listenersEnded = new ArrayList<>();
+
+	public EventThreads() {
+		this(false);
+	}
+
+	public EventThreads(final boolean isDaemon) {
+		this.setDaemon(isDaemon);
+	}
+
+	public void run () {
+		for (IEventStarted o : listenersStarted) {
+			o.started();
+		}
+
+		operacionesRun();
+
+		for (IEventEnded o : listenersEnded) {
+			o.finalizado();
+		}
+	}
+
+	public abstract void operacionesRun();
+
+	public void addListenerStarted(IEventStarted IEventStarted) {
+		listenersStarted.add(IEventStarted);
+	}
+
+	public void removeListenerStarted(IEventStarted escuchador) {
+		listenersStarted.remove(escuchador);
+	}
+
+	public void addListenerEnded(IEventEnded escuchador) {
+		listenersEnded.add(escuchador);
+	}
+
+	public void removeListenerEnded(IEventEnded escuchador) {
+		listenersEnded.remove(escuchador);
+	}
+
+	public interface IEventStarted {
+		void started();
+	}
+
+	public interface IEventEnded {
+		void finalizado();
+	}
+}
 
 
