@@ -99,6 +99,34 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	JPanel pOthers = null;
 	JPanel scrollImgSat = null;
 
+	Border border=null;
+	JPanel pTotalSat = null;
+	JPanel pSupSat = null;
+	JPanel pInfSat = null;
+	JPanel pListCmbSat = null;
+	List<String> listStrSATLimpia = null;
+	DefaultListModel<String> lSAT = null;
+	JList<String> lCombisSat = null;
+	JScrollPane scrollPaneSat = null;
+	JPanel pListInvCmbSat = null;
+	JScrollPane scrollPaneNameSat = null;
+	JPanel pOCLCodeSat = null;
+
+	JPanel pTotalErr = null;
+	JPanel pSupErr = null;
+	JPanel pInfErr = null;
+	JPanel pListCmbErr = null;
+	List<String> listStrUNSATLimpia = null;
+	DefaultListModel<String> lUNSAT = null;
+	JList<String> lCombisErr = null;
+	JScrollPane scrollPaneErr = null;
+	JPanel pListInvCmbErr = null;
+	JScrollPane scrollPaneNameErr = null;
+	JPanel pListInvCmbSinErr = null;
+	DefaultListModel<String> lCmbsErr = null;
+	JScrollPane scrollPaneNameErrSat = null;
+	JPanel pOCLCodeErr = null;	
+
 	JList<String> lNames = null;
 	JList<String> lNamesSat=null;
 	JList<String> lNamesSol=null;
@@ -112,7 +140,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	JLabel lbCmbSat=null;
 	JLabel lbInvSat=null;
 	JLabel lbCmbWithoutInv=null;
-	JLabel lbTextOCL = null;
+	JLabel lbTextOCLUnsat = null;
 	JLabel lbTextOCLSat=null;
 
 	JTabbedPane tabbedPane=null;
@@ -190,7 +218,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		lbCmbErr = new JLabel("CMB: xxx", SwingConstants.CENTER);
 		lbCmbWithoutInv = new JLabel("Example instances without inv.: xxx", SwingConstants.CENTER);
-		lbTextOCL = new JLabel("OCL for inv.: ---", SwingConstants.CENTER);
+		lbTextOCLUnsat = new JLabel("OCL for inv.: ---", SwingConstants.CENTER);
 		lbTextOCLSat = new JLabel("OCL for inv.: ---", SwingConstants.CENTER);
 
 		mapInvSAT = new HashMap<>();
@@ -226,10 +254,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		pack();
+		// Fabrica panel de errores
+		makeErrores();
+		tabbedPane.addTab("Errors",pTotalErr);
 
-		// LANZATAB
-		tabbedPane.addTab("Errors", makeErrores(listStrUnSatisfiables,"Errors"));
-		tabbedPane.addTab("Best approximate solutions ", makeSolutions(listStrSatisfiables,"Best approximate solutions "));
+		// Fabrica panel de mejores soluciones
+		makeSolutions();
+		tabbedPane.addTab("Best approximate solutions ", pTotalSat);
+
+		// Fabrica panel de estadisticas
 		tabbedPane.addTab("Statistics ", makeStatistics("Statistics "));
 
 		tabbedPane.addChangeListener(new ChangeListener() {
@@ -258,15 +291,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
 		this.listStrOthers = pListStrOthers;
 		
-		// LANZATAB
-		tabbedPane.addTab("Errors2", makeErrores(listStrUnSatisfiables,"Errors"));
-		tabbedPane.addTab("Best approximate solutions2", makeSolutions(listStrSatisfiables,"Best approximate solutions "));
+		// Refresca resultados tras el calculo en background
+		defMakeErrorsCtrls();
+		defMakeSolutionsCtrls();
+
 		tabbedPane.addTab("Statistics2", makeStatistics("Statistics "));
-		
-		String st = "Actualizo info!!";
-		JOptionPane.showMessageDialog(null, st);
+
+		System.out.println("Actualizo info!!");
+//		String st = "Actualizo info!!";
+//		JOptionPane.showMessageDialog(null, st);
 	}
-	
+
 	private JPanel makeBottom() {
 		p3 = new JPanel();
 		p3.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -513,46 +548,43 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		return lSATLimpia;
 	}
 
+	private void makeErrores() {
 
-	private JPanel makeErrores(List<String> listStr, String nomTab) {
-		Border border;
-		border = BorderFactory.createLineBorder(Color.BLUE);
+		pTotalErr = new JPanel();
+		pTotalErr.setLayout(new BorderLayout());
 
-		JPanel pTotal = new JPanel();
-		pTotal.setLayout(new BorderLayout());
+		pSupErr = new JPanel();
+		pSupErr.setLayout(new BoxLayout(pSupErr,BoxLayout.X_AXIS));
+		pSupErr.setBorder(border);
 
-		JPanel pSup = new JPanel();
-		pSup.setLayout(new BoxLayout(pSup,BoxLayout.X_AXIS));
-		pSup.setBorder(border);
-
-		JPanel pInf = new JPanel();
-		pInf.setLayout(new BoxLayout(pInf,BoxLayout.X_AXIS));
-		pInf.setBorder(border);
+		pInfErr = new JPanel();		
+		pInfErr.setLayout(new BoxLayout(pInfErr,BoxLayout.X_AXIS));
+		pInfErr.setBorder(border);
 
 		// Faulty combinations		
-		JPanel pListCmbErr = new JPanel();
+		pListCmbErr = new JPanel();
 		pListCmbErr.setBorder(border);
 		pListCmbErr.setLayout(new BorderLayout());
 
 		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
-		List<String> listStrUNSATLimpia = limpiaUNSAT();
+		listStrUNSATLimpia = limpiaUNSAT();		
 
 		// Lista con combinaciones insatisfactibles
-		DefaultListModel<String> lUNSAT = makeListMode(listStrUNSATLimpia);
+		lUNSAT = makeListMode(listStrUNSATLimpia);		
 
-		JList<String> lCombis = new JList<String>(lUNSAT);
+		lCombisErr = new JList<String>(lUNSAT);		
 
-		JScrollPane scrollPane = new JScrollPane (lCombis,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		scrollPaneErr = new JScrollPane (lCombisErr,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
-		lCombis.setSelectedIndex(0);
+		lCombisErr.setSelectedIndex(0);
 		strCmb="";
 		if (lUNSAT.size()>0) {
-			strCmb = lCombis.getSelectedValue().trim();
+			strCmb = lCombisErr.getSelectedValue().trim();
 		}
 
-		lCombis.addMouseListener(new MouseAdapter() {
+		lCombisErr.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
-				strCmb = lCombis.getSelectedValue().trim();
+				strCmb = lCombisErr.getSelectedValue().trim();
 				lbCmbErr.setText(strCmb);
 				lNamesInv = new DefaultListModel<String>();
 				for (String nameInv: getListInv(strCmb)) {
@@ -569,7 +601,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					orden=invRes.getIntOrden();
 				}
 				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+orden+")");
-				lbTextOCL.setText("OCL for inv.: " + valor);
+				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
 
 				String textOCL = getOCL(lNames.getSelectedValue().trim());
 				textAreaOCL.setText(textOCL);
@@ -592,10 +624,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		JLabel lbFaultCmb = new JLabel("Faulty combinations", SwingConstants.CENTER);
 		pListCmbErr.add(lbFaultCmb,BorderLayout.NORTH);
-		pListCmbErr.add(scrollPane, BorderLayout.CENTER);
+		pListCmbErr.add(scrollPaneErr, BorderLayout.CENTER);
 
 		// Combination in course previously selected
-		JPanel pListInvCmbErr = new JPanel();
+		pListInvCmbErr = new JPanel();		
 		pListInvCmbErr.setBorder(border);
 		pListInvCmbErr.setLayout(new BorderLayout());
 
@@ -609,8 +641,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		lNames = new JList<String>(lNamesInv);
 
-		JScrollPane scrollPaneName = new JScrollPane (lNames,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+		scrollPaneNameErr = new JScrollPane (lNames,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 		
 
 		// Evento clic
 		lNames.setSelectedIndex(0);
@@ -623,7 +655,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					orden=invRes.getIntOrden();
 				}
 				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+orden+")");
-				lbTextOCL.setText("OCL for inv.: " + valor);
+				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
 				String textOCL = getOCL(lNames.getSelectedValue().trim());
 				textAreaOCL.setText(textOCL);
 				textAreaOCL.setCaretPosition(0);
@@ -645,27 +677,27 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		});
 		lbCmbErr.setText(strCmb);
 		pListInvCmbErr.add(lbCmbErr,BorderLayout.NORTH);
-		pListInvCmbErr.add(scrollPaneName, BorderLayout.CENTER);	
+		pListInvCmbErr.add(scrollPaneNameErr, BorderLayout.CENTER);	
 
 		// Combinations without the invariant without error	
-		JPanel pListInvCmbSinErr = new JPanel();
+		pListInvCmbSinErr = new JPanel();		
 		pListInvCmbSinErr.setBorder(border);
 		pListInvCmbSinErr.setLayout(new BorderLayout());
 
-
-		DefaultListModel<String> lCmbs = new DefaultListModel<String>();
+		lCmbsErr = new DefaultListModel<String>();		
 		if (lNamesInv.size()>0) {
 			String elementSelected = lNames.getSelectedValue().trim();
 			List<String> listStrCMbLimpia = new ArrayList<String>();
 			listStrCMbLimpia= limpiaSAT(getCmbSinInv(elementSelected));
 			for (String cmb: listStrCMbLimpia) {
-				lCmbs.addElement(cmb);
+				lCmbsErr.addElement(cmb);
 			}		
 			listStrCMbLimpia = limpiaSAT(getCmbSinInv(elementSelected));
 		}
 
-		// Se ha de limpiar la lista de cmbs para noi incluir las superfluas
-		lNamesSat = new JList<String>(lCmbs);
+		// Se ha de limpiar la lista de cmbs para no incluir las superfluas
+		lNamesSat = new JList<String>(lCmbsErr);
+		lNamesSat.setSelectedIndex(0);
 
 		lNamesSat.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
@@ -696,34 +728,33 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			}
 		});
 
-
-		JScrollPane scrollPaneNameSat = new JScrollPane (lNamesSat,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+		scrollPaneNameErrSat = new JScrollPane (lNamesSat,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 		
 
 		pListInvCmbSinErr.add(lbCmbWithoutInv,BorderLayout.NORTH);
-		pListInvCmbSinErr.add(scrollPaneNameSat, BorderLayout.CENTER);			
+		pListInvCmbSinErr.add(scrollPaneNameErrSat, BorderLayout.CENTER);			
 
 
-		pSup.add(pListCmbErr);
-		pSup.add(pListInvCmbErr);
-		pSup.add(pListInvCmbSinErr);
+		pSupErr.add(pListCmbErr);
+		pSupErr.add(pListInvCmbErr);
+		pSupErr.add(pListInvCmbSinErr);
 
 		// Code OCL of the invariant selected		
-		JPanel pOCLCode = new JPanel();
-		pOCLCode.setBorder(border);
-		pOCLCode.setLayout(new BorderLayout());		
+		pOCLCodeErr = new JPanel();		
+		pOCLCodeErr.setBorder(border);
+		pOCLCodeErr.setLayout(new BorderLayout());		
 		textAreaOCL= new JTextArea();
-		String textOCL = "";
+		String textOCLErr = "";
 		if (lNamesInv.size()>0) {
-			textOCL = getOCL(lNames.getSelectedValue().trim());
+			textOCLErr = getOCL(lNames.getSelectedValue().trim());
 		}
 
-		textAreaOCL.setText(textOCL);
+		textAreaOCL.setText(textOCLErr);
 		textAreaOCL.setCaretPosition(0);
-		final JScrollPane scrollPaneTA = new JScrollPane(textAreaOCL,
+		final JScrollPane scrollPaneTAUnsat = new JScrollPane(textAreaOCL,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneTA.getVerticalScrollBar().setValue(0); // scroll to the top
+		scrollPaneTAUnsat.getVerticalScrollBar().setValue(0); // scroll to the top
 
 		if (lNamesInv.size()>0) {
 			String valor = lNames.getSelectedValue().trim();
@@ -737,54 +768,52 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			lbCmbWithoutInv.setText("Example instances without inv.: ");
 		}
 
-		pOCLCode.add(lbTextOCL,BorderLayout.NORTH);
-		pOCLCode.add(scrollPaneTA, BorderLayout.CENTER);
-		pInf.add(pOCLCode);
+		pOCLCodeErr.add(lbTextOCLUnsat,BorderLayout.NORTH);
+		pOCLCodeErr.add(scrollPaneTAUnsat, BorderLayout.CENTER);
+		pInfErr.add(pOCLCodeErr);
 
-		pTotal.add(pSup, BorderLayout.NORTH);
-		pTotal.add(pInf,BorderLayout.CENTER);
+		pTotalErr.add(pSupErr, BorderLayout.NORTH);
+		pTotalErr.add(pInfErr,BorderLayout.CENTER);
 
-		return pTotal;
+		defMakeErrorsCtrls();
+		return;
 	}
-	private JPanel makeSolutions(List<String> listStr, String nomTab) {
-		Border border;
-		border = BorderFactory.createLineBorder(Color.BLUE);
+	private void makeSolutions() {			
+		pTotalSat = new JPanel();
+		pTotalSat.setLayout(new BorderLayout());
 
-		JPanel pTotal = new JPanel();
-		pTotal.setLayout(new BorderLayout());
+		pSupSat = new JPanel();
+		pSupSat.setLayout(new BoxLayout(pSupSat,BoxLayout.X_AXIS));
+		pSupSat.setBorder(border);
 
-		JPanel pSup = new JPanel();
-		pSup.setLayout(new BoxLayout(pSup,BoxLayout.X_AXIS));
-		pSup.setBorder(border);
-
-		JPanel pInf = new JPanel();
-		pInf.setLayout(new BoxLayout(pInf,BoxLayout.X_AXIS));
-		pInf.setBorder(border);
+		pInfSat = new JPanel();
+		pInfSat.setLayout(new BoxLayout(pInfSat,BoxLayout.X_AXIS));
+		pInfSat.setBorder(border);
 
 		// Best approximate solutions 
-		JPanel pListCmbSat = new JPanel();
+		pListCmbSat = new JPanel();
 		pListCmbSat.setBorder(border);
 		pListCmbSat.setLayout(new BorderLayout());
 
 		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
-		List<String> listStrSATLimpia = limpiaSAT(listStrSatisfiables);
+		listStrSATLimpia = limpiaSAT(listStrSatisfiables);		
 
 		// Lista con combinaciones satisfactibles 'limpias' de combinaciones superfluas
-		DefaultListModel<String> lSAT = makeListMode(listStrSATLimpia);
+		lSAT = makeListMode(listStrSATLimpia);
 
-		JList<String> lCombis = new JList<String>(lSAT);
+		lCombisSat = new JList<String>(lSAT);
 
-		JScrollPane scrollPane = new JScrollPane (lCombis,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
-		lCombis.setSelectedIndex(0);
+		scrollPaneSat = new JScrollPane (lCombisSat,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 		
+		lCombisSat.setSelectedIndex(0);
 		strCmbSAT="";
 		if (lSAT.size()>0) {
-			strCmbSAT = lCombis.getSelectedValue().trim();
+			strCmbSAT = lCombisSat.getSelectedValue().trim();
 		}
 
-		lCombis.addMouseListener(new MouseAdapter() {
+		lCombisSat.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
-				strCmbSAT = lCombis.getSelectedValue().trim();
+				strCmbSAT = lCombisSat.getSelectedValue().trim();
 				lbInvSat.setText(strCmbSAT);
 				lNamesInvSol = new DefaultListModel<String>();
 				for (String nameInv: getListInv(strCmbSAT)) {
@@ -795,19 +824,18 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				lNamesSol.setModel(lNamesInvSol);
 				lNamesSol.setSelectedIndex(0);
 
-				String valor = lNamesSol.getSelectedValue().trim();
+				String valorSat = lNamesSol.getSelectedValue().trim();
 
-				lbTextOCLSat.setText("OCL for inv.: " + valor);
+				lbTextOCLSat.setText("OCL for inv.: " + valorSat);
 
-				String textOCL = getOCL(lNamesSol.getSelectedValue().trim());
-				textAreaOCLSat.setText(textOCL);
+				String textOCLSat = getOCL(lNamesSol.getSelectedValue().trim());
+				textAreaOCLSat.setText(textOCLSat);
 				textAreaOCLSat.setCaretPosition(0);
 				// Crear object diagram
 
 				if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
 
 					Solution solution=null;
-					KodkodSolver kodkodSolver = new KodkodSolver();
 					try {
 						solution = kodParent.calcular( strCmbSAT,  invClassTotal);
 						if (solution.outcome().toString() == "SATISFIABLE") {
@@ -826,17 +854,16 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						e.printStackTrace();
 					}
 				}					
-				//				
 			}
 		});
 
 
 		lbCmbSat = new JLabel("Invariants", SwingConstants.CENTER);
 		pListCmbSat.add(lbCmbSat,BorderLayout.NORTH);
-		pListCmbSat.add(scrollPane, BorderLayout.CENTER);
+		pListCmbSat.add(scrollPaneSat, BorderLayout.CENTER);
 
 		// Combination in course previously selected
-		JPanel pListInvCmbSat = new JPanel();
+		pListInvCmbSat = new JPanel();
 		pListInvCmbSat.setBorder(border);
 		pListInvCmbSat.setLayout(new BorderLayout());
 
@@ -850,8 +877,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		lNamesSol = new JList<String>(lNamesInvSol);
 
-		JScrollPane scrollPaneName = new JScrollPane (lNamesSol,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+		scrollPaneNameSat = new JScrollPane (lNamesSol,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 		
 
 		// Evento clic
 		lNamesSol.setSelectedIndex(0);
@@ -866,38 +893,121 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		});
 		lbInvSat = new JLabel(strCmbSAT, SwingConstants.CENTER);
 		pListInvCmbSat.add(lbInvSat,BorderLayout.NORTH);
-		pListInvCmbSat.add(scrollPaneName, BorderLayout.CENTER);	
+		pListInvCmbSat.add(scrollPaneNameSat, BorderLayout.CENTER);	
 
-		pSup.add(pListCmbSat);
-		pSup.add(pListInvCmbSat);
+		pSupSat.add(pListCmbSat);
+		pSupSat.add(pListInvCmbSat);
 
 		// Code OCL of the invariant selected		
-		JPanel pOCLCode = new JPanel();
-		pOCLCode.setBorder(border);
-		pOCLCode.setLayout(new BorderLayout());		
+		pOCLCodeSat = new JPanel();		
+		pOCLCodeSat.setBorder(border);
+		pOCLCodeSat.setLayout(new BorderLayout());		
 		textAreaOCLSat= new JTextArea();
-		String textOCL = "";
+		String textOCLSat = "";
 
 		if (lNamesInvSol.size()>0) {
-			textOCL = getOCL(lNamesSol.getSelectedValue().trim());
+			textOCLSat = getOCL(lNamesSol.getSelectedValue().trim());
 		}
 
-		textAreaOCLSat.setText(textOCL);
+		textAreaOCLSat.setText(textOCLSat);
 		textAreaOCLSat.setCaretPosition(0);
-		final JScrollPane scrollPaneTA = new JScrollPane(textAreaOCLSat,
+		final JScrollPane scrollPaneTASat = new JScrollPane(textAreaOCLSat,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneTA.getVerticalScrollBar().setValue(0); // scroll to the top
+		scrollPaneTASat.getVerticalScrollBar().setValue(0); // scroll to the top
 
-		pOCLCode.add(lbTextOCLSat,BorderLayout.NORTH);
-		pOCLCode.add(scrollPaneTA, BorderLayout.CENTER);
-		pInf.add(pOCLCode);
+		pOCLCodeSat.add(lbTextOCLSat,BorderLayout.NORTH);
+		pOCLCodeSat.add(scrollPaneTASat, BorderLayout.CENTER);
+		pInfSat.add(pOCLCodeSat);
 
-		pTotal.add(pSup, BorderLayout.NORTH);
-		pTotal.add(pInf,BorderLayout.CENTER);
+		pTotalSat.add(pSupSat, BorderLayout.NORTH);
+		pTotalSat.add(pInfSat,BorderLayout.CENTER);
 
-		return pTotal;
+		defMakeSolutionsCtrls();
+
+		return;
 	}
+
+	private void defMakeSolutionsCtrls() {
+		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
+		listStrSATLimpia = limpiaSAT(listStrSatisfiables);		
+
+		// Lista con combinaciones satisfactibles 'limpias' de combinaciones superfluas
+		lSAT = makeListMode(listStrSATLimpia);
+		lCombisSat.setModel(lSAT);
+		lCombisSat.setSelectedIndex(0);
+		strCmbSAT="";
+		if (lSAT.size()>0) {
+			strCmbSAT = lCombisSat.getSelectedValue().trim();
+		}
+
+		// Lista con nombres de invariantes de combinaciones satisfactibles
+		lNamesInvSol = new DefaultListModel<String>();
+
+		for (String nameInv: getListInv(strCmbSAT)) {
+			String strLineList = nameInv;
+			lNamesInvSol.addElement(strLineList);
+		}
+		lNamesSol.setModel(lNamesInvSol);
+		lNamesSol.setSelectedIndex(0);
+		String textOCLSat = "";
+
+		if (lNamesInvSol.size()>0) {
+			textOCLSat = getOCL(lNamesSol.getSelectedValue().trim());
+		}
+
+		textAreaOCLSat.setText(textOCLSat);
+		textAreaOCLSat.setCaretPosition(0);
+	}
+
+	private void defMakeErrorsCtrls() {
+		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
+		listStrUNSATLimpia = limpiaUNSAT();		
+
+		// Lista con combinaciones insatisfactibles
+		lUNSAT = makeListMode(listStrUNSATLimpia);	
+		lCombisErr.setModel(lUNSAT);
+		lCombisErr.setSelectedIndex(0);
+		strCmb="";
+		if (lUNSAT.size()>0) {
+			strCmb = lCombisErr.getSelectedValue().trim();
+		}
+
+		// Lista con nombres de invariantes de combinaciones insatisfactibles
+		lNamesInv = new DefaultListModel<String>();
+
+		for (String nameInv: getListInv(strCmb)) {
+			String strLineList = nameInv;
+			lNamesInv.addElement(strLineList);
+		}
+
+		lNames.setModel(lNamesInv);
+		lNames.setSelectedIndex(0);
+
+		lCmbsErr = new DefaultListModel<String>();	
+		if (lNamesInv.size()>0) {
+			String elementSelected = lNames.getSelectedValue().trim();
+			List<String> listStrCMbLimpia = new ArrayList<String>();
+			listStrCMbLimpia= limpiaSAT(getCmbSinInv(elementSelected));
+			for (String cmb: listStrCMbLimpia) {
+				lCmbsErr.addElement(cmb);
+			}		
+			listStrCMbLimpia = limpiaSAT(getCmbSinInv(elementSelected));
+		}		
+
+		// Se ha de limpiar la lista de cmbs para no incluir las superfluas
+		lNamesSat.setModel(lCmbsErr);
+		lNamesSat.setSelectedIndex(0);		
+
+		String textOCLErr = "";
+		if (lNamesInv.size()>0) {
+			textOCLErr = getOCL(lNames.getSelectedValue().trim());
+		}
+
+		textAreaOCL.setText(textOCLErr);
+		textAreaOCL.setCaretPosition(0);
+	}
+
 	private JPanel makeStatistics(String nomTab) {
 		Border border;
 		border = BorderFactory.createLineBorder(Color.BLUE);
@@ -1032,7 +1142,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 	private void createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
 		ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session	
-		//Juanto1
 		try {
 			odc.create(solution.instance().relationTuples());
 		} catch (UseApiException e) {
