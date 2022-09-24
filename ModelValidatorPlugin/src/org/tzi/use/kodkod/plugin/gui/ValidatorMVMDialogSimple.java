@@ -298,8 +298,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		tabbedPane.addTab("Statistics2", makeStatistics("Statistics "));
 
 		System.out.println("Actualizo info!!");
-//		String st = "Actualizo info!!";
-//		JOptionPane.showMessageDialog(null, st);
 	}
 
 	private JPanel makeBottom() {
