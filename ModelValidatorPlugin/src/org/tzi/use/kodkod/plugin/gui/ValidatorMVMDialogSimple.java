@@ -99,7 +99,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	JPanel pOthers = null;
 	JPanel scrollImgSat = null;
 
-	Border border=null;
+	//	Border border=null;
+	Border border = BorderFactory.createLineBorder(Color.BLUE);
 	JPanel pTotalSat = null;
 	JPanel pSupSat = null;
 	JPanel pInfSat = null;
@@ -126,6 +127,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	DefaultListModel<String> lCmbsErr = null;
 	JScrollPane scrollPaneNameErrSat = null;
 	JPanel pOCLCodeErr = null;	
+
+	JPanel pTotalStt = null;
+	JTextField txTime = null;
+	JTextField txNumCalls = null;
+	JTextField txNumCallsSAT = null;
+	JTextField txNumCallsUNSAT = null;
+	JTextField txNumCmbTotal = null;
+	JTextField txNumCmbSAT = null;
+	JTextField txNumCmbUNSAT = null;
 
 	JList<String> lNames = null;
 	JList<String> lNamesSat=null;
@@ -263,7 +273,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		tabbedPane.addTab("Best approximate solutions ", pTotalSat);
 
 		// Fabrica panel de estadisticas
-		tabbedPane.addTab("Statistics ", makeStatistics("Statistics "));
+		makeStatistics();
+		
+		tabbedPane.addTab("Statistics ", pTotalStt);
 
 		tabbedPane.addChangeListener(new ChangeListener() {
 
@@ -290,12 +302,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
 		this.listStrOthers = pListStrOthers;
-		
+
 		// Refresca resultados tras el calculo en background
 		defMakeErrorsCtrls();
 		defMakeSolutionsCtrls();
-
-		tabbedPane.addTab("Statistics2", makeStatistics("Statistics "));
+		defMakeStatisticsCtrls();
 
 		System.out.println("Actualizo info!!");
 	}
@@ -925,6 +936,142 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return;
 	}
+	private void makeStatistics() {
+		//		Border border;
+		//		border = BorderFactory.createLineBorder(Color.BLUE);
+
+		pTotalStt = new JPanel();
+		pTotalStt.setLayout(new BorderLayout());
+
+		JPanel pSupStt = new JPanel();
+		pSupStt.setLayout(new BoxLayout(pSupStt,BoxLayout.Y_AXIS));
+		pSupStt.setBorder(border);
+
+		JPanel pDatos1 = new JPanel();
+		JPanel pDatos2 = new JPanel();
+		JPanel pDatos3 = new JPanel();
+		JPanel pDatos4 = new JPanel();
+		JPanel pDatos5 = new JPanel();
+		JPanel pDatos6 = new JPanel();	
+		JPanel pDatos7 = new JPanel();	
+		pDatos1.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pDatos2.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pDatos3.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pDatos4.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pDatos5.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pDatos6.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pDatos7.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+		Dimension dl = new Dimension();
+		dl.width=220;
+		dl.height=20;
+
+		Dimension dt = new Dimension();
+		dt.width=160;
+		dt.height=20;
+
+		// Execution time
+		JLabel lbTime = new JLabel("Execution time ");
+		lbTime.setPreferredSize(dl);
+
+		long time = timeElapsed.toMillis();
+		String strTime = time +" milliseconds";
+
+		txTime = new JTextField(strTime); 
+
+		txTime.setPreferredSize(dt);
+		txTime.setEditable(false);
+		txTime.setHorizontalAlignment(JTextField.RIGHT);
+
+		pDatos1.add(lbTime,BorderLayout.NORTH);
+		pDatos1.add(txTime,BorderLayout.NORTH);
+
+		// Llamadas al Solver
+		JLabel lbNumCalls = new JLabel("Number of calls to the solver ");
+		lbNumCalls.setPreferredSize(dl);
+
+		txNumCalls = new JTextField(String.valueOf(numCallSolver)); 
+		txNumCalls.setPreferredSize(dt);
+		txNumCalls.setEditable(false);
+		txNumCalls.setHorizontalAlignment(JTextField.RIGHT);
+
+		pDatos2.add(lbNumCalls,BorderLayout.NORTH);
+		pDatos2.add(txNumCalls,BorderLayout.NORTH);
+
+		// Number of satisfied calls
+		JLabel lbNumCallsSAT = new JLabel("Number of satisfied calls ");
+		lbNumCallsSAT.setPreferredSize(dl);
+
+		txNumCallsSAT = new JTextField(String.valueOf(numCallSolverSAT)); 
+		txNumCallsSAT.setPreferredSize(dt);
+		txNumCallsSAT.setEditable(false);
+		txNumCallsSAT.setHorizontalAlignment(JTextField.RIGHT);
+
+		pDatos3.add(lbNumCallsSAT,BorderLayout.NORTH);
+		pDatos3.add(txNumCallsSAT,BorderLayout.NORTH);		
+
+		// Number of unsatisfiable calls
+		JLabel lbNumCallsUNSAT = new JLabel("Number of unsatisfied calls ");
+		lbNumCallsUNSAT.setPreferredSize(dl);
+
+		txNumCallsUNSAT = new JTextField(String.valueOf(numCallSolverUNSAT)); 
+		txNumCallsUNSAT.setPreferredSize(dt);
+		txNumCallsUNSAT.setEditable(false);
+		txNumCallsUNSAT.setHorizontalAlignment(JTextField.RIGHT);
+
+		pDatos4.add(lbNumCallsUNSAT,BorderLayout.NORTH);
+		pDatos4.add(txNumCallsUNSAT,BorderLayout.NORTH);		
+
+		// Number total of combinations
+		JLabel lbNumCmbTotal = new JLabel("Total number of combinations ");
+		lbNumCmbTotal.setPreferredSize(dl);
+
+		txNumCmbTotal = new JTextField(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
+		txNumCmbTotal.setPreferredSize(dt);
+		txNumCmbTotal.setEditable(false);
+		txNumCmbTotal.setHorizontalAlignment(JTextField.RIGHT);
+
+		pDatos5.add(lbNumCmbTotal,BorderLayout.NORTH);
+		pDatos5.add(txNumCmbTotal,BorderLayout.NORTH);	
+
+		// Number total of combinations satisfiables
+		JLabel lbNumCmbSAT = new JLabel("Total number of combinations satisfiable ");
+		lbNumCmbSAT.setPreferredSize(dl);
+
+		txNumCmbSAT = new JTextField(Integer.toString(listStrSatisfiables.size())); 
+		txNumCmbSAT.setPreferredSize(dt);
+		txNumCmbSAT.setEditable(false);
+		txNumCmbSAT.setHorizontalAlignment(JTextField.RIGHT);
+
+		pDatos6.add(lbNumCmbSAT,BorderLayout.NORTH);
+		pDatos6.add(txNumCmbSAT,BorderLayout.NORTH);			
+
+		// Number total of combinations unsatisfiables
+		JLabel lbNumCmbUNSAT = new JLabel("Total number of combinations unsatisfiable ");
+		lbNumCmbUNSAT.setPreferredSize(dl);
+
+		txNumCmbUNSAT = new JTextField(Integer.toString(listStrUnSatisfiables.size())); 
+		txNumCmbUNSAT.setPreferredSize(dt);
+		txNumCmbUNSAT.setEditable(false);
+		txNumCmbUNSAT.setHorizontalAlignment(JTextField.RIGHT);
+
+		pDatos7.add(lbNumCmbUNSAT,BorderLayout.NORTH);
+		pDatos7.add(txNumCmbUNSAT,BorderLayout.NORTH);	
+
+		pSupStt.add(pDatos1);
+		pSupStt.add(pDatos2);
+		pSupStt.add(pDatos3);
+		pSupStt.add(pDatos4);
+		pSupStt.add(pDatos5);
+		pSupStt.add(pDatos6);
+		pSupStt.add(pDatos7);
+		pTotalStt.add(pSupStt, BorderLayout.NORTH);
+		
+		defMakeStatisticsCtrls();
+		
+		return ;
+	}
+	
 
 	private void defMakeSolutionsCtrls() {
 		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
@@ -1005,138 +1152,145 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		textAreaOCL.setText(textOCLErr);
 		textAreaOCL.setCaretPosition(0);
 	}
+	private void defMakeStatisticsCtrls() {
 
-	private JPanel makeStatistics(String nomTab) {
-		Border border;
-		border = BorderFactory.createLineBorder(Color.BLUE);
-
-		JPanel pTotal = new JPanel();
-		pTotal.setLayout(new BorderLayout());
-
-		JPanel pSup = new JPanel();
-		pSup.setLayout(new BoxLayout(pSup,BoxLayout.Y_AXIS));
-		pSup.setBorder(border);
-
-		JPanel pDatos1 = new JPanel();
-		JPanel pDatos2 = new JPanel();
-		JPanel pDatos3 = new JPanel();
-		JPanel pDatos4 = new JPanel();
-		JPanel pDatos5 = new JPanel();
-		JPanel pDatos6 = new JPanel();	
-		JPanel pDatos7 = new JPanel();	
-		pDatos1.setLayout(new FlowLayout(FlowLayout.LEFT));
-		pDatos2.setLayout(new FlowLayout(FlowLayout.LEFT));
-		pDatos3.setLayout(new FlowLayout(FlowLayout.LEFT));
-		pDatos4.setLayout(new FlowLayout(FlowLayout.LEFT));
-		pDatos5.setLayout(new FlowLayout(FlowLayout.LEFT));
-		pDatos6.setLayout(new FlowLayout(FlowLayout.LEFT));
-		pDatos7.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-		Dimension dl = new Dimension();
-		dl.width=220;
-		dl.height=20;
-
-		Dimension dt = new Dimension();
-		dt.width=160;
-		dt.height=20;
-
-		// Execution time
-		JLabel lbTime = new JLabel("Execution time ");
-		lbTime.setPreferredSize(dl);
-
-		long time = timeElapsed.toMillis();
-		String strTime = time +" milliseconds";
-
-		JTextField txTime = new JTextField(strTime); 
-		txTime.setPreferredSize(dt);
-		txTime.setEditable(false);
-		txTime.setHorizontalAlignment(JTextField.RIGHT);
-
-		pDatos1.add(lbTime,BorderLayout.NORTH);
-		pDatos1.add(txTime,BorderLayout.NORTH);
-
-		// Llamadas al Solver
-		JLabel lbNumCalls = new JLabel("Number of calls to the solver ");
-		lbNumCalls.setPreferredSize(dl);
-
-		JTextField txNumCalls = new JTextField(String.valueOf(numCallSolver)); 
-		txNumCalls.setPreferredSize(dt);
-		txNumCalls.setEditable(false);
-		txNumCalls.setHorizontalAlignment(JTextField.RIGHT);
-
-		pDatos2.add(lbNumCalls,BorderLayout.NORTH);
-		pDatos2.add(txNumCalls,BorderLayout.NORTH);
-
-		// Number of satisfied calls
-		JLabel lbNumCallsSAT = new JLabel("Number of satisfied calls ");
-		lbNumCallsSAT.setPreferredSize(dl);
-
-		JTextField txNumCallsSAT = new JTextField(String.valueOf(numCallSolverSAT)); 
-		txNumCallsSAT.setPreferredSize(dt);
-		txNumCallsSAT.setEditable(false);
-		txNumCallsSAT.setHorizontalAlignment(JTextField.RIGHT);
-
-		pDatos3.add(lbNumCallsSAT,BorderLayout.NORTH);
-		pDatos3.add(txNumCallsSAT,BorderLayout.NORTH);		
-
-		// Number of unsatisfiable calls
-		JLabel lbNumCallsUNSAT = new JLabel("Number of unsatisfied calls ");
-		lbNumCallsUNSAT.setPreferredSize(dl);
-
-		JTextField txNumCallsUNSAT = new JTextField(String.valueOf(numCallSolverUNSAT)); 
-		txNumCallsUNSAT.setPreferredSize(dt);
-		txNumCallsUNSAT.setEditable(false);
-		txNumCallsUNSAT.setHorizontalAlignment(JTextField.RIGHT);
-
-		pDatos4.add(lbNumCallsUNSAT,BorderLayout.NORTH);
-		pDatos4.add(txNumCallsUNSAT,BorderLayout.NORTH);		
-
-		// Number total of combinations
-		JLabel lbNumCmbTotal = new JLabel("Total number of combinations ");
-		lbNumCmbTotal.setPreferredSize(dl);
-
-		JTextField txNumCmbTotal = new JTextField(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
-		txNumCmbTotal.setPreferredSize(dt);
-		txNumCmbTotal.setEditable(false);
-		txNumCmbTotal.setHorizontalAlignment(JTextField.RIGHT);
-
-		pDatos5.add(lbNumCmbTotal,BorderLayout.NORTH);
-		pDatos5.add(txNumCmbTotal,BorderLayout.NORTH);	
-
-		// Number total of combinations satisfiables
-		JLabel lbNumCmbSAT = new JLabel("Total number of combinations satisfiable ");
-		lbNumCmbSAT.setPreferredSize(dl);
-
-		JTextField txNumCmbSAT = new JTextField(Integer.toString(listStrSatisfiables.size())); 
-		txNumCmbSAT.setPreferredSize(dt);
-		txNumCmbSAT.setEditable(false);
-		txNumCmbSAT.setHorizontalAlignment(JTextField.RIGHT);
-
-		pDatos6.add(lbNumCmbSAT,BorderLayout.NORTH);
-		pDatos6.add(txNumCmbSAT,BorderLayout.NORTH);			
-
-		// Number total of combinations unsatisfiables
-		JLabel lbNumCmbUNSAT = new JLabel("Total number of combinations unsatisfiable ");
-		lbNumCmbUNSAT.setPreferredSize(dl);
-
-		JTextField txNumCmbUNSAT = new JTextField(Integer.toString(listStrUnSatisfiables.size())); 
-		txNumCmbUNSAT.setPreferredSize(dt);
-		txNumCmbUNSAT.setEditable(false);
-		txNumCmbUNSAT.setHorizontalAlignment(JTextField.RIGHT);
-
-		pDatos7.add(lbNumCmbUNSAT,BorderLayout.NORTH);
-		pDatos7.add(txNumCmbUNSAT,BorderLayout.NORTH);	
-
-		pSup.add(pDatos1);
-		pSup.add(pDatos2);
-		pSup.add(pDatos3);
-		pSup.add(pDatos4);
-		pSup.add(pDatos5);
-		pSup.add(pDatos6);
-		pSup.add(pDatos7);
-		pTotal.add(pSup, BorderLayout.NORTH);
-		return pTotal;
 	}
+
+//	private void makeStatistics() {
+//		//		Border border;
+//		//		border = BorderFactory.createLineBorder(Color.BLUE);
+//
+//		pTotalStt = new JPanel();
+//		pTotalStt.setLayout(new BorderLayout());
+//
+//		JPanel pSupStt = new JPanel();
+//		pSupStt.setLayout(new BoxLayout(pSupStt,BoxLayout.Y_AXIS));
+//		pSupStt.setBorder(border);
+//
+//		JPanel pDatos1 = new JPanel();
+//		JPanel pDatos2 = new JPanel();
+//		JPanel pDatos3 = new JPanel();
+//		JPanel pDatos4 = new JPanel();
+//		JPanel pDatos5 = new JPanel();
+//		JPanel pDatos6 = new JPanel();	
+//		JPanel pDatos7 = new JPanel();	
+//		pDatos1.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		pDatos2.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		pDatos3.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		pDatos4.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		pDatos5.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		pDatos6.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		pDatos7.setLayout(new FlowLayout(FlowLayout.LEFT));
+//
+//		Dimension dl = new Dimension();
+//		dl.width=220;
+//		dl.height=20;
+//
+//		Dimension dt = new Dimension();
+//		dt.width=160;
+//		dt.height=20;
+//
+//		// Execution time
+//		JLabel lbTime = new JLabel("Execution time ");
+//		lbTime.setPreferredSize(dl);
+//
+//		long time = timeElapsed.toMillis();
+//		String strTime = time +" milliseconds";
+//
+//		txTime = new JTextField(strTime); 
+//
+//		txTime.setPreferredSize(dt);
+//		txTime.setEditable(false);
+//		txTime.setHorizontalAlignment(JTextField.RIGHT);
+//
+//		pDatos1.add(lbTime,BorderLayout.NORTH);
+//		pDatos1.add(txTime,BorderLayout.NORTH);
+//
+//		// Llamadas al Solver
+//		JLabel lbNumCalls = new JLabel("Number of calls to the solver ");
+//		lbNumCalls.setPreferredSize(dl);
+//
+//		txNumCalls = new JTextField(String.valueOf(numCallSolver)); 
+//		txNumCalls.setPreferredSize(dt);
+//		txNumCalls.setEditable(false);
+//		txNumCalls.setHorizontalAlignment(JTextField.RIGHT);
+//
+//		pDatos2.add(lbNumCalls,BorderLayout.NORTH);
+//		pDatos2.add(txNumCalls,BorderLayout.NORTH);
+//
+//		// Number of satisfied calls
+//		JLabel lbNumCallsSAT = new JLabel("Number of satisfied calls ");
+//		lbNumCallsSAT.setPreferredSize(dl);
+//
+//		txNumCallsSAT = new JTextField(String.valueOf(numCallSolverSAT)); 
+//		txNumCallsSAT.setPreferredSize(dt);
+//		txNumCallsSAT.setEditable(false);
+//		txNumCallsSAT.setHorizontalAlignment(JTextField.RIGHT);
+//
+//		pDatos3.add(lbNumCallsSAT,BorderLayout.NORTH);
+//		pDatos3.add(txNumCallsSAT,BorderLayout.NORTH);		
+//
+//		// Number of unsatisfiable calls
+//		JLabel lbNumCallsUNSAT = new JLabel("Number of unsatisfied calls ");
+//		lbNumCallsUNSAT.setPreferredSize(dl);
+//
+//		txNumCallsUNSAT = new JTextField(String.valueOf(numCallSolverUNSAT)); 
+//		txNumCallsUNSAT.setPreferredSize(dt);
+//		txNumCallsUNSAT.setEditable(false);
+//		txNumCallsUNSAT.setHorizontalAlignment(JTextField.RIGHT);
+//
+//		pDatos4.add(lbNumCallsUNSAT,BorderLayout.NORTH);
+//		pDatos4.add(txNumCallsUNSAT,BorderLayout.NORTH);		
+//
+//		// Number total of combinations
+//		JLabel lbNumCmbTotal = new JLabel("Total number of combinations ");
+//		lbNumCmbTotal.setPreferredSize(dl);
+//
+//		txNumCmbTotal = new JTextField(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
+//		txNumCmbTotal.setPreferredSize(dt);
+//		txNumCmbTotal.setEditable(false);
+//		txNumCmbTotal.setHorizontalAlignment(JTextField.RIGHT);
+//
+//		pDatos5.add(lbNumCmbTotal,BorderLayout.NORTH);
+//		pDatos5.add(txNumCmbTotal,BorderLayout.NORTH);	
+//
+//		// Number total of combinations satisfiables
+//		JLabel lbNumCmbSAT = new JLabel("Total number of combinations satisfiable ");
+//		lbNumCmbSAT.setPreferredSize(dl);
+//
+//		txNumCmbSAT = new JTextField(Integer.toString(listStrSatisfiables.size())); 
+//		txNumCmbSAT.setPreferredSize(dt);
+//		txNumCmbSAT.setEditable(false);
+//		txNumCmbSAT.setHorizontalAlignment(JTextField.RIGHT);
+//
+//		pDatos6.add(lbNumCmbSAT,BorderLayout.NORTH);
+//		pDatos6.add(txNumCmbSAT,BorderLayout.NORTH);			
+//
+//		// Number total of combinations unsatisfiables
+//		JLabel lbNumCmbUNSAT = new JLabel("Total number of combinations unsatisfiable ");
+//		lbNumCmbUNSAT.setPreferredSize(dl);
+//
+//		txNumCmbUNSAT = new JTextField(Integer.toString(listStrUnSatisfiables.size())); 
+//		txNumCmbUNSAT.setPreferredSize(dt);
+//		txNumCmbUNSAT.setEditable(false);
+//		txNumCmbUNSAT.setHorizontalAlignment(JTextField.RIGHT);
+//
+//		pDatos7.add(lbNumCmbUNSAT,BorderLayout.NORTH);
+//		pDatos7.add(txNumCmbUNSAT,BorderLayout.NORTH);	
+//
+//		pSupStt.add(pDatos1);
+//		pSupStt.add(pDatos2);
+//		pSupStt.add(pDatos3);
+//		pSupStt.add(pDatos4);
+//		pSupStt.add(pDatos5);
+//		pSupStt.add(pDatos6);
+//		pSupStt.add(pDatos7);
+//		pTotalStt.add(pSupStt, BorderLayout.NORTH);
+//		
+//		defMakeStatisticsCtrls();
+//		
+//		return ;
+//	}
 
 	private void createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
 		ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session	
