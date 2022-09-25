@@ -242,8 +242,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		String titleFrame = "Validator with combinations";
 		if (tipoSearchMSS.equals("L")){
 			titleFrame+=" (Brute)";
+//		}else if (tipoSearchMSS.equals("N")){
+//			titleFrame+=" (Greedy-N) - Initial";
 		}else {
-			titleFrame+=" (Greedy)";
+			titleFrame+=" (Greedy-N) - Initial";
 		}
 		frame = new JFrame(titleFrame);
 
@@ -305,7 +307,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		defMakeErrorsCtrls();
 		defMakeSolutionsCtrls();
 		defMakeStatisticsCtrls();
+		
+		String titleFrame = "Validator with combinations";
+		titleFrame+=" (Greedy) - End";
 
+		frame.setTitle(titleFrame);
+		
 		System.out.println("Actualizo info!!");
 	}
 

@@ -471,7 +471,6 @@ public abstract class KodkodModelValidator {
 			tipoSearchMSS="G";	
 
 			// Envio a MVMDialogSimple
-
 			ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
 					invClassUnSatisfiables, 
 					invClassOthers,
@@ -481,10 +480,12 @@ public abstract class KodkodModelValidator {
 
 			// A continuacion seguir buscando en background
 			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog );
+			
 		}
 	}
 	private void LanzacalculoBck(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog ) throws Exception{
 		System.out.println("Inicio back");
+
 		EventThreads hilo1 = new EventThreads(false) {
 			@Override
 			public void operacionesRun() {
@@ -521,7 +522,7 @@ public abstract class KodkodModelValidator {
 	}
 
 	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog ) throws Exception {
-
+		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
 		String strCmbBase;
 		for(String strCmbGreedy:resGreedy) {
 			strCmbBase = strCmbGreedy;
