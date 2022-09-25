@@ -7,7 +7,7 @@ import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
 /**
  * Attr y Assoc of one Invariant
- * @author utopi
+ * @author juanto
  *
  */
 public class InfoInv {

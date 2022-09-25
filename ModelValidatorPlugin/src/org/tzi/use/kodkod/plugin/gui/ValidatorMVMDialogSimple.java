@@ -59,12 +59,13 @@ import org.tzi.use.uml.mm.MClassInvariant;
 import org.tzi.use.uml.mm.MModel;
 
 import kodkod.engine.Solution;
-
+/**
+ * Form showing results
+ * @author juanto
+ *
+ */
 public class ValidatorMVMDialogSimple extends JDialog {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	JFrame frame;  
 	String strCmbSel=null;
@@ -301,7 +302,16 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		frame.setLocationRelativeTo(this);
 		frame.setEnabled(true);
 	}
-
+	/**
+	 * Update information from Validator
+	 * @param pListStrSatisfiables
+	 * @param pListStrUnSatisfiables
+	 * @param pListStrOthers
+	 * @param pTimeElapsed
+	 * @param pNumCallSolver
+	 * @param pNumCallSolverSAT
+	 * @param pNumCallSolverUNSAT
+	 */
 	public void updateInfo(List<String> pListStrSatisfiables, List<String> pListStrUnSatisfiables, List<String> pListStrOthers,
 			Duration pTimeElapsed, int pNumCallSolver, int pNumCallSolverSAT, int pNumCallSolverUNSAT) {
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
@@ -324,7 +334,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		System.out.println("Actualizo info!!");
 	}
-
+	/**
+	 * Screen End Panel
+	 * @return
+	 */
 	private JPanel makeBottom() {
 		p3 = new JPanel();
 		p3.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -376,6 +389,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		return listaOut;
 	}
 
+	/**
+	 * Factory Default List Mode
+	 * @param aux
+	 * @return
+	 */
 	private DefaultListModel<String> makeListMode(List<String> aux) {
 		DefaultListModel<String> ldefLModel = new DefaultListModel<String>();
 		for (String nameInv: aux) {
@@ -524,7 +542,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return res;
 	}
-
+	/**
+	 * It looks to see if the 'clean' combination UNSAT is in the combination to analyze
+	 * @return
+	 */
 	private List<String> limpiaUNSAT(){
 		List<String> lUNSATLimpia = new ArrayList<String>();
 		for (String strCmbUNSAT: listStrUnSatisfiables) {
@@ -532,7 +553,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			boolean guardar = true;
 			for (String strCmbLimpia: lUNSATLimpia) {
 
-				// Se mira a ver si la combinacion 'lim pia' (o sea nucleo) esta en la combinacion a analizar 
+				// Se mira a ver si la combinacion 'limpia' (o sea nucleo) esta en la combinacion a analizar 
 				boolean limpiaIncluida = checkAinsideB(strCmbLimpia,strCmbUNSAT) ;
 
 				// Si halla una combinacion incluida, ya no se guarda
@@ -547,7 +568,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		}
 		return lUNSATLimpia;
 	}
-
+	/**
+	 * It looks to see if the 'clean' combination SAT is in the combination to analyze
+	 * @return
+	 */
 	private List<String> limpiaSAT(List<String> listaCmbs){
 		List<String> lSATLimpia = new ArrayList<String>();
 		for (String strCmbSAT: listaCmbs) {
@@ -569,7 +593,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		}
 		return lSATLimpia;
 	}
-
+	/**
+	 * Build bug panel
+	 */
 	private void makeErrores() {
 
 		pTotalErr = new JPanel();
@@ -800,6 +826,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		defMakeErrorsCtrls();
 		return;
 	}
+
+	/**
+	 * Build panel of best solutions
+	 */
 	private void makeSolutions() {			
 		pTotalSat = new JPanel();
 		pTotalSat.setLayout(new BorderLayout());
@@ -949,6 +979,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return;
 	}
+
+	/**
+	 * Build statistics panel
+	 */
+
 	private void makeStatistics() {
 
 		pTotalStt = new JPanel();
@@ -1082,7 +1117,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return ;
 	}
-
+	/**
+	 * Update panel of best solutions
+	 */
 
 	private void defMakeSolutionsCtrls() {
 		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
@@ -1115,6 +1152,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		textAreaOCLSat.setText(textOCLSat);
 		textAreaOCLSat.setCaretPosition(0);
 	}
+
+	/**
+	 * Update bug panel
+	 */
 
 	private void defMakeErrorsCtrls() {
 		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
@@ -1163,6 +1204,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		textAreaOCL.setText(textOCLErr);
 		textAreaOCL.setCaretPosition(0);
 	}
+	/**
+	 * Update statistics panel
+	 */
 	private void defMakeStatisticsCtrls() {
 		long time = timeElapsed.toMillis();
 		String strTime = time +" milliseconds";
@@ -1175,6 +1219,13 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		txNumCmbUNSAT.setText(Integer.toString(listStrUnSatisfiables.size()));		
 	}
 
+	/**
+	 * Create object diagrams
+	 * @param combinacion
+	 * @param solution
+	 * @param iModel
+	 * @param session
+	 */
 	private void createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
 		ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session	
 		try {
@@ -1215,6 +1266,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 	}
 
+	/**
+	 * Accommodate views
+	 */
 	private void tile() {
 		JDesktopPane fDesk = parent.getFdesk();
 		JInternalFrame[] allframes = fDesk.getAllFrames();

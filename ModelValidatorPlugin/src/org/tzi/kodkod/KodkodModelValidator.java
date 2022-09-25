@@ -471,8 +471,8 @@ public abstract class KodkodModelValidator {
 			end = Instant.now();
 			timeElapsed = Duration.between(start, end);
 			tipoSearchMSS="G";	
-int numberIter=numIterGreedy;
-			// Envio a MVMDialogSimple
+			int numberIter=numIterGreedy;
+			// Send to MVMDialogSimple
 			ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
 					invClassUnSatisfiables, 
 					invClassOthers,
@@ -481,11 +481,19 @@ int numberIter=numIterGreedy;
 					tipoSearchMSS,
 					numberIter);
 
-			// A continuacion seguir buscando en background
+			// Then continue searching in the background
 			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog, start );
-			
+
 		}
 	}
+	/**
+	 * Launches the calculation of the rest of the combinations in the background
+	 * @param resGreedy
+	 * @param strCmbTotal
+	 * @param validatorMVMDialog
+	 * @param start
+	 * @throws Exception
+	 */
 	private void LanzacalculoBck(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception{
 		System.out.println("Inicio back");
 
@@ -514,11 +522,11 @@ int numberIter=numIterGreedy;
 			public void finalizado() {
 				System.out.println("Finaliza tarea background");
 				try {
-//					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+					//					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
 					Instant end = Instant.now();
 					Duration timeElapsed = Duration.between(start, end);
 					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
-							                      timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
+							timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
 					// Duration timeElapsed
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -528,7 +536,14 @@ int numberIter=numIterGreedy;
 
 		hilo1.start();
 	}
-
+/**
+ * Calculation of the rest of the combinations in the background
+ * @param resGreedy
+ * @param strCmbTotal
+ * @param validatorMVMDialog
+ * @param start
+ * @throws Exception
+ */
 	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
 		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
 		System.out.println("OJO - INI !!.resGreedy Quitar sleep en calculateInBackGround");
@@ -602,14 +617,23 @@ int numberIter=numIterGreedy;
 				System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
 			}
 		}
-//		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
-                timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
+				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
 		System.out.println("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
 	}
-
+/**
+ * Show results dialog
+ * @param invClassSatisfiables
+ * @param invClassUnSatisfiables
+ * @param invClassOthers
+ * @param mModel
+ * @param timeElapsed
+ * @param tipoSearchMSS
+ * @param numberIter
+ * @return
+ */
 	private ValidatorMVMDialogSimple showDialogMVM(Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers ,
@@ -657,7 +681,7 @@ int numberIter=numIterGreedy;
 
 			listCmb.clear();
 			listCmbRes.clear();
-			List<String> listSorted = new ArrayList<String>();
+//			List<String> listSorted = new ArrayList<String>();
 			// ic es la lista de combinaciones que no tienen nada en comun
 			ic = greedyMethod(modeG, col, iTratar);				
 			System.out.println("Invariants collection (ic): " + ic.size());
@@ -792,20 +816,20 @@ int numberIter=numIterGreedy;
 	 * @param inv
 	 * @return
 	 */
-	private static int searchNumInvII(IInvariant inv) {
-		int numInvGral=-1;
-		for (int nInv = 0; nInv < tabInv.length; nInv++) {
-			IInvariant invCmp = tabInv[nInv];
-			if(inv.name().equals(invCmp.name())&&inv.clazz().equals(invCmp.clazz())) {
-				numInvGral=nInv+1;
-				continue;
-			}
-		}
-		if (numInvGral<0) {
-			System.out.println("inv " + inv + " numInv<0 en searchNumInvII");
-		}		
-		return numInvGral;
-	}	
+//	private static int searchNumInvII(IInvariant inv) {
+//		int numInvGral=-1;
+//		for (int nInv = 0; nInv < tabInv.length; nInv++) {
+//			IInvariant invCmp = tabInv[nInv];
+//			if(inv.name().equals(invCmp.name())&&inv.clazz().equals(invCmp.clazz())) {
+//				numInvGral=nInv+1;
+//				continue;
+//			}
+//		}
+//		if (numInvGral<0) {
+//			System.out.println("inv " + inv + " numInv<0 en searchNumInvII");
+//		}		
+//		return numInvGral;
+//	}	
 
 	/**
 	 * Prepare structure and matrix for the calculation of probabilities that one invariant interferes with another
@@ -1982,74 +2006,74 @@ int numberIter=numIterGreedy;
 		}
 		return solution;
 	}
-	/**
-	 * Recursive calculus (deprecated)
-	 * @param combinacion
-	 * @param invClassTotal
-	 * @param kodkodSolver
-	 * @param acumVal
-	 */
-	private void calcularRec(String combinacion, Collection<IInvariant> invClassTotal, KodkodSolver kodkodSolver, int acumVal) {
-		if (debMVM) {
-			System.out.println("MVM: Entra en calcularRec (" + combinacion + ")");
-		}
-		// If a combination is Unsat, find the unsat core by activating all but 1 and classify it
-		// For example, if 1-2-3-5 is unsat, we have to test:
-		// 1-2-3
-		// 1-2-5
-		// 1-3-5
-		// 2-3-5
-		// If it is sat, it is added to listSatisfiables and that's it
-		// If it is unsat, it is added to listUnSatisfiables and sent again to calculateRec
-		//...
-		int cmbSel = listCmbSel.size();
-		List<String> lisWork = new ArrayList<String>();
-		lisWork = combines(combinacion);
-		lisWork = sortByNumInv(lisWork,"D");
-		int nCmbs=lisWork.size();
-		// As many combinations as there are invariants are made in search of MUS
-		for (int nCmb = 0; nCmb < nCmbs; nCmb++) {
-			String newCmb = lisWork.get(nCmb);
-			if (newCmb.equals(combinacion)) {
-				continue;
-			}
-			boolean calculate=true;
-			calculate = !includedInSatisfactible(newCmb);
-
-			if (calculate) {
-				// See if there are unsatisfiable combinations that are included in the combination to be treated
-				calculate = !unsatisIncludedInCombination( newCmb);
-			}
-
-			if (calculate) {
-				Solution solution = null;
-				try {
-					solution = calcular( newCmb,  invClassTotal);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				acumVal+=1;
-
-				String resultado = cmbSel + " " + acumVal+ " " + String.format("%-20s",newCmb);
-				resultado += " - ["+ solution.outcome()+"]";
-				if (debMVM) {
-					System.out.println("MVM - calcularRec: " + resultado);
-				}
-				if (solution.outcome().toString() == "SATISFIABLE") {
-					listSatisfiables.add(newCmb);
-					storeResultCmb(newCmb, "SATISFIABLE", "Direct calculation");
-				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
-					listUnSatisfiables.add(newCmb);
-					storeResultCmb(newCmb, "UNSATISFIABLE", "Direct calculation");
-					// If it were unsatisfiable, would it be worth finding the unsatisfiable cores?
-					//...
-					calcularRec(newCmb, invClassTotal,  kodkodSolver, acumVal);
-				} else {
-					listOthers.add(newCmb);
-				}
-			}
-		}
-	}
+//	/**
+//	 * Recursive calculus (deprecated)
+//	 * @param combinacion
+//	 * @param invClassTotal
+//	 * @param kodkodSolver
+//	 * @param acumVal
+//	 */
+//	private void calcularRec(String combinacion, Collection<IInvariant> invClassTotal, KodkodSolver kodkodSolver, int acumVal) {
+//		if (debMVM) {
+//			System.out.println("MVM: Entra en calcularRec (" + combinacion + ")");
+//		}
+//		// If a combination is Unsat, find the unsat core by activating all but 1 and classify it
+//		// For example, if 1-2-3-5 is unsat, we have to test:
+//		// 1-2-3
+//		// 1-2-5
+//		// 1-3-5
+//		// 2-3-5
+//		// If it is sat, it is added to listSatisfiables and that's it
+//		// If it is unsat, it is added to listUnSatisfiables and sent again to calculateRec
+//		//...
+//		int cmbSel = listCmbSel.size();
+//		List<String> lisWork = new ArrayList<String>();
+//		lisWork = combines(combinacion);
+//		lisWork = sortByNumInv(lisWork,"D");
+//		int nCmbs=lisWork.size();
+//		// As many combinations as there are invariants are made in search of MUS
+//		for (int nCmb = 0; nCmb < nCmbs; nCmb++) {
+//			String newCmb = lisWork.get(nCmb);
+//			if (newCmb.equals(combinacion)) {
+//				continue;
+//			}
+//			boolean calculate=true;
+//			calculate = !includedInSatisfactible(newCmb);
+//
+//			if (calculate) {
+//				// See if there are unsatisfiable combinations that are included in the combination to be treated
+//				calculate = !unsatisIncludedInCombination( newCmb);
+//			}
+//
+//			if (calculate) {
+//				Solution solution = null;
+//				try {
+//					solution = calcular( newCmb,  invClassTotal);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				acumVal+=1;
+//
+//				String resultado = cmbSel + " " + acumVal+ " " + String.format("%-20s",newCmb);
+//				resultado += " - ["+ solution.outcome()+"]";
+//				if (debMVM) {
+//					System.out.println("MVM - calcularRec: " + resultado);
+//				}
+//				if (solution.outcome().toString() == "SATISFIABLE") {
+//					listSatisfiables.add(newCmb);
+//					storeResultCmb(newCmb, "SATISFIABLE", "Direct calculation");
+//				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
+//					listUnSatisfiables.add(newCmb);
+//					storeResultCmb(newCmb, "UNSATISFIABLE", "Direct calculation");
+//					// If it were unsatisfiable, would it be worth finding the unsatisfiable cores?
+//					//...
+//					calcularRec(newCmb, invClassTotal,  kodkodSolver, acumVal);
+//				} else {
+//					listOthers.add(newCmb);
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * Find invariants of the combination
@@ -2155,7 +2179,7 @@ int numberIter=numIterGreedy;
 	}
 
 	/**
-	 * 
+	 * Stores instance of kodkodSolver
 	 * @param kodkodSolver
 	 */
 
@@ -2190,6 +2214,11 @@ class ResComb {
 		this.comentario = strComentario;
 	}
 }
+/**
+ * Allows you to create a thread to calculate the rest of the combinations to complement the Greedy method
+ * @author Juanto
+ *
+ */
 abstract class EventThreads extends Thread {
 
 	private List<IEventStarted> listenersStarted = new ArrayList<>();

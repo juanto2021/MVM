@@ -6,10 +6,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+/**
+ * Various configurations
+ * @author juanto
+ *
+ */
 public class ConfigMVM {
-//	public static int numIterGreedy=4;
-
+/**
+ * Returns number of iterations to execute in Greedy method
+ * @return
+ */
 	public static int getNumIter() {
 		int numIter=3;
 		Path path = Paths.get("");
@@ -30,7 +36,6 @@ public class ConfigMVM {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
-//		numIterGreedy=numIter;
 		return numIter;
 	}
 
