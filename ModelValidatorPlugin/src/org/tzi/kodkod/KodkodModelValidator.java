@@ -482,11 +482,11 @@ int numberIter=numIterGreedy;
 					numberIter);
 
 			// A continuacion seguir buscando en background
-			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog );
+			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog, start );
 			
 		}
 	}
-	private void LanzacalculoBck(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog ) throws Exception{
+	private void LanzacalculoBck(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception{
 		System.out.println("Inicio back");
 
 		EventThreads hilo1 = new EventThreads(false) {
@@ -495,7 +495,7 @@ int numberIter=numIterGreedy;
 				System.out.println("Lanzamos operaciones en tarea background");
 				try {
 					//					operaciones();
-					calculateInBackGround(resGreedy, strCmbTotal, validatorMVMDialog );
+					calculateInBackGround(resGreedy, strCmbTotal, validatorMVMDialog, start );
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -514,7 +514,12 @@ int numberIter=numIterGreedy;
 			public void finalizado() {
 				System.out.println("Finaliza tarea background");
 				try {
-					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+//					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+					Instant end = Instant.now();
+					Duration timeElapsed = Duration.between(start, end);
+					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
+							                      timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
+					// Duration timeElapsed
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -524,7 +529,7 @@ int numberIter=numIterGreedy;
 		hilo1.start();
 	}
 
-	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog ) throws Exception {
+	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
 		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
 		System.out.println("OJO - INI !!.resGreedy Quitar sleep en calculateInBackGround");
 		String strCmbBase;
@@ -597,7 +602,11 @@ int numberIter=numIterGreedy;
 				System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
 			}
 		}
-		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+//		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+		Instant end = Instant.now();
+		Duration timeElapsed = Duration.between(start, end);
+		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
+                timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
 		System.out.println("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
 	}
 

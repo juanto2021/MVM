@@ -172,7 +172,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	String strNomFileIn="wMVM.txt";
 	String strNomFileOut="owMVM_dot.png";
 	String strFileOut = strRuta + "\\" + strNomFileOut;
-	
+
 	int numberIter=1;
 
 	public ValidatorMVMDialogSimple(final MainWindow parent, 
@@ -246,8 +246,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		String titleFrame = "Validator with combinations";
 		if (tipoSearchMSS.equals("L")){
 			titleFrame+=" (Brute)";
-//		}else if (tipoSearchMSS.equals("N")){
-//			titleFrame+=" (Greedy-N) - Initial";
+			//		}else if (tipoSearchMSS.equals("N")){
+			//			titleFrame+=" (Greedy-N) - Initial";
 		}else {
 			titleFrame+=" (Greedy-N"+numberIter+") - Initial";
 		}
@@ -302,21 +302,26 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		frame.setEnabled(true);
 	}
 
-	public void updateInfo(List<String> pListStrSatisfiables, List<String> pListStrUnSatisfiables, List<String> pListStrOthers) {
+	public void updateInfo(List<String> pListStrSatisfiables, List<String> pListStrUnSatisfiables, List<String> pListStrOthers,
+			Duration pTimeElapsed, int pNumCallSolver, int pNumCallSolverSAT, int pNumCallSolverUNSAT) {
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
 		this.listStrOthers = pListStrOthers;
+		this.timeElapsed=pTimeElapsed;
+		this.numCallSolver=pNumCallSolver;
+		this.numCallSolverSAT=pNumCallSolverSAT;
+		this.numCallSolverUNSAT=pNumCallSolverUNSAT;
 
 		// Refresca resultados tras el calculo en background
 		defMakeErrorsCtrls();
 		defMakeSolutionsCtrls();
 		defMakeStatisticsCtrls();
-		
+
 		String titleFrame = "Validator with combinations";
 		titleFrame+=" (Greedy-N"+numberIter+") - End";
 
 		frame.setTitle(titleFrame);
-		
+
 		System.out.println("Actualizo info!!");
 	}
 
@@ -480,7 +485,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * @return
 	 */
 	private boolean checkAinsideB(String cmbA,String cmbB) {
-		//		System.out.println("Se mira a ver si "+cmbA+ " esta en "+cmbB);
+
 		boolean res=true;
 		int totalInv = listInvSatisfiables.size() + listInvUnSatisfiables.size() ;
 
@@ -523,7 +528,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	private List<String> limpiaUNSAT(){
 		List<String> lUNSATLimpia = new ArrayList<String>();
 		for (String strCmbUNSAT: listStrUnSatisfiables) {
-			//			System.out.println("Se analiza " + strCmbUNSAT);
 
 			boolean guardar = true;
 			for (String strCmbLimpia: lUNSATLimpia) {
@@ -1160,7 +1164,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		textAreaOCL.setCaretPosition(0);
 	}
 	private void defMakeStatisticsCtrls() {
-
+		long time = timeElapsed.toMillis();
+		String strTime = time +" milliseconds";
+		txTime.setText(strTime); 		
+		txNumCalls.setText(String.valueOf(numCallSolver)); 
+		txNumCallsSAT.setText(String.valueOf(numCallSolverSAT)); 
+		txNumCallsUNSAT.setText(String.valueOf(numCallSolverUNSAT)); 
+		txNumCmbTotal.setText(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
+		txNumCmbSAT.setText(Integer.toString(listStrSatisfiables.size()));
+		txNumCmbUNSAT.setText(Integer.toString(listStrUnSatisfiables.size()));		
 	}
 
 	private void createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
