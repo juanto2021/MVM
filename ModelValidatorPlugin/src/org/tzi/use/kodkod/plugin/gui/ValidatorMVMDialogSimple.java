@@ -172,6 +172,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	String strNomFileIn="wMVM.txt";
 	String strNomFileOut="owMVM_dot.png";
 	String strFileOut = strRuta + "\\" + strNomFileOut;
+	
+	int numberIter=1;
 
 	public ValidatorMVMDialogSimple(final MainWindow parent, 
 			KodkodModelValidator kodParent,
@@ -189,7 +191,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			int pNumCallSolver,
 			int pNumCallSolverSAT,
 			int pNumCallSolverUNSAT,
-			String tipoSearchMSS) {
+			String tipoSearchMSS,
+			int pNumberIter) {
 
 		this.parent=parent;
 		this.kodParent=kodParent;
@@ -205,6 +208,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.numCallSolverSAT = pNumCallSolverSAT;
 		this.numCallSolverUNSAT = pNumCallSolverUNSAT;
 
+		numberIter=pNumberIter;
 
 		this.mapInvRes = pMapInvRes;
 
@@ -245,7 +249,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 //		}else if (tipoSearchMSS.equals("N")){
 //			titleFrame+=" (Greedy-N) - Initial";
 		}else {
-			titleFrame+=" (Greedy-N) - Initial";
+			titleFrame+=" (Greedy-N"+numberIter+") - Initial";
 		}
 		frame = new JFrame(titleFrame);
 
@@ -309,7 +313,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		defMakeStatisticsCtrls();
 		
 		String titleFrame = "Validator with combinations";
-		titleFrame+=" (Greedy) - End";
+		titleFrame+=" (Greedy-N"+numberIter+") - End";
 
 		frame.setTitle(titleFrame);
 		

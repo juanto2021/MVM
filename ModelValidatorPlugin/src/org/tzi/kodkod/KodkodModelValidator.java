@@ -362,6 +362,7 @@ public abstract class KodkodModelValidator {
 		Duration timeElapsed = Duration.between(start, end);
 		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
 		String tipoSearchMSS="L";
+		int numberIter=1;
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(MainWindow.instance(), 
 						this,
@@ -379,7 +380,8 @@ public abstract class KodkodModelValidator {
 						numCallSolver,
 						numCallSolverSAT,
 						numCallSolverUNSAT,
-						tipoSearchMSS);
+						tipoSearchMSS,
+						numberIter);
 	}
 	/**
 	 * New calculation method trying to avoid Solver
@@ -469,14 +471,15 @@ public abstract class KodkodModelValidator {
 			end = Instant.now();
 			timeElapsed = Duration.between(start, end);
 			tipoSearchMSS="G";	
-
+int numberIter=numIterGreedy;
 			// Envio a MVMDialogSimple
 			ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
 					invClassUnSatisfiables, 
 					invClassOthers,
 					mModel,
 					timeElapsed,
-					tipoSearchMSS);
+					tipoSearchMSS,
+					numberIter);
 
 			// A continuacion seguir buscando en background
 			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog );
@@ -603,7 +606,8 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassOthers ,
 			MModel mModel,
 			Duration timeElapsed,
-			String tipoSearchMSS) {
+			String tipoSearchMSS,
+			int numberIter) {
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(MainWindow.instance(), 
@@ -622,7 +626,8 @@ public abstract class KodkodModelValidator {
 						numCallSolver,
 						numCallSolverSAT,
 						numCallSolverUNSAT,
-						tipoSearchMSS);
+						tipoSearchMSS,
+						numberIter);
 		return validatorMVMDialog;
 	}
 
