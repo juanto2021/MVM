@@ -88,7 +88,8 @@ public abstract class KodkodModelValidator {
 	private static int matProb[][];
 	private static MClassInvariant invXazar;
 	private static String fmt = "";
-	private static int numIterGreedy = ConfigMVM.numIterGreedy;
+//	private static int numIterGreedy = ConfigMVM.numIterGreedy;
+	private static int numIterGreedy = ConfigMVM.getNumIter();
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -523,6 +524,7 @@ public abstract class KodkodModelValidator {
 
 	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog ) throws Exception {
 		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
+		System.out.println("OJO - INI !!.resGreedy Quitar sleep en calculateInBackGround");
 		String strCmbBase;
 		for(String strCmbGreedy:resGreedy) {
 			strCmbBase = strCmbGreedy;
@@ -594,6 +596,7 @@ public abstract class KodkodModelValidator {
 			}
 		}
 		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
+		System.out.println("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
 	}
 
 	private ValidatorMVMDialogSimple showDialogMVM(Collection<IInvariant> invClassSatisfiables,
