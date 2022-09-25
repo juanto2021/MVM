@@ -88,7 +88,6 @@ public abstract class KodkodModelValidator {
 	private static int matProb[][];
 	private static MClassInvariant invXazar;
 	private static String fmt = "";
-//	private static int numIterGreedy = ConfigMVM.numIterGreedy;
 	private static int numIterGreedy = ConfigMVM.getNumIter();
 
 	/**
