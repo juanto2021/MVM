@@ -323,9 +323,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.numCallSolverUNSAT=pNumCallSolverUNSAT;
 
 		// Refresca resultados tras el calculo en background
-		defMakeErrorsCtrls();
-		defMakeSolutionsCtrls();
-		defMakeStatisticsCtrls();
+		actMakeErrorsCtrls();
+		actMakeSolutionsCtrls();
+		actMakeStatisticsCtrls();
 
 		String titleFrame = "Validator with combinations";
 		titleFrame+=" (Greedy-N"+numberIter+") - End";
@@ -823,7 +823,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		pTotalErr.add(pSupErr, BorderLayout.NORTH);
 		pTotalErr.add(pInfErr,BorderLayout.CENTER);
 
-		defMakeErrorsCtrls();
+		actMakeErrorsCtrls();
 		return;
 	}
 
@@ -975,7 +975,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		pTotalSat.add(pSupSat, BorderLayout.NORTH);
 		pTotalSat.add(pInfSat,BorderLayout.CENTER);
 
-		defMakeSolutionsCtrls();
+		actMakeSolutionsCtrls();
 
 		return;
 	}
@@ -1113,7 +1113,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		pSupStt.add(pDatos7);
 		pTotalStt.add(pSupStt, BorderLayout.NORTH);
 
-		defMakeStatisticsCtrls();
+		actMakeStatisticsCtrls();
 
 		return ;
 	}
@@ -1121,7 +1121,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * Update panel of best solutions
 	 */
 
-	private void defMakeSolutionsCtrls() {
+	private void actMakeSolutionsCtrls() {
 		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
 		listStrSATLimpia = limpiaSAT(listStrSatisfiables);		
 
@@ -1157,7 +1157,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * Update bug panel
 	 */
 
-	private void defMakeErrorsCtrls() {
+	private void actMakeErrorsCtrls() {
 		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
 		listStrUNSATLimpia = limpiaUNSAT();		
 
@@ -1207,7 +1207,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	/**
 	 * Update statistics panel
 	 */
-	private void defMakeStatisticsCtrls() {
+	private void actMakeStatisticsCtrls() {
 		long time = timeElapsed.toMillis();
 		String strTime = time +" milliseconds";
 		txTime.setText(strTime); 		

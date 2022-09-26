@@ -207,10 +207,32 @@ public abstract class KodkodModelValidator {
 		try {
 			LOG.info("MVM: (2) Llama a solver desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
 			LOG.info("MVM: (2) Analisis de invariantes de forma individual.");
-
+int nin=0;// provis
 			for (IClass oClass: model.classes()) {
 				invClassTotal.addAll(oClass.invariants());
+				for (IInvariant oInv: oClass.invariants()) {
+					nin+=1;
+					System.out.println(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
+				}
 			}
+			//---
+			
+			for (MClass oClass: mModel.classes()) {
+				mModel.allClassInvariants(oClass);
+				for (MClassInvariant oInv: mModel.allClassInvariants(oClass)) {
+					//oInv.
+				}
+				
+//				invClassTotal.addAll(oClass.model().classInvariants().);
+//				for (IInvariant oInv: oClass.invariants()) {
+//					nin+=1;
+//					System.out.println(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
+//				}
+			}
+			
+			//--
+			
+			
 			tabInv = new IInvariant[invClassTotal.size()];
 			tabInvMClass = new MClassInvariant[invClassTotal.size()];	
 			// First pass to see which invariants are no longer satisfiable even if they are alone
@@ -239,7 +261,7 @@ public abstract class KodkodModelValidator {
 				strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "] "+ strCombinacion;
 
 				nOrdenInv+=1;
-
+				System.out.println("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
 				ResInv invRes=null;
 				if (debMVM) {
 					System.out.println("MVM: Invariants State: " + strCombinacion);
@@ -405,6 +427,7 @@ public abstract class KodkodModelValidator {
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		col = makeCollectionInvs(invClassSatisfiables);
 		String strCmbTotal = makeTotalCmb(col);
+		List<String> resGreedy = new ArrayList<String>();
 		if (strCmbTotal!="") {
 			strCmbTotal= sortCmb(strCmbTotal);
 
@@ -424,7 +447,7 @@ public abstract class KodkodModelValidator {
 			}
 
 			// Calcula una combinacion base segun metodo Greedy
-			List<String> resGreedy = new ArrayList<String>();
+//			List<String> resGreedy = new ArrayList<String>();
 			String strCmbBase ="";
 			// modeG = "R", se usa random para empezar por una invariante
 			// modeG = "N", se usa random para empezar por una invariante			
@@ -454,7 +477,7 @@ public abstract class KodkodModelValidator {
 			}
 			// La idea es quedarse con la mejor solucion y dar un resultado de forma inmediata
 			// Luego buscar el resto de resultados por la fuerza bruta
-
+		
 			// Mejor soluicon es la combinacion que mas invariantes tenga
 			int maxSolution=0;
 			String bestSolution="";
@@ -468,6 +491,7 @@ public abstract class KodkodModelValidator {
 				}
 			}
 			System.out.println("Best solution greedy ["+bestSolution+"]");
+		}// provisional a ver ...
 			end = Instant.now();
 			timeElapsed = Duration.between(start, end);
 			tipoSearchMSS="G";	
@@ -482,9 +506,12 @@ public abstract class KodkodModelValidator {
 					numberIter);
 
 			// Then continue searching in the background
-			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog, start );
+			if (listSatisfiables.size()>0) {
+				LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog, start );
+			}
+			
 
-		}
+//		}// elimino provis
 	}
 	/**
 	 * Launches the calculation of the rest of the combinations in the background
@@ -545,7 +572,7 @@ public abstract class KodkodModelValidator {
  * @throws Exception
  */
 	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
-		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
+//		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
 		System.out.println("OJO - INI !!.resGreedy Quitar sleep en calculateInBackGround");
 		String strCmbBase;
 		for(String strCmbGreedy:resGreedy) {
@@ -1148,6 +1175,7 @@ public abstract class KodkodModelValidator {
 					Random random = new Random();
 					int nRnd = random.nextInt(n);
 					invXazar = arrInv[nRnd];
+					System.out.println("["+nInvTratar+"] Random hallado ["+invXazar+"]");
 				}else {
 					if (pVez) {
 						invXazar = arrInv[nInvTratar];

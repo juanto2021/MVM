@@ -16,11 +16,14 @@ public class ConfigMVM {
  * Returns number of iterations to execute in Greedy method
  * @return
  */
+	
+	private static String nomFile = "numIter.txt";
 	public static int getNumIter() {
 		int numIter=3;
 		Path path = Paths.get("");
 		String directoryName = path.toAbsolutePath().toString();
-		String archivo= directoryName + "\\numIter.txt";
+//		String archivo= directoryName + "\\numIter.txt";
+		String archivo= directoryName + "\\" + nomFile;
 		String cadena=""; 
 		FileReader f;
 		try {
