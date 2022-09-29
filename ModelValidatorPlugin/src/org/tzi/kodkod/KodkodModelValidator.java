@@ -427,7 +427,7 @@ int nin=0;// provis
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		col = makeCollectionInvs(invClassSatisfiables);
 		String strCmbTotal = makeTotalCmb(col);
-		List<String> resGreedy = new ArrayList<String>();
+		List<String> resGreedy = new ArrayList<String>(); 
 		if (strCmbTotal!="") {
 			strCmbTotal= sortCmb(strCmbTotal);
 
