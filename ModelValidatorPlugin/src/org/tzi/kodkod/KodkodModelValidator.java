@@ -509,7 +509,6 @@ int nin=0;// provis
 			if (listSatisfiables.size()>0) {
 				LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog, start );
 			}
-			
 
 //		}// elimino provis
 	}
