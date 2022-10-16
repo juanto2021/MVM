@@ -478,7 +478,7 @@ int nin=0;// provis
 			// La idea es quedarse con la mejor solucion y dar un resultado de forma inmediata
 			// Luego buscar el resto de resultados por la fuerza bruta
 		
-			// Mejor soluicon es la combinacion que mas invariantes tenga
+			// Mejor solucion es la combinacion que mas invariantes tenga
 			int maxSolution=0;
 			String bestSolution="";
 			for(String strCmbGreedy:resGreedy) {
