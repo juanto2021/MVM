@@ -481,6 +481,7 @@ public abstract class KodkodModelValidator {
 			if (debMVM) {
 				LOG.info("MVM: Start Greedy");
 			}
+			
 			int iIni, iFin;
 			if (modeG.equals("R")) {
 				iIni=0;
