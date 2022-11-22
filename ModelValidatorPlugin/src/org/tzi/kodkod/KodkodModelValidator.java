@@ -79,7 +79,7 @@ public abstract class KodkodModelValidator {
 	public static List<String> listUnSatisfiablesTotal= new ArrayList<String>();
 	public static List<String> listOthers = new ArrayList<String>();
 
-	private static boolean debMVM = false;
+	//	private static boolean debMVM = false;
 
 	private static IInvariant tabInv[];
 	private static MClassInvariant tabInvMClass[];	
@@ -89,6 +89,7 @@ public abstract class KodkodModelValidator {
 	private static MClassInvariant invXazar;
 	private static String fmt = "";
 	private static int numIterGreedy = ConfigMVM.getNumIter();
+	private static boolean debMVM = ConfigMVM.getDebMVM();
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -129,23 +130,31 @@ public abstract class KodkodModelValidator {
 		evaluator = null;
 
 		KodkodSolver kodkodSolver = new KodkodSolver();
-		LOG.info("MVM: Llama a solver desde validate en KodkodModelValidator");
+		if (debMVM) {
+			LOG.info("MVM: Llama a solver desde validate en KodkodModelValidator");
+		}
+
 		try {
 			solution = kodkodSolver.solve(model);
 		} catch (Exception e) {
-			LOG.error(LogMessages.validationException + " (" + e.getMessage() + ")");
+			if (debMVM) {
+				LOG.error(LogMessages.validationException + " (" + e.getMessage() + ")");
+			}
 			return;
 		} catch (OutOfMemoryError oome) {
-			LOG.error(LogMessages.validationOutOfMemory + " (" + oome.getMessage() + ")");
+			if (debMVM) {
+				LOG.error(LogMessages.validationOutOfMemory + " (" + oome.getMessage() + ")");
+			}
 			return;
 		}
-
-		LOG.info(solution.outcome());
-		LOG.info("MVM: Llega solution en validate en KodkodModelValidator " + solution.outcome());
-
+		if (debMVM) {
+			LOG.info(solution.outcome());
+			LOG.info("MVM: Llega solution en validate en KodkodModelValidator " + solution.outcome());
+		}
 		Statistics statistics = solution.stats();
-		LOG.info(LogMessages.kodkodStatistics(statistics));
-
+		if (debMVM) {
+			LOG.info(LogMessages.kodkodStatistics(statistics));
+		}
 		switch (solution.outcome()) {
 		case SATISFIABLE:
 			storeEvaluator(kodkodSolver);
@@ -205,34 +214,37 @@ public abstract class KodkodModelValidator {
 
 		int nOrdenInv=0;
 		try {
-			LOG.info("MVM: (2) Llama a solver desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
-			LOG.info("MVM: (2) Analisis de invariantes de forma individual.");
-int nin=0;// provis
+			if (debMVM) {
+				LOG.info("MVM: (2) Llama a solver desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
+				LOG.info("MVM: (2) Analisis de invariantes de forma individual.");
+			}
+			int nin=0;// provis
 			for (IClass oClass: model.classes()) {
 				invClassTotal.addAll(oClass.invariants());
 				for (IInvariant oInv: oClass.invariants()) {
 					nin+=1;
-					System.out.println(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
+					//					System.out.println(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
+					dispMVM(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
 				}
 			}
 			//---
-			
+
 			for (MClass oClass: mModel.classes()) {
 				mModel.allClassInvariants(oClass);
 				for (MClassInvariant oInv: mModel.allClassInvariants(oClass)) {
 					//oInv.
 				}
-				
-//				invClassTotal.addAll(oClass.model().classInvariants().);
-//				for (IInvariant oInv: oClass.invariants()) {
-//					nin+=1;
-//					System.out.println(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
-//				}
+
+				//				invClassTotal.addAll(oClass.model().classInvariants().);
+				//				for (IInvariant oInv: oClass.invariants()) {
+				//					nin+=1;
+				//					System.out.println(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
+				//				}
 			}
-			
+
 			//--
-			
-			
+
+
 			tabInv = new IInvariant[invClassTotal.size()];
 			tabInvMClass = new MClassInvariant[invClassTotal.size()];	
 			// First pass to see which invariants are no longer satisfiable even if they are alone
@@ -261,11 +273,13 @@ int nin=0;// provis
 				strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "] "+ strCombinacion;
 
 				nOrdenInv+=1;
-				System.out.println("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
+				//				System.out.println("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
+				dispMVM("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
 				ResInv invRes=null;
-				if (debMVM) {
-					System.out.println("MVM: Invariants State: " + strCombinacion);
-				}
+				//				if (debMVM) {
+				//					System.out.println("MVM: Invariants State: " + strCombinacion);
+				//				}
+				dispMVM("MVM: Invariants State: " + strCombinacion);
 				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
 					invRes = new ResInv(strNameInv, "SATISFIABLE", nOrdenInv,invClass);
@@ -292,7 +306,8 @@ int nin=0;// provis
 			if (debMVM) {
 				LOG.info("Tabla de invariantes");
 				for (int nInv = 0; nInv < tabInv.length; nInv++) {
-					System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
+					//					System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
+					dispMVM("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
 				}
 			}
 			// Individual Results
@@ -332,7 +347,9 @@ int nin=0;// provis
 			Collection<IInvariant> invClassOthers,
 			Instant start) {
 		// Make combinations
-		LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
+		if (debMVM) {
+			LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
+		}
 		samples.clear();
 		listSatisfiables.clear();
 		int i = 0;
@@ -361,18 +378,23 @@ int nin=0;// provis
 					comment = "Detect in " +cmb.getValue();
 				}
 
-				System.out.println(String.format("%20s",cmb.getKey()) + " - " + comment);			
+				//				System.out.println(String.format("%20s",cmb.getKey()) + " - " + comment);	
+				dispMVM(String.format("%20s",cmb.getKey()) + " - " + comment);
 			}
-			System.out.println();
+			//			System.out.println();
+			dispMVM("");
 		}
-		LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
-
+		if (debMVM) {
+			LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
+		}
 		// Sorting list before send it to validate
 		List<String> listSorted = new ArrayList<>(listCmbSel.keySet());
 		List<String> listSortedByCmb = listSorted;
 		// Sorting combinations by number of combinations from greatest to lowest
 		listSortedByCmb = sortByCmbNumber(listSorted, invClassTotal.size());
-		LOG.info("MVM: Envio a sendToValidate.");
+		if (debMVM) {
+			LOG.info("MVM: Envio a sendToValidate.");
+		}
 		sendToValidate(listSortedByCmb , invClassTotal); 
 
 		// Compact results
@@ -382,7 +404,9 @@ int nin=0;// provis
 		if (bShowResultGral) showResultGral();
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
-		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+		if (debMVM) {
+			LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+		}
 		String tipoSearchMSS="L";
 		int numberIter=1;
 		ValidatorMVMDialogSimple validatorMVMDialog= 
@@ -447,14 +471,16 @@ int nin=0;// provis
 			}
 
 			// Calcula una combinacion base segun metodo Greedy
-//			List<String> resGreedy = new ArrayList<String>();
+			//			List<String> resGreedy = new ArrayList<String>();
 			String strCmbBase ="";
 			// modeG = "R", se usa random para empezar por una invariante
 			// modeG = "N", se usa random para empezar por una invariante			
 			// modeG = "T" se usan todas las invariantes para unir resultados
 			String modeG="T";// Get the best results
-			modeG="N";//Pruebas
-			LOG.info("MVM: Start Greedy");
+			modeG="G";//Pruebas
+			if (debMVM) {
+				LOG.info("MVM: Start Greedy");
+			}
 			int iIni, iFin;
 			if (modeG.equals("R")) {
 				iIni=0;
@@ -469,15 +495,17 @@ int nin=0;// provis
 			for(int nInv=iIni;nInv<iFin;nInv++) {
 				int nInvTratar=nInv;
 				strCmbBase = bucleGreedy(modeG, col, nInvTratar);
-				System.out.println("strCmbBase ("+nInv+") ["+strCmbBase+"]");
+				//				System.out.println("strCmbBase ("+nInv+") ["+strCmbBase+"]");
+				dispMVM("strCmbBase ("+nInv+") ["+strCmbBase+"]");
 				if (!resGreedy.contains(strCmbBase)) {
 					resGreedy.add(strCmbBase);
 				}
-				System.out.println("1 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
+				//				System.out.println("1 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
+				dispMVM("1 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
 			}
 			// La idea es quedarse con la mejor solucion y dar un resultado de forma inmediata
 			// Luego buscar el resto de resultados por la fuerza bruta
-		
+
 			// Mejor solucion es la combinacion que mas invariantes tenga
 			int maxSolution=0;
 			String bestSolution="";
@@ -490,27 +518,28 @@ int nin=0;// provis
 					bestSolution = strCmbGreedy;
 				}
 			}
-			System.out.println("Best solution greedy ["+bestSolution+"]");
+			//			System.out.println("Best solution greedy ["+bestSolution+"]");
+			dispMVM("Best solution greedy ["+bestSolution+"]");
 		}// provisional a ver ...
-			end = Instant.now();
-			timeElapsed = Duration.between(start, end);
-			tipoSearchMSS="G";	
-			int numberIter=numIterGreedy;
-			// Send to MVMDialogSimple
-			ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
-					invClassUnSatisfiables, 
-					invClassOthers,
-					mModel,
-					timeElapsed,
-					tipoSearchMSS,
-					numberIter);
+		end = Instant.now();
+		timeElapsed = Duration.between(start, end);
+		tipoSearchMSS="G";	
+		int numberIter=numIterGreedy;
+		// Send to MVMDialogSimple
+		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
+				invClassUnSatisfiables, 
+				invClassOthers,
+				mModel,
+				timeElapsed,
+				tipoSearchMSS,
+				numberIter);
 
-			// Then continue searching in the background
-			if (listSatisfiables.size()>0) {
-				LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog, start );
-			}
+		// Then continue searching in the background
+		if (listSatisfiables.size()>0) {
+			LanzacalculoBck(resGreedy, strCmbTotal, validatorMVMDialog, start );
+		}
 
-//		}// elimino provis
+		//		}// elimino provis
 	}
 	/**
 	 * Launches the calculation of the rest of the combinations in the background
@@ -521,12 +550,14 @@ int nin=0;// provis
 	 * @throws Exception
 	 */
 	private void LanzacalculoBck(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception{
-		System.out.println("Inicio back");
+		//		System.out.println("Inicio back");
+		dispMVM("Inicio back");
 
 		EventThreads hilo1 = new EventThreads(false) {
 			@Override
 			public void operacionesRun() {
-				System.out.println("Lanzamos operaciones en tarea background");
+				//				System.out.println("Lanzamos operaciones en tarea background");
+				dispMVM("Lanzamos operaciones en tarea background");
 				try {
 					//					operaciones();
 					calculateInBackGround(resGreedy, strCmbTotal, validatorMVMDialog, start );
@@ -539,14 +570,16 @@ int nin=0;// provis
 		hilo1.addListenerStarted(new EventThreads.IEventStarted() {
 			@Override
 			public void started() {
-				System.out.println("Arranca tarea background");
+				//				System.out.println("Arranca tarea background");
+				dispMVM("Arranca tarea background");
 			}
 		});
 
 		hilo1.addListenerEnded(new EventThreads.IEventEnded() {
 			@Override
 			public void finalizado() {
-				System.out.println("Finaliza tarea background");
+				//				System.out.println("Finaliza tarea background");
+				dispMVM("Finaliza tarea background");
 				try {
 					//					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers);
 					Instant end = Instant.now();
@@ -562,17 +595,18 @@ int nin=0;// provis
 
 		hilo1.start();
 	}
-/**
- * Calculation of the rest of the combinations in the background
- * @param resGreedy
- * @param strCmbTotal
- * @param validatorMVMDialog
- * @param start
- * @throws Exception
- */
+	/**
+	 * Calculation of the rest of the combinations in the background
+	 * @param resGreedy
+	 * @param strCmbTotal
+	 * @param validatorMVMDialog
+	 * @param start
+	 * @throws Exception
+	 */
 	private void calculateInBackGround(List<String> resGreedy, String strCmbTotal, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
-//		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
-		System.out.println("OJO - INI !!.resGreedy Quitar sleep en calculateInBackGround");
+		//		Thread.sleep(3000);// provis para mostar tiempo de espera entre 1a visualizacion y ultima
+		//		System.out.println("OJO - INI !!.resGreedy Quitar sleep en calculateInBackGround");
+		dispMVM("OJO - INI !!.resGreedy Quitar sleep en calculateInBackGround");
 		String strCmbBase;
 		for(String strCmbGreedy:resGreedy) {
 			strCmbBase = strCmbGreedy;
@@ -606,7 +640,8 @@ int nin=0;// provis
 							String newCmb = cmbA + "-" + invR;
 							newCmb=sortCmb(newCmb);
 							if (!resSat.contains(newCmb)) {
-								System.out.println("newCmb [" + newCmb + "]");
+								//								System.out.println("newCmb [" + newCmb + "]");
+								dispMVM("newCmb [" + newCmb + "]");
 								String solucion="";
 								solucion = calcularGreedy( newCmb,  invClassTotal);
 								if (solucion=="SATISFIABLE") {
@@ -629,7 +664,8 @@ int nin=0;// provis
 										}
 										solucion = calcularGreedy( cmbMUS,  invClassTotal);
 										addSolutionG(cmbMUS, solucion);
-										System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
+										//										System.out.println("cbmProbe [" + cmbMUS + "] solution " + solucion);
+										dispMVM("cbmProbe [" + cmbMUS + "] solution " + solucion);
 									}
 								}
 							}
@@ -640,26 +676,28 @@ int nin=0;// provis
 				for (String cmb:resSat) {
 					resGral.add(cmb);
 				}	
-				System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
+				//				System.out.println("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
+				dispMVM("2 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
 			}
 		}
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
 				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
-		System.out.println("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
+		//		System.out.println("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
+		dispMVM("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
 	}
-/**
- * Show results dialog
- * @param invClassSatisfiables
- * @param invClassUnSatisfiables
- * @param invClassOthers
- * @param mModel
- * @param timeElapsed
- * @param tipoSearchMSS
- * @param numberIter
- * @return
- */
+	/**
+	 * Show results dialog
+	 * @param invClassSatisfiables
+	 * @param invClassUnSatisfiables
+	 * @param invClassOthers
+	 * @param mModel
+	 * @param timeElapsed
+	 * @param tipoSearchMSS
+	 * @param numberIter
+	 * @return
+	 */
 	private ValidatorMVMDialogSimple showDialogMVM(Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers ,
@@ -707,10 +745,11 @@ int nin=0;// provis
 
 			listCmb.clear();
 			listCmbRes.clear();
-//			List<String> listSorted = new ArrayList<String>();
+			//			List<String> listSorted = new ArrayList<String>();
 			// ic es la lista de combinaciones que no tienen nada en comun
 			ic = greedyMethod(modeG, col, iTratar);				
-			System.out.println("Invariants collection (ic): " + ic.size());
+			//			System.out.println("Invariants collection (ic): " + ic.size());
+			dispMVM("Invariants collection (ic): " + ic.size());
 			String strCmb="";
 			strCmbBase ="";
 			for (MClassInvariant inv:ic) {
@@ -728,7 +767,9 @@ int nin=0;// provis
 
 			strCmbBase= sortCmb(strCmb);
 			String solucion="";
-			LOG.info("MVM: Envio a calcularGreedy.");
+			if (debMVM) {
+				LOG.info("MVM: Envio a calcularGreedy.");
+			}
 			solucion = calcularGreedy( strCmbBase,  invClassTotal);	
 			addSolutionG(strCmbBase, solucion);
 			// si el resultado es UNSATISFIABLE y modeG = "R" hay que volver a enviarlo a greedyMethod
@@ -775,7 +816,9 @@ int nin=0;// provis
 	 * @param col
 	 */
 	private static void buildTreeVisitor(Collection<MClassInvariant> col) {
-		LOG.info("MVM: working on Visitor (in)");
+		if (debMVM) {
+			LOG.info("MVM: working on Visitor (in)");
+		}
 		mapCAI.clear();
 		mapInfoInv.clear();
 		mapInfoAttr.clear();
@@ -807,17 +850,21 @@ int nin=0;// provis
 			mapInfoAssoc=visitor.getMapInfoAssoc();
 
 			contador+=1;
-			if (debMVM) {
-				System.out.println("contador [" + contador + "]");
-			}
+			//			if (debMVM) {
+			//				System.out.println("contador [" + contador + "]");
+			dispMVM("contador [" + contador + "]");
+			//			}
 
 		}
-		if (debMVM) {
-			for(String log: logs) {
-				System.out.println("log [" + log + "]");
-			}
+		//		if (debMVM) {
+		for(String log: logs) {
+			//				System.out.println("log [" + log + "]");
+			dispMVM("log [" + log + "]");
 		}
-		LOG.info("MVM: working on Visitor (out)");
+		//		}
+		if (debMVM) {
+			LOG.info("MVM: working on Visitor (out)");
+		}
 	}
 	/**
 	 * Find the order number of the invariant in the general table of invariants of the model
@@ -842,20 +889,20 @@ int nin=0;// provis
 	 * @param inv
 	 * @return
 	 */
-//	private static int searchNumInvII(IInvariant inv) {
-//		int numInvGral=-1;
-//		for (int nInv = 0; nInv < tabInv.length; nInv++) {
-//			IInvariant invCmp = tabInv[nInv];
-//			if(inv.name().equals(invCmp.name())&&inv.clazz().equals(invCmp.clazz())) {
-//				numInvGral=nInv+1;
-//				continue;
-//			}
-//		}
-//		if (numInvGral<0) {
-//			System.out.println("inv " + inv + " numInv<0 en searchNumInvII");
-//		}		
-//		return numInvGral;
-//	}	
+	//	private static int searchNumInvII(IInvariant inv) {
+	//		int numInvGral=-1;
+	//		for (int nInv = 0; nInv < tabInv.length; nInv++) {
+	//			IInvariant invCmp = tabInv[nInv];
+	//			if(inv.name().equals(invCmp.name())&&inv.clazz().equals(invCmp.clazz())) {
+	//				numInvGral=nInv+1;
+	//				continue;
+	//			}
+	//		}
+	//		if (numInvGral<0) {
+	//			System.out.println("inv " + inv + " numInv<0 en searchNumInvII");
+	//		}		
+	//		return numInvGral;
+	//	}	
 
 	/**
 	 * Prepare structure and matrix for the calculation of probabilities that one invariant interferes with another
@@ -1032,8 +1079,10 @@ int nin=0;// provis
 					System.out.println("    kAI [" + kAI.getAttr().name() + "]");
 					List<MClassInvariant> lInvAttr = new ArrayList<MClassInvariant>();
 					lInvAttr=kAI.getlInv();
-					for (MClassInvariant inv : lInvAttr) {
-						System.out.println("      inv [" + inv.name() + "]");
+					if (debMVM) {
+						for (MClassInvariant inv : lInvAttr) {
+							System.out.println("      inv [" + inv.name() + "]");
+						}
 					}
 				}
 				System.out.println();
@@ -1054,14 +1103,18 @@ int nin=0;// provis
 		for (Map.Entry<MClassInvariant, InfoInv> entry : mapInfoInv.entrySet()) {
 			MClassInvariant inv = entry.getKey();
 			// Attributes & Assoc of Invariants
-			System.out.println("inv [" + inv.name() + "]");
+			//			if (debMVM) {
+			//				System.out.println("inv [" + inv.name() + "]");
+			dispMVM("inv [" + inv.name() + "]");
+			//			}
 			List<MAttribute> lAttr = new ArrayList<MAttribute>();
 			InfoInv oInfoInv = mapInfoInv.get(inv);
 			// Attributes
 			lAttr = oInfoInv.getlAttr();
 			if (lAttr.size()>0) {
 				for (MAttribute attr : lAttr) {
-					System.out.println("     attr [" + attr.name() + "]");
+					//					System.out.println("     attr [" + attr.name() + "]");
+					dispMVM("     attr [" + attr.name() + "]");
 				}				
 			}
 			// Assoc
@@ -1069,13 +1122,17 @@ int nin=0;// provis
 			lAssoc = oInfoInv.getlAssoc();
 			if (lAssoc.size()>0) {
 				for (MAssociation assoc : lAssoc) {
-					System.out.println("     assoc [" + assoc.name() + "]");
+					//					System.out.println("     assoc [" + assoc.name() + "]");
+					dispMVM("     assoc [" + assoc.name() + "]");
 				}				
 			}	
-			System.out.println();
+			//			System.out.println();
+			dispMVM("");
 		}
-		System.out.println("============================================");
-		System.out.println("                *---*---*");
+		//		System.out.println("============================================");
+		//		System.out.println("                *---*---*");
+		dispMVM("============================================");
+		dispMVM("                *---*---*");
 	}
 
 	/**
@@ -1093,12 +1150,16 @@ int nin=0;// provis
 			InfoAttr InfoAttr = mapInfoAttr.get(attr);
 			lInv = InfoAttr.getlInv();
 			for (MClassInvariant inv : lInv) {
-				System.out.println("     inv [" + inv.name() + "]");
+				//				System.out.println("     inv [" + inv.name() + "]");
+				dispMVM("     inv [" + inv.name() + "]");
 			}
-			System.out.println();
+//			System.out.println();
+			dispMVM("");
 		}		
-		System.out.println("============================================");
-		System.out.println("                *---*---*");
+//		System.out.println("============================================");
+//		System.out.println("                *---*---*");
+		dispMVM("============================================");
+		dispMVM("                *---*---*");
 	}
 
 	/**
@@ -1116,12 +1177,16 @@ int nin=0;// provis
 			InfoAssoc oInfoAssoc = mapInfoAssoc.get(assoc);
 			lInv = oInfoAssoc.getlInv();
 			for (MClassInvariant inv : lInv) {
-				System.out.println("      inv [" + inv.name() + "]");
+//				System.out.println("      inv [" + inv.name() + "]");
+				dispMVM("     inv [" + inv.name() + "]");
 			}
-			System.out.println();
+//			System.out.println();
+			dispMVM("");
 		}	
-		System.out.println("============================================");
-		System.out.println("                *---*---*");
+//		System.out.println("============================================");
+//		System.out.println("                *---*---*");
+		dispMVM("============================================");
+		dispMVM("                *---*---*");
 	}
 
 	/**
@@ -1305,7 +1370,8 @@ int nin=0;// provis
 			String cmb = invF1;
 			if (!resGral.contains(cmb)) {
 				resGral.add(cmb);
-				if (debMVM) System.out.println("Incluyo en resGral[" + cmb + "]");
+				//				 if (debMVM) System.out.println("Incluyo en resGral[" + cmb + "]");
+				if (debMVM) dispMVM("Incluyo en resGral[" + cmb + "]");
 			}
 			int nCmbs = resGral.size();
 			for (int nCmb = 0;nCmb<nCmbs;nCmb++) {
@@ -1314,7 +1380,8 @@ int nin=0;// provis
 					String newCmb = cmbR + "-" + invF1;
 					if (!resGral.contains(newCmb)) {
 						resGral.add(newCmb);
-						if (debMVM) System.out.println("Incluyo en resGral[" + newCmb + "]");
+						//						if (debMVM) System.out.println("Incluyo en resGral[" + newCmb + "]");
+						if (debMVM) dispMVM("Incluyo en resGral[" + newCmb + "]");
 					}
 				}
 			}
@@ -1364,22 +1431,29 @@ int nin=0;// provis
 		System.out.println();
 		for (Map.Entry<MClassInvariant, Set<MClassInvariant>> entry : mapInfoInvSet.entrySet()) {
 			MClassInvariant invKey = entry.getKey();
-			System.out.println("Inv [" + invKey +"]");
+//			System.out.println("Inv [" + invKey +"]");
+			dispMVM("Inv [" + invKey +"]");
 			Set<MClassInvariant> lInvRrel = entry.getValue();
 			for (MClassInvariant invRel: lInvRrel) {
-				System.out.println("   * [" + invRel +"]");
+//				System.out.println("   * [" + invRel +"]");
+				dispMVM("   * [" + invRel +"]");
 			}
-			System.out.println();
+//			System.out.println();
+			dispMVM("");
 		}
-		System.out.println("============================================");
-		System.out.println("                *---*---*");
+//		System.out.println("============================================");
+//		System.out.println("                *---*---*");
+		dispMVM("============================================");
+		dispMVM("                *---*---*");
 	}	
 
 	/**
 	 * Preparation structure to store invariants related to each invariant
 	 */
 	private static void preparaMapInfoInvSet() {
-		LOG.info("MVM: working on preparaMapInfoInvSet (in)");
+		if (debMVM) {
+			LOG.info("MVM: working on preparaMapInfoInvSet (in)");
+		}
 		// Preparo Map de invariantes con Set de invariantes
 		// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
 		mapInfoInvSet.clear();
@@ -1387,7 +1461,8 @@ int nin=0;// provis
 			MClassInvariant invKey = entry.getKey();
 			Set<MClassInvariant> lInvRel = new HashSet<MClassInvariant>();
 
-			System.out.println("inv [" + invKey.name() + "]");
+//			System.out.println("inv [" + invKey.name() + "]");
+			dispMVM("inv [" + invKey.name() + "]");
 			List<MAttribute> lAttr = new ArrayList<MAttribute>();
 			InfoInv oInfoInv = mapInfoInv.get(invKey);
 			// Attributes
@@ -1419,7 +1494,9 @@ int nin=0;// provis
 				}
 			}
 		}
-		LOG.info("MVM: working on preparaMapInfoInvSet (out)");
+		if (debMVM) {
+			LOG.info("MVM: working on preparaMapInfoInvSet (out)");
+		}
 	}
 
 	/**
@@ -1727,9 +1804,10 @@ int nin=0;// provis
 			// Si esta usada, guardamos la key que la representa
 			valor=combination;
 			listCmb.put(combination, keyOrdenada);
-			if (debMVM) {
-				System.out.println("Encuentra " + keyOrdenada + " y guarda "+combination);
-			}
+			//			if (debMVM) {
+			//				System.out.println("Encuentra " + keyOrdenada + " y guarda "+combination);
+			dispMVM("Encuentra " + keyOrdenada + " y guarda "+combination);
+			//			}
 		}else {
 			// Si no esta usada, almacenamos con valor 'N' (Nueva)
 			valor="N";  
@@ -1824,9 +1902,10 @@ int nin=0;// provis
 					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combinacion);
 					resultado += " - ["+ solucion+"]";
 					// Aqui poner if (debMVM)
-					if (debMVM) {
-						System.out.println("MVM: " + resultado);
-					}
+					//					if (debMVM) {
+					//						System.out.println("MVM: " + resultado);
+					dispMVM("MVM: " + resultado);
+					//					}
 					addSolutionG(combinacion, solucion);
 				}
 			}
@@ -1884,9 +1963,10 @@ int nin=0;// provis
 	 */
 	public Solution calcular(String combinacion, Collection<IInvariant> invClassTotal) {
 		KodkodSolver kodkodSolver = new KodkodSolver();
-		if (debMVM) {
-			System.out.println("MVM: Entra en calcular (" + combinacion + ")");
-		}
+		//		if (debMVM) {
+		//			System.out.println("MVM: Entra en calcular (" + combinacion + ")");
+		dispMVM("MVM: Entra en calcular (" + combinacion + ")");
+		//		}
 		Solution solution=null;
 		// Find invariants of the combination
 		List<IInvariant> listInv = new ArrayList<IInvariant>();
@@ -1930,9 +2010,10 @@ int nin=0;// provis
 	public String calcularGreedy(String combinacion, Collection<IInvariant> invClassTotal) {
 		KodkodSolver kodkodSolver = new KodkodSolver();
 		String solucion="";
-		if (debMVM) {
-			System.out.println("MVM: Entra en calcular (" + combinacion + ")");
-		}
+		//		if (debMVM) {
+		//			System.out.println("MVM: Entra en calcular (" + combinacion + ")");
+		dispMVM("MVM: Entra en calcular (" + combinacion + ")");
+		//		}
 		// First of all see if you can deduce the result
 		boolean calculate=true;
 		// See if the combination is included in a satisfiable
@@ -1996,9 +2077,10 @@ int nin=0;// provis
 	 */
 	public Solution calcularOld(String combinacion, Collection<IInvariant> invClassTotal, KodkodSolver kodkodSolver) {
 
-		if (debMVM) {
-			System.out.println("MVM: Entra en calcular (" + combinacion + ")");
-		}
+		//		if (debMVM) {
+		//			System.out.println("MVM: Entra en calcular (" + combinacion + ")");
+		dispMVM("MVM: Entra en calcular (" + combinacion + ")");
+		//		}
 		Solution solution=null;
 		// Find invariants of the combination
 		List<IInvariant> listInv = new ArrayList<IInvariant>();
@@ -2033,74 +2115,74 @@ int nin=0;// provis
 		}
 		return solution;
 	}
-//	/**
-//	 * Recursive calculus (deprecated)
-//	 * @param combinacion
-//	 * @param invClassTotal
-//	 * @param kodkodSolver
-//	 * @param acumVal
-//	 */
-//	private void calcularRec(String combinacion, Collection<IInvariant> invClassTotal, KodkodSolver kodkodSolver, int acumVal) {
-//		if (debMVM) {
-//			System.out.println("MVM: Entra en calcularRec (" + combinacion + ")");
-//		}
-//		// If a combination is Unsat, find the unsat core by activating all but 1 and classify it
-//		// For example, if 1-2-3-5 is unsat, we have to test:
-//		// 1-2-3
-//		// 1-2-5
-//		// 1-3-5
-//		// 2-3-5
-//		// If it is sat, it is added to listSatisfiables and that's it
-//		// If it is unsat, it is added to listUnSatisfiables and sent again to calculateRec
-//		//...
-//		int cmbSel = listCmbSel.size();
-//		List<String> lisWork = new ArrayList<String>();
-//		lisWork = combines(combinacion);
-//		lisWork = sortByNumInv(lisWork,"D");
-//		int nCmbs=lisWork.size();
-//		// As many combinations as there are invariants are made in search of MUS
-//		for (int nCmb = 0; nCmb < nCmbs; nCmb++) {
-//			String newCmb = lisWork.get(nCmb);
-//			if (newCmb.equals(combinacion)) {
-//				continue;
-//			}
-//			boolean calculate=true;
-//			calculate = !includedInSatisfactible(newCmb);
-//
-//			if (calculate) {
-//				// See if there are unsatisfiable combinations that are included in the combination to be treated
-//				calculate = !unsatisIncludedInCombination( newCmb);
-//			}
-//
-//			if (calculate) {
-//				Solution solution = null;
-//				try {
-//					solution = calcular( newCmb,  invClassTotal);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//				acumVal+=1;
-//
-//				String resultado = cmbSel + " " + acumVal+ " " + String.format("%-20s",newCmb);
-//				resultado += " - ["+ solution.outcome()+"]";
-//				if (debMVM) {
-//					System.out.println("MVM - calcularRec: " + resultado);
-//				}
-//				if (solution.outcome().toString() == "SATISFIABLE") {
-//					listSatisfiables.add(newCmb);
-//					storeResultCmb(newCmb, "SATISFIABLE", "Direct calculation");
-//				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
-//					listUnSatisfiables.add(newCmb);
-//					storeResultCmb(newCmb, "UNSATISFIABLE", "Direct calculation");
-//					// If it were unsatisfiable, would it be worth finding the unsatisfiable cores?
-//					//...
-//					calcularRec(newCmb, invClassTotal,  kodkodSolver, acumVal);
-//				} else {
-//					listOthers.add(newCmb);
-//				}
-//			}
-//		}
-//	}
+	//	/**
+	//	 * Recursive calculus (deprecated)
+	//	 * @param combinacion
+	//	 * @param invClassTotal
+	//	 * @param kodkodSolver
+	//	 * @param acumVal
+	//	 */
+	//	private void calcularRec(String combinacion, Collection<IInvariant> invClassTotal, KodkodSolver kodkodSolver, int acumVal) {
+	//		if (debMVM) {
+	//			System.out.println("MVM: Entra en calcularRec (" + combinacion + ")");
+	//		}
+	//		// If a combination is Unsat, find the unsat core by activating all but 1 and classify it
+	//		// For example, if 1-2-3-5 is unsat, we have to test:
+	//		// 1-2-3
+	//		// 1-2-5
+	//		// 1-3-5
+	//		// 2-3-5
+	//		// If it is sat, it is added to listSatisfiables and that's it
+	//		// If it is unsat, it is added to listUnSatisfiables and sent again to calculateRec
+	//		//...
+	//		int cmbSel = listCmbSel.size();
+	//		List<String> lisWork = new ArrayList<String>();
+	//		lisWork = combines(combinacion);
+	//		lisWork = sortByNumInv(lisWork,"D");
+	//		int nCmbs=lisWork.size();
+	//		// As many combinations as there are invariants are made in search of MUS
+	//		for (int nCmb = 0; nCmb < nCmbs; nCmb++) {
+	//			String newCmb = lisWork.get(nCmb);
+	//			if (newCmb.equals(combinacion)) {
+	//				continue;
+	//			}
+	//			boolean calculate=true;
+	//			calculate = !includedInSatisfactible(newCmb);
+	//
+	//			if (calculate) {
+	//				// See if there are unsatisfiable combinations that are included in the combination to be treated
+	//				calculate = !unsatisIncludedInCombination( newCmb);
+	//			}
+	//
+	//			if (calculate) {
+	//				Solution solution = null;
+	//				try {
+	//					solution = calcular( newCmb,  invClassTotal);
+	//				} catch (Exception e) {
+	//					e.printStackTrace();
+	//				}
+	//				acumVal+=1;
+	//
+	//				String resultado = cmbSel + " " + acumVal+ " " + String.format("%-20s",newCmb);
+	//				resultado += " - ["+ solution.outcome()+"]";
+	//				if (debMVM) {
+	//					System.out.println("MVM - calcularRec: " + resultado);
+	//				}
+	//				if (solution.outcome().toString() == "SATISFIABLE") {
+	//					listSatisfiables.add(newCmb);
+	//					storeResultCmb(newCmb, "SATISFIABLE", "Direct calculation");
+	//				}else if (solution.outcome().toString() == "UNSATISFIABLE") {
+	//					listUnSatisfiables.add(newCmb);
+	//					storeResultCmb(newCmb, "UNSATISFIABLE", "Direct calculation");
+	//					// If it were unsatisfiable, would it be worth finding the unsatisfiable cores?
+	//					//...
+	//					calcularRec(newCmb, invClassTotal,  kodkodSolver, acumVal);
+	//				} else {
+	//					listOthers.add(newCmb);
+	//				}
+	//			}
+	//		}
+	//	}
 
 	/**
 	 * Find invariants of the combination
@@ -2203,6 +2285,12 @@ int nin=0;// provis
 			}
 		}
 		return bRes;
+	}
+
+	private static void dispMVM(String text) {
+		if (debMVM) {
+			System.out.println(text);
+		}
 	}
 
 	/**

@@ -18,11 +18,11 @@ public class ConfigMVM {
  */
 	
 	private static String nomFile = "numIter.txt";
+	private static String nomFileDebMVM = "debMVM.txt";
 	public static int getNumIter() {
 		int numIter=3;
 		Path path = Paths.get("");
 		String directoryName = path.toAbsolutePath().toString();
-//		String archivo= directoryName + "\\numIter.txt";
 		String archivo= directoryName + "\\" + nomFile;
 		String cadena=""; 
 		FileReader f;
@@ -31,7 +31,7 @@ public class ConfigMVM {
 			BufferedReader b = new BufferedReader(f); 
 			String res="";
 			while((cadena = b.readLine())!=null) { 
-				System.out.println(cadena); 
+//				System.out.println(cadena); 
 				res+=cadena;
 			} 
 			b.close(); 
@@ -41,5 +41,29 @@ public class ConfigMVM {
 		} 
 		return numIter;
 	}
-
+	public static boolean getDebMVM() {
+		boolean debMVM=false;
+		Path path = Paths.get("");
+		String directoryName = path.toAbsolutePath().toString();
+		String archivo= directoryName + "\\" + nomFileDebMVM;
+		String cadena=""; 
+		FileReader f;
+		try {
+			f = new FileReader(archivo);
+			BufferedReader b = new BufferedReader(f); 
+			String res="";
+			while((cadena = b.readLine())!=null) { 
+//				System.out.println(cadena); 
+				res+=cadena;
+			} 
+			b.close(); 
+			if (res.equals("S")) {
+				debMVM = true;
+			}
+							
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return debMVM;
+	}
 }

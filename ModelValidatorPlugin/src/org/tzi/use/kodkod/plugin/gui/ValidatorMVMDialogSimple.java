@@ -332,7 +332,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		frame.setTitle(titleFrame);
 
-		System.out.println("Actualizo info!!");
+//		System.out.println("Actualizo info!!");
 	}
 	/**
 	 * Screen End Panel
