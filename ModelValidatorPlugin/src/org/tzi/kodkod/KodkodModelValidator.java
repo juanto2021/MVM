@@ -519,7 +519,7 @@ public abstract class KodkodModelValidator {
 					bestSolution = strCmbGreedy;
 				}
 			}
-			//			System.out.println("Best solution greedy ["+bestSolution+"]");
+			//			System.out.println("Best solution greedy ["+bestSolution+"]"); 
 			dispMVM("Best solution greedy ["+bestSolution+"]");
 		}// provisional a ver ...
 		end = Instant.now();
