@@ -477,7 +477,7 @@ public abstract class KodkodModelValidator {
 			// modeG = "N", se usa random para empezar por una invariante			
 			// modeG = "T" se usan todas las invariantes para unir resultados
 			String modeG="T";// Get the best results
-			modeG="G";//Pruebas
+			modeG="T";//Pruebas
 			if (debMVM) {
 				LOG.info("MVM: Start Greedy");
 			}
