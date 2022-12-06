@@ -137,24 +137,24 @@ public abstract class KodkodModelValidator {
 		try {
 			solution = kodkodSolver.solve(model);
 		} catch (Exception e) {
-			if (debMVM) {
+//			if (debMVM) {
 				LOG.error(LogMessages.validationException + " (" + e.getMessage() + ")");
-			}
+//			}
 			return;
 		} catch (OutOfMemoryError oome) {
-			if (debMVM) {
+//			if (debMVM) {
 				LOG.error(LogMessages.validationOutOfMemory + " (" + oome.getMessage() + ")");
-			}
+//			}
 			return;
 		}
-		if (debMVM) {
+//		if (debMVM) {
 			LOG.info(solution.outcome());
 			LOG.info("MVM: Llega solution en validate en KodkodModelValidator " + solution.outcome());
-		}
+//		}
 		Statistics statistics = solution.stats();
-		if (debMVM) {
+//		if (debMVM) {
 			LOG.info(LogMessages.kodkodStatistics(statistics));
-		}
+//		}
 		switch (solution.outcome()) {
 		case SATISFIABLE:
 			storeEvaluator(kodkodSolver);

@@ -12,6 +12,7 @@ import org.tzi.kodkod.model.type.IntegerType;
 import org.tzi.kodkod.model.type.TypeAtoms;
 import org.tzi.kodkod.model.visitor.BoundsVisitor;
 import org.tzi.kodkod.model.visitor.ConstraintVisitor;
+import org.tzi.mvm.ConfigMVM;
 import org.tzi.use.config.Options;
 import org.tzi.use.util.Log;
 
@@ -33,7 +34,7 @@ public class KodkodSolver {
 	private static final Logger LOG = Logger.getLogger(KodkodSolver.class);
 
 	private Evaluator evaluator;
-	private boolean debMVM=false;
+	private boolean debMVM=ConfigMVM.getDebMVM();
 
 	public Solution solve(IModel model) throws Exception {
 		KodkodModelValidatorConfiguration configuration = KodkodModelValidatorConfiguration.getInstance();
@@ -50,9 +51,9 @@ public class KodkodSolver {
 
 		final Solver solver = new Solver();
 		solver.options().setLogTranslation(1);
-		if (debMVM) {
+//		if (debMVM) {
 			LOG.info(LogMessages.searchSolution(configuration.satFactory().toString(), configuration.bitwidth()));
-		}
+//		}
 		solver.options().setSolver(configuration.satFactory());
 		solver.options().setBitwidth(configuration.bitwidth());
 
