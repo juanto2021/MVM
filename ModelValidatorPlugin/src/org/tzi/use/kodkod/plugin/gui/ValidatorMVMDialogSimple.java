@@ -84,7 +84,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	List<String> listStrGrupos = null;
 
 	Map<Integer, IInvariant> mapInvSAT=null;
-	HashMap<String, String> mapGRP_SAT_MAX=null;
+//	HashMap<String, String> mapGRP_SAT_MAX=null;
 	HashMap<String, ResInv> mapInvRes=null;
 
 	MModel mModel;
@@ -181,7 +181,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			Collection<IInvariant> pListInvSatisfiables, 
 			Collection<IInvariant> pListInvUnSatisfiables,
 			Collection<IInvariant> pListInvOthers,
-			HashMap<String, String> pMapGRP_SAT_MAX,
+//			HashMap<String, String> pMapGRP_SAT_MAX,
 			List<String> pListStrSatisfiables,
 			List<String> pListStrUnSatisfiables,
 			List<String> pListStrOthers,
@@ -213,9 +213,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		this.mapInvRes = pMapInvRes;
 
-		List<String> sortedKeys=new ArrayList<String>(pMapGRP_SAT_MAX.keySet());
-		Collections.sort(sortedKeys);
-		this.listStrGrupos=sortedKeys;
+//		List<String> sortedKeys=new ArrayList<String>(pMapGRP_SAT_MAX.keySet());
+//		Collections.sort(sortedKeys);
+//		this.listStrGrupos=sortedKeys;
 		this.timeElapsed = timeElapsed;
 
 		this.strCmbSel="";
@@ -236,7 +236,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbTextOCLSat = new JLabel("OCL for inv.: ---", SwingConstants.CENTER);
 
 		mapInvSAT = new HashMap<>();
-		mapGRP_SAT_MAX = pMapGRP_SAT_MAX;
+//		mapGRP_SAT_MAX = pMapGRP_SAT_MAX;
 		int i = 0;
 		for (IInvariant invClass: listInvSatisfiables) {
 			i+=1;
