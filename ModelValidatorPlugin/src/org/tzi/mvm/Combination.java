@@ -8,7 +8,7 @@ import java.util.TreeSet;
  * @author Juanto
  *
  */
-public class Combination extends HashSet<String> {
+	public class Combination {	
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -51,7 +51,8 @@ public class Combination extends HashSet<String> {
 	 * @param invariants that make up the combination
 	 */
 	public void setInvariants(Set<String> invariants) {
-		this.invariants = invariants;
+//		this.invariants = invariants;
+		this.invariants.addAll(invariants);
 	}
 	/**
 	 * Analyze if a combination is included in the current combination (this)
@@ -90,6 +91,13 @@ public class Combination extends HashSet<String> {
 		TreeSet<String> treeSet = new TreeSet<String>(getInvariants());	
 		Combination cmbCombination= new Combination(treeSet);
 		return cmbCombination;
+	}
+	
+	public void addInv(String inv) {
+//		Combination cmbRes = new Combination();
+		this.invariants.add(inv);
+//		cmbRes.invariants.addAll(cmb2.invariants);
+		return;
 	}
 	/**
 	 * Returns a sum combination of 2 others
@@ -143,7 +151,6 @@ public class Combination extends HashSet<String> {
 		cmbRes.invariants.addAll(cmb1.invariants);
 		cmbRes.invariants.addAll(cmb2.invariants);
 		// Diferencia
-
 		cmbRes.invariants.removeAll(cmbDif.invariants);
 		return cmbRes;
 	}	
@@ -153,6 +160,16 @@ public class Combination extends HashSet<String> {
 	@Override
 	public String toString() {
 		return "Combination [invariants=" + invariants + "]";
+	}
+	public String strStr() {
+		String res="";
+		for (String cmb : invariants) {
+			if (res!="") {
+				res+="-";
+			}
+			res+=cmb;
+		}		
+		return res;
 	}
 
 }

@@ -51,9 +51,9 @@ public class KodkodSolver {
 
 		final Solver solver = new Solver();
 		solver.options().setLogTranslation(1);
-//		if (debMVM) {
+		if (debMVM) {
 			LOG.info(LogMessages.searchSolution(configuration.satFactory().toString(), configuration.bitwidth()));
-//		}
+		}
 		solver.options().setSolver(configuration.satFactory());
 		solver.options().setBitwidth(configuration.bitwidth());
 
