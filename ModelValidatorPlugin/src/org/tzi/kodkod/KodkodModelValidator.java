@@ -220,7 +220,7 @@ public abstract class KodkodModelValidator {
 		try {
 			if (debMVM) {
 				LOG.info("MVM: (2) Llama a solver desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
-//				LOG.info("MVM: Analisis de invariantes de forma individual.");
+				//				LOG.info("MVM: Analisis de invariantes de forma individual.");
 			}
 			LOG.info("MVM: Analysis of invariants individually.");
 			int nin=0;// provis
@@ -398,7 +398,7 @@ public abstract class KodkodModelValidator {
 		if (debMVM) {
 			LOG.info("MVM: Envio a sendToValidate.");
 		}
-//		sendToValidate(listSortedByCmb , invClassTotal); // provis
+		//		sendToValidate(listSortedByCmb , invClassTotal); // provis
 
 		// JGH
 		// Ordenar cmbs de mas a menos inv
@@ -456,9 +456,9 @@ public abstract class KodkodModelValidator {
 				return o2.getInvariants().size() - (o1.getInvariants().size());
 			}
 		});					
-//		System.out.println("SAT");
+		//		System.out.println("SAT");
 		for (Combination cmb:listSatCH) {
-//			System.out.println("["+cmb.strStr()+"]");
+			//			System.out.println("["+cmb.strStr()+"]");
 			listSatisfiables.add(cmb.strStr());
 		}
 
@@ -470,9 +470,9 @@ public abstract class KodkodModelValidator {
 				return o2.getInvariants().size() - (o1.getInvariants().size());
 			}
 		});					
-//		System.out.println("UNSAT");
+		//		System.out.println("UNSAT");
 		for (Combination cmb:listUnSatCH) {
-//			System.out.println("["+cmb.strStr()+"]");
+			//			System.out.println("["+cmb.strStr()+"]");
 			listUnSatisfiables.add(cmb.strStr());
 		}				
 	}
@@ -577,15 +577,15 @@ public abstract class KodkodModelValidator {
 				cmbBaseH=bucleGreedyH(modeG, col, nInvTratar);
 
 				dispMVM("strCmbBase ("+nInv+") ["+strCmbBase+"]");
-//				System.out.println("strCmbBase ("+nInv+") ["+strCmbBase+"]");
-//				System.out.println("cmbBaseH ("+nInv+") ["+cmbBaseH+"]");
+				//				System.out.println("strCmbBase ("+nInv+") ["+strCmbBase+"]");
+				//				System.out.println("cmbBaseH ("+nInv+") ["+cmbBaseH+"]");
 				if (!resGreedy.contains(strCmbBase)) {
 					resGreedy.add(strCmbBase);
 				}
 				resGreedyCH.add(cmbBaseH);
 				dispMVM(nInv + " 1 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
-//				System.out.println(nInv + " 1 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
-//				System.out.println(nInv + " 1 - Hay listSatisfiablesH ["+listSatisfiablesH.size()+"]");
+				//				System.out.println(nInv + " 1 - Hay listSatisfiables ["+listSatisfiables.size()+"]");
+				//				System.out.println(nInv + " 1 - Hay listSatisfiablesH ["+listSatisfiablesH.size()+"]");
 			}
 			// La idea es quedarse con la mejor solucion y dar un resultado de forma inmediata
 			// Luego buscar el resto de resultados por la fuerza bruta
@@ -683,15 +683,15 @@ public abstract class KodkodModelValidator {
 			public void finalizado() {
 				dispMVM("Finaliza tarea background");
 				LOG.info("MVM: Backgroubd (Greedy) - End.");
-//				System.out.println("Finaliza tarea background normal");
+				//				System.out.println("Finaliza tarea background normal");
 				try {
 					Instant end = Instant.now();
 					Duration timeElapsed = Duration.between(start, end);
-					
+
 					//AQUI
 					// Provisionalmente monto listas a partir de las nuevas estructuras
 					TraspasaCH();	
-					
+
 					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
 							timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
 				} catch (Exception e) {
@@ -731,7 +731,7 @@ public abstract class KodkodModelValidator {
 			public void finalizado() {
 				dispMVM("Finaliza tarea background CH");
 				LOG.info("MVM: Backgroubd (Greedy) CH - End.");
-//				System.out.println("Finaliza tarea background CH");
+				//				System.out.println("Finaliza tarea background CH");
 				try {
 					Instant end = Instant.now();
 					Duration timeElapsed = Duration.between(start, end);
@@ -832,14 +832,14 @@ public abstract class KodkodModelValidator {
 		}
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
-		
-//Aqui1
-		
+
+		//Aqui1
+
 		// Provisionalmente monto listas a partir de las nuevas estructuras
-//		TraspasaCH();	//provis
-		
-//		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
-//				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);	//provis
+		//		TraspasaCH();	//provis
+
+		//		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,
+		//				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);	//provis
 
 		dispMVM("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
 	}
@@ -957,7 +957,7 @@ public abstract class KodkodModelValidator {
 								if (solucion=="SATISFIABLE") {
 									//									addSolutionG(newCmb, solucion);
 									addSolutionGH(cmbNew, solucion);
-//									System.out.println("cmbNew " + cmbNew + solucion);
+									//									System.out.println("cmbNew " + cmbNew + solucion);
 									colResSat.add(cmbNew);
 									newCmbResto.addInv(invR);
 
@@ -978,7 +978,7 @@ public abstract class KodkodModelValidator {
 										cmbMusH.addInv(fabStrInv(invR));
 
 										if (listSatisfiables.contains(cmbMUS)||listUnSatisfiables.contains(cmbMUS)) {
-//											System.out.println("cmbMUS " + cmbMUS + " Esta calculada");
+											//											System.out.println("cmbMUS " + cmbMUS + " Esta calculada");
 										}
 										boolean esta = false;
 										for (Combination cmb: listSatisfiablesH) {
@@ -998,17 +998,17 @@ public abstract class KodkodModelValidator {
 											}											
 										}
 										if (esta) {
-//											System.out.println("Esta calculada en listaH");
+											//											System.out.println("Esta calculada en listaH");
 										}
 										//no detecta que cmbMusH esta en listSatisfiablesCH
 										if (listSatisfiablesCH.contiene(cmbMusH)||listUnSatisfiablesCH.contiene(cmbMusH)) {
-//											System.out.println("Esta calculada en listaCH");											
+											//											System.out.println("Esta calculada en listaCH");											
 											continue;
 										}
 
 										solucion = calcularGreedyH( cmbMusH,  invClassTotal);
 										addSolutionGH(cmbMusH, solucion);
-//										System.out.println("cmbMusH " + cmbMusH + solucion);
+										//										System.out.println("cmbMusH " + cmbMusH + solucion);
 										dispMVM("cmbMUS [" + cmbMUS + "] solution " + solucion);
 										dispMVM("cmbMusH [" + cmbMusH + "] solution " + solucion);
 									}
@@ -1026,26 +1026,26 @@ public abstract class KodkodModelValidator {
 				colResGral.addAll(colResSat);
 
 				dispMVM(ordenBucle + "Hay listSatisfiables ["+listSatisfiables.size()+"]");
-//				System.out.println(ordenBucle + "Hay listSatisfiables ["+listSatisfiables.size()+"]");
-//				System.out.println(ordenBucle + "Hay listSatisfiablesH ["+listSatisfiablesH.size()+"]");				
-//				System.out.println(ordenBucle + "Hay listSatisfiablesCH ["+listSatisfiablesCH.size()+"]");
-//				System.out.println();
-//
-//				dispMVM("Hay listUnSatisfiables ["+listUnSatisfiables.size()+"]");
-//				System.out.println(ordenBucle + "Hay listUnSatisfiables ["+listUnSatisfiables.size()+"]");
-//				System.out.println(ordenBucle + "Hay listUnSatisfiablesH ["+listUnSatisfiablesH.size()+"]");				
-//				System.out.println(ordenBucle + "Hay listUnSatisfiablesCH ["+listUnSatisfiablesCH.size()+"]");
-//				System.out.println();
+				//				System.out.println(ordenBucle + "Hay listSatisfiables ["+listSatisfiables.size()+"]");
+				//				System.out.println(ordenBucle + "Hay listSatisfiablesH ["+listSatisfiablesH.size()+"]");				
+				//				System.out.println(ordenBucle + "Hay listSatisfiablesCH ["+listSatisfiablesCH.size()+"]");
+				//				System.out.println();
+				//
+				//				dispMVM("Hay listUnSatisfiables ["+listUnSatisfiables.size()+"]");
+				//				System.out.println(ordenBucle + "Hay listUnSatisfiables ["+listUnSatisfiables.size()+"]");
+				//				System.out.println(ordenBucle + "Hay listUnSatisfiablesH ["+listUnSatisfiablesH.size()+"]");				
+				//				System.out.println(ordenBucle + "Hay listUnSatisfiablesCH ["+listUnSatisfiablesCH.size()+"]");
+				//				System.out.println();
 			}
 		}
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 		//AQUI6
 		// Provisionalmente monto listas a partir de las nuevas estructuras
-//		TraspasaCH();		//provis
-		
-//		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,	//provis
-//				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);	//provis
+		//		TraspasaCH();		//provis
+
+		//		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,listOthers,	//provis
+		//				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);	//provis
 
 		dispMVM("OJO!! - FIN.resGreedy Quitar sleep en calculateInBackGround");
 	}
@@ -2616,7 +2616,7 @@ public abstract class KodkodModelValidator {
 	private boolean includedInSatisfactibleCH(Combination combinacion) {
 		boolean bRes=false;
 		bRes=listSatisfiablesCH.sameContains(combinacion);	
-//		System.out.println(bRes + " " + listSatisfiablesCH +" Alguna contiene " + combinacion);
+		//		System.out.println(bRes + " " + listSatisfiablesCH +" Alguna contiene " + combinacion);
 		if (bRes) {
 			listSatisfiablesCH.add(combinacion);
 		}
@@ -2682,7 +2682,7 @@ public abstract class KodkodModelValidator {
 	private boolean unsatisIncludedInCombinationCH(Combination combinacion) {
 		boolean bRes=false;
 		bRes=listUnSatisfiablesCH.sameContainedIn(combinacion);	
-//		System.out.println(bRes + " " + listUnSatisfiablesCH + " alguna contenida en " + combinacion);
+		//		System.out.println(bRes + " " + listUnSatisfiablesCH + " alguna contenida en " + combinacion);
 		if (bRes) {
 			listUnSatisfiablesCH.add(combinacion);
 		}			
