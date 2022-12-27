@@ -26,6 +26,7 @@ public class CollectionCmb extends HashSet<Combination>{
 			if (cmb.getInvariants().containsAll(e.getInvariants())&&
 					e.getInvariants().containsAll(cmb.getInvariants())) {
 				contiene=true;
+				break;
 			}
 
 		}
@@ -38,7 +39,7 @@ public class CollectionCmb extends HashSet<Combination>{
 		for (Combination cmb : this) {
 			if (cmb.containsCmb(e)){
 				containedIn=true;
-				continue;
+				break;
 			}
 		}
 		return containedIn;
@@ -50,7 +51,7 @@ public class CollectionCmb extends HashSet<Combination>{
 		for (Combination cmb : this) {
 			if (cmb.cmbContainedIn(e)){
 				containsSame=true;
-				continue;
+				break;
 			}
 		}
 		return containsSame;

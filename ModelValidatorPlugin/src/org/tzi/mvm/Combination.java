@@ -8,7 +8,7 @@ import java.util.TreeSet;
  * @author Juanto
  *
  */
-	public class Combination {	
+public class Combination {	
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -51,7 +51,7 @@ import java.util.TreeSet;
 	 * @param invariants that make up the combination
 	 */
 	public void setInvariants(Set<String> invariants) {
-//		this.invariants = invariants;
+		//		this.invariants = invariants;
 		this.invariants.addAll(invariants);
 	}
 	/**
@@ -92,11 +92,9 @@ import java.util.TreeSet;
 		Combination cmbCombination= new Combination(treeSet);
 		return cmbCombination;
 	}
-	
+
 	public void addInv(String inv) {
-//		Combination cmbRes = new Combination();
 		this.invariants.add(inv);
-//		cmbRes.invariants.addAll(cmb2.invariants);
 		return;
 	}
 	/**
@@ -171,5 +169,4 @@ import java.util.TreeSet;
 		}		
 		return res;
 	}
-
 }

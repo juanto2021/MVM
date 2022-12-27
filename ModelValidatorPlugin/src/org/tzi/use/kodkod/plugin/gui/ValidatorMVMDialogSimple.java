@@ -76,15 +76,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	MainWindow parent=null;
 	Collection<IInvariant> listInvSatisfiables = null;
 	Collection<IInvariant> listInvUnSatisfiables = null;
-	Collection<IInvariant> listInvOthers = null;
+//	Collection<IInvariant> listInvOthers = null;
 	Collection<IInvariant> invClassTotal=null;
 	List<String> listStrSatisfiables = null;
 	List<String> listStrUnSatisfiables = null;
-	List<String> listStrOthers = null;
+//	List<String> listStrOthers = null;
 	List<String> listStrGrupos = null;
 
 	Map<Integer, IInvariant> mapInvSAT=null;
-//	HashMap<String, String> mapGRP_SAT_MAX=null;
+	//	HashMap<String, String> mapGRP_SAT_MAX=null;
 	HashMap<String, ResInv> mapInvRes=null;
 
 	MModel mModel;
@@ -97,7 +97,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	JPanel p3 = null;
 	JPanel pSatis = null;
 	JPanel pUnSatis = null;
-	JPanel pOthers = null;
+//	JPanel pOthers = null;
 	JPanel scrollImgSat = null;
 
 	Border border = BorderFactory.createLineBorder(Color.BLUE);
@@ -181,10 +181,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			Collection<IInvariant> pListInvSatisfiables, 
 			Collection<IInvariant> pListInvUnSatisfiables,
 			Collection<IInvariant> pListInvOthers,
-//			HashMap<String, String> pMapGRP_SAT_MAX,
+			//			HashMap<String, String> pMapGRP_SAT_MAX,
 			List<String> pListStrSatisfiables,
 			List<String> pListStrUnSatisfiables,
-			List<String> pListStrOthers,
+//			List<String> pListStrOthers,
 			HashMap<String, ResInv> pMapInvRes,
 			MModel mModel,
 			Collection<IInvariant> pInvClassTotal ,
@@ -199,11 +199,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.kodParent=kodParent;
 		this.listInvSatisfiables = pListInvSatisfiables;
 		this.listInvUnSatisfiables = pListInvUnSatisfiables;
-		this.listInvOthers = pListInvOthers;
+//		this.listInvOthers = pListInvOthers;
 
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
-		this.listStrOthers = pListStrOthers;
+//		this.listStrOthers = pListStrOthers;
 		this.invClassTotal = pInvClassTotal;
 		this.numCallSolver = pNumCallSolver;
 		this.numCallSolverSAT = pNumCallSolverSAT;
@@ -213,9 +213,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		this.mapInvRes = pMapInvRes;
 
-//		List<String> sortedKeys=new ArrayList<String>(pMapGRP_SAT_MAX.keySet());
-//		Collections.sort(sortedKeys);
-//		this.listStrGrupos=sortedKeys;
+		//		List<String> sortedKeys=new ArrayList<String>(pMapGRP_SAT_MAX.keySet());
+		//		Collections.sort(sortedKeys);
+		//		this.listStrGrupos=sortedKeys;
 		this.timeElapsed = timeElapsed;
 
 		this.strCmbSel="";
@@ -236,7 +236,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbTextOCLSat = new JLabel("OCL for inv.: ---", SwingConstants.CENTER);
 
 		mapInvSAT = new HashMap<>();
-//		mapGRP_SAT_MAX = pMapGRP_SAT_MAX;
+		//		mapGRP_SAT_MAX = pMapGRP_SAT_MAX;
 		int i = 0;
 		for (IInvariant invClass: listInvSatisfiables) {
 			i+=1;
@@ -312,11 +312,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * @param pNumCallSolverSAT
 	 * @param pNumCallSolverUNSAT
 	 */
-	public void updateInfo(List<String> pListStrSatisfiables, List<String> pListStrUnSatisfiables, List<String> pListStrOthers,
+	public void updateInfo(List<String> pListStrSatisfiables, List<String> pListStrUnSatisfiables, 
 			Duration pTimeElapsed, int pNumCallSolver, int pNumCallSolverSAT, int pNumCallSolverUNSAT) {
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
-		this.listStrOthers = pListStrOthers;
+//		this.listStrOthers = pListStrOthers;
 		this.timeElapsed=pTimeElapsed;
 		this.numCallSolver=pNumCallSolver;
 		this.numCallSolverSAT=pNumCallSolverSAT;
@@ -332,7 +332,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		frame.setTitle(titleFrame);
 
-//		System.out.println("Actualizo info!!");
+		//		System.out.println("Actualizo info!!");
 	}
 	/**
 	 * Screen End Panel
