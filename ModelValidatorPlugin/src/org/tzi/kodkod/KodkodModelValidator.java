@@ -48,7 +48,7 @@ import kodkod.engine.Statistics;
  * 
  * @author Hendrik Reitmann 
  *         modified by Juanto.
- */
+ */ 
 public abstract class KodkodModelValidator {
 
 	private static final Logger LOG = Logger.getLogger(KodkodModelValidator.class);
