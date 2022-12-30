@@ -189,12 +189,10 @@ public abstract class KodkodModelValidator {
 		invClassTotal.clear();
 		listSatisfiables.clear();
 		listUnSatisfiables.clear();
-		//		listOthers.clear();
 
 		// JGCH
 		listSatisfiablesCH.clear();
 		listUnSatisfiablesCH.clear();
-//		listOthersCH.clear();		
 
 		numCallSolver=0;
 		numCallSolverSAT=0;
@@ -322,12 +320,10 @@ public abstract class KodkodModelValidator {
 		samples.clear();
 		listSatisfiables.clear();
 		listUnSatisfiables.clear();
-		//		listOthers.clear();
 
 		// JGCH
 		listSatisfiablesCH.clear();
 		listUnSatisfiablesCH.clear();
-//		listOthersCH.clear();			
 
 		int i = 0;
 		for (IInvariant invClass: invClassSatisfiables) {
@@ -344,7 +340,6 @@ public abstract class KodkodModelValidator {
 			Combination cmbH = new Combination(invariants);
 
 			listSatisfiablesCH.add(cmbH);
-
 		}
 
 		mixInvariants(samples); 
@@ -532,7 +527,6 @@ public abstract class KodkodModelValidator {
 			}
 			for(int nInv=iIni;nInv<iFin;nInv++) {
 				int nInvTratar=nInv;
-				//				strCmbBase = bucleGreedy(modeG, col, nInvTratar);
 				cmbBaseH=bucleGreedyCH(modeG, col, nInvTratar);
 
 				dispMVM("strCmbBase ("+nInv+") ["+strCmbBase+"]");
@@ -1500,24 +1494,25 @@ public abstract class KodkodModelValidator {
 	 */
 	public  void mixInvariants(Map<Integer, IInvariant> samples) {
 		int nInvs = invClassTotal.size();
-		if (debMVM) {
-			System.out.println("\nInvariants to treat: (" + nInvs + ")");
-			System.out.println("----------------------------");
-
-			int nTrata = 0;
-			for (Entry<Integer, IInvariant> obj : samples.entrySet()) 
-			{
-				nTrata = obj.getKey();
-				String nameInv = obj.getValue().name();
-
-				System.out.println("MVM: a tratar " +nTrata+" " + nameInv);
-			}
-
-			System.out.println("============================================");
-			System.out.println("                *---*---*");
-		}
+//		if (debMVM) {
+//			System.out.println("\nInvariants to treat: (" + nInvs + ")");
+//			System.out.println("----------------------------");
+//
+//			int nTrata = 0;
+//			for (Entry<Integer, IInvariant> obj : samples.entrySet()) 
+//			{
+//				nTrata = obj.getKey();
+//				String nameInv = obj.getValue().name();
+//
+//				System.out.println("MVM: a tratar " +nTrata+" " + nameInv);
+//			}
+//
+//			System.out.println("============================================");
+//			System.out.println("                *---*---*");
+//		}
 		// Desarrolla combinaciones desde un nivel (1) a otro (nInvs)
-		extend("", 1, nInvs); 
+//		extend("", 1, nInvs); // provis
+		
 		// JGH
 		Set<String> invariants= new HashSet<String>();
 		Combination cmbH = new Combination(invariants);
@@ -1546,61 +1541,61 @@ public abstract class KodkodModelValidator {
 	 * @param nivIni level initial
 	 * @param nivMax number of invariants
 	 */	
-	public static void extend(String base, int nivIni, int nivMax) {
-
-		if (debMVM) {
-			System.out.println("Entra en extend con base [" + base +"] nivIni [" + nivIni + "] nivMax [" + nivMax + "]");
-		}
-		for (int nInv = nivIni; nInv < nivMax+1; nInv++) {
-
-			// kinv sera la clave de samples segun la posicion indicada por nInv 
-			// Buscar siempre que nInv no sea unsatisfiable desde el primer momento
-
-			// Comprobar si esta en lista de unsatisfiable (nInv+1 formateada)
-			String strNinvCmp = String.format("%0"+String.valueOf(nivMax).length()+"d",nInv);
-			boolean isUnsatisfiable=false;
-
-			if (listUnSatisfiables.contains(strNinvCmp)) {
-				isUnsatisfiable=true;
-			}
-			if (!isUnsatisfiable) {
-				Integer kInv = getKeyElement(samples, nInv);
-				if (samples.containsKey(nInv)) {// OJO
-					kInv=nInv;
-					// Si nInv no esta en baseIn se guarda y se extendiende
-
-					String[] partes = base.split("-");
-					boolean guardar=true;
-					for (int i = 0 ; i < partes.length ; i++) {
-						String descParte = partes[i].trim();
-						String strNinv = String.format("%0"+String.valueOf(nivMax).length()+"d",kInv);
-						if (descParte.equals(strNinv)) {
-							guardar=false;
-							i=partes.length;
-						}
-					}
-
-					if (guardar) {
-						String cmb=base;
-						String strNinv = String.format("%0"+String.valueOf(nivMax).length()+"d",kInv);
-						if (!cmb.equals("")) {
-							cmb+="-";
-						}
-						cmb+=strNinv;
-						storeResult(cmb);
-						if (nInv<nivMax) {
-							extend(cmb, nInv+1, nivMax); 
-						}
-					}
-				}
-			}
-		}
-	}
+//	public static void extend(String base, int nivIni, int nivMax) {
+//
+//		if (debMVM) {
+//			System.out.println("Entra en extend con base [" + base +"] nivIni [" + nivIni + "] nivMax [" + nivMax + "]");
+//		}
+//		for (int nInv = nivIni; nInv < nivMax+1; nInv++) {
+//
+//			// kinv sera la clave de samples segun la posicion indicada por nInv 
+//			// Buscar siempre que nInv no sea unsatisfiable desde el primer momento
+//
+//			// Comprobar si esta en lista de unsatisfiable (nInv+1 formateada)
+//			String strNinvCmp = String.format("%0"+String.valueOf(nivMax).length()+"d",nInv);
+//			boolean isUnsatisfiable=false;
+//
+//			if (listUnSatisfiables.contains(strNinvCmp)) {
+//				isUnsatisfiable=true;
+//			}
+//			if (!isUnsatisfiable) {
+//				Integer kInv = getKeyElement(samples, nInv);
+//				if (samples.containsKey(nInv)) {// OJO
+//					kInv=nInv;
+//					// Si nInv no esta en baseIn se guarda y se extendiende
+//
+//					String[] partes = base.split("-");
+//					boolean guardar=true;
+//					for (int i = 0 ; i < partes.length ; i++) {
+//						String descParte = partes[i].trim();
+//						String strNinv = String.format("%0"+String.valueOf(nivMax).length()+"d",kInv);
+//						if (descParte.equals(strNinv)) {
+//							guardar=false;
+//							i=partes.length;
+//						}
+//					}
+//
+//					if (guardar) {
+//						String cmb=base;
+//						String strNinv = String.format("%0"+String.valueOf(nivMax).length()+"d",kInv);
+//						if (!cmb.equals("")) {
+//							cmb+="-";
+//						}
+//						cmb+=strNinv;
+//						storeResult(cmb);
+//						if (nInv<nivMax) {
+//							extend(cmb, nInv+1, nivMax); 
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	public static void extendCH(Combination baseH, int nivIni, int nivMax) {
 
 		if (debMVM) {
-			System.out.println("Entra en extend con baseH [" + baseH +"] nivIni [" + nivIni + "] nivMax [" + nivMax + "]");
+			System.out.println("Entra en extendH con baseH [" + baseH +"] nivIni [" + nivIni + "] nivMax [" + nivMax + "]");
 		}
 		for (int nInv = nivIni; nInv < nivMax+1; nInv++) {
 
