@@ -48,6 +48,7 @@ import org.tzi.kodkod.KodkodSolver;
 import org.tzi.kodkod.ResInv;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.api.UseApiException;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
@@ -76,15 +77,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	MainWindow parent=null;
 	Collection<IInvariant> listInvSatisfiables = null;
 	Collection<IInvariant> listInvUnSatisfiables = null;
-//	Collection<IInvariant> listInvOthers = null;
 	Collection<IInvariant> invClassTotal=null;
 	List<String> listStrSatisfiables = null;
 	List<String> listStrUnSatisfiables = null;
-//	List<String> listStrOthers = null;
 	List<String> listStrGrupos = null;
 
 	Map<Integer, IInvariant> mapInvSAT=null;
-	//	HashMap<String, String> mapGRP_SAT_MAX=null;
 	HashMap<String, ResInv> mapInvRes=null;
 
 	MModel mModel;
@@ -92,6 +90,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	int numCallSolver;
 	int numCallSolverSAT;
 	int numCallSolverUNSAT;
+	String tipoSearchMSS;
 
 	JPanel p1 = null;
 	JPanel p3 = null;
@@ -176,47 +175,42 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 	int numberIter=1;
 
-	public ValidatorMVMDialogSimple(final MainWindow parent, 
-			KodkodModelValidator kodParent,
-			Collection<IInvariant> pListInvSatisfiables, 
-			Collection<IInvariant> pListInvUnSatisfiables,
-			Collection<IInvariant> pListInvOthers,
-			//			HashMap<String, String> pMapGRP_SAT_MAX,
-			List<String> pListStrSatisfiables,
-			List<String> pListStrUnSatisfiables,
-//			List<String> pListStrOthers,
-			HashMap<String, ResInv> pMapInvRes,
-			MModel mModel,
-			Collection<IInvariant> pInvClassTotal ,
-			Duration timeElapsed,
-			int pNumCallSolver,
-			int pNumCallSolverSAT,
-			int pNumCallSolverUNSAT,
-			String tipoSearchMSS,
-			int pNumberIter) {
+//	public ValidatorMVMDialogSimple(final MainWindow parent, 
+//			KodkodModelValidator kodParent,
+//			Collection<IInvariant> pListInvSatisfiables, 
+//			Collection<IInvariant> pListInvUnSatisfiables,
+//			Collection<IInvariant> pListInvOthers,
+//			List<String> pListStrSatisfiables,
+//			List<String> pListStrUnSatisfiables,
+//			HashMap<String, ResInv> pMapInvRes,
+//			MModel mModel,
+//			Collection<IInvariant> pInvClassTotal ,
+//			Duration timeElapsed,
+//			int pNumCallSolver,
+//			int pNumCallSolverSAT,
+//			int pNumCallSolverUNSAT,
+//			String tipoSearchMSS,
+//			int pNumberIter, ParamDialogValidator param) {
+	public ValidatorMVMDialogSimple(ParamDialogValidator param) {	
 
-		this.parent=parent;
-		this.kodParent=kodParent;
-		this.listInvSatisfiables = pListInvSatisfiables;
-		this.listInvUnSatisfiables = pListInvUnSatisfiables;
-//		this.listInvOthers = pListInvOthers;
+		this.parent=param.getParent();
+		this.kodParent=param.getKodParent();
+		this.listInvSatisfiables = param.getListInvSatisfiables();
+		this.listInvUnSatisfiables = param.getListInvUnSatisfiables();
 
-		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
-		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
-//		this.listStrOthers = pListStrOthers;
-		this.invClassTotal = pInvClassTotal;
-		this.numCallSolver = pNumCallSolver;
-		this.numCallSolverSAT = pNumCallSolverSAT;
-		this.numCallSolverUNSAT = pNumCallSolverUNSAT;
+		this.listStrSatisfiables = sortBynNumInvs(param.getListStrSatisfiables(),true);
+		this.listStrUnSatisfiables = sortBynNumInvs(param.getListStrUnSatisfiables(),false);
+		this.mModel=param.getmModel();
+		this.invClassTotal = param.getInvClassTotal();
+		this.numCallSolver = param.getNumCallSolver();
+		this.numCallSolverSAT = param.getNumCallSolverSAT();
+		this.numCallSolverUNSAT = param.getNumCallSolverUNSAT();
+		this.tipoSearchMSS=param.getpTipoSearchMSS();
 
-		numberIter=pNumberIter;
+		this.numberIter=param.getNumberIter();
 
-		this.mapInvRes = pMapInvRes;
-
-		//		List<String> sortedKeys=new ArrayList<String>(pMapGRP_SAT_MAX.keySet());
-		//		Collections.sort(sortedKeys);
-		//		this.listStrGrupos=sortedKeys;
-		this.timeElapsed = timeElapsed;
+		this.mapInvRes = param.getMapInvRes();
+		this.timeElapsed = param.getTimeElapsed();
 
 		this.strCmbSel="";
 
@@ -243,7 +237,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			mapInvSAT.put(i, invClass);
 		}
 
-		this.mModel=mModel;
+		this.mModel=param.getmModel();
 		String titleFrame = "Validator with combinations";
 		if (tipoSearchMSS.equals("L")){
 			titleFrame+=" (Brute)";
@@ -252,6 +246,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		}else {
 			titleFrame+=" (Greedy-N"+numberIter+") - Initial";
 		}
+		titleFrame+=" - Model: '"+mModel.name()+"'";
 		frame = new JFrame(titleFrame);
 
 		//JG Cambiar url resource MvMJG.png
@@ -329,6 +324,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		String titleFrame = "Validator with combinations";
 		titleFrame+=" (Greedy-N"+numberIter+") - End";
+		titleFrame+=" - Model: '"+mModel.name()+"'";
 
 		frame.setTitle(titleFrame);
 

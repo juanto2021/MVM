@@ -1,6 +1,6 @@
 package org.tzi.mvm;
 
-import java.util.HashSet;
+
 import java.util.Set;
 import java.util.TreeSet;
 /**
@@ -10,11 +10,12 @@ import java.util.TreeSet;
  */
 public class Combination {	
 
-	private static final long serialVersionUID = 1L;
+//	private static final long serialVersionUID = 1L;
 	/**
 	 * Invariants that make up the combination
 	 */
-	private Set<String> invariants= new HashSet<String>();
+	//	private Set<String> invariants= new HashSet<String>();
+	private Set<String> invariants= new TreeSet<String>();
 	/**
 	 * Constructor with Set of invariants
 	 * @param invariants that make up the combination
@@ -157,7 +158,12 @@ public class Combination {
 	 */
 	@Override
 	public String toString() {
-		return "Combination [invariants=" + invariants + "]";
+		String str = invariants.toString().replaceAll(", ", "-");
+		return "Combination [invariants=" + str + "]";
+	}
+	public String getKey() {
+		String str = invariants.toString().replaceAll(", ", "-");
+		return "Combination [invariants=" + str + "]";
 	}
 	public String strStr() {
 		String res="";

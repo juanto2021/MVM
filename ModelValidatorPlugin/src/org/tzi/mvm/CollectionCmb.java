@@ -1,42 +1,37 @@
 package org.tzi.mvm;
 
-import java.util.HashSet;
 
-public class CollectionCmb extends HashSet<Combination>{
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class CollectionCmb extends HashMap<String,Combination>{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	// Si la combinacion no esta incluida la incluye
-	@Override
 	public boolean add(Combination e) {
-		boolean suma=true;
-		suma = contiene(e);
-		if (!suma) {
-			super.add(e);
+		boolean suma=false;
+		if (!this.containsKey(e.getKey())) {
+			this.put(e.toString(), e);
+			suma=true;
 		}
-		return !suma;
+		return suma;
 	}
 
 	// Se analiza si la coleccion contiene la combinacion de invariantes indicada	
 	public boolean contiene(Combination e) {
-		boolean contiene=false;
-		for (Combination cmb : this) {
-			if (cmb.getInvariants().containsAll(e.getInvariants())&&
-					e.getInvariants().containsAll(cmb.getInvariants())) {
-				contiene=true;
-				break;
-			}
-
-		}
+		boolean contiene=this.containsKey(e.getKey());
 		return contiene;
 	}
 
 	// Se analiza si alguna de las combinaciones de la coleccion contiene la combinacion indicada
 	public boolean sameContains(Combination e) {
 		boolean containedIn=false;
-		for (Combination cmb : this) {
+		for (Entry<String, Combination> item : this.entrySet()){
+			Combination cmb = item.getValue();
 			if (cmb.containsCmb(e)){
 				containedIn=true;
 				break;
@@ -48,13 +43,28 @@ public class CollectionCmb extends HashSet<Combination>{
 	// Se analiza si alguna de las combinaciones de la coleccion esta contenida en la combinacion indicada
 	public boolean sameContainedIn(Combination e) {
 		boolean containsSame=false;
-		for (Combination cmb : this) {
+		for (Entry<String, Combination> item : this.entrySet()){
+			Combination cmb = item.getValue();
 			if (cmb.cmbContainedIn(e)){
 				containsSame=true;
 				break;
 			}
-		}
+		}		
 		return containsSame;
+	}
+	public List<Combination> getList(){
+		List<Combination> lCmbs = new ArrayList<>(this.values());
+		return lCmbs;
+	}
+
+	public void addAll(CollectionCmb colResSat) {
+		for (Entry<String, Combination> item : colResSat.entrySet()){
+			String key = item.getKey();
+			Combination cmb = item.getValue();
+			if (!this.containsKey(key)) {
+				this.put(key, cmb);
+			}
+		}
 	}
 
 }

@@ -29,6 +29,7 @@ import org.tzi.mvm.InfoInv;
 import org.tzi.mvm.KeyAttrInv;
 import org.tzi.mvm.KeyClassAttr;
 import org.tzi.mvm.MVMStatisticsVisitor;
+import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.main.Session;
@@ -80,7 +81,7 @@ public abstract class KodkodModelValidator {
 	// JGCH Objeto coleccion
 	public static CollectionCmb listSatisfiablesCH = new CollectionCmb();
 	public static CollectionCmb listUnSatisfiablesCH = new CollectionCmb();
-//	public static CollectionCmb listOthersCH = new CollectionCmb();	
+	//	public static CollectionCmb listOthersCH = new CollectionCmb();	
 
 	private static IInvariant tabInv[];
 	private static MClassInvariant tabInvMClass[];	
@@ -91,6 +92,8 @@ public abstract class KodkodModelValidator {
 	private static String fmt = "";
 	private static int numIterGreedy = ConfigMVM.getNumIter();
 	private static boolean debMVM = ConfigMVM.getDebMVM();
+	private static String logTime = "";
+	private static Duration timeElapsedIndividual=null;
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -176,12 +179,12 @@ public abstract class KodkodModelValidator {
 	public void validateVariable(IModel model, MModel mModel, Session session, String tipoSearchMSS ) {
 		// Save initial time to later calculate the time it takes
 		Instant start = Instant.now();
+		logTime="";
 		this.model = model;
 		this.session=session;
 		evaluator = null;
 		listCmb.clear();
 		listCmbSel.clear();
-		//		listCmbRes.clear();
 		mapInvRes.clear();
 		samples.clear();
 		colInvFault.clear();
@@ -210,6 +213,7 @@ public abstract class KodkodModelValidator {
 				LOG.info("MVM: (2) Llama a solver desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
 			}
 			LOG.info("MVM: Analysis of invariants individually.");
+			Instant start0 = Instant.now();
 			int nin=0;// provis
 
 			for (IClass oClass: model.classes()) {
@@ -232,15 +236,16 @@ public abstract class KodkodModelValidator {
 					}
 				}
 
-				invClass.activate();
+				invClass.activate(); // Activate just one
 				String strCombinacion = " - [A] " + invClass.name();
-				// We disable the others
+				// We deactivate the others
 				for (IInvariant invClass2: invClassTotal) {
 					if (invClass2.name()!=invClass.name()) {
 						invClass2.deactivate();
 						strCombinacion += " - [I] "+ invClass2.name();
 					}
 				}
+
 
 				Solution solution = kodkodSolver.solve(model);
 
@@ -281,6 +286,9 @@ public abstract class KodkodModelValidator {
 					dispMVM("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
 				}
 			}
+			Instant end0 = Instant.now();
+			timeElapsedIndividual = Duration.between(start0, end0);
+			LOG.info("MVM: Time taken for ins individual "+ timeElapsedIndividual.toMillis() +" milliseconds");
 
 			// Methods. Possible calculation methods 
 			// New Method 
@@ -314,6 +322,7 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassOthers,
 			Instant start) {
 		// Make combinations
+
 		if (debMVM) {
 			LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
 		}
@@ -324,6 +333,8 @@ public abstract class KodkodModelValidator {
 		// JGCH
 		listSatisfiablesCH.clear();
 		listUnSatisfiablesCH.clear();
+		logTime="";
+		AddLogTime("prepare individual",timeElapsedIndividual);
 
 		int i = 0;
 		for (IInvariant invClass: invClassSatisfiables) {
@@ -332,7 +343,6 @@ public abstract class KodkodModelValidator {
 			i = searchNumInv(invClass);
 			samples.put(i, invClass);
 			String cmb= String.valueOf(i);
-			//			listSatisfiables.add(cmb);
 
 			// JGCH Objeto coleccion
 			Set<String> invariants= new HashSet<String>();
@@ -353,7 +363,6 @@ public abstract class KodkodModelValidator {
 				}else {
 					comment = "Detect in " +cmb.getValue();
 				}
-
 				dispMVM(String.format("%20s",cmb.getKey()) + " - " + comment);
 			}
 			dispMVM("");
@@ -362,6 +371,7 @@ public abstract class KodkodModelValidator {
 		if (debMVM) {
 			LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
 		}
+		Instant start6 = Instant.now();		
 
 		// JGH
 		// Ordenar cmbs de mas a menos inv
@@ -372,8 +382,11 @@ public abstract class KodkodModelValidator {
 			}
 		});		
 
-		sendToValidateCH(invClassTotal);		
-
+		sendToValidateCH(invClassTotal);	
+		Instant end6 = Instant.now();
+		Duration timeElapsed6 = Duration.between(start6, end6);
+		LOG.info("MVM: Time taken for sendToValidate bruteforce: "+ timeElapsed6.toMillis() +" milliseconds");		
+		AddLogTime("sendToValidate bruteforce",timeElapsed6);
 		Instant end = Instant.now();
 		Duration timeElapsed = Duration.between(start, end);
 
@@ -381,27 +394,36 @@ public abstract class KodkodModelValidator {
 		// Provisionalmente monto listas a partir de las nuevas estructuras
 		TraspasaCH();
 		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+		AddLogTime("bruteforce TOTAL",timeElapsed);
 		if (showSummarizeResults) printSummarize();		
 
 		String tipoSearchMSS="L";
 		int numberIter=1;
+		//-----------------
+		ParamDialogValidator param = new ParamDialogValidator(
+				MainWindow.instance(), 
+				this,
+				invClassSatisfiables, 
+				invClassUnSatisfiables, 
+				invClassOthers,
+				listSatisfiables,
+				listUnSatisfiables,
+				mapInvRes,
+				mModel,
+				invClassTotal,
+				timeElapsed,
+				numCallSolver,
+				numCallSolverSAT,
+				numCallSolverUNSAT,
+				tipoSearchMSS,
+				numberIter
+				);
+		//------------
+
 		ValidatorMVMDialogSimple validatorMVMDialog= 
-				new ValidatorMVMDialogSimple(MainWindow.instance(), 
-						this,
-						invClassSatisfiables, 
-						invClassUnSatisfiables, 
-						invClassOthers,
-						listSatisfiables,
-						listUnSatisfiables,
-						mapInvRes,
-						mModel,
-						invClassTotal,
-						timeElapsed,
-						numCallSolver,
-						numCallSolverSAT,
-						numCallSolverUNSAT,
-						tipoSearchMSS,
-						numberIter);
+				new ValidatorMVMDialogSimple(param);		
+		System.out.println();
+		System.out.println(logTime);
 	}
 
 	public static void TraspasaCH() {
@@ -409,7 +431,7 @@ public abstract class KodkodModelValidator {
 		listUnSatisfiables.clear();//Provis
 
 		List<Combination> listSatCH = new ArrayList<Combination>();		
-		listSatCH.addAll(listSatisfiablesCH);
+		listSatCH.addAll(listSatisfiablesCH.values());
 		Collections.sort(listSatCH, new Comparator<Combination>() {
 			@Override
 			public int compare(Combination o1, Combination o2) {
@@ -421,7 +443,7 @@ public abstract class KodkodModelValidator {
 		}
 
 		List<Combination> listUnSatCH = new ArrayList<Combination>();		
-		listUnSatCH.addAll(listUnSatisfiablesCH);
+		listUnSatCH.addAll(listUnSatisfiablesCH.getList());
 		Collections.sort(listUnSatCH, new Comparator<Combination>() {
 			@Override
 			public int compare(Combination o1, Combination o2) {
@@ -460,7 +482,10 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers,			
 			Instant start) throws Exception {
+		logTime="";
+		AddLogTime("prepare individual",timeElapsedIndividual);
 		LOG.info("MVM: Analysis OCL (Greedy) - Start.");
+
 		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
 		Instant end;
 		Duration timeElapsed;
@@ -480,6 +505,7 @@ public abstract class KodkodModelValidator {
 
 		if (cmbTotalH.getInvariants().size()>0) {			
 
+			Instant start2 = Instant.now();
 			cmbTotalH.sortCombination();
 
 			// Here We have a collection of MClassInvariant all them satisfiables
@@ -488,6 +514,11 @@ public abstract class KodkodModelValidator {
 			// Preparation of Map of invariants with Set of invariants
 			// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
 			preparaMapInfoInvSet();
+
+			Instant end2 = Instant.now();
+			Duration timeElapsed2 = Duration.between(start2, end2);
+			LOG.info("MVM: Time taken for Visitor: "+ timeElapsed2.toMillis() +" milliseconds");
+			AddLogTime("Visitor",timeElapsed2);
 
 			// Prepara tabla atributos comunes por cada pareja de invariantes
 			preparaProbMat(mModel.classInvariants());
@@ -525,15 +556,13 @@ public abstract class KodkodModelValidator {
 				iIni=0;
 				iFin=col.size();	
 			}
+			Instant start3 = Instant.now();
 			for(int nInv=iIni;nInv<iFin;nInv++) {
 				int nInvTratar=nInv;
 				cmbBaseH=bucleGreedyCH(modeG, col, nInvTratar);
-
 				dispMVM("strCmbBase ("+nInv+") ["+strCmbBase+"]");
-
 				resGreedyCH.add(cmbBaseH);
 				dispMVM(nInv + " 1 - Hay listSatisfiablesCH ["+listSatisfiablesCH.size()+"]");
-
 			}
 
 			// JGH
@@ -541,25 +570,33 @@ public abstract class KodkodModelValidator {
 
 			// JGH
 			// Ordenar cmbs de mas a menos inv
-			listResGreedyCH.addAll(resGreedyCH);
+			listResGreedyCH.addAll(resGreedyCH.getList());
 			Collections.sort(listResGreedyCH, new Comparator<Combination>() {
 				@Override
 				public int compare(Combination o1, Combination o2) {
 					return o2.getInvariants().size() - (o1.getInvariants().size());
 				}
 			});	
+			Instant end3 = Instant.now();
+			Duration timeElapsed3 = Duration.between(start3, end3);
+			LOG.info("MVM: Time taken for Greedy: "+ timeElapsed3.toMillis() +" milliseconds");
+			AddLogTime("Greedy",timeElapsed3);
 
 		}// provisional a ver ...
 		LOG.info("MVM: Analysis OCL (Greedy) - End.");
+
 		end = Instant.now();
 		timeElapsed = Duration.between(start, end);
 
 		// Provisionalmente monto listas a partir de las nuevas estructuras
 		TraspasaCH();		
-		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+		LOG.info("MVM: Time taken for analysis_OCL (1): "+ timeElapsed.toMillis() +" milliseconds");
+		AddLogTime("analysis_OCL (1)",timeElapsed);
 
 		tipoSearchMSS="G";	
 		int numberIter=numIterGreedy;
+
+
 		// Send to MVMDialogSimple
 		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
 				invClassUnSatisfiables, 
@@ -573,6 +610,16 @@ public abstract class KodkodModelValidator {
 			LanzacalculoBckCH(resGreedyCH, cmbTotalH, validatorMVMDialog, start );
 		}
 	}
+	private void AddLogTime(String txtLog, Duration timeElapsed) {
+		if (!logTime.equals("")) {
+			logTime+="\n";
+		}
+		String textoFormateado = String.format("%-25s", txtLog);
+		System.out.println("[" + textoFormateado + "]");	
+		String numeroFormateado = String.format("%10d", timeElapsed.toMillis());
+		logTime+=textoFormateado + "  "+numeroFormateado +" milliseconds";
+	}
+
 	/**
 	 * Launches the calculation of the rest of the combinations in the background
 	 * @param resGreedy
@@ -585,6 +632,7 @@ public abstract class KodkodModelValidator {
 	private void LanzacalculoBckCH(CollectionCmb resGreedyCH, Combination cmbTotalCH, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception{
 		dispMVM("Inicio back");
 		LOG.info("MVM: Background (Greedy) CH - Start.");
+		Instant start4 = Instant.now();
 
 		EventThreads hilo1 = new EventThreads(false) {
 			@Override
@@ -610,17 +658,25 @@ public abstract class KodkodModelValidator {
 			public void finalizado() {
 				dispMVM("Finaliza tarea background CH");
 				LOG.info("MVM: Background (Greedy) CH - End.");
+				Instant end4 = Instant.now();
+				Duration timeElapsed4 = Duration.between(start4, end4);
+				LOG.info("MVM: Time taken for LanzacalculoBckCH: "+ timeElapsed4.toMillis() +" milliseconds");	
+				AddLogTime("LanzacalculoBckCH",timeElapsed4);
 				try {
 					Instant end = Instant.now();
 					Duration timeElapsed = Duration.between(start, end);
 
 					// Provisionalmente monto listas a partir de las nuevas estructuras
 					TraspasaCH();
-					LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+					LOG.info("MVM: Time taken for analysis_OCL (2): "+ timeElapsed.toMillis() +" milliseconds");
+					AddLogTime("analysis_OCL (2)",timeElapsed4);
 					if (showSummarizeResults) printSummarize();	
 
 					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,
 							timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
+
+					System.out.println();
+					System.out.println(logTime);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -642,7 +698,7 @@ public abstract class KodkodModelValidator {
 
 		Combination cmbBaseH = new Combination();
 
-		for(Combination cmbGreedy:resGreedyCH) {			
+		for(Combination cmbGreedy:resGreedyCH.getList()) {			
 
 			cmbBaseH = new Combination();	
 			cmbBaseH.setInvariants(cmbGreedy.getInvariants());
@@ -669,7 +725,7 @@ public abstract class KodkodModelValidator {
 				newCmbResto = new Combination();
 				colResSat.clear();
 
-				for (Combination combCmbRG: colResGral) {
+				for (Combination combCmbRG: colResGral.values()) {
 					Combination combCmbA = new Combination();
 					combCmbA.setInvariants(combCmbRG.getInvariants());
 					String cmbA = combCmbA.strStr();
@@ -702,7 +758,7 @@ public abstract class KodkodModelValidator {
 							cmbNew.addInv(fabStrInv(invR));
 
 							// parte nueva
-							if (!colResSat.contains(cmbNew)) {
+							if (!colResSat.contiene(cmbNew)) {
 								dispMVM("cmbNew [" + cmbNew + "]");
 								String solucion="";
 								solucion = calcularGreedyCH( cmbNew,  invClassTotal);
@@ -755,6 +811,8 @@ public abstract class KodkodModelValidator {
 
 		TraspasaCH();
 		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+		AddLogTime("analysis_OCL TOTAL",timeElapsed);
+
 		if (showSummarizeResults) printSummarize();				
 		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,
 				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);	
@@ -779,23 +837,30 @@ public abstract class KodkodModelValidator {
 			String tipoSearchMSS,
 			int numberIter) {
 
+
+		//-----------------
+		ParamDialogValidator param = new ParamDialogValidator(
+				MainWindow.instance(), 
+				this,
+				invClassSatisfiables, 
+				invClassUnSatisfiables, 
+				invClassOthers,
+				listSatisfiables,
+				listUnSatisfiables,
+				mapInvRes,
+				mModel,
+				invClassTotal,
+				timeElapsed,
+				numCallSolver,
+				numCallSolverSAT,
+				numCallSolverUNSAT,
+				tipoSearchMSS,
+				numberIter
+				);
+		//------------				
+
 		ValidatorMVMDialogSimple validatorMVMDialog= 
-				new ValidatorMVMDialogSimple(MainWindow.instance(), 
-						this,
-						invClassSatisfiables, 
-						invClassUnSatisfiables, 
-						invClassOthers,
-						listSatisfiables,
-						listUnSatisfiables,
-						mapInvRes,
-						mModel,
-						invClassTotal,
-						timeElapsed,
-						numCallSolver,
-						numCallSolverSAT,
-						numCallSolverUNSAT,
-						tipoSearchMSS,
-						numberIter);
+				new ValidatorMVMDialogSimple(param);		
 		return validatorMVMDialog;
 	}
 
@@ -977,7 +1042,7 @@ public abstract class KodkodModelValidator {
 	private static void printSummarize() {
 
 		List<Combination> listSatCH = new ArrayList<Combination>();		
-		listSatCH.addAll(listSatisfiablesCH);
+		listSatCH.addAll(listSatisfiablesCH.values());
 		Collections.sort(listSatCH, new Comparator<Combination>() {
 			@Override
 			public int compare(Combination o1, Combination o2) {
@@ -991,7 +1056,7 @@ public abstract class KodkodModelValidator {
 		}
 
 		List<Combination> listUnSatCH = new ArrayList<Combination>();		
-		listUnSatCH.addAll(listUnSatisfiablesCH);
+		listUnSatCH.addAll(listUnSatisfiablesCH.values());
 		Collections.sort(listUnSatCH, new Comparator<Combination>() {
 			@Override
 			public int compare(Combination o1, Combination o2) {
@@ -1252,7 +1317,6 @@ public abstract class KodkodModelValidator {
 		dispMVM("                *---*---*");
 	}
 
-
 	/**
 	 * Print mapInfoAssoc structure (invariants of an association)
 	 */
@@ -1286,7 +1350,6 @@ public abstract class KodkodModelValidator {
 		//	Preparation of Map of invariants with Set of invariants
 		//  One inv is related to another because it uses common attributes or associations.		
 		//	(Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes)
-
 
 		List<MClassInvariant> result = new ArrayList<MClassInvariant>();
 
@@ -1493,30 +1556,18 @@ public abstract class KodkodModelValidator {
 	 * @param invariantes to mix
 	 */
 	public  void mixInvariants(Map<Integer, IInvariant> samples) {
+		Instant start5 = Instant.now();
 		int nInvs = invClassTotal.size();
-//		if (debMVM) {
-//			System.out.println("\nInvariants to treat: (" + nInvs + ")");
-//			System.out.println("----------------------------");
-//
-//			int nTrata = 0;
-//			for (Entry<Integer, IInvariant> obj : samples.entrySet()) 
-//			{
-//				nTrata = obj.getKey();
-//				String nameInv = obj.getValue().name();
-//
-//				System.out.println("MVM: a tratar " +nTrata+" " + nameInv);
-//			}
-//
-//			System.out.println("============================================");
-//			System.out.println("                *---*---*");
-//		}
-		// Desarrolla combinaciones desde un nivel (1) a otro (nInvs)
-//		extend("", 1, nInvs); // provis
-		
+
 		// JGH
 		Set<String> invariants= new HashSet<String>();
 		Combination cmbH = new Combination(invariants);
 		extendCH(cmbH, 1, nInvs); 
+
+		Instant end5 = Instant.now();
+		Duration timeElapsed5 = Duration.between(start5, end5);
+		LOG.info("MVM: Time taken for mixInvariants: "+ timeElapsed5.toMillis() +" milliseconds");	
+		AddLogTime("mixInvariants",timeElapsed5);
 	}
 	/**
 	 * Returns Key of samples given a given order number
@@ -1541,57 +1592,6 @@ public abstract class KodkodModelValidator {
 	 * @param nivIni level initial
 	 * @param nivMax number of invariants
 	 */	
-//	public static void extend(String base, int nivIni, int nivMax) {
-//
-//		if (debMVM) {
-//			System.out.println("Entra en extend con base [" + base +"] nivIni [" + nivIni + "] nivMax [" + nivMax + "]");
-//		}
-//		for (int nInv = nivIni; nInv < nivMax+1; nInv++) {
-//
-//			// kinv sera la clave de samples segun la posicion indicada por nInv 
-//			// Buscar siempre que nInv no sea unsatisfiable desde el primer momento
-//
-//			// Comprobar si esta en lista de unsatisfiable (nInv+1 formateada)
-//			String strNinvCmp = String.format("%0"+String.valueOf(nivMax).length()+"d",nInv);
-//			boolean isUnsatisfiable=false;
-//
-//			if (listUnSatisfiables.contains(strNinvCmp)) {
-//				isUnsatisfiable=true;
-//			}
-//			if (!isUnsatisfiable) {
-//				Integer kInv = getKeyElement(samples, nInv);
-//				if (samples.containsKey(nInv)) {// OJO
-//					kInv=nInv;
-//					// Si nInv no esta en baseIn se guarda y se extendiende
-//
-//					String[] partes = base.split("-");
-//					boolean guardar=true;
-//					for (int i = 0 ; i < partes.length ; i++) {
-//						String descParte = partes[i].trim();
-//						String strNinv = String.format("%0"+String.valueOf(nivMax).length()+"d",kInv);
-//						if (descParte.equals(strNinv)) {
-//							guardar=false;
-//							i=partes.length;
-//						}
-//					}
-//
-//					if (guardar) {
-//						String cmb=base;
-//						String strNinv = String.format("%0"+String.valueOf(nivMax).length()+"d",kInv);
-//						if (!cmb.equals("")) {
-//							cmb+="-";
-//						}
-//						cmb+=strNinv;
-//						storeResult(cmb);
-//						if (nInv<nivMax) {
-//							extend(cmb, nInv+1, nivMax); 
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-
 	public static void extendCH(Combination baseH, int nivIni, int nivMax) {
 
 		if (debMVM) {
@@ -1606,10 +1606,6 @@ public abstract class KodkodModelValidator {
 			String strNinvCmp = String.format("%0"+String.valueOf(nivMax).length()+"d",nInv);
 			boolean isUnsatisfiable=false;
 
-			// JGCam Sustituir por nueva estructura
-			//			if (listUnSatisfiables.contains(strNinvCmp)) {
-			//				isUnsatisfiable=true;
-			//			}
 			Set<String> invariants= new HashSet<String>();
 			invariants.add(fabStrInv(strNinvCmp));
 			Combination cmbCmpH = new Combination(invariants);	
@@ -1782,8 +1778,7 @@ public abstract class KodkodModelValidator {
 			}			
 
 		} else {
-			//			// JGH & JGCH
-			//			listOthersCH.add(combinacion);
+			// do nothing
 		}
 	}
 	/**
@@ -1921,9 +1916,6 @@ public abstract class KodkodModelValidator {
 	}
 
 	private List<IInvariant> splitInvCombinationH(Combination combinacion) {
-		//AQUI20
-		// aqui da problemas de Index 4 out of bounds for length 4
-		//
 
 		List<IInvariant> listInvW = new ArrayList<IInvariant>();
 		// Buscar invariantes de la combinacion
@@ -1935,8 +1927,6 @@ public abstract class KodkodModelValidator {
 
 		String[] invs = new String[listInvS.size()];
 
-		// Copy elements from set to string array
-		// using advanced for loop
 		try {
 			int index = 0;
 			for (String str : listInvS) {
@@ -1961,40 +1951,6 @@ public abstract class KodkodModelValidator {
 	 * @param combinacion
 	 * @return
 	 */
-
-	//	private boolean includedInSatisfactible(String combinacion) {
-	//		boolean bRes=false;
-	//
-	//		// Parts of the combination to be valued
-	//
-	//		String[] aCmbTratar = combinacion.split("-");	
-	//
-	//		for (String cmbSatisfiable: listSatisfiables) {
-	//
-	//			// Invariants of each satisfiable combination
-	//			String[] aCmbSat = cmbSatisfiable.split("-");	
-	//
-	//			List<String> lCmbSat=new ArrayList<String>();
-	//			Collections.addAll(lCmbSat, aCmbSat);
-	//			boolean todasExisten=true;
-	//			for (int nCmb=0;nCmb<aCmbTratar.length;nCmb++) {
-	//				String parte = aCmbTratar[nCmb];
-	//				// If a part of the combination to be treated does not exist, the combination must be treated
-	//				if (!lCmbSat.contains(parte)) {
-	//					todasExisten=false;
-	//					nCmb=aCmbTratar.length;
-	//					continue;
-	//				}
-	//			}
-	//			if (todasExisten) {
-	//				if (!listSatisfiables.contains(combinacion)) {
-	//					listSatisfiables.add(combinacion);
-	//				}
-	//				return true;
-	//			}
-	//		}
-	//		return bRes;
-	//	}
 
 	private boolean includedInSatisfactibleCH(Combination combinacion) {
 		boolean bRes=false;
