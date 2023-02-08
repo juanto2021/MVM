@@ -16,6 +16,7 @@ public class Combination {
 	 */
 	//	private Set<String> invariants= new HashSet<String>();
 	private Set<String> invariants= new TreeSet<String>();
+	private static int contador=0;
 	/**
 	 * Constructor with Set of invariants
 	 * @param invariants that make up the combination
@@ -162,6 +163,8 @@ public class Combination {
 		return "Combination [invariants=" + str + "]";
 	}
 	public String getKey() {
+		contador++;
+		System.out.println(contador);
 		String str = invariants.toString().replaceAll(", ", "-");
 		return "Combination [invariants=" + str + "]";
 	}

@@ -3,6 +3,7 @@ package org.tzi.kodkod;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -76,13 +77,18 @@ public abstract class KodkodModelValidator {
 	public static List<String> listSatisfiables = new ArrayList<String>();
 	public static List<String> listUnSatisfiables = new ArrayList<String>();
 
+
 	public static int longInvs;
 	public static List<Combination> listCmbH = new ArrayList<Combination>();
+	//	public static List<Combination> listCmbHB = new ArrayList<Combination>();
+	public static CollectionCmb listCmbHB = new CollectionCmb();
 	// JGCH Objeto coleccion
 	public static CollectionCmb listSatisfiablesCH = new CollectionCmb();
 	public static CollectionCmb listUnSatisfiablesCH = new CollectionCmb();
-	//	public static CollectionCmb listOthersCH = new CollectionCmb();	
 
+	public static List<BitSet> lBitCmbSAT= new ArrayList<BitSet>();
+	public static List<BitSet> lBitCmbUNSAT= new ArrayList<BitSet>();
+	
 	private static IInvariant tabInv[];
 	private static MClassInvariant tabInvMClass[];	
 
@@ -119,7 +125,10 @@ public abstract class KodkodModelValidator {
 	 */
 	public static boolean showCmbSendToValidator  = true;
 
-	public static Map<Integer, IInvariant> samples = new HashMap<>();	
+	public static Map<Integer, IInvariant> samples = new HashMap<>();
+
+	public static List<BitSet> lBitCmb= new ArrayList<BitSet>();
+
 
 	/**
 	 * Validates the given model.
@@ -196,7 +205,10 @@ public abstract class KodkodModelValidator {
 		// JGCH
 		listSatisfiablesCH.clear();
 		listUnSatisfiablesCH.clear();
-
+		
+		lBitCmbSAT.clear();
+		lBitCmbUNSAT.clear();
+		
 		numCallSolver=0;
 		numCallSolverSAT=0;
 		numCallSolverUNSAT=0;
@@ -269,7 +281,11 @@ public abstract class KodkodModelValidator {
 					Combination cmbH = new Combination(invariants);
 
 					// JGCH
-					listUnSatisfiablesCH.add(cmbH);					
+					listUnSatisfiablesCH.add(cmbH);
+					// JGB Guardar UNSAT en lista de bit lBitCmbUNSAT
+					BitSet bit=new BitSet();
+					bit = combStrBitSet(cmbH.strStr());
+					lBitCmbUNSAT.add(bit);						
 
 				} else {
 					//QUITAR
@@ -333,8 +349,14 @@ public abstract class KodkodModelValidator {
 		// JGCH
 		listSatisfiablesCH.clear();
 		listUnSatisfiablesCH.clear();
+
+		lBitCmbSAT.clear();
+		lBitCmbUNSAT.clear();
+		
 		logTime="";
 		AddLogTime("prepare individual",timeElapsedIndividual);
+
+		String strCmbBase = "";//JG
 
 		int i = 0;
 		for (IInvariant invClass: invClassSatisfiables) {
@@ -344,15 +366,57 @@ public abstract class KodkodModelValidator {
 			samples.put(i, invClass);
 			String cmb= String.valueOf(i);
 
+			//JG---------------------------
+			if (!strCmbBase.equals("")) {
+				strCmbBase+="-";
+			}
+			strCmbBase+=i;
+			//JG---------------------------
+
 			// JGCH Objeto coleccion
 			Set<String> invariants= new HashSet<String>();
 			invariants.add(fabStrInv(cmb));
 			Combination cmbH = new Combination(invariants);
 
 			listSatisfiablesCH.add(cmbH);
+			// JGB Guardar satis en lista de bit lBitCmbSAT
+			BitSet bit=new BitSet();
+			bit = combStrBitSet(cmb);
+			lBitCmbSAT.add(bit);
+			
 		}
 
 		mixInvariants(samples); 
+		//JG-----------------------------------------------------------------------------------------
+		// aqui1 llamar a comResto
+//		System.out.println("Tam listCmbH ["+listCmbH.size()+"]");
+
+		List<String> res = ordenaByNumInv(comResto(strCmbBase));
+//		System.out.println("Tam res ["+res.size()+"]");
+
+		// Convert Strings to BitSet
+		lBitCmb= combListStrBitSet(res);
+		for (BitSet cmbBit:lBitCmb) {
+			//			BitSet cmbWrk = (BitSet) cmbBit.clone();
+			//			cmbWrk.and(cmbBS);
+			System.out.println("cmbBit " + cmbBit );
+
+		}	
+//		List<Combination> listWB = new ArrayList<Combination>();		
+//		listWB.addAll(listCmbHB.values());
+//		Collections.sort(listWB, new Comparator<Combination>() {
+//			@Override
+//			public int compare(Combination o1, Combination o2) {
+//				return o2.getInvariants().size() - (o1.getInvariants().size());
+//			}
+//		});		
+//		for (Combination cmb:listWB) {
+//			System.out.println(cmb.toString());
+//		}
+
+		System.out.println("Tam listCmbHB ["+listCmbHB.size()+"]");
+		//JG-----------------------------------------------------------------------------------------
+
 		if (debMVM) {
 			for (Object obj : listCmbSel.entrySet()) 
 			{
@@ -375,12 +439,12 @@ public abstract class KodkodModelValidator {
 
 		// JGH
 		// Ordenar cmbs de mas a menos inv
-		Collections.sort(listCmbH, new Comparator<Combination>() {
-			@Override
-			public int compare(Combination o1, Combination o2) {
-				return o2.getInvariants().size() - (o1.getInvariants().size());
-			}
-		});		
+//		Collections.sort(listCmbH, new Comparator<Combination>() {
+//			@Override
+//			public int compare(Combination o1, Combination o2) {
+//				return o2.getInvariants().size() - (o1.getInvariants().size());
+//			}
+//		});		
 
 		sendToValidateCH(invClassTotal);	
 		Instant end6 = Instant.now();
@@ -425,6 +489,108 @@ public abstract class KodkodModelValidator {
 		System.out.println();
 		System.out.println(logTime);
 	}
+	private static List<BitSet> combListStrBitSet(List<String> res){
+		List<BitSet> lBit= new ArrayList<BitSet>();
+		for (String cmb:res) {
+			BitSet bit=new BitSet();
+			bit = combStrBitSet(cmb);
+			lBit.add(bit);
+		}
+		return lBit;
+	}
+	private static BitSet combStrBitSet(String cmb){
+		BitSet bit=new BitSet();
+
+		String[] aInvsCmb=cmb.split("-");
+		int nInvsCmb = aInvsCmb.length;
+		for(int nInv = 0;nInv<nInvsCmb;nInv++) {
+			String strInv = aInvsCmb[nInv];
+			int vInv = Integer.parseInt(strInv)-1;
+			bit.set(vInv);
+		}
+		return bit;
+	}
+	private static List<String> comResto(String strRestoIn) {
+		List<String> listRes = new ArrayList<String>();
+		String[] aInvsResto=strRestoIn.split("-");
+		int nInvsResto = aInvsResto.length;
+		String invPral = aInvsResto[0];
+		if (nInvsResto>1) {
+
+			String strRestoOut = "";
+
+			for(int nInv = 1;nInv<nInvsResto;nInv++) {
+				String inv = aInvsResto[nInv];
+				if (strRestoOut!="") {
+					strRestoOut+="-";
+				}
+				strRestoOut += inv;
+			}
+			System.out.println(strRestoOut);
+			List<String> listRec = new ArrayList<String>();
+			listRec = comResto(strRestoOut);
+			// Mezclar pral con el resultado
+			for (String cmb:listRec) {
+				String cmbRec = invPral+"-"+cmb;
+				listRes.add(cmbRec);
+				listRes.add(cmb);
+				// JG--------------------------
+				// convertir striung en array y crear combinacion
+				// Incluye combination en lista general
+				String[] aInvsCmb=cmbRec.split("-");
+				Combination cmbRecH= new Combination(aInvsCmb);
+				if (!listCmbHB.contiene(cmbRecH)) {
+					listCmbHB.add(cmbRecH);
+				}
+				// Incluye combination en lista general
+				aInvsCmb=cmb.split("-");
+				Combination cmbH= new Combination(aInvsCmb);
+
+				//				listCmbHB.add(cmbH);
+				if (!listCmbHB.contiene(cmbH)) {
+					listCmbHB.add(cmbH);
+				}
+
+				// JG--------------------------				
+			}
+		}
+		// Incluir pral
+		listRes.add(invPral);
+		// Incluye combination en lista general
+		Set<String> invariants= new HashSet<String>();
+		invariants.add(fabStrInv(invPral));
+		Combination cmbInvPralH = new Combination(invariants);
+		//		listCmbHB.add(cmbInvPralH);
+		if (!listCmbHB.contiene(cmbInvPralH)) {
+			listCmbHB.add(cmbInvPralH);
+		}
+
+
+		return listRes;
+	}
+	private static List<String> ordenaByNumInv(List<String> listCmb) {
+		int nOrdenMax = 100000;
+		String fmtG = "%06d";	
+		List<String> listWork = new ArrayList<String>();
+		List<String> listRes = new ArrayList<String>();
+		for (String strCmb: listCmb) {
+			String[] aInvs=strCmb.split("-");
+			int nInvs = aInvs.length;
+			int nOrden = nOrdenMax-nInvs;
+			String iGroupF = String.format(fmtG,nOrden);	
+			String newCmb = iGroupF + "/" + strCmb;
+			listWork.add(newCmb);
+		}
+		Collections.sort(listWork);
+		for (String wInv:listWork) {
+			String[] aWinvs=wInv.split("/");
+			String cmb = aWinvs[1];
+			listRes.add(cmb);
+		}
+
+		return listRes;
+	}	
+
 
 	public static void TraspasaCH() {
 		listSatisfiables.clear();//Provis
@@ -1721,15 +1887,29 @@ public abstract class KodkodModelValidator {
 			System.out.println(head);
 			System.out.println(("-").repeat(head.length()));
 		}
-
+System.out.println("Ant [" + listCmbH.size()+ "] nueva [" + + listCmbHB.size()+"]");
 		try {
-			for (Combination combinacion: listCmbH) 
+			//aqui2
+			List<Combination> listWB = new ArrayList<Combination>();		
+			listWB.addAll(listCmbHB.values());
+			Collections.sort(listWB, new Comparator<Combination>() {
+				@Override
+				public int compare(Combination o1, Combination o2) {
+					return o2.getInvariants().size() - (o1.getInvariants().size());
+				}
+			});		
+			for (Combination cmb:listWB) {
+				System.out.println(cmb.toString());
+			}			
+			//			for (Combination combinacion: listCmbH) // Provis
+			for (Combination combinacion: listWB)				
 			{
 				boolean calculateCH=true;
 				// See if the combination is included in a satisfiable
 				// If the join is included in some satisfiable join
 				// there is no need to calculate it because it will also be satisfiable
-
+//aqui3
+				
 				calculateCH = !includedInSatisfactibleCH(combinacion);
 
 				if (calculateCH) {
@@ -1771,10 +1951,18 @@ public abstract class KodkodModelValidator {
 			// JGCH Usando objeto para coleccion
 			if (!listSatisfiablesCH.contiene(combinacion)){
 				listSatisfiablesCH.add(combinacion);
+				// JGB Guardar satis en lista de bit lBitCmbSAT
+				BitSet bit=new BitSet();
+				bit = combStrBitSet(combinacion.strStr());
+				lBitCmbSAT.add(bit);
 			}
 		}else if (solucion.equals("UNSATISFIABLE") || solucion.equals("TRIVIALLY_UNSATISFIABLE")) {
 			if (!listUnSatisfiablesCH.contiene(combinacion)){
 				listUnSatisfiablesCH.add(combinacion);
+				// JGB Guardar satis en lista de bit lBitCmbSAT
+				BitSet bit=new BitSet();
+				bit = combStrBitSet(combinacion.strStr());
+				lBitCmbUNSAT.add(bit);				
 			}			
 
 		} else {
@@ -1957,6 +2145,10 @@ public abstract class KodkodModelValidator {
 		bRes=listSatisfiablesCH.sameContains(combinacion);	
 		if (bRes) {
 			listSatisfiablesCH.add(combinacion);
+			// JGB Guardar satis en lista de bit lBitCmbSAT
+			BitSet bit=new BitSet();
+			bit = combStrBitSet(combinacion.strStr());
+			lBitCmbSAT.add(bit);
 		}
 		return bRes;
 	}	
@@ -1973,6 +2165,10 @@ public abstract class KodkodModelValidator {
 		bRes=listUnSatisfiablesCH.sameContainedIn(combinacion);	
 		if (bRes) {
 			listUnSatisfiablesCH.add(combinacion);
+			// JGB Guardar UNSAT en lista de bit lBitCmbUNSAT
+			BitSet bit=new BitSet();
+			bit = combStrBitSet(combinacion.strStr());
+			lBitCmbUNSAT.add(bit);				
 		}			
 		return bRes;		
 	}	
