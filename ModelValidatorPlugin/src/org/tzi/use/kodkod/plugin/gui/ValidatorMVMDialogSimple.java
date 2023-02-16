@@ -254,7 +254,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		Image icono = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\MvMJG.png");
 		frame.setIconImage(icono);
 
-		frame.setSize(900, 400);
+		frame.setSize(900, 400);// antes 900, 400
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
 		frame.getContentPane().setLayout(new BorderLayout());

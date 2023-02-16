@@ -164,7 +164,7 @@ public class Combination {
 	}
 	public String getKey() {
 		contador++;
-		System.out.println(contador);
+//		System.out.println(contador);
 		String str = invariants.toString().replaceAll(", ", "-");
 		return "Combination [invariants=" + str + "]";
 	}

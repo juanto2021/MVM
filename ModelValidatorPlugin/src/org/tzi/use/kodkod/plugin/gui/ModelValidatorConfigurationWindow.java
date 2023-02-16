@@ -178,7 +178,7 @@ public class ModelValidatorConfigurationWindow extends JDialog {
 
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setModalityType(ModalityType.APPLICATION_MODAL);
-		setSize(1024,300);
+		setSize(1024,300);// antes 1024
 
 		settingsConfiguration = new SettingsConfiguration(model);
 		tableBuilder = new TableBuilder(settingsConfiguration);
@@ -305,7 +305,7 @@ public class ModelValidatorConfigurationWindow extends JDialog {
 		setJMenuBar(buildMenuBar());
 		setContentPane(main);
 		update();
-		pack();
+		pack(); // descomentar
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
