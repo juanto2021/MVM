@@ -406,16 +406,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 */
 	private String getOCL(String strNameInv) {
 		String descInvs="";
-		if (mapInvRes.containsKey(strNameInv)) {
+//		if (mapInvRes.containsKey(strNameInv)) {//Provis
 			for (MClassInvariant invariant: mModel.classInvariants()) {
 				String strInvariant = invariant.cls().name()+"::"+invariant.name();
 				if (strInvariant.equals(strNameInv)) {
 					descInvs=strNameInv;
 					descInvs+="\n   "+invariant.bodyExpression().toString();
+					break;
 				}
 			}
 
-		}		
+//		}		
 		return descInvs;
 	}
 	/**
