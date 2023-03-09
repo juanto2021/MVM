@@ -12,6 +12,7 @@ import org.tzi.kodkod.KodkodModelValidator;
 import org.tzi.kodkod.ResInv;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.use.gui.main.MainWindow;
+import org.tzi.use.uml.mm.MClassInvariant;
 import org.tzi.use.uml.mm.MModel;
 
 public class ParamDialogValidator {
@@ -22,7 +23,9 @@ public class ParamDialogValidator {
 	private Collection<IInvariant> listInvUnSatisfiables = null;
 	private List<String> listStrSatisfiables = null;
 	private List<String> listStrUnSatisfiables = null;
-	private HashMap<String, ResInv> mapInvRes=null;
+	//	private HashMap<String, ResInv> mapInvRes=null;
+	private IInvariant tabInv[]=null;
+	private MClassInvariant tabInvMClass[]=null;
 	private MModel mModel;
 	private Collection<IInvariant> invClassTotal=null;
 	private Duration timeElapsed;
@@ -39,7 +42,9 @@ public class ParamDialogValidator {
 			Collection<IInvariant> pListInvOthers,
 			List<String> pListStrSatisfiables,
 			List<String> pListStrUnSatisfiables,
-			HashMap<String, ResInv> pMapInvRes,
+			//			HashMap<String, ResInv> pMapInvRes,
+			IInvariant pTabInv[],
+			MClassInvariant pTabInvMClass[],
 			MModel pMModel,
 			Collection<IInvariant> pInvClassTotal ,
 			Duration pTimeElapsed,
@@ -55,7 +60,9 @@ public class ParamDialogValidator {
 		this.listInvUnSatisfiables = pListInvUnSatisfiables;
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
-		this.mapInvRes = pMapInvRes;	
+		//		this.mapInvRes = pMapInvRes;	
+		this.tabInv = pTabInv;
+		this.tabInvMClass = pTabInvMClass;
 		this.mModel=pMModel;
 		this.invClassTotal = pInvClassTotal;
 		this.timeElapsed=pTimeElapsed;
@@ -118,13 +125,29 @@ public class ParamDialogValidator {
 		this.listStrUnSatisfiables = listStrUnSatisfiables;
 	}
 
-	public HashMap<String, ResInv> getMapInvRes() {
-		return mapInvRes;
+	public IInvariant[] getTabInv() {
+		return this.tabInv;
 	}
 
-	public void setMapInvRes(HashMap<String, ResInv> mapInvRes) {
-		this.mapInvRes = mapInvRes;
+	public void setTabInvMClass(MClassInvariant tabInvMClass[]) {
+		this.tabInvMClass = tabInvMClass;
 	}
+
+	public MClassInvariant[] getTabInvMClass() {
+		return this.tabInvMClass;
+	}
+
+	public void setTabInv(IInvariant tabInv[]) {
+		this.tabInv = tabInv;
+	}
+
+	//	public HashMap<String, ResInv> getMapInvRes() {
+	//		return mapInvRes;
+	//	}
+	//
+	//	public void setMapInvRes(HashMap<String, ResInv> mapInvRes) {
+	//		this.mapInvRes = mapInvRes;
+	//	}
 
 	public MModel getmModel() {
 		return mModel;

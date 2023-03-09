@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +66,7 @@ public abstract class KodkodModelValidator {
 
 	public static HashMap<String, String> listCmb = new HashMap<>();
 	public static HashMap<String, String> listCmbSel = new HashMap<>();
-	public static HashMap<String, ResInv> mapInvRes = new HashMap<>();
+	//	public static HashMap<String, ResInv> 		 = new HashMap<>();
 
 	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	// Class, Attribute, invariants
 	public static HashMap<MClassInvariant, InfoInv> mapInfoInv = new HashMap<>();	
@@ -189,7 +190,7 @@ public abstract class KodkodModelValidator {
 		evaluator = null;
 		listCmb.clear();
 		listCmbSel.clear();
-		mapInvRes.clear();
+		//		mapInvRes.clear();
 		colInvFault.clear();
 
 		invClassTotal.clear();
@@ -230,10 +231,22 @@ public abstract class KodkodModelValidator {
 			tabInv = new IInvariant[invClassTotal.size()];
 			tabInvMClass = new MClassInvariant[invClassTotal.size()];	
 
-			// Aqui1
 			// En este punto, todas las invariantes deberian estar desactivadas.
 			// Ver si es posible crear copia de invariantes desactivadas y ponerlas en 
 			// cada interacion del siguiente bucle
+
+			// Primera pasada para desctivar todas las invariantes
+			for (IInvariant invClass: invClassTotal) {
+				invClass.deactivate();
+				//				tabInv[nOrdenInv] = invClass;
+				//				for (MClassInvariant invMClass: mModel.classInvariants()) {
+				//					if (invMClass.name().equals(invClass.name())&& 
+				//							invMClass.cls().name().equals(invClass.clazz().name())) {
+				//						tabInvMClass[nOrdenInv] = invMClass;
+				//					}
+				//				}		
+				//				nOrdenInv+=1;
+			}
 
 			// First pass to see which invariants are no longer satisfiable even if they are alone
 			for (IInvariant invClass: invClassTotal) {
@@ -243,16 +256,16 @@ public abstract class KodkodModelValidator {
 							invMClass.cls().name().equals(invClass.clazz().name())) {
 						tabInvMClass[nOrdenInv] = invMClass;
 					}
-				}
+				}	
 
 				// Solo activamos la invariante que interesa
 				invClass.activate(); // Activate just one
-				// We deactivate the others
-				for (IInvariant invClass2: invClassTotal) { // Provis
-					if (invClass2.name()!=invClass.name()) {		// Provis				
-						invClass2.deactivate();// Provis
-					}
-				}
+				//				// We deactivate the others
+				//				for (IInvariant invClass2: invClassTotal) { // Provis
+				//					if (invClass2.name()!=invClass.name()) {		// Provis				
+				//						invClass2.deactivate();// Provis
+				//					}
+				//				}
 
 				Solution solution = kodkodSolver.solve(model);
 
@@ -279,9 +292,11 @@ public abstract class KodkodModelValidator {
 					//QUITAR
 				}
 
-				if (!mapInvRes.containsKey(strNameInv)) {
-					mapInvRes.put(strNameInv, invRes);
-				}
+				//				if (!mapInvRes.containsKey(strNameInv)) {
+				//					mapInvRes.put(strNameInv, invRes);
+				//				}
+				// Al final desactivamos la invariante tratada para dejar desctivadas todas
+				invClass.deactivate();
 			}
 			// hacer for para ver tabla invariantes
 			if (debMVM) {
@@ -359,22 +374,16 @@ public abstract class KodkodModelValidator {
 			bCmbBase.set(i-1);
 			BitSet bit=new BitSet();
 			bit.set(i-1);
-			lBitCmbSAT.add(bit);
+			//			lBitCmbSAT.add(bit);//Provis
+			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
+
 		}
 
-		//---JG provis
-		//		lBitCmb = comRestoB(bCmbBase);
-		lBitCmb = comRestoB(bCmbBase);
-		//---JG provis
+		lBitCmb = comRestoB(bCmbBase,true);
+		//		comRestoB(bCmbBase);
 
-		if (debMVM) {
-			LOG.info("MVM: Ordenacion de combinaciones de mayor a menor.");
-		}
 		Instant start6 = Instant.now();		
-		// aqui2
-		//---JG provis
-		//		sendToValidateCH();
-		//---JG provis
+
 		Instant end6 = Instant.now();
 		Duration timeElapsed6 = Duration.between(start6, end6);
 		LOG.info("MVM: Time taken for sendToValidate bruteforce: "+ timeElapsed6.toMillis() +" milliseconds");		
@@ -399,7 +408,9 @@ public abstract class KodkodModelValidator {
 				invClassOthers,
 				listSatisfiables,
 				listUnSatisfiables,
-				mapInvRes,
+				//				mapInvRes,
+				tabInv,
+				tabInvMClass,
 				mModel,
 				invClassTotal,
 				timeElapsed,
@@ -415,6 +426,7 @@ public abstract class KodkodModelValidator {
 				new ValidatorMVMDialogSimple(param);		
 		System.out.println();
 		System.out.println(logTime);
+		System.out.println("lBitCmbSAT ["+lBitCmbSAT+"] , lBitCmbUNSAT ["+ lBitCmbUNSAT+"]");
 	}
 
 	private static List<String> combListBitSetStr(List<BitSet> lBitSetV){
@@ -426,25 +438,6 @@ public abstract class KodkodModelValidator {
 		return lString;
 	}
 
-	//	private static BitSet combStrBitSet(String cmb){
-	//		BitSet bit=new BitSet();
-	//		try {
-	//			String[] aInvsCmb=cmb.split("-");
-	//			int nInvsCmb = aInvsCmb.length;
-	//			for(int nInv = 0;nInv<nInvsCmb;nInv++) {
-	//
-	//				String strInv = aInvsCmb[nInv];
-	//				if (strInv.equals("")) {
-	//					System.out.println(strInv);
-	//				}
-	//				int vInv = Integer.parseInt(strInv)-1;
-	//				bit.set(vInv);
-	//			}
-	//		}catch (Exception e) {
-	//			System.out.println(e.getMessage());
-	//		}
-	//		return bit;
-	//	}
 	private static String combBitSetStr(BitSet bit){
 		String res ="";
 		int nElem = bit.length();
@@ -459,9 +452,8 @@ public abstract class KodkodModelValidator {
 		return res;
 	}
 
-	//aqui9
-
-	private static List<BitSet> comRestoB(BitSet bRestoIn) {
+	private static List<BitSet> comRestoB(BitSet bRestoIn,boolean prune) {
+		//	private static void comRestoB(BitSet bRestoIn) {
 		List<BitSet> listRes = new ArrayList<BitSet>();
 		int nInvsRestoB = bRestoIn.cardinality();
 		int nElem = bRestoIn.length();
@@ -484,23 +476,26 @@ public abstract class KodkodModelValidator {
 							}
 							if (bRestoIn.get(v)) {
 								invCmb.set(v);
+								if (prune) {
+									if (!lBitCmbSAT.contains(invCmb) && !lBitCmbUNSAT.contains(invCmb)) {
 
-								if (!listRes.contains(invCmb)) {
-									listRes.add(invCmb);
-								}
-								// si es UNSAT, no hace falta mirar el resto
-								String solucion = calcularGreedyCHB(invCmb, true,invClassTotal);	
-								addSolutionGHB(invCmb, solucion);
-								if (solucion.equals("SATISFIABLE")) {
-									//										System.out.println(invCmb+"1. SATISFIABLE");
+
+										String solucion = calcularGreedyCHB(invCmb, true,invClassTotal);
+										// si es UNSAT, no hace falta mirar el resto										
+										addSolutionGHB(invCmb, solucion);
+										if (!solucion.equals("SATISFIABLE")) {										
+											calcular=false;
+											break;
+										}
+									}
 								}else {
-									//										System.out.println(invCmb+"1. UNSATISFIABLE");
-									calcular=false;//Provis
-									break;//Provis
+									String solucion = calcularGreedyCHB(invCmb, true,invClassTotal);	
+									addSolutionGHB(invCmb, solucion);
+									if (!listRes.contains(invCmb)) {
+										listRes.add(invCmb);
+									}
 								}
-								//									}
-								//								}
-								//--
+
 								acum++;
 							}
 						}else break;
@@ -515,20 +510,18 @@ public abstract class KodkodModelValidator {
 							if (bRestoIn.get(v)) {
 								BitSet invCmbR = (BitSet) invCmb.clone();
 								invCmbR.set(v);
-								if (!listRes.contains(invCmbR)) {
-									//									if(!lBitCmbSAT.contains(invCmb)&&!lBitCmbUNSAT.contains(invCmb)) {
-									listRes.add(invCmbR);
-									// si es UNSAT, no hace falta mirar el resto
+								if (prune) {
+									if (!lBitCmbSAT.contains(invCmbR) && !lBitCmbUNSAT.contains(invCmbR)) {
+										String solucion = calcularGreedyCHB(invCmbR, true,invClassTotal);	
+										addSolutionGHB(invCmbR, solucion);
+									}	
+								}else {
 									String solucion = calcularGreedyCHB(invCmbR, true,invClassTotal);	
 									addSolutionGHB(invCmbR, solucion);
-									if (solucion.equals("SATISFIABLE")) {
-										//										System.out.println(invCmbR+"2. SATISFIABLE");
-									}else {
-										//										System.out.println(invCmbR+"2. UNSATISFIABLE");
-										//										calcular=false;//Provis
-										//										break;//Provis
+									if (!listRes.contains(invCmbR)) {
+										listRes.add(invCmbR);
 									}
-								}								
+								}
 							}
 						}
 					}
@@ -537,70 +530,75 @@ public abstract class KodkodModelValidator {
 		}
 		return listRes;
 	}
+	private static List<BitSet> review_store_SAT(List<BitSet> listIn, BitSet cmbIn) {
+		//		System.out.println("quiere guardar ["+cmbIn+"] en  listIn [" + listIn + "]");
+		List<BitSet> listRes1 = new ArrayList<BitSet>();
+		List<BitSet> listRes2 = new ArrayList<BitSet>();
+		// Compara cmb con cada una de las existentes en lista.
+		// Si cmb incluye la que mira, la elimina la que mira
+		// Si cmb no esta incluida en ninguna , cmb se incluye al final
 
-	private static List<BitSet> comRestoB_old(BitSet bRestoIn) {
-		List<BitSet> listRes = new ArrayList<BitSet>();
-		int nInvsRestoB = bRestoIn.cardinality();
-		BitSet invProalB = new BitSet();
-		int nElem = bRestoIn.length();
-		int posPelem=0;
+		// Primera pasada para eliminar las cmbs que se hallen contenidas en la nueva que llega
+		int nElem = listIn.size();
 		for (int i=0;i<nElem;i++) {
-			if (bRestoIn.get(i)) {
-				invProalB.set(i);
-				posPelem=i+1;
-				break;
+			BitSet cmb=listIn.get(i);
+			// Esta cmb inclida en cmbIn?
+			if (bitIncludedIn(cmb, cmbIn)) {
+			}else {
+				listRes1.add(cmb);
 			}
 		}
-		if (nInvsRestoB>1) {
-			BitSet bRestOut = new BitSet();
-			for(int nInv = posPelem;nInv<nElem;nInv++) {
-				if (bRestoIn.get(nInv)) {
-					bRestOut.set(nInv);
-				}
+		nElem = listRes1.size();
+		// Segunda pasada para ver si la que viene esta contenida en alguna de las que quedan
+		boolean existe=false;
+		for (int i=0;i<nElem;i++) {
+			BitSet cmb=listRes1.get(i);
+			// Esta cmb incluida en cmbIn?
+			if (bitIncludedIn( cmbIn,cmb)) {
+				existe=true;
 			}
-			System.out.println(bRestOut);
-			// JG9 Si bRestOut es SAT...??????
-			List<BitSet>  listRec = new ArrayList<BitSet>();
-
-			// JG9 Se tendria que revisar si bRestOut es SAT. Si no, todas las combinaciones seran UNSAT
-
-			if (!unsatisIncludedInCombinationCHB( bRestOut)) {
-				listRec = comRestoB(bRestOut);
-				// Mezclar pral con el resultado
-				for (BitSet cmb:listRec) {
-					BitSet cmbRec = (BitSet) cmb.clone();
-					cmbRec.or(invProalB);
-					if (!unsatisIncludedInCombinationCHB( cmbRec)) {
-						listRes=trataCmbB(listRes,cmbRec);
-					}
-					if (!unsatisIncludedInCombinationCHB( cmb)) {
-						listRes=trataCmbB(listRes,cmb);// provis
-					}
-				}
-			}
+			listRes2.add(cmb);
 		}
-		listRes=trataCmbB(listRes,invProalB);
-
-		return listRes;
+		if (!existe) {
+			listRes2.add(cmbIn);
+		}
+		return listRes2;
 	}
 
-	private static List<BitSet> trataCmbB(List<BitSet> listRes, BitSet cmb) {
-		// Si la cmb no esta contenida en la mayor SAT se ha de calcular
-		// Tal vez aqui se puedan optimizar calculand y guardando solo las mayores combinaciones SAT 
-		// y/o las menores UNSAT
-		// La ideas es no guardar todas las combinaciones (2 billones)
-		if(!lBitCmbSAT.contains(cmb)&&!lBitCmbUNSAT.contains(cmb)) {
-			String solucion = calcularGreedyCHB(cmb, true,invClassTotal);	
-			addSolutionGHB(cmb, solucion);
-			//			if (solucion.equals("SATISFIABLE")) {
-			//				System.out.println(cmb+" SATISFIABLE");
-			//			}
+	private static List<BitSet> review_store_UNSAT(List<BitSet> listIn, BitSet cmbIn) {
+		//		System.out.println("quiere guardar ["+cmbIn+"] en  listIn [" + listIn + "]");
+		List<BitSet> listRes1 = new ArrayList<BitSet>();
+		List<BitSet> listRes2 = new ArrayList<BitSet>();
+		// Compara cmb con cada una de las existentes en lista.
+		// Si cmb esta incluida la que mira, la elimina la que mira
+		// Si cmb no esta incluida en ninguna , cmb se incluye al final
+
+		// Primera pasada para eliminar las cmbs que incluyan la nueva que llega
+		int nElem = listIn.size();
+		for (int i=0;i<nElem;i++) {
+			BitSet cmb=listIn.get(i);
+			// Esta cmbIN incluida en cmb?
+
+			if (!bitIncludedIn(cmbIn, cmb)) {
+				listRes1.add(cmb);
+			}
+		}		
+		nElem = listRes1.size();
+		// Segunda pasada para ver si la que viene contiene alguna de las que quedan
+		boolean existe=false;
+		for (int i=0;i<nElem;i++) {
+			BitSet cmb=listRes1.get(i);
+			// Esta cmb incluida en cmbIn?
+			if (bitIncludedIn( cmb, cmbIn)) {
+				existe=true;
+			}
+			listRes2.add(cmb);
 		}
-		listRes.add(cmb);//provis
-		System.out.println("Trato [" + cmb + "]");
-		// Calcular numero de invariantes contenidas
-		return listRes;
-	}		
+		if (!existe) {
+			listRes2.add(cmbIn);
+		}
+		return listRes2;
+	}	
 
 	public static void TraspasaCHB() {
 		listSatisfiables.clear();//Provis
@@ -631,7 +629,6 @@ public abstract class KodkodModelValidator {
 	 * @param invClassSatisfiables
 	 * @throws Exception 
 	 */
-	//aqui6
 	private void analysis_OCL(IModel iModel,MModel mModel,
 			Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
@@ -690,7 +687,7 @@ public abstract class KodkodModelValidator {
 			// modeG = "N", se usa random para empezar por una invariante			
 			// modeG = "T" se usan todas las invariantes para unir resultados
 			String modeG="T";// Get the best results
-			modeG="T";//Pruebas
+			modeG="R";//Pruebas
 			if (debMVM) {
 				LOG.info("MVM: Start Greedy");
 			}
@@ -715,6 +712,7 @@ public abstract class KodkodModelValidator {
 			listResGreedyCHB.addAll(resGreedyCHB.getList());		
 
 			Instant end3 = Instant.now();
+
 			Duration timeElapsed3 = Duration.between(start3, end3);
 			LOG.info("MVM: Time taken for Greedy: "+ timeElapsed3.toMillis() +" milliseconds");
 			AddLogTime("Greedy",timeElapsed3);
@@ -829,8 +827,104 @@ public abstract class KodkodModelValidator {
 	 * @param start
 	 * @throws Exception
 	 */
+	//Aqui1
+	private void calculateInBackGroundCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
+			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
+		// Guardamos SAT y UNSAT para grupo 1 y limpiamos resultados actuales
 
-	private void calculateInBackGroundCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
+		List<BitSet> lBitSAT1 = new ArrayList<BitSet>();
+		lBitSAT1.addAll(lBitCmbSAT);
+
+		List<BitSet> lBitUNSAT1 = new ArrayList<BitSet>();
+		lBitUNSAT1.addAll(lBitCmbUNSAT);	
+		// Limpiamos resultados actuales
+		lBitCmbSAT.clear();
+		lBitCmbUNSAT.clear();
+
+
+		// Calculamos SAT y UNSAT del grupo2
+		for(BitSet cmbG:listResGreedyCHB) {
+			//			lBitCmb = comRestoB(cmbG,true);// Provis
+			BitSet cmbRestoBG=makeRestCmbCHB(cmbG, cmbTotalCHB);
+//			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,false);
+			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,true);
+		}
+		// Calcula cmbs de greedy
+		
+		// Calcula cmbs de resto
+		
+		List<BitSet> lBitSAT2 = new ArrayList<BitSet>();
+		lBitSAT2.addAll(lBitCmbSAT);
+
+		List<BitSet> lBitUNSAT2 = new ArrayList<BitSet>();
+		lBitUNSAT2.addAll(lBitCmbUNSAT);			
+		// Resultado sera:
+		// SAT = SAT1 + SAT2 + (SAT1_ALL x SAT2_ALL)
+		List<BitSet> lBitSAT1ALL = new ArrayList<BitSet>();
+		for(BitSet cmb:lBitSAT1) {
+			lBitSAT1ALL.addAll(comRestoB(cmb,false));
+		}
+		List<BitSet> lBitSAT2ALL = new ArrayList<BitSet>();
+		for(BitSet cmb:lBitSAT2) {
+			lBitSAT2ALL.addAll(comRestoB(cmb,false));
+		}		
+		
+		Collections.sort(lBitSAT1ALL, new Comparator<BitSet>() {
+			public int compare(BitSet o1, BitSet o2) {
+				return o2.cardinality() - (o1.cardinality());
+			}
+		});		
+		Collections.sort(lBitSAT2ALL, new Comparator<BitSet>() {
+			public int compare(BitSet o1, BitSet o2) {
+				return o2.cardinality() - (o1.cardinality());
+			}
+		});				
+		// SAT1 + SAT2
+		lBitCmbSAT.clear();
+		lBitCmbUNSAT.clear();
+		
+		lBitCmbSAT.addAll(lBitSAT1);
+		lBitCmbSAT.addAll(lBitSAT2);
+		// UNSAT = UNSAT1 + UNSAT2
+		lBitCmbUNSAT.addAll(lBitUNSAT1);
+		lBitCmbUNSAT.addAll(lBitUNSAT2);
+		Collections.sort(lBitCmbUNSAT, new Comparator<BitSet>() {
+			public int compare(BitSet o1, BitSet o2) {
+				return o1.cardinality() - (o2.cardinality());
+			}
+		});			
+		System.out.println("lBitSAT1 [" + lBitSAT1+"]");
+		System.out.println("lBitSAT2 [" + lBitSAT2+"]");
+		System.out.println("lBitUNSAT1 [" + lBitUNSAT1+"]");
+		System.out.println("lBitUNSAT2 [" + lBitUNSAT2+"]");
+		System.out.println("lBitSAT1ALL [" + lBitSAT1ALL+"]");
+		System.out.println("lBitSAT2ALL [" + lBitSAT2ALL+"]");
+		// Combinamos SAT1 con SAT2
+		boolean review=true;
+		for(BitSet cmbG1:lBitSAT1ALL) {
+			for(BitSet cmbG2:lBitSAT2ALL) {
+				BitSet cmbG1W = (BitSet) cmbG1.clone();
+//				System.out.println("Combina [" + cmbG1+"] con ["+cmbG2+"]");
+				cmbG1W.or(cmbG2);
+				// Send to validate cmbG1W
+				//				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat//provis
+
+				// Calcula combinacion de greedy+restante 
+				//				review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
+				//				String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);//Provis
+				if (!lBitCmbSAT.contains(cmbG1W) && !lBitCmbUNSAT.contains(cmbG1W)) {
+					String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
+					addSolutionGHB(cmbG1W, solucion);
+				}				
+			}			
+
+		}
+
+
+
+	}
+	private void calculateInBackGroundCHB2(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
+			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
 		//Total combinaciones 2^n-1
 
 		int nInvs = cmbTotalCHB.cardinality();
@@ -847,37 +941,68 @@ public abstract class KodkodModelValidator {
 			// Todas las cmb de greedy son SAT
 
 			// Busca todas las combinaciones
-			List<BitSet> lBitCmbG = comRestoB(cmbG);
+			//			List<BitSet> lBitCmbG = comRestoB(cmbG);//Provis
+			lBitCmb = comRestoB(cmbG,true);// Provis
 
 			// Todas las combinaciones son SAT
-			for (BitSet bit:lBitCmbG) {
-				acumCombs++;
-				if (!lBitCmbSAT.contains(bit)) {
-					lBitCmbSAT.add(bit);
-
-				}
-			}
+			//			for (BitSet bit:lBitCmbG) {
+			//				acumCombs++;
+			////				if (!lBitCmbSAT.contains(bit)) {//Provis
+			////					lBitCmbSAT.add(bit);//Provis
+			////					//aqui11//Provis
+			////				}//Provis
+			//				lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
+			//			}
 			// Buscar todas las cmb del resto
 			BitSet cmbRestoBG=makeRestCmbCHB(cmbG, cmbTotalCHB);
-			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG);
+			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,false);
+
+			Collections.sort(lBitCmbRestoG, new Comparator<BitSet>() {
+				public int compare(BitSet o1, BitSet o2) {
+					return o2.cardinality() - (o1.cardinality());
+				}
+			});		
+
+			// Ordenar por cardinalidad
 
 			// Mandamos a sendvalidate las combinaciones restantes
-			for(BitSet cmbG1:lBitCmbRestoG) {
-				// Send to validate cmbG1W
-				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
-				String solucion = calcularGreedyCHB( cmbG1, review, invClassTotal);
-				addSolutionGHB(cmbG1, solucion);
-				acumCombs++;
-			}
+
+			//-------provis
+			//			for(BitSet cmbG1:lBitCmbRestoG) {
+			//				// Send to validate cmbG1W
+			//				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
+			//				String solucion = calcularGreedyCHB( cmbG1, review, invClassTotal);
+			//				addSolutionGHB(cmbG1, solucion);
+			//				acumCombs++;
+			//			}
+			//-------provis
+
 			// Buscar todas las combinaciones entre cada una de las greedy y cada una del  resto
 			// Hallamos las combinaciones entre lBitCmbG y lBitCmbRestoG
 			for(BitSet cmbG2:lBitCmbRestoG) {
+				// Send to validate cmbG1W
+				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
+				String solucion="";
+				// Calcula combinacion parcial restante por separado
+				if (!lBitCmbSAT.contains(cmbG2) && !lBitCmbUNSAT.contains(cmbG2)) {
+
+					solucion = calcularGreedyCHB( cmbG2, review, invClassTotal);
+					addSolutionGHB(cmbG2, solucion);
+				}
+				acumCombs++;
+
 				BitSet cmbG1W = (BitSet) cmbG.clone();
 				cmbG1W.or(cmbG2);
 				// Send to validate cmbG1W
-				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
-				String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
-				addSolutionGHB(cmbG1W, solucion);
+				//				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat//provis
+
+				// Calcula combinacion de greedy+restante 
+				review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
+				//				String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);//Provis
+				if (!lBitCmbSAT.contains(cmbG1W) && !lBitCmbUNSAT.contains(cmbG1W)) {
+					solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
+					addSolutionGHB(cmbG1W, solucion);
+				}
 				acumCombs++;
 				if ((acumCombs % 100)==0) {
 					System.out.println("acumCombs ["+acumCombs+" de ["+nCombs+"]");
@@ -925,7 +1050,9 @@ public abstract class KodkodModelValidator {
 				invClassOthers,
 				listSatisfiables,
 				listUnSatisfiables,
-				mapInvRes,
+				//				mapInvRes,
+				tabInv,
+				tabInvMClass,
 				mModel,
 				invClassTotal,
 				timeElapsed,
@@ -1583,90 +1710,6 @@ public abstract class KodkodModelValidator {
 		}
 	}
 
-	//	/**
-	//	 * Order the invariants within a combination
-	//	 * @param combinacion
-	//	 * @return
-	//	 */
-	//	public static String sortCombination(String combinacion) {
-	//		String key="";
-	//		String[] partes = combinacion.split("-");
-	//		ArrayList<String> listaOrdenada = new ArrayList<String>(); 
-	//		for (String parte: partes) {
-	//			/*
-	//			 * Simplification of parts in case they are repeated.
-	//			 * Example: 1-1     there must be 1 since it would be the same invariant 2 times
-	//			 *          1-2-2   should remain 1-2 since invariant 2 is repeated 2 times
-	//			 *          1-2-1-2 should remain 1-2 since the invariants 1 and 2 are both repeated
-	//			 */
-	//			if (!listaOrdenada.contains(parte)){
-	//				listaOrdenada.add(parte);
-	//			}
-	//		}
-	//		Collections.sort(listaOrdenada); 
-	//		for (String parte: listaOrdenada) {
-	//			if (!key.equals("")) {
-	//				key+="-";
-	//			}
-	//			key+=parte;
-	//		}
-	//
-	//		return key;
-	//	}	
-
-	/**
-	 * Send to the validator to see if the presence of a group of invariants is satisfiable or not
-	 */
-
-	//	public void sendToValidateCH( Collection<IInvariant> invClassTotal) { // Provis
-	public void sendToValidateCH() {
-
-		int cmbSel = listCmbSel.size();
-		int acumVal=0;
-
-		if (debMVM) {
-			String head="Send to Validator ("+ listCmbH +") combinations. (listSorted)";
-			System.out.println(head);
-			System.out.println(("-").repeat(head.length()));
-		}
-		try {
-
-			for (BitSet cmbBS:lBitCmb) {
-				//				System.out.println("En sdtv ["+cmbBS.toString()+"]");
-
-				boolean calculateCH=true;
-				// See if the combination is included in a satisfiable
-				// If the join is included in some satisfiable join
-				// there is no need to calculate it because it will also be satisfiable
-				calculateCH = !includedInSatisfactibleCHB(cmbBS);
-
-				if (calculateCH) {
-					// See if there are unsatisfiable joins that are included in the join to try 
-					// If the join to try contains an unsatisfiable join, it will be unsatisfiable
-					calculateCH = !unsatisIncludedInCombinationCHB( cmbBS);					
-				}
-
-				if (calculateCH) {
-					// Find invariants of the combination
-					String solucion="";
-					try {
-						boolean review=false;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
-						solucion = calcularGreedyCHB( cmbBS, review, invClassTotal);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					acumVal+=1;
-					String resultado = cmbSel + " (" + acumVal+ ") " + String.format("%-20s",combBitSetStr(cmbBS)); 
-					resultado += " - ["+ solucion+"]";
-
-					dispMVM("MVM: " + resultado);
-					addSolutionGHB(cmbBS, solucion);					
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}	
 	/**
 	 * Add solution of a combination to the list of Satisfiables or Unsatisfiables
 	 * @param combinacion
@@ -1675,17 +1718,9 @@ public abstract class KodkodModelValidator {
 
 	public static void addSolutionGHB(BitSet bit, String solucion) {
 		if (solucion.equals("SATISFIABLE") || solucion.equals("TRIVIALLY_SATISFIABLE")) {
-			// aqui3
-			// Si no esta incluida en alguna sat, incluir
-			//!includedInSatisfactibleCHB(cmbBS)
-			//			if (!lBitCmbSAT.contains(bit)) {//Provis
-			if (!lBitCmbSAT.contains(bit)&&!includedInSatisfactibleCHB(bit)) {
-				lBitCmbSAT.add(bit);
-			}
+			lBitCmbSAT=review_store_SAT( lBitCmbSAT,  bit);		
 		}else if (solucion.equals("UNSATISFIABLE") || solucion.equals("TRIVIALLY_UNSATISFIABLE")) {
-			if (!lBitCmbUNSAT.contains(bit)) {
-				lBitCmbUNSAT.add(bit);
-			}				
+			lBitCmbUNSAT=review_store_UNSAT( lBitCmbUNSAT,  bit);			
 		} else {
 			// do nothing
 		}
@@ -1775,36 +1810,21 @@ public abstract class KodkodModelValidator {
 				}	
 			}
 		}
-		// Find invariants of the combination
 		List<IInvariant> listInv = new ArrayList<IInvariant>();
-		//---------------
-		// (Luego quitar combinacion)
-		String strW = combBitSetStr(bit);
-		Set<String> invariants= new HashSet<String>();
-		//---
-		String[] aInvsCmb=strW.split("-");
-		int nInvsCmb = aInvsCmb.length;
-		for(int nInv = 0;nInv<nInvsCmb;nInv++) {
-			invariants.add(fabStrInv(aInvsCmb[nInv]));
-		}
-		Combination combinacion = new Combination(invariants);		
-		//-------------------
-
-		listInv=splitInvCombinationH( combinacion);
-
-		// Activate only those of the combination
-		String listaActivas="";
+		int nElem = bit.length();
+		for (int i=0;i<nElem;i++) {
+			if (bit.get(i)) {
+				IInvariant inv = (IInvariant) tabInv[i];
+				listInv.add(inv);
+			}
+		}		
 		for (IInvariant invClass: invClassTotal) {
 			if (listInv.contains(invClass)) {
 				invClass.activate();
-				if (listaActivas != "") {
-					listaActivas += "\n";
-				}
-				listaActivas+="    " + invClass.name();
 			}else {
 				invClass.deactivate();
 			}
-		}
+		}		
 
 		try {
 			numCallSolver+=1;
@@ -1868,8 +1888,6 @@ public abstract class KodkodModelValidator {
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
-
-
 		return listInvW;
 	}
 	/**

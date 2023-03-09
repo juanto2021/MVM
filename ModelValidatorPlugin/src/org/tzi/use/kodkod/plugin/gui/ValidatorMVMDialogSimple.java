@@ -83,7 +83,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	List<String> listStrGrupos = null;
 
 	Map<Integer, IInvariant> mapInvSAT=null;
-	HashMap<String, ResInv> mapInvRes=null;
+	//	HashMap<String, ResInv> mapInvRes=null;
+	IInvariant tabInv[];
+	MClassInvariant tabInvMClass[];
 
 	MModel mModel;
 	Duration timeElapsed;
@@ -96,7 +98,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	JPanel p3 = null;
 	JPanel pSatis = null;
 	JPanel pUnSatis = null;
-//	JPanel pOthers = null;
+	//	JPanel pOthers = null;
 	JPanel scrollImgSat = null;
 
 	Border border = BorderFactory.createLineBorder(Color.BLUE);
@@ -175,22 +177,22 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 	int numberIter=1;
 
-//	public ValidatorMVMDialogSimple(final MainWindow parent, 
-//			KodkodModelValidator kodParent,
-//			Collection<IInvariant> pListInvSatisfiables, 
-//			Collection<IInvariant> pListInvUnSatisfiables,
-//			Collection<IInvariant> pListInvOthers,
-//			List<String> pListStrSatisfiables,
-//			List<String> pListStrUnSatisfiables,
-//			HashMap<String, ResInv> pMapInvRes,
-//			MModel mModel,
-//			Collection<IInvariant> pInvClassTotal ,
-//			Duration timeElapsed,
-//			int pNumCallSolver,
-//			int pNumCallSolverSAT,
-//			int pNumCallSolverUNSAT,
-//			String tipoSearchMSS,
-//			int pNumberIter, ParamDialogValidator param) {
+	//	public ValidatorMVMDialogSimple(final MainWindow parent, 
+	//			KodkodModelValidator kodParent,
+	//			Collection<IInvariant> pListInvSatisfiables, 
+	//			Collection<IInvariant> pListInvUnSatisfiables,
+	//			Collection<IInvariant> pListInvOthers,
+	//			List<String> pListStrSatisfiables,
+	//			List<String> pListStrUnSatisfiables,
+	//			HashMap<String, ResInv> pMapInvRes,
+	//			MModel mModel,
+	//			Collection<IInvariant> pInvClassTotal ,
+	//			Duration timeElapsed,
+	//			int pNumCallSolver,
+	//			int pNumCallSolverSAT,
+	//			int pNumCallSolverUNSAT,
+	//			String tipoSearchMSS,
+	//			int pNumberIter, ParamDialogValidator param) {
 	public ValidatorMVMDialogSimple(ParamDialogValidator param) {	
 
 		this.parent=param.getParent();
@@ -209,7 +211,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		this.numberIter=param.getNumberIter();
 
-		this.mapInvRes = param.getMapInvRes();
+		//		this.mapInvRes = param.getMapInvRes();
+		this.tabInv = param.getTabInv();
+		this.tabInvMClass = param.getTabInvMClass();
 		this.timeElapsed = param.getTimeElapsed();
 
 		this.strCmbSel="";
@@ -311,7 +315,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			Duration pTimeElapsed, int pNumCallSolver, int pNumCallSolverSAT, int pNumCallSolverUNSAT) {
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
-//		this.listStrOthers = pListStrOthers;
+		//		this.listStrOthers = pListStrOthers;
 		this.timeElapsed=pTimeElapsed;
 		this.numCallSolver=pNumCallSolver;
 		this.numCallSolverSAT=pNumCallSolverSAT;
@@ -405,18 +409,29 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * @return
 	 */
 	private String getOCL(String strNameInv) {
-		String descInvs="";
-//		if (mapInvRes.containsKey(strNameInv)) {//Provis
-			for (MClassInvariant invariant: mModel.classInvariants()) {
-				String strInvariant = invariant.cls().name()+"::"+invariant.name();
-				if (strInvariant.equals(strNameInv)) {
-					descInvs=strNameInv;
-					descInvs+="\n   "+invariant.bodyExpression().toString();
-					break;
-				}
-			}
+		//		String descInvs="";
+		// JG
+		String[] partes = strNameInv.split("-");
+		String strOrden=partes[0];
+		int intOrder = Integer.parseInt(strOrden)-1;
+		MClassInvariant invariant2 = tabInvMClass[intOrder];
+		String descInvs=strNameInv;
+		descInvs+="\n   "+invariant2.bodyExpression().toString();
+		// JG
 
-//		}		
+
+		//		if (mapInvRes.containsKey(strNameInv)) {//Provis
+		//		 descInvs="";
+		//			for (MClassInvariant invariant: mModel.classInvariants()) {
+		//				String strInvariant = invariant.cls().name()+"::"+invariant.name();
+		//				if (strInvariant.equals(strNameInv)) {
+		//					descInvs=strNameInv;
+		//					descInvs+="\n   "+invariant.bodyExpression().toString();
+		//					break;
+		//				}
+		//			}
+
+		//		}		
 		return descInvs;
 	}
 	/**
@@ -435,17 +450,26 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		for (int nParte = 0 ; nParte < numPartes ; nParte++) {
 			String nInv = partes[nParte];
 			int order = Integer.parseInt(nInv);
-			boolean hallado=false;
+			// Nuevo
+			IInvariant inv = (tabInv[order-1]);
+			String strInv = order+"-"+inv.clazz()+"::"+inv.name();
+			lNInv.add(strInv);
+			// Nuevo
 
-			for (Map.Entry<String, ResInv> entry : mapInvRes.entrySet()) {
-				if (!hallado) {
-					ResInv invRes = (ResInv) entry.getValue();
-					if (invRes.getIntOrden()==order) {
-						lNInv.add(invRes.getStrInv());
-						hallado=true;
-					}
-				}
-			}			
+			// Provis			
+			//			boolean hallado=false;
+			//
+			//			for (Map.Entry<String, ResInv> entry : mapInvRes.entrySet()) {
+			//				if (!hallado) {
+			//					ResInv invRes = (ResInv) entry.getValue();
+			//					if (invRes.getIntOrden()==order) {
+			//						lNInv.add(invRes.getStrInv());
+			//						hallado=true;
+			//					}
+			//				}
+			//			}		
+			// Provis
+
 		}
 
 		return lNInv;
@@ -463,11 +487,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		try {
 
 			// Busca el numero de orden de la invariante
-			int orden = -1;
-			if (mapInvRes.containsKey(inv)) {
-				ResInv invRes = (ResInv) mapInvRes.get(inv);
-				orden=invRes.getIntOrden();
-			}			
+			//			int orden = -1;
+			//			if (mapInvRes.containsKey(inv)) {
+			//				ResInv invRes = (ResInv) mapInvRes.get(inv);
+			//				orden=invRes.getIntOrden();
+			//			}			
+			String[] partesI = inv.split("-");
+			String strOrden=partesI[0];
+			//			int orden = Integer.parseInt(strOrden)-1;	//Antes
+			int orden = Integer.parseInt(strOrden);	
 
 			// Buscar combinaciones satisfiables que no tengan esa invariante
 			for (String strSAT: listStrSatisfiables) {
@@ -640,18 +668,23 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				lNames.setSelectedIndex(0);
 
 				String valor = lNames.getSelectedValue().trim();
-				int orden = -1;
-				if (mapInvRes.containsKey(valor)) {
-					ResInv invRes = (ResInv) mapInvRes.get(valor);
-					orden=invRes.getIntOrden();
-				}
-				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+orden+")");
+				//				int orden = -1;
+				//				if (mapInvRes.containsKey(valor)) {
+				//					ResInv invRes = (ResInv) mapInvRes.get(valor);
+				//					orden=invRes.getIntOrden();
+				//				}
+				// aqui7
+				String[] partes = valor.split("-");
+				String strOrden=partes[0];
+				//				int intOrder = Integer.parseInt(strOrden)-1;				
+
+				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");// JG Cambiado orden
 				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
 
 				String textOCL = getOCL(lNames.getSelectedValue().trim());
 				textAreaOCL.setText(textOCL);
 				textAreaOCL.setCaretPosition(0);
-
+				//aqui2
 				DefaultListModel<String> lCmbs = new DefaultListModel<String>();
 				if (lNamesInv.size()>0) {
 					String elementSelected = lNames.getSelectedValue().trim();
@@ -663,6 +696,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					listStrCMbLimpia = limpiaSAT(getCmbSinInv(elementSelected));
 				}		
 				lNamesSat.setModel(lCmbs);
+
 
 			}
 		});
@@ -694,17 +728,33 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lNames.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				String valor = lNames.getSelectedValue().trim();
-				int orden = -1;
-				if (mapInvRes.containsKey(valor)) {
-					ResInv invRes = (ResInv) mapInvRes.get(valor);
-					orden=invRes.getIntOrden();
-				}
-				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+orden+")");
+				//aqui6
+				String[] partes = valor.split("-");
+				String strOrden=partes[0];
+				int intOrder = Integer.parseInt(strOrden)-1;
+				// Nuevo
+				//				IInvariant inv = (tabInv[intOrder-1]);
+
+				//				String strInv = intOrder+"-"+inv.clazz()+"::"+inv.name();
+				//							provis
+				//				int orden = -1;
+				//				if (mapInvRes.containsKey(valor)) {
+				//					ResInv invRes = (ResInv) mapInvRes.get(valor);
+				//					orden=invRes.getIntOrden();
+				//				}
+				//				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+orden+")"); //Provis
+
+				// provis
+
+
+				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");
 				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
+				//				String name = lNames.getSelectedValue().trim();// Provis
 				String textOCL = getOCL(lNames.getSelectedValue().trim());
+				//				String textOCL = inv.bodyExpression().toString());
 				textAreaOCL.setText(textOCL);
 				textAreaOCL.setCaretPosition(0);
-
+				//aqui3
 				DefaultListModel<String> lCmbs = new DefaultListModel<String>();
 				if (lNamesInv.size()>0) {
 					String elementSelected = lNames.getSelectedValue().trim();
@@ -715,7 +765,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					}		
 					listStrCMbLimpia = limpiaSAT(getCmbSinInv(elementSelected));
 				}
-
 				lNamesSat.setModel(lCmbs);
 
 			}
@@ -803,12 +852,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		if (lNamesInv.size()>0) {
 			String valor = lNames.getSelectedValue().trim();
-			int orden = -1;
-			if (mapInvRes.containsKey(valor)) {
-				ResInv invRes = (ResInv) mapInvRes.get(valor);
-				orden=invRes.getIntOrden();
-			}
-			lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+orden+")");		
+			//			int orden = -1;
+			//			if (mapInvRes.containsKey(valor)) {
+			//				ResInv invRes = (ResInv) mapInvRes.get(valor);
+			//				orden=invRes.getIntOrden();
+			//			}
+
+			String[] partes = valor.split("-");
+			String strOrden=partes[0];
+			int intOrder = Integer.parseInt(strOrden)-1;
+
+			lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");	// JG Cambiado	
 		}else {
 			lbCmbWithoutInv.setText("Example instances without inv.: ");
 		}
