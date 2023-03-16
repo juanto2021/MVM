@@ -34,6 +34,7 @@ import org.tzi.mvm.MVMStatisticsVisitor;
 import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
+import org.tzi.use.kodkod.transform.ModelTransformator;
 import org.tzi.use.main.Session;
 import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
@@ -63,6 +64,8 @@ public abstract class KodkodModelValidator {
 
 	public static Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
 	public static Collection<IInvariant> invClassTotalBck = new ArrayList<IInvariant>();
+
+	public static Collection<MClassInvariant> invClassTotalMC = new ArrayList<MClassInvariant>();
 
 	public static HashMap<String, String> listCmb = new HashMap<>();
 	public static HashMap<String, String> listCmbSel = new HashMap<>();
@@ -97,7 +100,14 @@ public abstract class KodkodModelValidator {
 	private static int numIterGreedy = ConfigMVM.getNumIter();
 	private static boolean debMVM = ConfigMVM.getDebMVM();
 	private static String logTime = "";
+	private static Instant timeInitFind=null;
+	private static Instant timeFinFind=null;
 	private static Duration timeElapsedIndividual=null;
+	private static Duration timeDeactivateAll=null;
+	private static Duration timeCalcIndividually=null;
+	private static Duration timeBruteCombCalc=null;
+	private static Duration timeVisitor=null;
+	private static Duration timeGreedy1=null;
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -184,6 +194,7 @@ public abstract class KodkodModelValidator {
 	public void validateVariable(IModel model, MModel mModel, Session session, String tipoSearchMSS ) {
 		// Save initial time to later calculate the time it takes
 		Instant start = Instant.now();
+		timeInitFind= Instant.now();
 		logTime="";
 		this.model = model;
 		this.session=session;
@@ -212,11 +223,12 @@ public abstract class KodkodModelValidator {
 
 		int nOrdenInv=0;
 		try {
+			Instant start0 = Instant.now();	
 			if (debMVM) {
 				LOG.info("MVM: (2) Llama a solver desde validateVariable en KodkodModelValidator. Model ("+model.name()+")");
 			}
 			LOG.info("MVM: Analysis of invariants individually.");
-			Instant start0 = Instant.now();
+
 			int nin=0;// provis
 
 			for (IClass oClass: model.classes()) {
@@ -226,6 +238,19 @@ public abstract class KodkodModelValidator {
 					dispMVM(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
 				}
 			}
+
+			//--- pruebas para ver si es posible tratar solo MClass
+			for (MClassInvariant invMClass: mModel.classInvariants()) {
+				invClassTotalMC.add(invMClass);
+			}
+			ModelTransformator mt = new ModelTransformator(model.modelFactory(), model.typeFactory());
+			IModel modelT = mt.transform(mModel);
+			for (MClassInvariant invMClassMC: invClassTotalMC) {
+				invMClassMC.setActive(true);
+//				Solution solution = kodkodSolver.solve(mModel);
+			}
+			//---
+
 			longInvs = String.valueOf(invClassTotal.size()).length();
 
 			tabInv = new IInvariant[invClassTotal.size()];
@@ -238,16 +263,14 @@ public abstract class KodkodModelValidator {
 			// Primera pasada para desctivar todas las invariantes
 			for (IInvariant invClass: invClassTotal) {
 				invClass.deactivate();
-				//				tabInv[nOrdenInv] = invClass;
-				//				for (MClassInvariant invMClass: mModel.classInvariants()) {
-				//					if (invMClass.name().equals(invClass.name())&& 
-				//							invMClass.cls().name().equals(invClass.clazz().name())) {
-				//						tabInvMClass[nOrdenInv] = invMClass;
-				//					}
-				//				}		
-				//				nOrdenInv+=1;
 			}
+			Instant end0 = Instant.now();
+			timeDeactivateAll = Duration.between(start0, end0);
 
+			//			LOG.info("MVM: Time taken for deactivate invariants "+ timeDeactivateAll.toMillis() +" milliseconds");
+			AddLogTime("Deactivate all",timeDeactivateAll);
+
+			Instant start1 = Instant.now();
 			// First pass to see which invariants are no longer satisfiable even if they are alone
 			for (IInvariant invClass: invClassTotal) {
 				tabInv[nOrdenInv] = invClass;
@@ -260,12 +283,6 @@ public abstract class KodkodModelValidator {
 
 				// Solo activamos la invariante que interesa
 				invClass.activate(); // Activate just one
-				//				// We deactivate the others
-				//				for (IInvariant invClass2: invClassTotal) { // Provis
-				//					if (invClass2.name()!=invClass.name()) {		// Provis				
-				//						invClass2.deactivate();// Provis
-				//					}
-				//				}
 
 				Solution solution = kodkodSolver.solve(model);
 
@@ -274,16 +291,11 @@ public abstract class KodkodModelValidator {
 				String strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "]";
 				nOrdenInv+=1;
 				dispMVM("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
-				ResInv invRes=null;
 				dispMVM("MVM: Invariants State: " + strCombinacion);
 				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
 					invClassSatisfiables.add(invClass);
-					invRes = new ResInv(strNameInv, "SATISFIABLE", nOrdenInv,invClass);
 				}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
-					invRes = new ResInv(strNameInv, "UNSATISFIABLE", nOrdenInv,invClass);
-
-					// JGB Guardar UNSAT en lista de bit lBitCmbUNSAT
 					BitSet bit=new BitSet();
 					bit.set(nOrdenInv-1);
 					lBitCmbUNSAT.add(bit);						
@@ -292,9 +304,6 @@ public abstract class KodkodModelValidator {
 					//QUITAR
 				}
 
-				//				if (!mapInvRes.containsKey(strNameInv)) {
-				//					mapInvRes.put(strNameInv, invRes);
-				//				}
 				// Al final desactivamos la invariante tratada para dejar desctivadas todas
 				invClass.deactivate();
 			}
@@ -305,9 +314,11 @@ public abstract class KodkodModelValidator {
 					dispMVM("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
 				}
 			}
-			Instant end0 = Instant.now();
-			timeElapsedIndividual = Duration.between(start0, end0);
-			LOG.info("MVM: Time taken for ins individual "+ timeElapsedIndividual.toMillis() +" milliseconds");
+			Instant end1 = Instant.now();
+			timeCalcIndividually = Duration.between(start1, end1);
+			//			LOG.info("MVM: Time taken for calculate invs individually "+ timeCalcIndividually.toMillis() +" milliseconds");
+
+			AddLogTime("Calc individually",timeCalcIndividually);
 
 			// Methods. Possible calculation methods 
 			// New Method 
@@ -351,9 +362,9 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassOthers,
 			Instant start) {
 		// Make combinations
-
+		Instant start6 = Instant.now();	
 		if (debMVM) {
-			LOG.info("MVM: Inicio fabricacion de combinaciones con invariantes satisfiables.");
+			LOG.info("MVM: Inicio fabricacion y calculo de combinaciones con invariantes satisfiables.");
 		}
 		listSatisfiables.clear();
 		listUnSatisfiables.clear();
@@ -362,7 +373,6 @@ public abstract class KodkodModelValidator {
 		lBitCmbUNSAT.clear();
 
 		logTime="";
-		AddLogTime("prepare individual",timeElapsedIndividual);
 
 		BitSet bCmbBase = new BitSet();
 
@@ -374,28 +384,23 @@ public abstract class KodkodModelValidator {
 			bCmbBase.set(i-1);
 			BitSet bit=new BitSet();
 			bit.set(i-1);
-			//			lBitCmbSAT.add(bit);//Provis
 			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
 
 		}
-
 		lBitCmb = comRestoB(bCmbBase,true);
-		//		comRestoB(bCmbBase);
-
-		Instant start6 = Instant.now();		
-
-		Instant end6 = Instant.now();
-		Duration timeElapsed6 = Duration.between(start6, end6);
-		LOG.info("MVM: Time taken for sendToValidate bruteforce: "+ timeElapsed6.toMillis() +" milliseconds");		
-		AddLogTime("sendToValidate bruteforce",timeElapsed6);
-		Instant end = Instant.now();
-		Duration timeElapsed = Duration.between(start, end);
 
 		// --------------------------------------------------------------------
 		// Provisionalmente monto listas a partir de las nuevas estructuras
 		TraspasaCHB();
-		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+		Instant end6 = Instant.now();
+		timeBruteCombCalc = Duration.between(start6, end6);
+		AddLogTime("sendToValidate bruteforce",timeBruteCombCalc);
+
+		timeFinFind = Instant.now();
+		Duration timeElapsed = Duration.between(timeInitFind, timeFinFind);
 		AddLogTime("bruteforce TOTAL",timeElapsed);
+
+		timeFinFind = Instant.now();
 
 		String tipoSearchMSS="L";
 		int numberIter=1;
@@ -408,7 +413,6 @@ public abstract class KodkodModelValidator {
 				invClassOthers,
 				listSatisfiables,
 				listUnSatisfiables,
-				//				mapInvRes,
 				tabInv,
 				tabInvMClass,
 				mModel,
@@ -424,9 +428,6 @@ public abstract class KodkodModelValidator {
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(param);		
-		System.out.println();
-		System.out.println(logTime);
-		System.out.println("lBitCmbSAT ["+lBitCmbSAT+"] , lBitCmbUNSAT ["+ lBitCmbUNSAT+"]");
 	}
 
 	private static List<String> combListBitSetStr(List<BitSet> lBitSetV){
@@ -453,7 +454,6 @@ public abstract class KodkodModelValidator {
 	}
 
 	private static List<BitSet> comRestoB(BitSet bRestoIn,boolean prune) {
-		//	private static void comRestoB(BitSet bRestoIn) {
 		List<BitSet> listRes = new ArrayList<BitSet>();
 		int nInvsRestoB = bRestoIn.cardinality();
 		int nElem = bRestoIn.length();
@@ -531,7 +531,6 @@ public abstract class KodkodModelValidator {
 		return listRes;
 	}
 	private static List<BitSet> review_store_SAT(List<BitSet> listIn, BitSet cmbIn) {
-		//		System.out.println("quiere guardar ["+cmbIn+"] en  listIn [" + listIn + "]");
 		List<BitSet> listRes1 = new ArrayList<BitSet>();
 		List<BitSet> listRes2 = new ArrayList<BitSet>();
 		// Compara cmb con cada una de las existentes en lista.
@@ -542,9 +541,8 @@ public abstract class KodkodModelValidator {
 		int nElem = listIn.size();
 		for (int i=0;i<nElem;i++) {
 			BitSet cmb=listIn.get(i);
-			// Esta cmb inclida en cmbIn?
-			if (bitIncludedIn(cmb, cmbIn)) {
-			}else {
+			if (!bitIncludedIn(cmb, cmbIn)) {
+				//			}else {
 				listRes1.add(cmb);
 			}
 		}
@@ -566,7 +564,6 @@ public abstract class KodkodModelValidator {
 	}
 
 	private static List<BitSet> review_store_UNSAT(List<BitSet> listIn, BitSet cmbIn) {
-		//		System.out.println("quiere guardar ["+cmbIn+"] en  listIn [" + listIn + "]");
 		List<BitSet> listRes1 = new ArrayList<BitSet>();
 		List<BitSet> listRes2 = new ArrayList<BitSet>();
 		// Compara cmb con cada una de las existentes en lista.
@@ -634,8 +631,9 @@ public abstract class KodkodModelValidator {
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers,			
 			Instant start) throws Exception {
+		Instant start2 = Instant.now();
 		logTime="";
-		AddLogTime("prepare individual",timeElapsedIndividual);
+		//		AddLogTime("prepare individual",timeElapsedIndividual);
 		LOG.info("MVM: Analysis OCL (Greedy) - Start.");
 
 		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
@@ -657,8 +655,6 @@ public abstract class KodkodModelValidator {
 
 		if (cmbTotalHB.size()>0) {	
 
-			Instant start2 = Instant.now();
-
 			// Here We have a collection of MClassInvariant all them satisfiables
 			buildTreeVisitor(col);
 
@@ -666,19 +662,20 @@ public abstract class KodkodModelValidator {
 			// Un inv esta relacionado con otro porque utiliza atributos o asociaciones comunes
 			preparaMapInfoInvSet();
 
-			Instant end2 = Instant.now();
-			Duration timeElapsed2 = Duration.between(start2, end2);
-			LOG.info("MVM: Time taken for Visitor: "+ timeElapsed2.toMillis() +" milliseconds");
-			AddLogTime("Visitor",timeElapsed2);
+
 
 			// Prepara tabla atributos comunes por cada pareja de invariantes
 			preparaProbMat(mModel.classInvariants());
-
 			// Muestra estructuras resultantes del Visitor
 			if (showStructuresAO) {
 				printStructuresAO();
 			}
+			Instant end2 = Instant.now();
+			Duration timeElapsed2 = Duration.between(start2, end2);
+			//			LOG.info("MVM: Time taken for Visitor: "+ timeElapsed2.toMillis() +" milliseconds");
+			AddLogTime("Visitor",timeElapsed2);
 
+			Instant start3 = Instant.now();
 			// Calcula una combinacion base segun metodo Greedy
 
 			BitSet cmbBaseHB = new BitSet();
@@ -703,7 +700,7 @@ public abstract class KodkodModelValidator {
 				iIni=0;
 				iFin=col.size();	
 			}
-			Instant start3 = Instant.now();
+
 			for(int nInv=iIni;nInv<iFin;nInv++) {
 				int nInvTratar=nInv;
 				cmbBaseHB=bucleGreedyCHB(modeG, col, nInvTratar);
@@ -714,23 +711,20 @@ public abstract class KodkodModelValidator {
 			Instant end3 = Instant.now();
 
 			Duration timeElapsed3 = Duration.between(start3, end3);
-			LOG.info("MVM: Time taken for Greedy: "+ timeElapsed3.toMillis() +" milliseconds");
-			AddLogTime("Greedy",timeElapsed3);
+			//			LOG.info("MVM: Time taken for Greedy: "+ timeElapsed3.toMillis() +" milliseconds");
+			AddLogTime("Analysis OCL (Greedy1) - End",timeElapsed3);
 
 		}// provisional a ver ...
-		LOG.info("MVM: Analysis OCL (Greedy) - End.");
 
 		end = Instant.now();
-		timeElapsed = Duration.between(start, end);
+		timeElapsed = Duration.between(start2, end);
 
 		// Provisionalmente monto listas a partir de las nuevas estructuras
 		TraspasaCHB();
-		LOG.info("MVM: Time taken for analysis_OCL (1): "+ timeElapsed.toMillis() +" milliseconds");
-		AddLogTime("analysis_OCL (1)",timeElapsed);
+		AddLogTime("Fin analysis_OCL (1)",timeElapsed);
 
 		tipoSearchMSS="G";	
 		int numberIter=numIterGreedy;
-
 
 		// Send to MVMDialogSimple
 		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
@@ -746,13 +740,9 @@ public abstract class KodkodModelValidator {
 		}
 	}
 	private void AddLogTime(String txtLog, Duration timeElapsed) {
-		if (!logTime.equals("")) {
-			logTime+="\n";
-		}
-		String textoFormateado = String.format("%-25s", txtLog);
-		System.out.println("[" + textoFormateado + "]");	
+		String textoFormateado = String.format("%-35s", txtLog);
 		String numeroFormateado = String.format("%10d", timeElapsed.toMillis());
-		logTime+=textoFormateado + "  "+numeroFormateado +" milliseconds";
+		System.out.println("[" + textoFormateado + "] ["+numeroFormateado+"]");
 	}
 
 	/**
@@ -765,8 +755,7 @@ public abstract class KodkodModelValidator {
 	 */
 
 	private void LanzacalculoBckCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception{
-		dispMVM("Inicio back");
-		LOG.info("MVM: Background (Greedy) CH - Start.");
+		dispMVM("Background (Greedy) CH - Start.");
 		Instant start4 = Instant.now();
 
 		EventThreads hilo1 = new EventThreads(false) {
@@ -795,7 +784,7 @@ public abstract class KodkodModelValidator {
 				LOG.info("MVM: Background (Greedy) CH - End.");
 				Instant end4 = Instant.now();
 				Duration timeElapsed4 = Duration.between(start4, end4);
-				LOG.info("MVM: Time taken for LanzacalculoBckCH: "+ timeElapsed4.toMillis() +" milliseconds");	
+				//				LOG.info("MVM: Time taken for LanzacalculoBckCH: "+ timeElapsed4.toMillis() +" milliseconds");	
 				AddLogTime("LanzacalculoBckCH",timeElapsed4);
 				try {
 					Instant end = Instant.now();
@@ -803,13 +792,12 @@ public abstract class KodkodModelValidator {
 
 					// Provisionalmente monto listas a partir de las nuevas estructuras
 					TraspasaCHB();
-					LOG.info("MVM: Time taken for analysis_OCL (2): "+ timeElapsed.toMillis() +" milliseconds");
-					AddLogTime("analysis_OCL (2)",timeElapsed4);
 					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,
 							timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
 
-					System.out.println();
-					System.out.println(logTime);
+					timeFinFind = Instant.now();
+					timeElapsed = Duration.between(timeInitFind, timeFinFind);
+					AddLogTime("Fin analysis_OCL (2)",timeElapsed);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -830,8 +818,15 @@ public abstract class KodkodModelValidator {
 	//Aqui1
 	private void calculateInBackGroundCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
 			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
-		// Guardamos SAT y UNSAT para grupo 1 y limpiamos resultados actuales
+		// Lanzar el bruteforce pero ya con greedy calculado
+		System.out.println("Revisar listas");
+		lBitCmb = comRestoB(cmbTotalCHB,true);
 
+	}
+	private void calculateInBackGroundCHB_old(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
+			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
+		// Guardamos SAT y UNSAT para grupo 1 y limpiamos resultados actuales
+		Instant start5 = Instant.now();
 		List<BitSet> lBitSAT1 = new ArrayList<BitSet>();
 		lBitSAT1.addAll(lBitCmbSAT);
 
@@ -843,16 +838,14 @@ public abstract class KodkodModelValidator {
 
 
 		// Calculamos SAT y UNSAT del grupo2
+		// Calcula cmbs de greedy		
 		for(BitSet cmbG:listResGreedyCHB) {
-			//			lBitCmb = comRestoB(cmbG,true);// Provis
 			BitSet cmbRestoBG=makeRestCmbCHB(cmbG, cmbTotalCHB);
-//			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,false);
 			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,true);
 		}
-		// Calcula cmbs de greedy
-		
+
 		// Calcula cmbs de resto
-		
+
 		List<BitSet> lBitSAT2 = new ArrayList<BitSet>();
 		lBitSAT2.addAll(lBitCmbSAT);
 
@@ -868,7 +861,7 @@ public abstract class KodkodModelValidator {
 		for(BitSet cmb:lBitSAT2) {
 			lBitSAT2ALL.addAll(comRestoB(cmb,false));
 		}		
-		
+
 		Collections.sort(lBitSAT1ALL, new Comparator<BitSet>() {
 			public int compare(BitSet o1, BitSet o2) {
 				return o2.cardinality() - (o1.cardinality());
@@ -882,9 +875,23 @@ public abstract class KodkodModelValidator {
 		// SAT1 + SAT2
 		lBitCmbSAT.clear();
 		lBitCmbUNSAT.clear();
-		
+
 		lBitCmbSAT.addAll(lBitSAT1);
 		lBitCmbSAT.addAll(lBitSAT2);
+
+		// Max cardinality of lBitCmbSAT
+		Collections.sort(lBitCmbSAT, new Comparator<BitSet>() {
+			public int compare(BitSet o1, BitSet o2) {
+				return o2.cardinality() - (o1.cardinality());
+			}
+		});				
+
+		int maxCardinalitySAT =1; 
+		if (lBitCmbSAT.size()>0) {
+			BitSet cmbFirst = lBitCmbSAT.get(0);
+			maxCardinalitySAT=cmbFirst.cardinality();
+		}
+
 		// UNSAT = UNSAT1 + UNSAT2
 		lBitCmbUNSAT.addAll(lBitUNSAT1);
 		lBitCmbUNSAT.addAll(lBitUNSAT2);
@@ -892,133 +899,43 @@ public abstract class KodkodModelValidator {
 			public int compare(BitSet o1, BitSet o2) {
 				return o1.cardinality() - (o2.cardinality());
 			}
-		});			
-		System.out.println("lBitSAT1 [" + lBitSAT1+"]");
-		System.out.println("lBitSAT2 [" + lBitSAT2+"]");
-		System.out.println("lBitUNSAT1 [" + lBitUNSAT1+"]");
-		System.out.println("lBitUNSAT2 [" + lBitUNSAT2+"]");
-		System.out.println("lBitSAT1ALL [" + lBitSAT1ALL+"]");
-		System.out.println("lBitSAT2ALL [" + lBitSAT2ALL+"]");
+		});		
+		if (debMVM) {
+			System.out.println("lBitSAT1 [" + lBitSAT1+"]");
+			System.out.println("lBitSAT2 [" + lBitSAT2+"]");
+			System.out.println("lBitUNSAT1 [" + lBitUNSAT1+"]");
+			System.out.println("lBitUNSAT2 [" + lBitUNSAT2+"]");
+			System.out.println("lBitSAT1ALL [" + lBitSAT1ALL+"]");
+			System.out.println("lBitSAT2ALL [" + lBitSAT2ALL+"]");
+		}
+		int cmbCal=0;
+		int cmbNoCal=0;
 		// Combinamos SAT1 con SAT2
 		boolean review=true;
 		for(BitSet cmbG1:lBitSAT1ALL) {
 			for(BitSet cmbG2:lBitSAT2ALL) {
 				BitSet cmbG1W = (BitSet) cmbG1.clone();
-//				System.out.println("Combina [" + cmbG1+"] con ["+cmbG2+"]");
 				cmbG1W.or(cmbG2);
-				// Send to validate cmbG1W
-				//				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat//provis
+				// If cardinality >= maxCardinality-1 ... send to calculate
+				int cmbCardinality = cmbG1W.cardinality();
+				if (cmbCardinality>=maxCardinalitySAT) {
+					cmbCal+=1;
 
-				// Calcula combinacion de greedy+restante 
-				//				review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
-				//				String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);//Provis
-				if (!lBitCmbSAT.contains(cmbG1W) && !lBitCmbUNSAT.contains(cmbG1W)) {
-					String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
-					addSolutionGHB(cmbG1W, solucion);
-				}				
+					if (!lBitCmbSAT.contains(cmbG1W) && !lBitCmbUNSAT.contains(cmbG1W)) {
+						String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
+						addSolutionGHB(cmbG1W, solucion);
+					}			
+				}else {
+					cmbNoCal+=1;
+				}
 			}			
-
 		}
 
-
-
-	}
-	private void calculateInBackGroundCHB2(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
-			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
-		//Total combinaciones 2^n-1
-
-		int nInvs = cmbTotalCHB.cardinality();
-		Double nCombs = Math.pow(2, nInvs)-1;
-		int acumCombs=0;
-
-		Instant end = Instant.now();
-		Duration timeElapsed = Duration.between(start, end);
-
-		// Provisionalmente monto listas a partir de las nuevas estructuras
-
-		for(BitSet cmbG:listResGreedyCHB) {
-			//Buscar combinaciones de las inv greedy
-			// Todas las cmb de greedy son SAT
-
-			// Busca todas las combinaciones
-			//			List<BitSet> lBitCmbG = comRestoB(cmbG);//Provis
-			lBitCmb = comRestoB(cmbG,true);// Provis
-
-			// Todas las combinaciones son SAT
-			//			for (BitSet bit:lBitCmbG) {
-			//				acumCombs++;
-			////				if (!lBitCmbSAT.contains(bit)) {//Provis
-			////					lBitCmbSAT.add(bit);//Provis
-			////					//aqui11//Provis
-			////				}//Provis
-			//				lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
-			//			}
-			// Buscar todas las cmb del resto
-			BitSet cmbRestoBG=makeRestCmbCHB(cmbG, cmbTotalCHB);
-			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,false);
-
-			Collections.sort(lBitCmbRestoG, new Comparator<BitSet>() {
-				public int compare(BitSet o1, BitSet o2) {
-					return o2.cardinality() - (o1.cardinality());
-				}
-			});		
-
-			// Ordenar por cardinalidad
-
-			// Mandamos a sendvalidate las combinaciones restantes
-
-			//-------provis
-			//			for(BitSet cmbG1:lBitCmbRestoG) {
-			//				// Send to validate cmbG1W
-			//				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
-			//				String solucion = calcularGreedyCHB( cmbG1, review, invClassTotal);
-			//				addSolutionGHB(cmbG1, solucion);
-			//				acumCombs++;
-			//			}
-			//-------provis
-
-			// Buscar todas las combinaciones entre cada una de las greedy y cada una del  resto
-			// Hallamos las combinaciones entre lBitCmbG y lBitCmbRestoG
-			for(BitSet cmbG2:lBitCmbRestoG) {
-				// Send to validate cmbG1W
-				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
-				String solucion="";
-				// Calcula combinacion parcial restante por separado
-				if (!lBitCmbSAT.contains(cmbG2) && !lBitCmbUNSAT.contains(cmbG2)) {
-
-					solucion = calcularGreedyCHB( cmbG2, review, invClassTotal);
-					addSolutionGHB(cmbG2, solucion);
-				}
-				acumCombs++;
-
-				BitSet cmbG1W = (BitSet) cmbG.clone();
-				cmbG1W.or(cmbG2);
-				// Send to validate cmbG1W
-				//				boolean review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat//provis
-
-				// Calcula combinacion de greedy+restante 
-				review=true;// No hace falta volver a mirar si esta en alguna lista de sat o unsat
-				//				String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);//Provis
-				if (!lBitCmbSAT.contains(cmbG1W) && !lBitCmbUNSAT.contains(cmbG1W)) {
-					solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
-					addSolutionGHB(cmbG1W, solucion);
-				}
-				acumCombs++;
-				if ((acumCombs % 100)==0) {
-					System.out.println("acumCombs ["+acumCombs+" de ["+nCombs+"]");
-				}
-			}
-			//			}
-			// En este punto, hemos de tener todas las combinaciones calculadas y evaluadas
-			System.out.println("Aqui acumCombs ["+acumCombs+"]");
-		}
-
-		TraspasaCHB();
-		LOG.info("MVM: Time taken: "+ timeElapsed.toMillis() +" milliseconds");
-		AddLogTime("analysis_OCL TOTAL",timeElapsed);
-
-		validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,
-				timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);	
+		System.out.println("                                                    Calculo ["+cmbCal+"] NO Calculo ["+cmbNoCal+"]");
+		Instant end5 = Instant.now();
+		// Aqui5
+		Duration timeElapsed = Duration.between(start5, end5);
+		AddLogTime("Fin calculo resto Greedy (2)",timeElapsed);
 
 	}
 
@@ -1050,7 +967,6 @@ public abstract class KodkodModelValidator {
 				invClassOthers,
 				listSatisfiables,
 				listUnSatisfiables,
-				//				mapInvRes,
 				tabInv,
 				tabInvMClass,
 				mModel,
@@ -1636,7 +1552,7 @@ public abstract class KodkodModelValidator {
 	private static BitSet makeRestCmbCHB(BitSet cmbBaseB, BitSet cmbTotalB) {
 		BitSet cmbResB = (BitSet) cmbBaseB.clone();
 		cmbResB.xor(cmbTotalB);
-		System.out.println(cmbResB);
+		//		System.out.println(cmbResB);
 		return cmbResB;
 	}	
 
@@ -1862,34 +1778,6 @@ public abstract class KodkodModelValidator {
 		return listInvW;
 	}
 
-	private static List<IInvariant> splitInvCombinationH(Combination combinacion) {
-
-		List<IInvariant> listInvW = new ArrayList<IInvariant>();
-		// Buscar invariantes de la combinacion
-		listInvW.clear();
-
-		Set<String> listInvS = new HashSet<String>();
-		listInvS=combinacion.getInvariants();
-
-		String[] invs = new String[listInvS.size()];
-
-		try {
-			int index = 0;
-			for (String str : listInvS) {
-				invs[index] = str;
-				index++;
-			}
-
-			for (String invStrID: invs) {
-				int invID=Integer.parseInt(invStrID);  
-				IInvariant inv = (IInvariant) tabInv[invID-1];				
-				listInvW.add(inv);				
-			}		
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		return listInvW;
-	}
 	/**
 	 * Chek if combinations exist in listSatisfiables list
 	 * @param combinacion
@@ -1898,9 +1786,7 @@ public abstract class KodkodModelValidator {
 
 	private static boolean includedInSatisfactibleCHB(BitSet bit) {
 		boolean bRes = bitIncludedInList(bit,lBitCmbSAT);
-
 		if (bRes) {
-			// JGB Guardar satis en lista de bit lBitCmbSAT
 			if (!lBitCmbSAT.contains(bit)) {
 				lBitCmbSAT.add(bit);
 			}
