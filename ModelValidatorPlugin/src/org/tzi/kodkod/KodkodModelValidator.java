@@ -231,13 +231,26 @@ public abstract class KodkodModelValidator {
 
 			int nin=0;// provis
 
-			for (IClass oClass: model.classes()) {
-				invClassTotal.addAll(oClass.invariants());
-				for (IInvariant oInv: oClass.invariants()) {
-					nin+=1;
-					dispMVM(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
+			for (IInvariant oInv: model.classInvariants()){
+				if (!invClassTotal.contains(oInv))	{
+					invClassTotal.add(oInv);
 				}
+					
+				
 			}
+			
+//			for (IClass oClass: model.classes()) {
+////				invClassTotal.addAll(oClass.invariants());
+//				for (IInvariant oInv: oClass.invariants()) {
+//					//--
+//if (!invClassTotal.contains(oInv))	{
+//	invClassTotal.add(oInv);
+//}
+//					//--
+//					nin+=1;
+//					dispMVM(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
+//				}
+//			}
 
 			//--- pruebas para ver si es posible tratar solo MClass
 			for (MClassInvariant invMClass: mModel.classInvariants()) {
@@ -246,7 +259,7 @@ public abstract class KodkodModelValidator {
 			ModelTransformator mt = new ModelTransformator(model.modelFactory(), model.typeFactory());
 			IModel modelT = mt.transform(mModel);
 			for (MClassInvariant invMClassMC: invClassTotalMC) {
-				invMClassMC.setActive(true);
+				invMClassMC.setActive(false);
 //				Solution solution = kodkodSolver.solve(mModel);
 			}
 			//---
@@ -312,7 +325,11 @@ public abstract class KodkodModelValidator {
 				LOG.info("Tabla de invariantes");
 				for (int nInv = 0; nInv < tabInv.length; nInv++) {
 					dispMVM("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
+					System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
 				}
+			}
+			for (int nInv = 0; nInv < tabInv.length; nInv++) {
+				System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
 			}
 			Instant end1 = Instant.now();
 			timeCalcIndividually = Duration.between(start1, end1);
