@@ -286,14 +286,16 @@ public abstract class KodkodModelValidator {
 			Instant start1 = Instant.now();
 			// First pass to see which invariants are no longer satisfiable even if they are alone
 			for (IInvariant invClass: invClassTotal) {
+				System.out.println("Montando tablas");
 				tabInv[nOrdenInv] = invClass;
 				for (MClassInvariant invMClass: mModel.classInvariants()) {
+					System.out.println("invMClass.name() ["+invMClass.name()+"] invClass.clazz().name() ["+invClass.clazz().name()+"]");
 					if (invMClass.name().equals(invClass.name())&& 
 							invMClass.cls().name().equals(invClass.clazz().name())) {
 						tabInvMClass[nOrdenInv] = invMClass;
 					}
 				}	
-
+				System.out.println("Fin montaje tablas");
 				// Solo activamos la invariante que interesa
 				invClass.activate(); // Activate just one
 
@@ -302,6 +304,8 @@ public abstract class KodkodModelValidator {
 				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
 				invClass.clazz();
 				String strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "]";
+				
+				System.out.println("Calculando [" + strCombinacion+"]");
 				nOrdenInv+=1;
 				dispMVM("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
 				dispMVM("MVM: Invariants State: " + strCombinacion);
