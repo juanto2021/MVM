@@ -235,8 +235,6 @@ public abstract class KodkodModelValidator {
 				if (!invClassTotal.contains(oInv))	{
 					invClassTotal.add(oInv);
 				}
-					
-				
 			}
 			
 //			for (IClass oClass: model.classes()) {
@@ -286,10 +284,10 @@ public abstract class KodkodModelValidator {
 			Instant start1 = Instant.now();
 			// First pass to see which invariants are no longer satisfiable even if they are alone
 			for (IInvariant invClass: invClassTotal) {
-				System.out.println("Montando tablas");
+				System.out.println("Montando tablas class "+invClass);
 				tabInv[nOrdenInv] = invClass;
 				for (MClassInvariant invMClass: mModel.classInvariants()) {
-					System.out.println("invMClass.name() ["+invMClass.name()+"] invClass.clazz().name() ["+invClass.clazz().name()+"]");
+//					System.out.println("invMClass.name() ["+invMClass.name()+"] invClass.clazz().name() ["+invClass.clazz().name()+"]");
 					if (invMClass.name().equals(invClass.name())&& 
 							invMClass.cls().name().equals(invClass.clazz().name())) {
 						tabInvMClass[nOrdenInv] = invMClass;
@@ -482,7 +480,7 @@ public abstract class KodkodModelValidator {
 		for (int num=1;num<nInvsRestoB+1;num++) {
 			for (int i=0;i<nElem;i++) {
 				calcular=true;
-				// Toma primer elemento y lo combina con todos los demás
+				// Toma primer elemento y lo combina con todos los demas
 				if (bRestoIn.get(i)) {
 					int pElem = i;
 					int cuantos = num;
