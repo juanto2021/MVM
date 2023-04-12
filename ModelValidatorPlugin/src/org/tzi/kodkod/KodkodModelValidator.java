@@ -296,6 +296,8 @@ public abstract class KodkodModelValidator {
 				System.out.println("Fin montaje tablas");
 				// Solo activamos la invariante que interesa
 				invClass.activate(); // Activate just one
+				
+				System.out.println("Calculando [" +invClass.name()+"]");
 
 				Solution solution = kodkodSolver.solve(model);
 
@@ -303,7 +305,8 @@ public abstract class KodkodModelValidator {
 				invClass.clazz();
 				String strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "]";
 				
-				System.out.println("Calculando [" + strCombinacion+"]");
+				System.out.println("Resultado [" +invClass.name()+" " +  strCombinacion+"]");
+				System.out.println();
 				nOrdenInv+=1;
 				dispMVM("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
 				dispMVM("MVM: Invariants State: " + strCombinacion);
