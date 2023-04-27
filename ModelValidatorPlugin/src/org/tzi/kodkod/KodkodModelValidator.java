@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
-import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.mvm.CollectionBitSet;
@@ -61,6 +60,7 @@ public abstract class KodkodModelValidator {
 	protected Session session;
 	protected static Solution solution;
 	protected Evaluator evaluator;
+	protected static KodkodSolver kodkodSolver;
 
 	public static Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
 	public static Collection<IInvariant> invClassTotalBck = new ArrayList<IInvariant>();
@@ -102,12 +102,15 @@ public abstract class KodkodModelValidator {
 	private static String logTime = "";
 	private static Instant timeInitFind=null;
 	private static Instant timeFinFind=null;
-	private static Duration timeElapsedIndividual=null;
+	//	private static Duration timeElapsedIndividual=null;
 	private static Duration timeDeactivateAll=null;
 	private static Duration timeCalcIndividually=null;
 	private static Duration timeBruteCombCalc=null;
-	private static Duration timeVisitor=null;
-	private static Duration timeGreedy1=null;
+	//	private static Duration timeVisitor=null;
+	//	private static Duration timeGreedy1=null;
+	//	private static Duration timeTotalGreedy1=null;
+	//	private static Duration timeTotalGreedy2=null;
+	private static Duration timeCallSolver=null;
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -145,13 +148,15 @@ public abstract class KodkodModelValidator {
 		this.model = model;
 		evaluator = null;
 
-		KodkodSolver kodkodSolver = new KodkodSolver();
+		//		KodkodSolver kodkodSolver = new KodkodSolver(); // JG
+		kodkodSolver = new KodkodSolver();
 		if (debMVM) {
 			LOG.info("MVM: Llama a solver desde validate en KodkodModelValidator");
 		}
 
 		try {
-			solution = kodkodSolver.solve(model);
+			//			solution = kodkodSolver.solve(model);
+			solution = call_Solver(model);
 		} catch (Exception e) {
 			LOG.error(LogMessages.validationException + " (" + e.getMessage() + ")");
 			return;
@@ -185,6 +190,23 @@ public abstract class KodkodModelValidator {
 			KodkodQueryCache.INSTANCE.setEvaluator(evaluator); 
 		}
 	}
+	public Solution call_Solver(IModel model) {
+		Solution solution = null;
+		try {
+			Instant iniSolver = Instant.now();
+			solution = kodkodSolver.solve(model);
+			Instant endSolver = Instant.now();
+			Duration timeSolver = Duration.between(iniSolver, endSolver);
+			timeCallSolver = timeCallSolver.plus(timeSolver);
+		} catch (Exception e) {
+			LOG.error(LogMessages.validationException + " (" + e.getMessage() + ")");
+			//		return solution;
+		} catch (OutOfMemoryError oome) {
+			LOG.error(LogMessages.validationOutOfMemory + " (" + oome.getMessage() + ")");
+			//		return solution;
+		}
+		return solution;
+	}
 
 	/**
 	 * Validates the given model.
@@ -195,13 +217,13 @@ public abstract class KodkodModelValidator {
 		// Save initial time to later calculate the time it takes
 		Instant start = Instant.now();
 		timeInitFind= Instant.now();
+		timeCallSolver=Duration.between(start, start);;//
 		logTime="";
 		this.model = model;
 		this.session=session;
 		evaluator = null;
 		listCmb.clear();
 		listCmbSel.clear();
-		//		mapInvRes.clear();
 		colInvFault.clear();
 
 		invClassTotal.clear();
@@ -215,7 +237,8 @@ public abstract class KodkodModelValidator {
 		numCallSolverSAT=0;
 		numCallSolverUNSAT=0;
 
-		KodkodSolver kodkodSolver = new KodkodSolver();
+		//		KodkodSolver kodkodSolver = new KodkodSolver();// JG
+		kodkodSolver = new KodkodSolver();
 
 		Collection<IInvariant> invClassSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassUnSatisfiables = new ArrayList<IInvariant>();
@@ -236,31 +259,6 @@ public abstract class KodkodModelValidator {
 					invClassTotal.add(oInv);
 				}
 			}
-			
-//			for (IClass oClass: model.classes()) {
-////				invClassTotal.addAll(oClass.invariants());
-//				for (IInvariant oInv: oClass.invariants()) {
-//					//--
-//if (!invClassTotal.contains(oInv))	{
-//	invClassTotal.add(oInv);
-//}
-//					//--
-//					nin+=1;
-//					dispMVM(nin+ " - ["+oClass.name()+"] - ["+oInv.name()+"]");
-//				}
-//			}
-
-			//--- pruebas para ver si es posible tratar solo MClass
-			for (MClassInvariant invMClass: mModel.classInvariants()) {
-				invClassTotalMC.add(invMClass);
-			}
-			ModelTransformator mt = new ModelTransformator(model.modelFactory(), model.typeFactory());
-			IModel modelT = mt.transform(mModel);
-			for (MClassInvariant invMClassMC: invClassTotalMC) {
-				invMClassMC.setActive(false);
-//				Solution solution = kodkodSolver.solve(mModel);
-			}
-			//---
 
 			longInvs = String.valueOf(invClassTotal.size()).length();
 
@@ -278,7 +276,6 @@ public abstract class KodkodModelValidator {
 			Instant end0 = Instant.now();
 			timeDeactivateAll = Duration.between(start0, end0);
 
-			//			LOG.info("MVM: Time taken for deactivate invariants "+ timeDeactivateAll.toMillis() +" milliseconds");
 			AddLogTime("Deactivate all",timeDeactivateAll);
 
 			Instant start1 = Instant.now();
@@ -287,7 +284,6 @@ public abstract class KodkodModelValidator {
 				System.out.println("Montando tablas class "+invClass);
 				tabInv[nOrdenInv] = invClass;
 				for (MClassInvariant invMClass: mModel.classInvariants()) {
-//					System.out.println("invMClass.name() ["+invMClass.name()+"] invClass.clazz().name() ["+invClass.clazz().name()+"]");
 					if (invMClass.name().equals(invClass.name())&& 
 							invMClass.cls().name().equals(invClass.clazz().name())) {
 						tabInvMClass[nOrdenInv] = invMClass;
@@ -296,15 +292,16 @@ public abstract class KodkodModelValidator {
 				System.out.println("Fin montaje tablas");
 				// Solo activamos la invariante que interesa
 				invClass.activate(); // Activate just one
-				
+
 				System.out.println("Calculando [" +invClass.name()+"]");
 
-				Solution solution = kodkodSolver.solve(model);
+				//				Solution solution = kodkodSolver.solve(model);//JG
+				solution = call_Solver(model);
 
 				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
 				invClass.clazz();
 				String strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "]";
-				
+
 				System.out.println("Resultado [" +invClass.name()+" " +  strCombinacion+"]");
 				System.out.println();
 				nOrdenInv+=1;
@@ -475,7 +472,7 @@ public abstract class KodkodModelValidator {
 		return res;
 	}
 
-	private static List<BitSet> comRestoB(BitSet bRestoIn,boolean prune) {
+	private List<BitSet> comRestoB(BitSet bRestoIn,boolean prune) {
 		List<BitSet> listRes = new ArrayList<BitSet>();
 		int nInvsRestoB = bRestoIn.cardinality();
 		int nElem = bRestoIn.length();
@@ -564,7 +561,6 @@ public abstract class KodkodModelValidator {
 		for (int i=0;i<nElem;i++) {
 			BitSet cmb=listIn.get(i);
 			if (!bitIncludedIn(cmb, cmbIn)) {
-				//			}else {
 				listRes1.add(cmb);
 			}
 		}
@@ -655,7 +651,6 @@ public abstract class KodkodModelValidator {
 			Instant start) throws Exception {
 		Instant start2 = Instant.now();
 		logTime="";
-		//		AddLogTime("prepare individual",timeElapsedIndividual);
 		LOG.info("MVM: Analysis OCL (Greedy) - Start.");
 
 		fmt = "%0"+String.valueOf(invClassTotal.size()).length()+"d";
@@ -695,7 +690,7 @@ public abstract class KodkodModelValidator {
 			Instant end2 = Instant.now();
 			Duration timeElapsed2 = Duration.between(start2, end2);
 			//			LOG.info("MVM: Time taken for Visitor: "+ timeElapsed2.toMillis() +" milliseconds");
-			AddLogTime("Visitor",timeElapsed2);
+			AddLogTime(".. Visitor",timeElapsed2);
 
 			Instant start3 = Instant.now();
 			// Calcula una combinacion base segun metodo Greedy
@@ -734,7 +729,7 @@ public abstract class KodkodModelValidator {
 
 			Duration timeElapsed3 = Duration.between(start3, end3);
 			//			LOG.info("MVM: Time taken for Greedy: "+ timeElapsed3.toMillis() +" milliseconds");
-			AddLogTime("Analysis OCL (Greedy1) - End",timeElapsed3);
+			AddLogTime(".. Analysis OCL (Greedy1) - End",timeElapsed3);
 
 		}// provisional a ver ...
 
@@ -747,7 +742,7 @@ public abstract class KodkodModelValidator {
 
 		tipoSearchMSS="G";	
 		int numberIter=numIterGreedy;
-
+		Instant insShowVal1 = Instant.now();
 		// Send to MVMDialogSimple
 		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
 				invClassUnSatisfiables, 
@@ -756,6 +751,15 @@ public abstract class KodkodModelValidator {
 				timeElapsed,
 				tipoSearchMSS,
 				numberIter);
+		Instant endShowVal1 = Instant.now();
+		Duration timeShowVal1 = Duration.between(insShowVal1, endShowVal1);
+		AddLogTime("Show Dialog",timeShowVal1);
+
+		Instant endGreedy1 = Instant.now();
+		Duration timeTotalGreedy1 = Duration.between(start, endGreedy1);
+		AddLogTime("Total greedy1",timeTotalGreedy1);
+		AddLogTime("Total Solver1",timeCallSolver);
+
 
 		if (lBitCmbSAT.size()>0) {
 			LanzacalculoBckCHB(listResGreedyCHB, cmbTotalHB, validatorMVMDialog, start );
@@ -776,7 +780,8 @@ public abstract class KodkodModelValidator {
 	 * @throws Exception
 	 */
 
-	private void LanzacalculoBckCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception{
+	private void LanzacalculoBckCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, ValidatorMVMDialogSimple validatorMVMDialog, 
+			Instant start ) throws Exception{
 		dispMVM("Background (Greedy) CH - Start.");
 		Instant start4 = Instant.now();
 
@@ -819,7 +824,8 @@ public abstract class KodkodModelValidator {
 
 					timeFinFind = Instant.now();
 					timeElapsed = Duration.between(timeInitFind, timeFinFind);
-					AddLogTime("Fin analysis_OCL (2)",timeElapsed);
+					AddLogTime("Total greedy2",timeElapsed);
+					AddLogTime("Total Solver2",timeCallSolver);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -845,121 +851,121 @@ public abstract class KodkodModelValidator {
 		lBitCmb = comRestoB(cmbTotalCHB,true);
 
 	}
-	private void calculateInBackGroundCHB_old(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
-			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
-		// Guardamos SAT y UNSAT para grupo 1 y limpiamos resultados actuales
-		Instant start5 = Instant.now();
-		List<BitSet> lBitSAT1 = new ArrayList<BitSet>();
-		lBitSAT1.addAll(lBitCmbSAT);
-
-		List<BitSet> lBitUNSAT1 = new ArrayList<BitSet>();
-		lBitUNSAT1.addAll(lBitCmbUNSAT);	
-		// Limpiamos resultados actuales
-		lBitCmbSAT.clear();
-		lBitCmbUNSAT.clear();
-
-
-		// Calculamos SAT y UNSAT del grupo2
-		// Calcula cmbs de greedy		
-		for(BitSet cmbG:listResGreedyCHB) {
-			BitSet cmbRestoBG=makeRestCmbCHB(cmbG, cmbTotalCHB);
-			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,true);
-		}
-
-		// Calcula cmbs de resto
-
-		List<BitSet> lBitSAT2 = new ArrayList<BitSet>();
-		lBitSAT2.addAll(lBitCmbSAT);
-
-		List<BitSet> lBitUNSAT2 = new ArrayList<BitSet>();
-		lBitUNSAT2.addAll(lBitCmbUNSAT);			
-		// Resultado sera:
-		// SAT = SAT1 + SAT2 + (SAT1_ALL x SAT2_ALL)
-		List<BitSet> lBitSAT1ALL = new ArrayList<BitSet>();
-		for(BitSet cmb:lBitSAT1) {
-			lBitSAT1ALL.addAll(comRestoB(cmb,false));
-		}
-		List<BitSet> lBitSAT2ALL = new ArrayList<BitSet>();
-		for(BitSet cmb:lBitSAT2) {
-			lBitSAT2ALL.addAll(comRestoB(cmb,false));
-		}		
-
-		Collections.sort(lBitSAT1ALL, new Comparator<BitSet>() {
-			public int compare(BitSet o1, BitSet o2) {
-				return o2.cardinality() - (o1.cardinality());
-			}
-		});		
-		Collections.sort(lBitSAT2ALL, new Comparator<BitSet>() {
-			public int compare(BitSet o1, BitSet o2) {
-				return o2.cardinality() - (o1.cardinality());
-			}
-		});				
-		// SAT1 + SAT2
-		lBitCmbSAT.clear();
-		lBitCmbUNSAT.clear();
-
-		lBitCmbSAT.addAll(lBitSAT1);
-		lBitCmbSAT.addAll(lBitSAT2);
-
-		// Max cardinality of lBitCmbSAT
-		Collections.sort(lBitCmbSAT, new Comparator<BitSet>() {
-			public int compare(BitSet o1, BitSet o2) {
-				return o2.cardinality() - (o1.cardinality());
-			}
-		});				
-
-		int maxCardinalitySAT =1; 
-		if (lBitCmbSAT.size()>0) {
-			BitSet cmbFirst = lBitCmbSAT.get(0);
-			maxCardinalitySAT=cmbFirst.cardinality();
-		}
-
-		// UNSAT = UNSAT1 + UNSAT2
-		lBitCmbUNSAT.addAll(lBitUNSAT1);
-		lBitCmbUNSAT.addAll(lBitUNSAT2);
-		Collections.sort(lBitCmbUNSAT, new Comparator<BitSet>() {
-			public int compare(BitSet o1, BitSet o2) {
-				return o1.cardinality() - (o2.cardinality());
-			}
-		});		
-		if (debMVM) {
-			System.out.println("lBitSAT1 [" + lBitSAT1+"]");
-			System.out.println("lBitSAT2 [" + lBitSAT2+"]");
-			System.out.println("lBitUNSAT1 [" + lBitUNSAT1+"]");
-			System.out.println("lBitUNSAT2 [" + lBitUNSAT2+"]");
-			System.out.println("lBitSAT1ALL [" + lBitSAT1ALL+"]");
-			System.out.println("lBitSAT2ALL [" + lBitSAT2ALL+"]");
-		}
-		int cmbCal=0;
-		int cmbNoCal=0;
-		// Combinamos SAT1 con SAT2
-		boolean review=true;
-		for(BitSet cmbG1:lBitSAT1ALL) {
-			for(BitSet cmbG2:lBitSAT2ALL) {
-				BitSet cmbG1W = (BitSet) cmbG1.clone();
-				cmbG1W.or(cmbG2);
-				// If cardinality >= maxCardinality-1 ... send to calculate
-				int cmbCardinality = cmbG1W.cardinality();
-				if (cmbCardinality>=maxCardinalitySAT) {
-					cmbCal+=1;
-
-					if (!lBitCmbSAT.contains(cmbG1W) && !lBitCmbUNSAT.contains(cmbG1W)) {
-						String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
-						addSolutionGHB(cmbG1W, solucion);
-					}			
-				}else {
-					cmbNoCal+=1;
-				}
-			}			
-		}
-
-		System.out.println("                                                    Calculo ["+cmbCal+"] NO Calculo ["+cmbNoCal+"]");
-		Instant end5 = Instant.now();
-		// Aqui5
-		Duration timeElapsed = Duration.between(start5, end5);
-		AddLogTime("Fin calculo resto Greedy (2)",timeElapsed);
-
-	}
+	//	private void calculateInBackGroundCHB_old(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
+	//			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
+	//		// Guardamos SAT y UNSAT para grupo 1 y limpiamos resultados actuales
+	//		Instant start5 = Instant.now();
+	//		List<BitSet> lBitSAT1 = new ArrayList<BitSet>();
+	//		lBitSAT1.addAll(lBitCmbSAT);
+	//
+	//		List<BitSet> lBitUNSAT1 = new ArrayList<BitSet>();
+	//		lBitUNSAT1.addAll(lBitCmbUNSAT);	
+	//		// Limpiamos resultados actuales
+	//		lBitCmbSAT.clear();
+	//		lBitCmbUNSAT.clear();
+	//
+	//
+	//		// Calculamos SAT y UNSAT del grupo2
+	//		// Calcula cmbs de greedy		
+	//		for(BitSet cmbG:listResGreedyCHB) {
+	//			BitSet cmbRestoBG=makeRestCmbCHB(cmbG, cmbTotalCHB);
+	//			List<BitSet> lBitCmbRestoG= comRestoB(cmbRestoBG,true);
+	//		}
+	//
+	//		// Calcula cmbs de resto
+	//
+	//		List<BitSet> lBitSAT2 = new ArrayList<BitSet>();
+	//		lBitSAT2.addAll(lBitCmbSAT);
+	//
+	//		List<BitSet> lBitUNSAT2 = new ArrayList<BitSet>();
+	//		lBitUNSAT2.addAll(lBitCmbUNSAT);			
+	//		// Resultado sera:
+	//		// SAT = SAT1 + SAT2 + (SAT1_ALL x SAT2_ALL)
+	//		List<BitSet> lBitSAT1ALL = new ArrayList<BitSet>();
+	//		for(BitSet cmb:lBitSAT1) {
+	//			lBitSAT1ALL.addAll(comRestoB(cmb,false));
+	//		}
+	//		List<BitSet> lBitSAT2ALL = new ArrayList<BitSet>();
+	//		for(BitSet cmb:lBitSAT2) {
+	//			lBitSAT2ALL.addAll(comRestoB(cmb,false));
+	//		}		
+	//
+	//		Collections.sort(lBitSAT1ALL, new Comparator<BitSet>() {
+	//			public int compare(BitSet o1, BitSet o2) {
+	//				return o2.cardinality() - (o1.cardinality());
+	//			}
+	//		});		
+	//		Collections.sort(lBitSAT2ALL, new Comparator<BitSet>() {
+	//			public int compare(BitSet o1, BitSet o2) {
+	//				return o2.cardinality() - (o1.cardinality());
+	//			}
+	//		});				
+	//		// SAT1 + SAT2
+	//		lBitCmbSAT.clear();
+	//		lBitCmbUNSAT.clear();
+	//
+	//		lBitCmbSAT.addAll(lBitSAT1);
+	//		lBitCmbSAT.addAll(lBitSAT2);
+	//
+	//		// Max cardinality of lBitCmbSAT
+	//		Collections.sort(lBitCmbSAT, new Comparator<BitSet>() {
+	//			public int compare(BitSet o1, BitSet o2) {
+	//				return o2.cardinality() - (o1.cardinality());
+	//			}
+	//		});				
+	//
+	//		int maxCardinalitySAT =1; 
+	//		if (lBitCmbSAT.size()>0) {
+	//			BitSet cmbFirst = lBitCmbSAT.get(0);
+	//			maxCardinalitySAT=cmbFirst.cardinality();
+	//		}
+	//
+	//		// UNSAT = UNSAT1 + UNSAT2
+	//		lBitCmbUNSAT.addAll(lBitUNSAT1);
+	//		lBitCmbUNSAT.addAll(lBitUNSAT2);
+	//		Collections.sort(lBitCmbUNSAT, new Comparator<BitSet>() {
+	//			public int compare(BitSet o1, BitSet o2) {
+	//				return o1.cardinality() - (o2.cardinality());
+	//			}
+	//		});		
+	//		if (debMVM) {
+	//			System.out.println("lBitSAT1 [" + lBitSAT1+"]");
+	//			System.out.println("lBitSAT2 [" + lBitSAT2+"]");
+	//			System.out.println("lBitUNSAT1 [" + lBitUNSAT1+"]");
+	//			System.out.println("lBitUNSAT2 [" + lBitUNSAT2+"]");
+	//			System.out.println("lBitSAT1ALL [" + lBitSAT1ALL+"]");
+	//			System.out.println("lBitSAT2ALL [" + lBitSAT2ALL+"]");
+	//		}
+	//		int cmbCal=0;
+	//		int cmbNoCal=0;
+	//		// Combinamos SAT1 con SAT2
+	//		boolean review=true;
+	//		for(BitSet cmbG1:lBitSAT1ALL) {
+	//			for(BitSet cmbG2:lBitSAT2ALL) {
+	//				BitSet cmbG1W = (BitSet) cmbG1.clone();
+	//				cmbG1W.or(cmbG2);
+	//				// If cardinality >= maxCardinality-1 ... send to calculate
+	//				int cmbCardinality = cmbG1W.cardinality();
+	//				if (cmbCardinality>=maxCardinalitySAT) {
+	//					cmbCal+=1;
+	//
+	//					if (!lBitCmbSAT.contains(cmbG1W) && !lBitCmbUNSAT.contains(cmbG1W)) {
+	//						String solucion = calcularGreedyCHB( cmbG1W, review, invClassTotal);
+	//						addSolutionGHB(cmbG1W, solucion);
+	//					}			
+	//				}else {
+	//					cmbNoCal+=1;
+	//				}
+	//			}			
+	//		}
+	//
+	//		System.out.println("                                                    Calculo ["+cmbCal+"] NO Calculo ["+cmbNoCal+"]");
+	//		Instant end5 = Instant.now();
+	//		// Aqui5
+	//		Duration timeElapsed = Duration.between(start5, end5);
+	//		AddLogTime("Fin calculo resto Greedy (2)",timeElapsed);
+	//
+	//	}
 
 	/**
 	 * Show results dialog
@@ -1671,7 +1677,8 @@ public abstract class KodkodModelValidator {
 	 * @return
 	 */
 	public Solution calcular(String combinacion, Collection<IInvariant> invClassTotal) {
-		KodkodSolver kodkodSolver = new KodkodSolver();
+		//		KodkodSolver kodkodSolver = new KodkodSolver();//JG
+		kodkodSolver = new KodkodSolver();
 		if (debMVM) {
 			dispMVM("MVM: Entra en calcular (" + combinacion + ")");
 		}
@@ -1696,7 +1703,8 @@ public abstract class KodkodModelValidator {
 
 		try {
 			numCallSolver+=1;
-			solution = kodkodSolver.solve(model);
+			//			solution = kodkodSolver.solve(model);//JG
+			solution = call_Solver(model);
 			if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
 				numCallSolverSAT+=1;
 			}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
@@ -1716,8 +1724,9 @@ public abstract class KodkodModelValidator {
 	 * @return
 	 */	
 
-	public static String calcularGreedyCHB(BitSet bit, boolean bReview,Collection<IInvariant> invClassTotal) {		
-		KodkodSolver kodkodSolver = new KodkodSolver();
+	public String calcularGreedyCHB(BitSet bit, boolean bReview,Collection<IInvariant> invClassTotal) {		
+		//		KodkodSolver kodkodSolver = new KodkodSolver();//JG
+		kodkodSolver = new KodkodSolver();
 		String solucion="";
 		if (debMVM) {
 			dispMVM("MVM: Entra en calcular (" + bit + ")");
@@ -1766,7 +1775,8 @@ public abstract class KodkodModelValidator {
 
 		try {
 			numCallSolver+=1;
-			solution = kodkodSolver.solve(model);
+			//			solution = kodkodSolver.solve(model);//JG
+			solution = call_Solver(model);
 			if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
 				numCallSolverSAT+=1;
 				solucion="SATISFIABLE";
