@@ -43,7 +43,9 @@ public class KodkodSolver {
 		}
 
 		Bounds bounds = createBounds(model);
+		System.out.println(bounds.toString());
 		Formula constraint = createConstraint(model);
+		System.out.println(constraint.toString());
 
 		if(configuration.isDebugBoundsPrint()){
 			LOG.info(bounds);
@@ -56,6 +58,7 @@ public class KodkodSolver {
 		}
 		solver.options().setSolver(configuration.satFactory());
 		solver.options().setBitwidth(configuration.bitwidth());
+		System.out.println(solver.options().toString());
 
 		Solution solution = solver.solve(constraint, bounds);
 
@@ -85,6 +88,7 @@ public class KodkodSolver {
 	 */
 	private Bounds createBounds(IModel model) {
 		Universe universe = createUniverse(model);
+		System.out.println(universe.toString());//JG
 		Bounds bounds = new Bounds(universe);
 		model.accept(new BoundsVisitor(bounds, universe.factory()));
 
