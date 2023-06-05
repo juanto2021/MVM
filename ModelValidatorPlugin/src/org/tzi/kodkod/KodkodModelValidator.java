@@ -19,8 +19,15 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
+import org.tzi.kodkod.model.config.IConfigurator;
+import org.tzi.kodkod.model.iface.IAttribute;
+import org.tzi.kodkod.model.iface.IClass;
+import org.tzi.kodkod.model.iface.IElement;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.kodkod.model.type.IntegerType;
+import org.tzi.kodkod.model.type.Type;
+import org.tzi.kodkod.model.type.TypeAtoms;
 import org.tzi.mvm.CollectionBitSet;
 import org.tzi.mvm.Combination;
 import org.tzi.mvm.ConfigMVM;
@@ -41,7 +48,9 @@ import org.tzi.use.uml.mm.MClass;
 import org.tzi.use.uml.mm.MClassInvariant;
 import org.tzi.use.uml.mm.MModel;
 import org.tzi.use.uml.ocl.expr.Expression;
+import org.tzi.use.uml.ocl.type.TypeImpl;
 
+import kodkod.ast.Formula;
 import kodkod.engine.Evaluator;
 import kodkod.engine.Solution;
 import kodkod.engine.Statistics;
@@ -220,6 +229,50 @@ public abstract class KodkodModelValidator {
 		timeCallSolver=Duration.between(start, start);;//
 		logTime="";
 		this.model = model;
+		System.out.println(model.classes());
+
+		for (IClass oClass : model.classes()) {
+
+			System.out.println("mClass [" + oClass.name() + "] -> ["+oClass+"]\n");//JG
+
+			for (IAttribute oAttr : oClass.allAttributes()){
+				System.out.println(oAttr.relation());
+				System.out.println(oAttr.type());
+				IElement oType = oAttr.type();
+				System.out.println(oType.toString());
+				IConfigurator<IAttribute> oConf = oAttr.getConfigurator();
+				List<Object> literalValues = new ArrayList<Object>();
+				if (oAttr.type().isInteger()) {
+					IntegerType oInt =(IntegerType) oConf.getSpecificValues();
+					literalValues = (List<Object>) oInt.atoms();
+					System.out.println("literalValues [" + literalValues + "] -> ["+literalValues+"]\n");//JG
+				}				
+				//AQUI1
+				List<String> lVal = new ArrayList<String>();
+
+
+				System.out.println("ya");
+			}
+
+
+			for (IAttribute oAttr : oClass.attributes()) {
+				IConfigurator oConf = oAttr.getConfigurator();
+				System.out.println(oConf.getSpecificValues());
+				System.out.println(oConf.getRanges());
+				System.out.println(oAttr.constraints());
+				List<Object> literalValues = new ArrayList<Object>();
+				if (oAttr.type().isInteger()) {
+					IntegerType oInt =(IntegerType) oAttr;
+					literalValues = (List<Object>) oInt.atoms();
+					System.out.println("literalValues [" + literalValues + "] -> ["+literalValues+"]\n");//JG
+				}
+				Formula f =  oAttr.constraints();	
+				System.out.println("f [" + f + "] -> ["+f+"]\n");//JG
+
+			}
+		}
+
+
 		this.session=session;
 		evaluator = null;
 		listCmb.clear();
