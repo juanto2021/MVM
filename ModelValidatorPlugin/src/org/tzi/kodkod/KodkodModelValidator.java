@@ -14,18 +14,24 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.config.IConfigurator;
+import org.tzi.kodkod.model.config.ITypeConfigurator;
 import org.tzi.kodkod.model.iface.IAttribute;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IElement;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.kodkod.model.impl.Range;
+import org.tzi.kodkod.model.type.ConfigurableType;
 import org.tzi.kodkod.model.type.IntegerType;
+import org.tzi.kodkod.model.type.RealType;
+import org.tzi.kodkod.model.type.StringType;
 import org.tzi.kodkod.model.type.Type;
 import org.tzi.kodkod.model.type.TypeAtoms;
 import org.tzi.mvm.CollectionBitSet;
@@ -47,10 +53,15 @@ import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
 import org.tzi.use.uml.mm.MClassInvariant;
 import org.tzi.use.uml.mm.MModel;
+import org.tzi.use.uml.ocl.expr.ExpAttrOp;
+import org.tzi.use.uml.ocl.expr.ExpStdOp;
 import org.tzi.use.uml.ocl.expr.Expression;
 import org.tzi.use.uml.ocl.type.TypeImpl;
 
+import kodkod.ast.Decl;
 import kodkod.ast.Formula;
+import kodkod.ast.IntToExprCast;
+import kodkod.ast.QuantifiedFormula;
 import kodkod.engine.Evaluator;
 import kodkod.engine.Solution;
 import kodkod.engine.Statistics;
@@ -199,6 +210,11 @@ public abstract class KodkodModelValidator {
 			KodkodQueryCache.INSTANCE.setEvaluator(evaluator); 
 		}
 	}
+	/**
+	 * Concentrate calls to Solver
+	 * @param model
+	 * @return
+	 */
 	public Solution call_Solver(IModel model) {
 		Solution solution = null;
 		try {
@@ -216,6 +232,152 @@ public abstract class KodkodModelValidator {
 		}
 		return solution;
 	}
+	//Aqui3
+	public void model_analyzer_MModel(MModel mModel) {
+		for (MClassInvariant oClassInv : mModel.classInvariants()) {
+			ExpStdOp eso = (ExpStdOp) oClassInv.bodyExpression();
+			System.out.println("var ["+oClassInv.var()+"]");
+			System.out.println("vars ["+oClassInv.vars()+"]");
+			System.out.println("oClassInv.flaggedExpression() ["+oClassInv.flaggedExpression()+"]");
+			System.out.println("oClassInv.expandedExpression() ["+oClassInv.expandedExpression()+"]");
+			//			System.out.println("eso.args() ["+eso.args().toString()+"]");
+			Expression aExp[] = new Expression[eso.args().length];
+			for (int i=0;i<eso.args().length;i++) {
+				Expression arg = (Expression) eso.args()[i];
+				aExp[i]=arg;
+				System.out.println("arg.type() "+ arg.type()+")");
+				
+				System.out.println("arg "+i+" ["+ arg+"]");
+			}
+			for (int i=0;i<eso.args().length;i++) {
+				ExpStdOp oExpSO=(ExpStdOp) aExp[i];
+				System.out.println("["+oExpSO+"]");
+				if (oExpSO!=null) {
+					Expression aExpAttr[] = new Expression[oExpSO.args().length];
+					for (int j=0;j<oExpSO.args().length;j++) {
+						Expression arg = (Expression) oExpSO.args()[j];
+//						aExpAttr[j]=(Expression) oExpSO.args()[j];
+						aExpAttr[j]=arg;
+						System.out.println("arg.type() "+ arg.type()+")");
+						
+						System.out.println("arg "+j+" ["+ arg+"]");
+					}
+					for (int j=0;j<oExpSO.args().length;j++) {
+						ExpAttrOp oExpAttr=(ExpAttrOp) aExpAttr[j];
+						System.out.println("oExpAttr.objExp() ["+ oExpAttr.objExp()+"]");
+						System.out.println("oExpAttr.attr() ["+ oExpAttr.attr()+"]");
+					}
+				}
+
+			}
+
+			for (Expression oExp : eso.args()) {
+				ExpStdOp oExpSO = (ExpStdOp) oExp;
+				System.out.println("oExp.name() ["+oExp.name()+"]");
+
+				System.out.println("oExpSO.opname() ["+oExpSO.opname()+"]");
+				System.out.println("oExpSO.args() ["+oExpSO.args()+"]");
+			}
+			System.out.println(oClassInv.bodyExpression().name());
+
+		}
+	}
+
+	/**
+	 * Analyze model
+	 */
+	public void model_analyzer_IModel() {
+		int minInt=0;
+		int maxInt=0;
+		boolean pvezInt=true;
+		System.out.println(model.classes());
+
+		for (IClass oClass : model.classes()) {
+
+			System.out.println("mClass [" + oClass.name() + "] -> ["+oClass+"]\n");//JG
+			// Attributes
+			for (IAttribute oAttr : oClass.allAttributes()){
+				System.out.println(oAttr.relation());
+				//				System.out.println(oAttr.type().expression());
+				IElement oType = oAttr.type();
+				//				System.out.println(oType.toString());
+				IConfigurator<IAttribute> oConf = oAttr.getConfigurator();
+
+				//				switch(oAttr.type()) {
+				if(oAttr.type().isInteger()) {
+					IntegerType oInt =(IntegerType) oType;
+					ITypeConfigurator<ConfigurableType> oTypeConf =  oInt.getConfigurator();
+					List<Range> oRanges = oTypeConf.getRanges();
+					Range rg1 = (Range) oRanges.get(0);
+					System.out.println("Rangos en configuration - Integer rg1.getLower() [" + rg1.getLower()+ "] rg1.getUpper() [" + rg1.getUpper()+"]");
+					//						System.out.println("Integer rg1.getUpper() " + rg1.getUpper());
+
+					List<Object> oObj = oInt.toStringAtoms();
+
+					kodkod.ast.Expression oExp = oInt.expression();
+					Map<String, kodkod.ast.Expression> oMap = oInt.typeLiterals();
+					// for para Map
+					// AQUI2
+					for (Entry<String, kodkod.ast.Expression> item : oMap.entrySet()){
+						String key = item.getKey();
+						kodkod.ast.Expression exp = item.getValue();
+						IntToExprCast ite = (IntToExprCast) item.getValue();
+						//							System.out.println(ite.lone());
+						String strVal=ite.intExpr().toString();
+						int intVal=Integer.parseInt(strVal);
+						System.out.println("Valor [" + strVal+"]");
+
+						if (pvezInt) {
+							minInt=Integer.parseInt(ite.intExpr().toString());
+							maxInt=Integer.parseInt(ite.intExpr().toString());
+							pvezInt=false;
+						}else {
+							if (intVal<minInt) minInt=intVal;
+							if (intVal>maxInt) maxInt=intVal;
+						}
+						//							System.out.println("key [" + key+ "] exp [" + exp + "]");
+						//							System.out.println("exp " + exp);
+					}
+
+				}else if (oAttr.type().isReal()) {
+					RealType oReal =(RealType) oType;
+					ITypeConfigurator<ConfigurableType> oTypeConf =  oReal.getConfigurator();
+					List<Range> oRanges = oTypeConf.getRanges();
+					Range rg1 = (Range) oRanges.get(0);
+					System.out.println("Rangos en configuration - Real rg1.getLower() " + rg1.getLower()+ " rg1.getUpper() " + rg1.getUpper());
+					//						System.out.println("Real rg1.getUpper() " + rg1.getUpper());
+				}else if (oAttr.type().isString()) {					  
+					StringType oString =(StringType) oType;
+					ITypeConfigurator<ConfigurableType> oTypeConf =  oString.getConfigurator();
+					List<Range> oRanges = oTypeConf.getRanges();
+					Range rg1 = (Range) oRanges.get(0);
+					System.out.println("Rangos en configuration - String rg1.getLower() " + rg1.getLower()+" rg1.getUpper() " + rg1.getUpper());
+					//						System.out.println("String rg1.getUpper() " + rg1.getUpper());						
+				}else {
+					System.out.println("Tipo desconocido ["+oAttr.type().getClass()+"]");
+				}
+				List<String> lVal = new ArrayList<String>();
+				System.out.println("Para int el rango deberia ser ["+minInt+","+maxInt+"]");
+			}
+			// Invariants
+			for (IInvariant oInv : oClass.allInvariants()){
+				System.out.println("oInv [" + oInv.name()+"]");
+				System.out.println("formula [" + oInv.formula()+"]");
+				System.out.println("qualifiedName [" + oInv.qualifiedName()+"]");
+				System.out.println("oInv.clazz().constraints() [" + oInv.clazz().constraints()+"]");
+				System.out.println("oInv.clazz().getInvariant(oInv.name() [" + oInv.clazz().getInvariant(oInv.name())+"]");
+
+				QuantifiedFormula f = (QuantifiedFormula) oInv.formula();
+				for (Decl oDecl : f.decls()){
+					System.out.println("oDecl.expression().arity() ["+oDecl.expression().arity());
+
+					System.out.println("oDecl.expression().some() ["+oDecl.expression().some());
+				}
+				System.out.println("Ya");
+			}
+		}
+	}
+
 
 	/**
 	 * Validates the given model.
@@ -228,50 +390,12 @@ public abstract class KodkodModelValidator {
 		timeInitFind= Instant.now();
 		timeCallSolver=Duration.between(start, start);;//
 		logTime="";
+		//---
+
+		//---
 		this.model = model;
-		System.out.println(model.classes());
-
-		for (IClass oClass : model.classes()) {
-
-			System.out.println("mClass [" + oClass.name() + "] -> ["+oClass+"]\n");//JG
-
-			for (IAttribute oAttr : oClass.allAttributes()){
-				System.out.println(oAttr.relation());
-				System.out.println(oAttr.type());
-				IElement oType = oAttr.type();
-				System.out.println(oType.toString());
-				IConfigurator<IAttribute> oConf = oAttr.getConfigurator();
-				List<Object> literalValues = new ArrayList<Object>();
-				if (oAttr.type().isInteger()) {
-					IntegerType oInt =(IntegerType) oConf.getSpecificValues();
-					literalValues = (List<Object>) oInt.atoms();
-					System.out.println("literalValues [" + literalValues + "] -> ["+literalValues+"]\n");//JG
-				}				
-				//AQUI1
-				List<String> lVal = new ArrayList<String>();
-
-
-				System.out.println("ya");
-			}
-
-
-			for (IAttribute oAttr : oClass.attributes()) {
-				IConfigurator oConf = oAttr.getConfigurator();
-				System.out.println(oConf.getSpecificValues());
-				System.out.println(oConf.getRanges());
-				System.out.println(oAttr.constraints());
-				List<Object> literalValues = new ArrayList<Object>();
-				if (oAttr.type().isInteger()) {
-					IntegerType oInt =(IntegerType) oAttr;
-					literalValues = (List<Object>) oInt.atoms();
-					System.out.println("literalValues [" + literalValues + "] -> ["+literalValues+"]\n");//JG
-				}
-				Formula f =  oAttr.constraints();	
-				System.out.println("f [" + f + "] -> ["+f+"]\n");//JG
-
-			}
-		}
-
+		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
+		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
 
 		this.session=session;
 		evaluator = null;
@@ -334,15 +458,20 @@ public abstract class KodkodModelValidator {
 			Instant start1 = Instant.now();
 			// First pass to see which invariants are no longer satisfiable even if they are alone
 			for (IInvariant invClass: invClassTotal) {
-				System.out.println("Montando tablas class "+invClass);
+				//				System.out.println("Montando tablas class "+invClass);
 				tabInv[nOrdenInv] = invClass;
 				for (MClassInvariant invMClass: mModel.classInvariants()) {
-					if (invMClass.name().equals(invClass.name())&& 
-							invMClass.cls().name().equals(invClass.clazz().name())) {
+					System.out.println("invMClass ["+invMClass.qualifiedName()+"]");//JG
+					System.out.println("invClass ["+invClass.qualifiedName()+"]");//JG
+					//					if (invMClass.name().equals(invClass.name())&& 
+					//							invMClass.cls().name().equals(invClass.clazz().name())) {
+					//						tabInvMClass[nOrdenInv] = invMClass;
+					//					}
+					if (invMClass.qualifiedName().equals(invClass.qualifiedName())) {
 						tabInvMClass[nOrdenInv] = invMClass;
-					}
+					}					
 				}	
-				System.out.println("Fin montaje tablas");
+				//				System.out.println("Fin montaje tablas");
 				// Solo activamos la invariante que interesa
 				invClass.activate(); // Activate just one
 

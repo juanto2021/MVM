@@ -43,9 +43,9 @@ public class KodkodSolver {
 		}
 
 		Bounds bounds = createBounds(model);
-		System.out.println(bounds.toString());
+//		System.out.println(bounds.toString());
 		Formula constraint = createConstraint(model);
-		System.out.println(constraint.toString());
+//		System.out.println(constraint.toString());
 
 		if(configuration.isDebugBoundsPrint()){
 			LOG.info(bounds);
@@ -58,7 +58,7 @@ public class KodkodSolver {
 		}
 		solver.options().setSolver(configuration.satFactory());
 		solver.options().setBitwidth(configuration.bitwidth());
-		System.out.println(solver.options().toString());
+//		System.out.println(solver.options().toString());//JG
 
 		Solution solution = solver.solve(constraint, bounds);
 
@@ -88,9 +88,9 @@ public class KodkodSolver {
 	 */
 	private Bounds createBounds(IModel model) {
 		Universe universe = createUniverse(model);
-		System.out.println("universe \n" + universe.toString());//JG
+//		System.out.println("universe \n" + universe.toString());//JG
 		Bounds bounds = new Bounds(universe);
-		System.out.println("bounds \n" + bounds.toString());//JG
+//		System.out.println("bounds \n" + bounds.toString());//JG
 		model.accept(new BoundsVisitor(bounds, universe.factory()));
 
 		return bounds;
@@ -104,15 +104,15 @@ public class KodkodSolver {
 
 		Set<TypeAtoms> typeAtoms = new LinkedHashSet<TypeAtoms>(model.enumTypes());
 		typeAtoms.addAll(model.typeFactory().typeAtoms());
-		System.out.println("num de typeAtoms: " + typeAtoms.size());//JG
+//		System.out.println("num de typeAtoms: " + typeAtoms.size());//JG
 		for (TypeAtoms typeAtom : typeAtoms) {
 			atoms.addAll(typeAtom.atoms());
 			if (typeAtom.isInteger()) {
 				atoms.addAll(((IntegerType) typeAtom).toStringAtoms());
 			}
-			System.out.println("para typeAtom [" + typeAtom.name() + "] tenemos ["+typeAtom.atoms()+"]\n");//JG
+//			System.out.println("para typeAtom [" + typeAtom.name() + "] tenemos ["+typeAtom.atoms()+"]\n");//JG
 		}
-		System.out.println("atoms \n" + atoms.toString());//JG
+//		System.out.println("atoms \n" + atoms.toString());//JG
 		for (IClass clazz : model.classes()) {
 			atoms.addAll(clazz.objectType().atoms());
 		}
