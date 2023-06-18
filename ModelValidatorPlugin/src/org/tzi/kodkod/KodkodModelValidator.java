@@ -233,6 +233,18 @@ public abstract class KodkodModelValidator {
 		return solution;
 	}
 	//Aqui3
+	public void test_creation() {
+		// Crear instancia del modelo en curso
+		
+		// Crear objeto de una clase
+		
+		
+	}
+	
+	/**
+	 * Analisis de MModel ()
+	 * @param mModel
+	 */
 	public void model_analyzer_MModel(MModel mModel) {
 		for (MClassInvariant oClassInv : mModel.classInvariants()) {
 			ExpStdOp eso = (ExpStdOp) oClassInv.bodyExpression();
@@ -284,7 +296,7 @@ public abstract class KodkodModelValidator {
 	}
 
 	/**
-	 * Analyze model
+	 * Analyze IModel (Modelo en formato model validator)
 	 */
 	public void model_analyzer_IModel() {
 		int minInt=0;
@@ -394,6 +406,14 @@ public abstract class KodkodModelValidator {
 
 		//---
 		this.model = model;
+		
+		// -- Pruebas de creacion
+		
+		
+		
+		//--
+		
+		
 		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
 		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
 
