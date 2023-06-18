@@ -30,10 +30,12 @@ import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.kodkod.model.impl.Range;
 import org.tzi.kodkod.model.type.ConfigurableType;
 import org.tzi.kodkod.model.type.IntegerType;
+import org.tzi.kodkod.model.type.PrimitiveTypeFactory;
 import org.tzi.kodkod.model.type.RealType;
 import org.tzi.kodkod.model.type.StringType;
 import org.tzi.kodkod.model.type.Type;
 import org.tzi.kodkod.model.type.TypeAtoms;
+import org.tzi.kodkod.model.type.TypeFactory;
 import org.tzi.mvm.CollectionBitSet;
 import org.tzi.mvm.Combination;
 import org.tzi.mvm.ConfigMVM;
@@ -233,8 +235,14 @@ public abstract class KodkodModelValidator {
 		return solution;
 	}
 	//Aqui3
-	public void test_creation() {
+	public void test_creation(MModel model) {
 		// Crear instancia del modelo en curso
+		
+		ModelTransformator mt = new ModelTransformator(System.);
+		TypeFactory tf = new PrimitiveTypeFactory();
+		registerDefaultOperationGroups(tf);
+		ModelTransformator transformator = new ModelTransformator(modelFactory, tf);
+		IModel modelJG = transformator.transform(model);
 		
 		// Crear objeto de una clase
 		
@@ -409,7 +417,7 @@ public abstract class KodkodModelValidator {
 		
 		// -- Pruebas de creacion
 		
-		
+		test_creation(mModel);
 		
 		//--
 		
