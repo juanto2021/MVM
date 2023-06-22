@@ -57,6 +57,7 @@ import org.tzi.use.uml.mm.MClassInvariant;
 import org.tzi.use.uml.mm.MModel;
 import org.tzi.use.uml.ocl.expr.ExpAttrOp;
 import org.tzi.use.uml.ocl.expr.ExpStdOp;
+import org.tzi.use.uml.ocl.expr.ExpVariable;
 import org.tzi.use.uml.ocl.expr.Expression;
 import org.tzi.use.uml.ocl.type.TypeImpl;
 
@@ -237,18 +238,18 @@ public abstract class KodkodModelValidator {
 	//Aqui3
 	public void test_creation(MModel model) {
 		// Crear instancia del modelo en curso
-		
-		ModelTransformator mt = new ModelTransformator(System.);
-		TypeFactory tf = new PrimitiveTypeFactory();
-		registerDefaultOperationGroups(tf);
-		ModelTransformator transformator = new ModelTransformator(modelFactory, tf);
-		IModel modelJG = transformator.transform(model);
-		
+
+		//		ModelTransformator mt = new ModelTransformator(System.);
+		//		TypeFactory tf = new PrimitiveTypeFactory();
+		//		registerDefaultOperationGroups(tf);
+		//		ModelTransformator transformator = new ModelTransformator(modelFactory, tf);
+		//		IModel modelJG = transformator.transform(model);
+
 		// Crear objeto de una clase
-		
-		
+
+
 	}
-	
+
 	/**
 	 * Analisis de MModel ()
 	 * @param mModel
@@ -260,43 +261,47 @@ public abstract class KodkodModelValidator {
 			System.out.println("vars ["+oClassInv.vars()+"]");
 			System.out.println("oClassInv.flaggedExpression() ["+oClassInv.flaggedExpression()+"]");
 			System.out.println("oClassInv.expandedExpression() ["+oClassInv.expandedExpression()+"]");
-			//			System.out.println("eso.args() ["+eso.args().toString()+"]");
-			Expression aExp[] = new Expression[eso.args().length];
-			for (int i=0;i<eso.args().length;i++) {
-				Expression arg = (Expression) eso.args()[i];
-				aExp[i]=arg;
-				System.out.println("arg.type() "+ arg.type()+")");
-				
-				System.out.println("arg "+i+" ["+ arg+"]");
-			}
-			for (int i=0;i<eso.args().length;i++) {
-				ExpStdOp oExpSO=(ExpStdOp) aExp[i];
-				System.out.println("["+oExpSO+"]");
-				if (oExpSO!=null) {
-					Expression aExpAttr[] = new Expression[oExpSO.args().length];
-					for (int j=0;j<oExpSO.args().length;j++) {
-						Expression arg = (Expression) oExpSO.args()[j];
-//						aExpAttr[j]=(Expression) oExpSO.args()[j];
-						aExpAttr[j]=arg;
-						System.out.println("arg.type() "+ arg.type()+")");
-						
-						System.out.println("arg "+j+" ["+ arg+"]");
-					}
-					for (int j=0;j<oExpSO.args().length;j++) {
-						ExpAttrOp oExpAttr=(ExpAttrOp) aExpAttr[j];
-						System.out.println("oExpAttr.objExp() ["+ oExpAttr.objExp()+"]");
-						System.out.println("oExpAttr.attr() ["+ oExpAttr.attr()+"]");
-					}
-				}
-
-			}
 
 			for (Expression oExp : eso.args()) {
-				ExpStdOp oExpSO = (ExpStdOp) oExp;
-				System.out.println("oExp.name() ["+oExp.name()+"]");
 
-				System.out.println("oExpSO.opname() ["+oExpSO.opname()+"]");
-				System.out.println("oExpSO.args() ["+oExpSO.args()+"]");
+				System.out.println("oExp.type() ["+ oExp.type()+"]");
+//				System.out.println("oExp.toString() ["+ oExp.toString()+"]");
+				StringBuilder sb = new StringBuilder();
+				System.out.println("oExp.toString() ["+ oExp.toString()+"] oExp.toString sb ["+ oExp.toString(sb)+"]");
+				System.out.println();
+				if (oExp.type().isTypeOfAssociation()) {
+				}else if (oExp.type().isTypeOfBag()) {
+				}else if (oExp.type().isTypeOfBoolean()) {
+					ExpStdOp oExpSO = (ExpStdOp) oExp;
+					System.out.println("oExp.type().shortName()["+oExp.type().shortName()+"] ["+oExp+"]");
+					System.out.println("oExpSO.opname() ["+oExpSO.opname()+"]");
+					int n = oExpSO.args().length;
+					System.out.println("num args ["+n+"]");
+				}else if (oExp.type().isTypeOfClass()) {
+
+				}else if (oExp.type().isTypeOfClassifier()) {
+				}else if (oExp.type().isTypeOfCollection()) {
+				}else if (oExp.type().isTypeOfEnum()) {
+				}else if (oExp.type().isTypeOfInteger()) {
+					System.out.println("oExp.type().shortName()["+oExp.type().shortName()+"] ["+oExp+"]");
+					
+//					ExpAttrOp oExpAttrOp = (ExpAttrOp) oExp;
+//					System.out.println("oExpSO.getVarname() ["+oExpAttrOp.attr().name()+"]");
+				}else if (oExp.type().isTypeOfOclAny()) {
+				}else if (oExp.type().isTypeOfOrderedSet()) {
+				}else if (oExp.type().isTypeOfReal()) {
+				}else if (oExp.type().isTypeOfSequence()) {
+				}else if (oExp.type().isTypeOfSet()) {
+				}else if (oExp.type().isTypeOfString()) {
+				}else if (oExp.type().isTypeOfTupleType()) {
+				}else if (oExp.type().isTypeOfUnlimitedNatural()) {
+				}else if (oExp.type().isTypeOfVoidType()) {
+				}else if (oExp.type().isVoidOrElementTypeIsVoid()) {
+				}else {
+
+				}
+
+
 			}
 			System.out.println(oClassInv.bodyExpression().name());
 
@@ -414,14 +419,14 @@ public abstract class KodkodModelValidator {
 
 		//---
 		this.model = model;
-		
+
 		// -- Pruebas de creacion
-		
+
 		test_creation(mModel);
-		
+
 		//--
-		
-		
+
+
 		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
 		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
 
