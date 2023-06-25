@@ -27,6 +27,7 @@ import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IElement;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
+import org.tzi.kodkod.model.iface.IModelFactory;
 import org.tzi.kodkod.model.impl.Range;
 import org.tzi.kodkod.model.type.ConfigurableType;
 import org.tzi.kodkod.model.type.IntegerType;
@@ -46,20 +47,26 @@ import org.tzi.mvm.KeyAttrInv;
 import org.tzi.mvm.KeyClassAttr;
 import org.tzi.mvm.MVMStatisticsVisitor;
 import org.tzi.mvm.ParamDialogValidator;
+import org.tzi.use.api.UseApiException;
+import org.tzi.use.api.UseSystemApi;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
+import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
 import org.tzi.use.kodkod.transform.ModelTransformator;
 import org.tzi.use.main.Session;
 import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
 import org.tzi.use.uml.mm.MClassInvariant;
+import org.tzi.use.uml.mm.MInvalidModelException;
 import org.tzi.use.uml.mm.MModel;
+import org.tzi.use.uml.mm.ModelFactory;
 import org.tzi.use.uml.ocl.expr.ExpAttrOp;
 import org.tzi.use.uml.ocl.expr.ExpStdOp;
 import org.tzi.use.uml.ocl.expr.ExpVariable;
 import org.tzi.use.uml.ocl.expr.Expression;
 import org.tzi.use.uml.ocl.type.TypeImpl;
+import org.tzi.use.uml.sys.MObject;
 
 import kodkod.ast.Decl;
 import kodkod.ast.Formula;
@@ -240,13 +247,87 @@ public abstract class KodkodModelValidator {
 		// Crear instancia del modelo en curso
 
 		//		ModelTransformator mt = new ModelTransformator(System.);
-		//		TypeFactory tf = new PrimitiveTypeFactory();
+				TypeFactory tf = new PrimitiveTypeFactory();
 		//		registerDefaultOperationGroups(tf);
 		//		ModelTransformator transformator = new ModelTransformator(modelFactory, tf);
 		//		IModel modelJG = transformator.transform(model);
 
 		// Crear objeto de una clase
+		ModelFactory mFactory = new ModelFactory();
+		MModel mModel = mFactory.createModel("Test");
+		System.out.println("Crea modelo MModel");
+		try {
+			// incluye clases del modelo
+			for (MClass mClass: model.classes()) {
+				mModel.addClass(mClass);
+				// Incluye invariantes
+				for (MClassInvariant mClassInv: model.classInvariants(mClass)) {
+					mModel.addClassInvariant(mClassInv);
+				}
+//				// Incluye asociaciones
+//				for (MAssociation mClassAssoc: model.associations()) {
+//					mModel.addAssociation(mClassAssoc);
+//				}
+			}
+			for (MClass mClass: model.classes()) {
+//				mModel.addClass(mClass);
+//				// Incluye invariantes
+//				for (MClassInvariant mClassInv: model.classInvariants(mClass)) {
+//					mModel.addClassInvariant(mClassInv);
+//				}
+				// Incluye asociaciones
+//				for (MAssociation mClassAssoc: model.associations()) {
+//					mModel.addAssociation(mClassAssoc);
+//					model.getAssociationClassesOnly():
+//				}
+			}			
 
+			UseSystemApi systemApi = UseSystemApi.create(session);
+			// Crea objeto para primera clase
+			int contObj=0;
+			int numObjs=2;
+			String prefixObj = "obj";
+			// Crear diagrama e ir incluyendo objetos
+//			createObjectDiagram(solution.instance().relationTuples());
+//			IModelFactory factory;
+//			ModelTransformator mt = new ModelTransformator(mFactory, tf);
+//			IModel iM =  transform(mModel);
+//			ObjectDiagramCreator diagramCreator = new ObjectDiagramCreator(model, session);
+			ObjectDiagramCreator odc = new ObjectDiagramCreator(getIModel(), session);		
+			
+			try {
+				for (MClass mClass: model.classes()) {
+					//					for (MClassInvariant mClassInv: model.classInvariants(mClass)) {
+					for (int n=0;n<numObjs;n++) {
+						contObj+=1;
+						String nomObj=prefixObj+contObj;
+						MObject mObject = systemApi.createObject(mClass.name(), nomObj);
+						System.out.println("Crea objeto clase ["+mObject.name()+"]");
+					}
+
+					//					}
+				}
+
+
+			} catch (UseApiException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} catch (MInvalidModelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		//		Session session = getSession();
+		//		
+		//	
+		//		try {
+		//			
+		//		} catch (UseApiException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 
 	}
 
@@ -265,7 +346,7 @@ public abstract class KodkodModelValidator {
 			for (Expression oExp : eso.args()) {
 
 				System.out.println("oExp.type() ["+ oExp.type()+"]");
-//				System.out.println("oExp.toString() ["+ oExp.toString()+"]");
+				//				System.out.println("oExp.toString() ["+ oExp.toString()+"]");
 				StringBuilder sb = new StringBuilder();
 				System.out.println("oExp.toString() ["+ oExp.toString()+"] oExp.toString sb ["+ oExp.toString(sb)+"]");
 				System.out.println();
@@ -284,9 +365,9 @@ public abstract class KodkodModelValidator {
 				}else if (oExp.type().isTypeOfEnum()) {
 				}else if (oExp.type().isTypeOfInteger()) {
 					System.out.println("oExp.type().shortName()["+oExp.type().shortName()+"] ["+oExp+"]");
-					
-//					ExpAttrOp oExpAttrOp = (ExpAttrOp) oExp;
-//					System.out.println("oExpSO.getVarname() ["+oExpAttrOp.attr().name()+"]");
+
+					//					ExpAttrOp oExpAttrOp = (ExpAttrOp) oExp;
+					//					System.out.println("oExpSO.getVarname() ["+oExpAttrOp.attr().name()+"]");
 				}else if (oExp.type().isTypeOfOclAny()) {
 				}else if (oExp.type().isTypeOfOrderedSet()) {
 				}else if (oExp.type().isTypeOfReal()) {
@@ -410,6 +491,7 @@ public abstract class KodkodModelValidator {
 	 * @param model
 	 */
 	public void validateVariable(IModel model, MModel mModel, Session session, String tipoSearchMSS ) {
+		this.session=session;
 		// Save initial time to later calculate the time it takes
 		Instant start = Instant.now();
 		timeInitFind= Instant.now();
@@ -430,7 +512,7 @@ public abstract class KodkodModelValidator {
 		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
 		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
 
-		this.session=session;
+
 		evaluator = null;
 		listCmb.clear();
 		listCmbSel.clear();
