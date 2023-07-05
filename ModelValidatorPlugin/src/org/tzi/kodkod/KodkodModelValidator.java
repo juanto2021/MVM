@@ -1,5 +1,8 @@
 package org.tzi.kodkod;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.beans.PropertyVetoException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -16,12 +19,17 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.config.IConfigurator;
 import org.tzi.kodkod.model.config.ITypeConfigurator;
+import org.tzi.kodkod.model.config.impl.ModelConfigurator;
 import org.tzi.kodkod.model.iface.IAttribute;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IElement;
@@ -29,6 +37,7 @@ import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.kodkod.model.iface.IModelFactory;
 import org.tzi.kodkod.model.impl.Range;
+import org.tzi.kodkod.model.impl.SimpleFactory;
 import org.tzi.kodkod.model.type.ConfigurableType;
 import org.tzi.kodkod.model.type.IntegerType;
 import org.tzi.kodkod.model.type.PrimitiveTypeFactory;
@@ -50,6 +59,10 @@ import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.api.UseApiException;
 import org.tzi.use.api.UseSystemApi;
 import org.tzi.use.gui.main.MainWindow;
+import org.tzi.use.gui.main.ViewFrame;
+import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
+import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
+import org.tzi.use.kodkod.plugin.PluginModelFactory;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
 import org.tzi.use.kodkod.transform.ModelTransformator;
@@ -58,6 +71,7 @@ import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
 import org.tzi.use.uml.mm.MClassInvariant;
+import org.tzi.use.uml.mm.MElementAnnotation;
 import org.tzi.use.uml.mm.MInvalidModelException;
 import org.tzi.use.uml.mm.MModel;
 import org.tzi.use.uml.mm.ModelFactory;
@@ -65,6 +79,7 @@ import org.tzi.use.uml.ocl.expr.ExpAttrOp;
 import org.tzi.use.uml.ocl.expr.ExpStdOp;
 import org.tzi.use.uml.ocl.expr.ExpVariable;
 import org.tzi.use.uml.ocl.expr.Expression;
+import org.tzi.use.uml.ocl.type.EnumType;
 import org.tzi.use.uml.ocl.type.TypeImpl;
 import org.tzi.use.uml.sys.MObject;
 
@@ -74,7 +89,9 @@ import kodkod.ast.IntToExprCast;
 import kodkod.ast.QuantifiedFormula;
 import kodkod.engine.Evaluator;
 import kodkod.engine.Solution;
+import kodkod.engine.Solver;
 import kodkod.engine.Statistics;
+import kodkod.instance.Bounds;
 
 /**
  * Abstract base class for all validation functionalities.
@@ -243,7 +260,13 @@ public abstract class KodkodModelValidator {
 		return solution;
 	}
 	//Aqui3
-	public void test_creation(MModel model) {
+	public void test_creation(MModel model, IModel iModelOri) {
+		
+		storeEvaluator(kodkodSolver);
+		if(KodkodQueryCache.INSTANCE.isQueryEnabled()){ 
+			KodkodQueryCache.INSTANCE.setEvaluator(evaluator); 
+		}		
+		
 		// Crear instancia del modelo en curso
 
 		//		ModelTransformator mt = new ModelTransformator(System.);
@@ -254,6 +277,7 @@ public abstract class KodkodModelValidator {
 
 		// Crear objeto de una clase
 		ModelFactory mFactory = new ModelFactory();
+		IModelFactory iMFactory = new SimpleFactory();
 		MModel mModel = mFactory.createModel("Test");
 		System.out.println("Crea modelo MModel");
 		try {
@@ -265,22 +289,51 @@ public abstract class KodkodModelValidator {
 					mModel.addClassInvariant(mClassInv);
 				}
 //				// Incluye asociaciones
-//				for (MAssociation mClassAssoc: model.associations()) {
-//					mModel.addAssociation(mClassAssoc);
-//				}
+				for (MAssociation mClassAssoc: model.associations()) {
+					mModel.addAssociation(mClassAssoc);
+				}
+//				model.addAnnotation(null);
+//				int nAnnotations = model.getAllAnnotations().size();
+				Map<String, MElementAnnotation> oAnnot = model.getAllAnnotations();
+				int nAnnotations = oAnnot.size();
+				// aqui4
+				// Annotations
+				for (Entry<String, MElementAnnotation> item : oAnnot.entrySet()){
+					String key = item.getKey();
+					MElementAnnotation oME = item.getValue();
+					mModel.addAnnotation(oME);
+				}
+				//EnumTypes
+//				mModel.enumTypes();
+				for (EnumType mEnumType: model.enumTypes()) {
+					mModel.addEnumType(mEnumType);
+				}
 			}
-			for (MClass mClass: model.classes()) {
-//				mModel.addClass(mClass);
-//				// Incluye invariantes
-//				for (MClassInvariant mClassInv: model.classInvariants(mClass)) {
-//					mModel.addClassInvariant(mClassInv);
-//				}
-				// Incluye asociaciones
-//				for (MAssociation mClassAssoc: model.associations()) {
-//					mModel.addAssociation(mClassAssoc);
-//					model.getAssociationClassesOnly():
-//				}
-			}			
+			System.out.println("Ha creado nuevo modelo MModel ["+mModel.name()+"]");
+			
+			// Crear IModel
+//			IModel iModel =  PluginModelFactory.INSTANCE.getModel(mModel);
+			IModel iModel =  PluginModelFactory.INSTANCE.getModel(model);//Pruebas
+			//aqui5
+//			IConfigurator<IModel> configurator = new ModelConfigurator(iModel);
+//			iModel.setConfigurator(configurator);
+			Solution solution;
+			try {
+				KodkodSolver kS = new KodkodSolver();
+//				Bounds bounds = kS.createBounds(iModel);
+				
+				solution = kodkodSolver.solve(iModel);
+//				solution = kodkodSolver.solve(iModelOri);
+//				final Solver solver = new Solver();
+//				kS.createEvaluator(solver, solution);
+				solution = call_Solver(iModelOri);
+				
+//				createObjectDiagramCreator( iModel,  session, solution);// Pruebas
+				createObjectDiagramCreator( iModelOri,  session, solution);
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 
 			UseSystemApi systemApi = UseSystemApi.create(session);
 			// Crea objeto para primera clase
@@ -319,18 +372,100 @@ public abstract class KodkodModelValidator {
 			e1.printStackTrace();
 		}
 
-		//		Session session = getSession();
-		//		
-		//	
-		//		try {
-		//			
-		//		} catch (UseApiException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
 
 	}
 
+	private void createObjectDiagramCreator(IModel iModel, Session session,Solution solution ) {
+		ObjectDiagramCreator odc = new ObjectDiagramCreator(iModel, session);// IModel, session	
+		try {
+			odc.create(solution.instance().relationTuples());
+		} catch (UseApiException e) {
+			if (!e.getMessage().contains("Link creation failed!")) {
+				e.printStackTrace();
+			}
+		}
+
+		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
+		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");
+		int OBJECTS_LARGE_SYSTEM = 100;
+
+		if (session.system().state().allObjects().size() > OBJECTS_LARGE_SYSTEM) {
+
+			int option = JOptionPane.showConfirmDialog(new JPanel(),
+					"The current system state contains more then " + OBJECTS_LARGE_SYSTEM + " instances." +
+							"This can slow down the object diagram.\r\nDo you want to start with an empty object diagram?",
+							"Large system state", JOptionPane.YES_NO_OPTION);
+
+			if (option == JOptionPane.YES_OPTION) {
+				odv.getDiagram().hideAll();
+			}
+		}
+		JComponent c = (JComponent) f.getContentPane();
+		c.setLayout(new BorderLayout());
+		c.add(odv, BorderLayout.CENTER);
+		int hSpace=130;
+		int vSpace=130;
+		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
+
+		MainWindow.instance().addNewViewFrame(f);
+		MainWindow.instance().getObjectDiagrams().add(odv);
+
+		tile();
+		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
+
+	}
+
+	/**
+	 * Accommodate views
+	 */
+	private void tile() {
+		JDesktopPane fDesk = MainWindow.instance().getFdesk();
+		JInternalFrame[] allframes = fDesk.getAllFrames();
+		int count = allframes.length;
+		if (count == 0)
+			return;
+
+		// Determine the necessary grid size
+		int sqrt = (int) Math.sqrt(count);
+		int rows = sqrt;
+		int cols = sqrt;
+		if (rows * cols < count) {
+			cols++;
+			if (rows * cols < count) {
+				rows++;
+			}
+		}
+
+		// Define some initial values for size & location
+		Dimension size = fDesk.getSize();
+
+		int w = size.width / cols;
+		int h = size.height / rows;
+		int x = 0;
+		int y = 0;
+
+		// Iterate over the frames, deiconifying any iconified frames and
+		// then relocating & resizing each
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols && ((i * cols) + j < count); j++) {
+				JInternalFrame f = allframes[(i * cols) + j];
+
+				if (f.isIcon() && !f.isClosed()) {
+					try {
+						f.setIcon(false);
+					} catch (PropertyVetoException ex) {
+						// ignored
+					}
+				}
+				fDesk.getDesktopManager().resizeFrame(f, x, y, w, h);
+				x += w;
+			}
+			y += h; // start the next row
+			x = 0;
+		}
+
+	}
+	
 	/**
 	 * Analisis de MModel ()
 	 * @param mModel
@@ -500,20 +635,22 @@ public abstract class KodkodModelValidator {
 		//---
 
 		//---
+		
 		this.model = model;
-
+		evaluator = null;
+		kodkodSolver = new KodkodSolver();
 		// -- Pruebas de creacion
-
-		test_creation(mModel);
+//ProvisJG
+//		test_creation(mModel,model);
 
 		//--
 
 
-		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
-		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
+//		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
+//		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
 
 
-		evaluator = null;
+//		evaluator = null;
 		listCmb.clear();
 		listCmbSel.clear();
 		colInvFault.clear();
@@ -530,7 +667,7 @@ public abstract class KodkodModelValidator {
 		numCallSolverUNSAT=0;
 
 		//		KodkodSolver kodkodSolver = new KodkodSolver();// JG
-		kodkodSolver = new KodkodSolver();
+//		kodkodSolver = new KodkodSolver();
 
 		Collection<IInvariant> invClassSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassUnSatisfiables = new ArrayList<IInvariant>();
@@ -1975,7 +2112,7 @@ public abstract class KodkodModelValidator {
 	 */
 	public Solution calcular(String combinacion, Collection<IInvariant> invClassTotal) {
 		//		KodkodSolver kodkodSolver = new KodkodSolver();//JG
-		kodkodSolver = new KodkodSolver();
+//		kodkodSolver = new KodkodSolver();//OJOJG
 		if (debMVM) {
 			dispMVM("MVM: Entra en calcular (" + combinacion + ")");
 		}
@@ -2023,7 +2160,7 @@ public abstract class KodkodModelValidator {
 
 	public String calcularGreedyCHB(BitSet bit, boolean bReview,Collection<IInvariant> invClassTotal) {		
 		//		KodkodSolver kodkodSolver = new KodkodSolver();//JG
-		kodkodSolver = new KodkodSolver();
+//		kodkodSolver = new KodkodSolver();//OJOJG
 		String solucion="";
 		if (debMVM) {
 			dispMVM("MVM: Entra en calcular (" + bit + ")");
