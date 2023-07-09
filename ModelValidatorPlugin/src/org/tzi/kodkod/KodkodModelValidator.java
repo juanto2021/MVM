@@ -3,9 +3,12 @@ package org.tzi.kodkod;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +27,10 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+//
+import org.tzi.use.gui.main.*;
+//
 
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
@@ -58,15 +65,20 @@ import org.tzi.mvm.MVMStatisticsVisitor;
 import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.api.UseApiException;
 import org.tzi.use.api.UseSystemApi;
+import org.tzi.use.config.Options;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
+import org.tzi.use.gui.util.TextComponentWriter;
+import org.tzi.use.gui.views.ClassInvariantView;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
+import org.tzi.use.gui.views.evalbrowser.ExprEvalBrowser;
 import org.tzi.use.kodkod.plugin.PluginModelFactory;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
 import org.tzi.use.kodkod.transform.ModelTransformator;
 import org.tzi.use.main.Session;
+import org.tzi.use.parser.ocl.OCLCompiler;
 import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
@@ -79,9 +91,19 @@ import org.tzi.use.uml.ocl.expr.ExpAttrOp;
 import org.tzi.use.uml.ocl.expr.ExpStdOp;
 import org.tzi.use.uml.ocl.expr.ExpVariable;
 import org.tzi.use.uml.ocl.expr.Expression;
+import org.tzi.use.uml.ocl.expr.MultiplicityViolationException;
 import org.tzi.use.uml.ocl.type.EnumType;
 import org.tzi.use.uml.ocl.type.TypeImpl;
+import org.tzi.use.uml.ocl.value.Value;
 import org.tzi.use.uml.sys.MObject;
+import org.tzi.use.uml.sys.MSystemException;
+import org.tzi.use.uml.sys.MSystemState;
+import org.tzi.use.uml.sys.soil.MAttributeAssignmentStatement;
+import org.tzi.use.uml.sys.soil.MNewObjectStatement;
+import org.tzi.use.uml.sys.soil.MRValue;
+import org.tzi.use.util.StringUtil;
+import org.tzi.use.util.TeeWriter;
+import org.tzi.use.util.USEWriter;
 
 import kodkod.ast.Decl;
 import kodkod.ast.Formula;
@@ -260,17 +282,299 @@ public abstract class KodkodModelValidator {
 		return solution;
 	}
 	//Aqui3
+	// Test de llamadas a metodos
+
+	public void test_call_methods(MModel model, IModel iModelOri) {
+		//------------------------------------------------------------------------------------		
+		// Evalua expresiones OCL
+		String result="";
+		String expression = "2+3";
+		result = test_eval_expr(expression);
+		System.out.println("Evalua ["+expression+"] = ["+result+"]");
+		expression = "2+3+6+10";
+		result = test_eval_expr(expression);
+		System.out.println("Evalua ["+expression+"] = ["+result+"]");
+		System.out.println();
+		//------------------------------------------------------------------------------------
+		// Create object p1 y p2
+		String sClassName="Person";
+		MClass objectClass=model.getClass(sClassName);
+		String nomObj="p1";
+		boolean res = test_create_object( objectClass, nomObj);
+		System.out.println("Crea ["+nomObj+"] = ["+res+"]");
+		nomObj="p2";
+		res = test_create_object( objectClass, nomObj);
+		System.out.println("Crea ["+nomObj+"] = ["+res+"]");
+
+		//------------------------------------------------------------------------------------
+		// Asigna valores a atributos
+
+		nomObj="p1";
+		String sAttrValue = "150";
+		String sAttrName="age";
+		test_assign_value_attr( model, iModelOri, sClassName,nomObj, sAttrName, sAttrValue);
+		nomObj="p2";
+		sAttrValue = "250";
+		sAttrName="age";
+		test_assign_value_attr( model, iModelOri, sClassName,nomObj, sAttrName, sAttrValue);
+		System.out.println("Values assigned. Done");
+
+		// Checkear la estructura
+		res=test_check_structure();
+		System.out.println("Structure checked. Done ["+res+"}");
+
+		// // Muestra estado invariantes en consola
+		test_inv_state_console(model);
+
+		// Muestra estado invariantes en dialogo
+		test_inv_state_dialog(model);
+
+		// Muestra EvalBrowser
+		test_show_EvalBrowser(model);		
+		//		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
+		//		int n = model.classInvariants().size();
+		//		fClassInvariants = new MClassInvariant[n];
+		//		System.arraycopy(model.classInvariants().toArray(), 0,
+		//				fClassInvariants, 0, n);		
+		//		Expression expr = fClassInvariants[0].flaggedExpression();		
+		//		org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(true);
+		//		try {
+		//			evaluator.eval(expr, session.system().state());
+		//		} catch (MultiplicityViolationException ex) {
+		//			return;
+		//		}
+		//		ExprEvalBrowser.createPlus(evaluator
+		//				.getEvalNodeRoot(), session.system(), fClassInvariants[0]);	
+		//				ExprEvalBrowser.createPlus(evaluator
+		//						.getEvalNodeRoot(), session.system(), fClassInvariants[1]);		
+		//				ExprEvalBrowser.createPlus(evaluator
+		//						.getEvalNodeRoot(), session.system(), fClassInvariants[2]);			
+
+	}
+	public String test_eval_expr(String expression) {
+
+		//		EvalOCLDialog dlg = new EvalOCLDialog(session, MainWindow.this);
+		//		org.tzi.use.gui.main.EvalOCLDialog dlg = new EvalOCLDialog(session, MainWindow.instance());
+		//		dlg.setVisible(true);
+		//		boolean evalSuccess = evaluate("2+3", true);
+
+		String result="";
+		String in = expression;
+		StringWriter msgWriter1 = new StringWriter();
+		StringWriter msgWriter2 = new StringWriter();
+		PrintWriter out = new PrintWriter(new TeeWriter(
+				msgWriter1, msgWriter2), true);
+		Expression expr = OCLCompiler.compileExpression(
+				session.system().model(),
+				session.system().state(),
+				in, 
+				"Error", 
+				out, 
+				session.system().varBindings());
+
+		if (expr == null) {
+			// try to parse error message and set caret to error position
+			String msg = msgWriter2.toString();
+			int colon1 = msg.indexOf(':');
+			if (colon1 != -1) {
+				int colon2 = msg.indexOf(':', colon1 + 1);
+				int colon3 = msg.indexOf(':', colon2 + 1);
+
+				try {
+					int line = Integer.parseInt(msg.substring(colon1 + 1,
+							colon2));
+					int column = Integer.parseInt(msg.substring(colon2 + 1,
+							colon3));
+					int caret = 1 + StringUtil.nthIndexOf(in, line - 1,
+							Options.LINE_SEPARATOR);
+					caret += column;
+
+					// sanity check
+					caret = Math.min(caret, in.length());
+					//	                    fTextIn.setCaretPosition(caret);
+				} catch (NumberFormatException ex) { }
+			}
+			//	            return false;
+		}
+
+		org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(false);
+		Value val = evaluator.eval(expr, session.system().state(), session.system()
+				.varBindings());
+		result = val.toString();
+		//         System.out.println("Evalua ["+expression+"] = ["+result+"]");
+		return result;
+	}
+
+	public boolean test_create_object(MClass objectClass, String objectName) {
+		boolean result=false;
+		try {
+			MNewObjectStatement statement = 
+					new MNewObjectStatement(objectClass, objectName);
+
+			USEWriter.getInstance().protocol(
+					"[GUI] " + statement.getShellCommand().substring(1));
+
+			session.system().execute(statement);
+
+		} catch (MSystemException e) {
+			System.out.println("error ["+e.getMessage()+"]");
+		}
+		return result;		
+	}
+
+	public boolean test_assign_value_attr(MModel model, IModel iModelOri,String sClassName, 
+			String sObjName, String sAttrName, String sAttrValue) {
+		boolean res=false;
+		MClass objectClass=model.getClass(sClassName);
+		MAttribute attribute = objectClass.attribute(sAttrName, false);
+		StringWriter errorOutput = new StringWriter();
+		Expression valueAsExpression = 
+				OCLCompiler.compileExpression(
+						session.system().model(),
+						session.system().state(),
+						sAttrValue, 
+						"<input>", 
+						new PrintWriter(errorOutput, true), 
+						session.system().varBindings());
+
+		MSystemState state = session.system().state();
+		MObject fObject = state.objectByName(sObjName);
+
+		try {
+			session.system().execute(
+					new MAttributeAssignmentStatement(
+							fObject, 
+							attribute, 
+							valueAsExpression));
+		} catch (MSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return res;
+	}
+
+	public boolean test_check_structure() {
+		// Checkear la estructura
+		PrintWriter fLogWriter;
+		StringWriter msgWriter1 = new StringWriter();
+		fLogWriter = new PrintWriter(msgWriter1, true);
+		boolean res = session.system().state().checkStructure(fLogWriter);
+		System.out.println("Structure checked. Done");
+		return res;
+	}
+
+	public boolean test_inv_state_console(MModel model) {
+		boolean res=false;
+		for (MClassInvariant mc:model.classInvariants() ) {
+			System.out.println("mc ["+mc+"]");
+		}
+		//---
+		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
+		int n = model.classInvariants().size();
+		fClassInvariants = new MClassInvariant[n];
+		System.arraycopy(model.classInvariants().toArray(), 0,
+				fClassInvariants, 0, n);
+		Arrays.sort(fClassInvariants);
+
+
+		for (int i = 0; i < fClassInvariants.length; i++) {
+			if(!fClassInvariants[i].isActive()){
+				continue;
+			}
+
+			MClassInvariant inv;
+			inv = fClassInvariants[i];
+			Expression exp = inv.bodyExpression();
+			System.out.println("inv ["+inv.name()+"] exp ["+exp+"]");
+			MSystemState systemState;
+			systemState = session.system().state();
+
+			org.tzi.use.uml.ocl.expr.Evaluator eval = new org.tzi.use.uml.ocl.expr.Evaluator();
+			Value v = null;
+			String message = null;
+			long start = System.currentTimeMillis();
+
+			try {
+				v = eval.eval(inv.flaggedExpression(), systemState);
+				System.out.println("inv ["+inv.name()+"] valor ["+v+"]");
+			} catch (MultiplicityViolationException e) {
+				message = e.getMessage();
+			}
+
+		}
+		return res;
+	}
+
+	public boolean test_inv_state_dialog(MModel model) {
+		boolean res=false;
+		ClassInvariantView civ = new ClassInvariantView(MainWindow.instance(),
+				session.system());
+		ViewFrame f = new ViewFrame("Class invariants", civ,
+				"InvariantView.gif");
+
+		civ.setViewFrame(f);
+		//		f.pack();
+		JComponent c = (JComponent) f.getContentPane();
+		c.setLayout(new BorderLayout());
+		c.add(civ, BorderLayout.CENTER);
+
+		MainWindow.instance().addNewViewFrame(f);
+		System.out.println("Showed");
+		return res;
+	}
+
+	public boolean test_show_EvalBrowser(MModel model) {
+		boolean res=false;
+		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
+		int n = model.classInvariants().size();
+		fClassInvariants = new MClassInvariant[n];
+		System.arraycopy(model.classInvariants().toArray(), 0,
+				fClassInvariants, 0, n);		
+		// Para primera inv
+		Expression expr = fClassInvariants[0].flaggedExpression();		
+		org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(true);
+		try {
+			evaluator.eval(expr, session.system().state());
+		} catch (MultiplicityViolationException ex) {
+			return res;
+		}
+		ExprEvalBrowser.createPlus(evaluator
+				.getEvalNodeRoot(), session.system(), fClassInvariants[0]);	
+		// Para segunda inv
+		expr = fClassInvariants[1].flaggedExpression();		
+		//		org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(true);
+		try {
+			evaluator.eval(expr, session.system().state());
+		} catch (MultiplicityViolationException ex) {
+			return res;
+		}
+		ExprEvalBrowser.createPlus(evaluator
+				.getEvalNodeRoot(), session.system(), fClassInvariants[1]);		
+
+		// Para tercera inv
+		expr = fClassInvariants[2].flaggedExpression();		
+		//				org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(true);
+		try {
+			evaluator.eval(expr, session.system().state());
+		} catch (MultiplicityViolationException ex) {
+			return res;
+		}
+		ExprEvalBrowser.createPlus(evaluator
+				.getEvalNodeRoot(), session.system(), fClassInvariants[2]);				
+		return res;
+	}
+
 	public void test_creation(MModel model, IModel iModelOri) {
-		
+
 		storeEvaluator(kodkodSolver);
 		if(KodkodQueryCache.INSTANCE.isQueryEnabled()){ 
 			KodkodQueryCache.INSTANCE.setEvaluator(evaluator); 
 		}		
-		
+
 		// Crear instancia del modelo en curso
 
 		//		ModelTransformator mt = new ModelTransformator(System.);
-				TypeFactory tf = new PrimitiveTypeFactory();
+		TypeFactory tf = new PrimitiveTypeFactory();
 		//		registerDefaultOperationGroups(tf);
 		//		ModelTransformator transformator = new ModelTransformator(modelFactory, tf);
 		//		IModel modelJG = transformator.transform(model);
@@ -288,12 +592,12 @@ public abstract class KodkodModelValidator {
 				for (MClassInvariant mClassInv: model.classInvariants(mClass)) {
 					mModel.addClassInvariant(mClassInv);
 				}
-//				// Incluye asociaciones
+				//				// Incluye asociaciones
 				for (MAssociation mClassAssoc: model.associations()) {
 					mModel.addAssociation(mClassAssoc);
 				}
-//				model.addAnnotation(null);
-//				int nAnnotations = model.getAllAnnotations().size();
+				//				model.addAnnotation(null);
+				//				int nAnnotations = model.getAllAnnotations().size();
 				Map<String, MElementAnnotation> oAnnot = model.getAllAnnotations();
 				int nAnnotations = oAnnot.size();
 				// aqui4
@@ -304,31 +608,31 @@ public abstract class KodkodModelValidator {
 					mModel.addAnnotation(oME);
 				}
 				//EnumTypes
-//				mModel.enumTypes();
+				//				mModel.enumTypes();
 				for (EnumType mEnumType: model.enumTypes()) {
 					mModel.addEnumType(mEnumType);
 				}
 			}
 			System.out.println("Ha creado nuevo modelo MModel ["+mModel.name()+"]");
-			
+
 			// Crear IModel
-//			IModel iModel =  PluginModelFactory.INSTANCE.getModel(mModel);
+			//			IModel iModel =  PluginModelFactory.INSTANCE.getModel(mModel);
 			IModel iModel =  PluginModelFactory.INSTANCE.getModel(model);//Pruebas
 			//aqui5
-//			IConfigurator<IModel> configurator = new ModelConfigurator(iModel);
-//			iModel.setConfigurator(configurator);
+			//			IConfigurator<IModel> configurator = new ModelConfigurator(iModel);
+			//			iModel.setConfigurator(configurator);
 			Solution solution;
 			try {
 				KodkodSolver kS = new KodkodSolver();
-//				Bounds bounds = kS.createBounds(iModel);
-				
+				//				Bounds bounds = kS.createBounds(iModel);
+
 				solution = kodkodSolver.solve(iModel);
-//				solution = kodkodSolver.solve(iModelOri);
-//				final Solver solver = new Solver();
-//				kS.createEvaluator(solver, solution);
+				//				solution = kodkodSolver.solve(iModelOri);
+				//				final Solver solver = new Solver();
+				//				kS.createEvaluator(solver, solution);
 				solution = call_Solver(iModelOri);
-				
-//				createObjectDiagramCreator( iModel,  session, solution);// Pruebas
+
+				//				createObjectDiagramCreator( iModel,  session, solution);// Pruebas
 				createObjectDiagramCreator( iModelOri,  session, solution);
 			} catch (Exception e2) {
 				// TODO Auto-generated catch block
@@ -341,13 +645,13 @@ public abstract class KodkodModelValidator {
 			int numObjs=2;
 			String prefixObj = "obj";
 			// Crear diagrama e ir incluyendo objetos
-//			createObjectDiagram(solution.instance().relationTuples());
-//			IModelFactory factory;
-//			ModelTransformator mt = new ModelTransformator(mFactory, tf);
-//			IModel iM =  transform(mModel);
-//			ObjectDiagramCreator diagramCreator = new ObjectDiagramCreator(model, session);
+			//			createObjectDiagram(solution.instance().relationTuples());
+			//			IModelFactory factory;
+			//			ModelTransformator mt = new ModelTransformator(mFactory, tf);
+			//			IModel iM =  transform(mModel);
+			//			ObjectDiagramCreator diagramCreator = new ObjectDiagramCreator(model, session);
 			ObjectDiagramCreator odc = new ObjectDiagramCreator(getIModel(), session);		
-			
+
 			try {
 				for (MClass mClass: model.classes()) {
 					//					for (MClassInvariant mClassInv: model.classInvariants(mClass)) {
@@ -465,7 +769,7 @@ public abstract class KodkodModelValidator {
 		}
 
 	}
-	
+
 	/**
 	 * Analisis de MModel ()
 	 * @param mModel
@@ -635,22 +939,25 @@ public abstract class KodkodModelValidator {
 		//---
 
 		//---
-		
+
 		this.model = model;
 		evaluator = null;
 		kodkodSolver = new KodkodSolver();
 		// -- Pruebas de creacion
-//ProvisJG
-//		test_creation(mModel,model);
+		//ProvisJG
+		//		test_creation(mModel,model);
+		//AQUI3
+		test_call_methods(mModel,model);
+
 
 		//--
 
 
-//		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
-//		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
+		//		model_analyzer_IModel();// Ver contenido estructuras (Pruebas)
+		//		model_analyzer_MModel(mModel);// Ver contenido estructuras (Pruebas)
 
 
-//		evaluator = null;
+		//		evaluator = null;
 		listCmb.clear();
 		listCmbSel.clear();
 		colInvFault.clear();
@@ -667,7 +974,7 @@ public abstract class KodkodModelValidator {
 		numCallSolverUNSAT=0;
 
 		//		KodkodSolver kodkodSolver = new KodkodSolver();// JG
-//		kodkodSolver = new KodkodSolver();
+		//		kodkodSolver = new KodkodSolver();
 
 		Collection<IInvariant> invClassSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassUnSatisfiables = new ArrayList<IInvariant>();
@@ -2112,7 +2419,7 @@ public abstract class KodkodModelValidator {
 	 */
 	public Solution calcular(String combinacion, Collection<IInvariant> invClassTotal) {
 		//		KodkodSolver kodkodSolver = new KodkodSolver();//JG
-//		kodkodSolver = new KodkodSolver();//OJOJG
+		//		kodkodSolver = new KodkodSolver();//OJOJG
 		if (debMVM) {
 			dispMVM("MVM: Entra en calcular (" + combinacion + ")");
 		}
@@ -2160,7 +2467,7 @@ public abstract class KodkodModelValidator {
 
 	public String calcularGreedyCHB(BitSet bit, boolean bReview,Collection<IInvariant> invClassTotal) {		
 		//		KodkodSolver kodkodSolver = new KodkodSolver();//JG
-//		kodkodSolver = new KodkodSolver();//OJOJG
+		//		kodkodSolver = new KodkodSolver();//OJOJG
 		String solucion="";
 		if (debMVM) {
 			dispMVM("MVM: Entra en calcular (" + bit + ")");
@@ -2397,5 +2704,4 @@ abstract class EventThreads extends Thread {
 		void finalizado();
 	}
 }
-
 
