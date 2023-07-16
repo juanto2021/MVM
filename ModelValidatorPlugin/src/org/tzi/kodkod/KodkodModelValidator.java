@@ -331,33 +331,10 @@ public abstract class KodkodModelValidator {
 
 		// Muestra EvalBrowser
 		test_show_EvalBrowser(model);		
-		//		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
-		//		int n = model.classInvariants().size();
-		//		fClassInvariants = new MClassInvariant[n];
-		//		System.arraycopy(model.classInvariants().toArray(), 0,
-		//				fClassInvariants, 0, n);		
-		//		Expression expr = fClassInvariants[0].flaggedExpression();		
-		//		org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(true);
-		//		try {
-		//			evaluator.eval(expr, session.system().state());
-		//		} catch (MultiplicityViolationException ex) {
-		//			return;
-		//		}
-		//		ExprEvalBrowser.createPlus(evaluator
-		//				.getEvalNodeRoot(), session.system(), fClassInvariants[0]);	
-		//				ExprEvalBrowser.createPlus(evaluator
-		//						.getEvalNodeRoot(), session.system(), fClassInvariants[1]);		
-		//				ExprEvalBrowser.createPlus(evaluator
-		//						.getEvalNodeRoot(), session.system(), fClassInvariants[2]);			
 
 	}
+	
 	public String test_eval_expr(String expression) {
-
-		//		EvalOCLDialog dlg = new EvalOCLDialog(session, MainWindow.this);
-		//		org.tzi.use.gui.main.EvalOCLDialog dlg = new EvalOCLDialog(session, MainWindow.instance());
-		//		dlg.setVisible(true);
-		//		boolean evalSuccess = evaluate("2+3", true);
-
 		String result="";
 		String in = expression;
 		StringWriter msgWriter1 = new StringWriter();
@@ -391,17 +368,14 @@ public abstract class KodkodModelValidator {
 
 					// sanity check
 					caret = Math.min(caret, in.length());
-					//	                    fTextIn.setCaretPosition(caret);
 				} catch (NumberFormatException ex) { }
 			}
-			//	            return false;
 		}
 
 		org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(false);
 		Value val = evaluator.eval(expr, session.system().state(), session.system()
 				.varBindings());
 		result = val.toString();
-		//         System.out.println("Evalua ["+expression+"] = ["+result+"]");
 		return result;
 	}
 
@@ -447,7 +421,6 @@ public abstract class KodkodModelValidator {
 							attribute, 
 							valueAsExpression));
 		} catch (MSystemException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		return res;
@@ -542,7 +515,6 @@ public abstract class KodkodModelValidator {
 				.getEvalNodeRoot(), session.system(), fClassInvariants[0]);	
 		// Para segunda inv
 		expr = fClassInvariants[1].flaggedExpression();		
-		//		org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(true);
 		try {
 			evaluator.eval(expr, session.system().state());
 		} catch (MultiplicityViolationException ex) {
@@ -553,7 +525,6 @@ public abstract class KodkodModelValidator {
 
 		// Para tercera inv
 		expr = fClassInvariants[2].flaggedExpression();		
-		//				org.tzi.use.uml.ocl.expr.Evaluator evaluator = new org.tzi.use.uml.ocl.expr.Evaluator(true);
 		try {
 			evaluator.eval(expr, session.system().state());
 		} catch (MultiplicityViolationException ex) {
