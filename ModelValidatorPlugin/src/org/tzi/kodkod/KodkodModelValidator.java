@@ -73,12 +73,16 @@ import org.tzi.use.gui.views.ClassInvariantView;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.gui.views.evalbrowser.ExprEvalBrowser;
+import org.tzi.use.kodkod.plugin.KodkodValidateCmd;
 import org.tzi.use.kodkod.plugin.PluginModelFactory;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
 import org.tzi.use.kodkod.transform.ModelTransformator;
 import org.tzi.use.main.Session;
+import org.tzi.use.main.runtime.IRuntime;
+import org.tzi.use.main.shell.Shell;
 import org.tzi.use.parser.ocl.OCLCompiler;
+import org.tzi.use.parser.shell.ShellCommandCompiler;
 import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
@@ -101,6 +105,7 @@ import org.tzi.use.uml.sys.MSystemState;
 import org.tzi.use.uml.sys.soil.MAttributeAssignmentStatement;
 import org.tzi.use.uml.sys.soil.MNewObjectStatement;
 import org.tzi.use.uml.sys.soil.MRValue;
+import org.tzi.use.util.NullPrintWriter;
 import org.tzi.use.util.StringUtil;
 import org.tzi.use.util.TeeWriter;
 import org.tzi.use.util.USEWriter;
@@ -281,6 +286,25 @@ public abstract class KodkodModelValidator {
 		}
 		return solution;
 	}
+
+	public boolean show_inv_state_dialog(MModel model) {
+		boolean res=false;
+		ClassInvariantView civ = new ClassInvariantView(MainWindow.instance(),
+				session.system());
+		ViewFrame f = new ViewFrame("Class invariants", civ,
+				"InvariantView.gif");
+
+		civ.setViewFrame(f);
+		//		f.pack();
+		JComponent c = (JComponent) f.getContentPane();
+		c.setLayout(new BorderLayout());
+		c.add(civ, BorderLayout.CENTER);
+
+		MainWindow.instance().addNewViewFrame(f);
+		System.out.println("Showed");
+		return res;
+	}
+	
 	//Aqui3
 	// Test de llamadas a metodos
 
@@ -333,7 +357,7 @@ public abstract class KodkodModelValidator {
 		test_show_EvalBrowser(model);		
 
 	}
-	
+
 	public String test_eval_expr(String expression) {
 		String result="";
 		String in = expression;
@@ -480,19 +504,21 @@ public abstract class KodkodModelValidator {
 
 	public boolean test_inv_state_dialog(MModel model) {
 		boolean res=false;
-		ClassInvariantView civ = new ClassInvariantView(MainWindow.instance(),
-				session.system());
-		ViewFrame f = new ViewFrame("Class invariants", civ,
-				"InvariantView.gif");
-
-		civ.setViewFrame(f);
-		//		f.pack();
-		JComponent c = (JComponent) f.getContentPane();
-		c.setLayout(new BorderLayout());
-		c.add(civ, BorderLayout.CENTER);
-
-		MainWindow.instance().addNewViewFrame(f);
-		System.out.println("Showed");
+//		ClassInvariantView civ = new ClassInvariantView(MainWindow.instance(),
+//				session.system());
+//		ViewFrame f = new ViewFrame("Class invariants", civ,
+//				"InvariantView.gif");
+//
+//		civ.setViewFrame(f);
+//		//		f.pack();
+//		JComponent c = (JComponent) f.getContentPane();
+//		c.setLayout(new BorderLayout());
+//		c.add(civ, BorderLayout.CENTER);
+//
+//		MainWindow.instance().addNewViewFrame(f);
+//		System.out.println("Showed");
+//		return res;
+		res=show_inv_state_dialog( model);
 		return res;
 	}
 
@@ -659,6 +685,47 @@ public abstract class KodkodModelValidator {
 				e.printStackTrace();
 			}
 		}
+
+//		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
+//		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");
+//		int OBJECTS_LARGE_SYSTEM = 100;
+//
+//		if (session.system().state().allObjects().size() > OBJECTS_LARGE_SYSTEM) {
+//
+//			int option = JOptionPane.showConfirmDialog(new JPanel(),
+//					"The current system state contains more then " + OBJECTS_LARGE_SYSTEM + " instances." +
+//							"This can slow down the object diagram.\r\nDo you want to start with an empty object diagram?",
+//							"Large system state", JOptionPane.YES_NO_OPTION);
+//
+//			if (option == JOptionPane.YES_OPTION) {
+//				odv.getDiagram().hideAll();
+//			}
+//		}
+//		JComponent c = (JComponent) f.getContentPane();
+//		c.setLayout(new BorderLayout());
+//		c.add(odv, BorderLayout.CENTER);
+//		int hSpace=130;
+//		int vSpace=130;
+//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
+//
+//		MainWindow.instance().addNewViewFrame(f);
+//		MainWindow.instance().getObjectDiagrams().add(odv);
+//
+//		tile();
+//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
+		
+		createObjectDiagramCreatorFrame(iModel, session ); 
+
+	}
+	private void createObjectDiagramCreatorFrame(IModel iModel, Session session ) {
+//		ObjectDiagramCreator odc = new ObjectDiagramCreator(iModel, session);// IModel, session	
+//		try {
+//			odc.create(solution.instance().relationTuples());
+//		} catch (UseApiException e) {
+//			if (!e.getMessage().contains("Link creation failed!")) {
+//				e.printStackTrace();
+//			}
+//		}
 
 		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
 		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");
@@ -918,9 +985,36 @@ public abstract class KodkodModelValidator {
 		//ProvisJG
 		//		test_creation(mModel,model);
 		//AQUI3
-		test_call_methods(mModel,model);
+		//		test_call_methods(mModel,model);
 
-
+		// Provis comento lo siguiente
+//		createObjectDiagramCreatorFrame(model, session ); 
+//		test_inv_state_dialog(mModel);
+//		
+//		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
+//		Shell sh = Shell.getInstance();
+//				
+//		String line = "!create p2 : Person";
+//		sh.processLineSafely(line);
+//		
+//		line = "!create p3 : Person";
+//		sh.processLineSafely(line);
+//		
+//		MainWindow.instance().revalidate();
+//		
+//		line = "!set p2.age:=10";
+//		sh.processLineSafely(line);
+//		
+//		line = "!set p3.age:=30";
+//		sh.processLineSafely(line);
+//		
+//		line = "check";
+//		sh.processLineSafely(line);
+//
+//		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
+//		
+//		tile();
+		
 		//--
 
 
@@ -1071,7 +1165,7 @@ public abstract class KodkodModelValidator {
 					analysis_OCL(model, mModel,invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);	
 				}
 				if (tipoSearchMSS == "L") {
-					bruteForceMethod( mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
+					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
 				}
 			}
 
@@ -1088,7 +1182,7 @@ public abstract class KodkodModelValidator {
 	 * @param invClassOthers
 	 * @param start
 	 */
-	private void bruteForceMethod(MModel mModel,Collection<IInvariant> invClassSatisfiables,
+	private void bruteForceMethod(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers,
 			Instant start) {
@@ -1158,7 +1252,10 @@ public abstract class KodkodModelValidator {
 		//------------
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
-				new ValidatorMVMDialogSimple(param);		
+				new ValidatorMVMDialogSimple(param);	
+		// Aqui4
+		createObjectDiagramCreatorFrame(iModel, session ); 
+		show_inv_state_dialog( mModel);
 	}
 
 	private static List<String> combListBitSetStr(List<BitSet> lBitSetV){
