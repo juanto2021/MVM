@@ -988,32 +988,32 @@ public abstract class KodkodModelValidator {
 		//		test_call_methods(mModel,model);
 
 		// Provis comento lo siguiente
-//		createObjectDiagramCreatorFrame(model, session ); 
-//		test_inv_state_dialog(mModel);
-//		
-//		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
-//		Shell sh = Shell.getInstance();
-//				
-//		String line = "!create p2 : Person";
-//		sh.processLineSafely(line);
-//		
-//		line = "!create p3 : Person";
-//		sh.processLineSafely(line);
-//		
-//		MainWindow.instance().revalidate();
-//		
-//		line = "!set p2.age:=10";
-//		sh.processLineSafely(line);
-//		
-//		line = "!set p3.age:=30";
-//		sh.processLineSafely(line);
-//		
-//		line = "check";
-//		sh.processLineSafely(line);
-//
-//		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
-//		
-//		tile();
+		createObjectDiagramCreatorFrame(model, session ); 
+		test_inv_state_dialog(mModel);
+		
+		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
+		Shell sh = Shell.getInstance();
+				
+		String line = "!create p2 : Person";
+		sh.processLineSafely(line);
+		
+		line = "!create p3 : Person";
+		sh.processLineSafely(line);
+		
+		MainWindow.instance().revalidate();
+		
+		line = "!set p2.age:=10";
+		sh.processLineSafely(line);
+		
+		line = "!set p3.age:=30";
+		sh.processLineSafely(line);
+		
+		line = "check";
+		sh.processLineSafely(line);
+
+		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
+		
+		tile();
 		
 		//--
 
