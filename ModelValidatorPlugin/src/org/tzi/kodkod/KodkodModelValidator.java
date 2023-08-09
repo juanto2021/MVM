@@ -1274,22 +1274,17 @@ public abstract class KodkodModelValidator {
 			for (Map.Entry<Relation, TupleSet> entry : solution.instance().relationTuples().entrySet()) {
 				Relation key = entry.getKey();
 				TupleSet tupleSet= entry.getValue();
-//				System.out.println("entry key ["+key+"] value ["+tupleSet+"]");
 				// Buscar clases existentes
-
-				// Buscar atributos de cada clase
 				for (IClass oClass : model.classes()) {
 					String className = oClass.name();
 					if(key.name().equals(className)) {
 						System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
 					}
-//					System.out.println("mClass [" + oClass.name() + "] -> ["+oClass+"]");//JG
 
 					// Attributes
 					for (IAttribute oAttr : oClass.allAttributes()){
 						String attrName = oAttr.name();
 						String key_attr=className+"_"+attrName;
-//						System.out.println("oAttr [" + oAttr.name() + "] -> ["+oAttr+"]");//JG
 						if(key.name().equals(key_attr)) {
 							System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
 						}
