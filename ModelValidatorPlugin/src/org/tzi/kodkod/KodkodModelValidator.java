@@ -12,15 +12,14 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -28,15 +27,10 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-//
-import org.tzi.use.gui.main.*;
-//
-
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.config.IConfigurator;
 import org.tzi.kodkod.model.config.ITypeConfigurator;
-import org.tzi.kodkod.model.config.impl.ModelConfigurator;
 import org.tzi.kodkod.model.iface.IAttribute;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IElement;
@@ -50,8 +44,6 @@ import org.tzi.kodkod.model.type.IntegerType;
 import org.tzi.kodkod.model.type.PrimitiveTypeFactory;
 import org.tzi.kodkod.model.type.RealType;
 import org.tzi.kodkod.model.type.StringType;
-import org.tzi.kodkod.model.type.Type;
-import org.tzi.kodkod.model.type.TypeAtoms;
 import org.tzi.kodkod.model.type.TypeFactory;
 import org.tzi.mvm.CollectionBitSet;
 import org.tzi.mvm.Combination;
@@ -66,23 +58,20 @@ import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.api.UseApiException;
 import org.tzi.use.api.UseSystemApi;
 import org.tzi.use.config.Options;
+//
+//
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
-import org.tzi.use.gui.util.TextComponentWriter;
 import org.tzi.use.gui.views.ClassInvariantView;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.gui.views.evalbrowser.ExprEvalBrowser;
-import org.tzi.use.kodkod.plugin.KodkodValidateCmd;
 import org.tzi.use.kodkod.plugin.PluginModelFactory;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
-import org.tzi.use.kodkod.transform.ModelTransformator;
 import org.tzi.use.main.Session;
-import org.tzi.use.main.runtime.IRuntime;
 import org.tzi.use.main.shell.Shell;
 import org.tzi.use.parser.ocl.OCLCompiler;
-import org.tzi.use.parser.shell.ShellCommandCompiler;
 import org.tzi.use.uml.mm.MAssociation;
 import org.tzi.use.uml.mm.MAttribute;
 import org.tzi.use.uml.mm.MClass;
@@ -91,34 +80,28 @@ import org.tzi.use.uml.mm.MElementAnnotation;
 import org.tzi.use.uml.mm.MInvalidModelException;
 import org.tzi.use.uml.mm.MModel;
 import org.tzi.use.uml.mm.ModelFactory;
-import org.tzi.use.uml.ocl.expr.ExpAttrOp;
 import org.tzi.use.uml.ocl.expr.ExpStdOp;
-import org.tzi.use.uml.ocl.expr.ExpVariable;
 import org.tzi.use.uml.ocl.expr.Expression;
 import org.tzi.use.uml.ocl.expr.MultiplicityViolationException;
 import org.tzi.use.uml.ocl.type.EnumType;
-import org.tzi.use.uml.ocl.type.TypeImpl;
 import org.tzi.use.uml.ocl.value.Value;
 import org.tzi.use.uml.sys.MObject;
 import org.tzi.use.uml.sys.MSystemException;
 import org.tzi.use.uml.sys.MSystemState;
 import org.tzi.use.uml.sys.soil.MAttributeAssignmentStatement;
 import org.tzi.use.uml.sys.soil.MNewObjectStatement;
-import org.tzi.use.uml.sys.soil.MRValue;
-import org.tzi.use.util.NullPrintWriter;
 import org.tzi.use.util.StringUtil;
 import org.tzi.use.util.TeeWriter;
 import org.tzi.use.util.USEWriter;
 
 import kodkod.ast.Decl;
-import kodkod.ast.Formula;
 import kodkod.ast.IntToExprCast;
 import kodkod.ast.QuantifiedFormula;
+import kodkod.ast.Relation;
 import kodkod.engine.Evaluator;
 import kodkod.engine.Solution;
-import kodkod.engine.Solver;
 import kodkod.engine.Statistics;
-import kodkod.instance.Bounds;
+import kodkod.instance.TupleSet;
 
 /**
  * Abstract base class for all validation functionalities.
@@ -304,7 +287,7 @@ public abstract class KodkodModelValidator {
 		System.out.println("Showed");
 		return res;
 	}
-	
+
 	//Aqui3
 	// Test de llamadas a metodos
 
@@ -504,20 +487,20 @@ public abstract class KodkodModelValidator {
 
 	public boolean test_inv_state_dialog(MModel model) {
 		boolean res=false;
-//		ClassInvariantView civ = new ClassInvariantView(MainWindow.instance(),
-//				session.system());
-//		ViewFrame f = new ViewFrame("Class invariants", civ,
-//				"InvariantView.gif");
-//
-//		civ.setViewFrame(f);
-//		//		f.pack();
-//		JComponent c = (JComponent) f.getContentPane();
-//		c.setLayout(new BorderLayout());
-//		c.add(civ, BorderLayout.CENTER);
-//
-//		MainWindow.instance().addNewViewFrame(f);
-//		System.out.println("Showed");
-//		return res;
+		//		ClassInvariantView civ = new ClassInvariantView(MainWindow.instance(),
+		//				session.system());
+		//		ViewFrame f = new ViewFrame("Class invariants", civ,
+		//				"InvariantView.gif");
+		//
+		//		civ.setViewFrame(f);
+		//		//		f.pack();
+		//		JComponent c = (JComponent) f.getContentPane();
+		//		c.setLayout(new BorderLayout());
+		//		c.add(civ, BorderLayout.CENTER);
+		//
+		//		MainWindow.instance().addNewViewFrame(f);
+		//		System.out.println("Showed");
+		//		return res;
 		res=show_inv_state_dialog( model);
 		return res;
 	}
@@ -597,7 +580,7 @@ public abstract class KodkodModelValidator {
 				//				int nAnnotations = model.getAllAnnotations().size();
 				Map<String, MElementAnnotation> oAnnot = model.getAllAnnotations();
 				int nAnnotations = oAnnot.size();
-				// aqui4
+
 				// Annotations
 				for (Entry<String, MElementAnnotation> item : oAnnot.entrySet()){
 					String key = item.getKey();
@@ -615,7 +598,7 @@ public abstract class KodkodModelValidator {
 			// Crear IModel
 			//			IModel iModel =  PluginModelFactory.INSTANCE.getModel(mModel);
 			IModel iModel =  PluginModelFactory.INSTANCE.getModel(model);//Pruebas
-			//aqui5
+
 			//			IConfigurator<IModel> configurator = new ModelConfigurator(iModel);
 			//			iModel.setConfigurator(configurator);
 			Solution solution;
@@ -686,46 +669,46 @@ public abstract class KodkodModelValidator {
 			}
 		}
 
-//		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
-//		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");
-//		int OBJECTS_LARGE_SYSTEM = 100;
-//
-//		if (session.system().state().allObjects().size() > OBJECTS_LARGE_SYSTEM) {
-//
-//			int option = JOptionPane.showConfirmDialog(new JPanel(),
-//					"The current system state contains more then " + OBJECTS_LARGE_SYSTEM + " instances." +
-//							"This can slow down the object diagram.\r\nDo you want to start with an empty object diagram?",
-//							"Large system state", JOptionPane.YES_NO_OPTION);
-//
-//			if (option == JOptionPane.YES_OPTION) {
-//				odv.getDiagram().hideAll();
-//			}
-//		}
-//		JComponent c = (JComponent) f.getContentPane();
-//		c.setLayout(new BorderLayout());
-//		c.add(odv, BorderLayout.CENTER);
-//		int hSpace=130;
-//		int vSpace=130;
-//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
-//
-//		MainWindow.instance().addNewViewFrame(f);
-//		MainWindow.instance().getObjectDiagrams().add(odv);
-//
-//		tile();
-//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
-		
+		//		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
+		//		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");
+		//		int OBJECTS_LARGE_SYSTEM = 100;
+		//
+		//		if (session.system().state().allObjects().size() > OBJECTS_LARGE_SYSTEM) {
+		//
+		//			int option = JOptionPane.showConfirmDialog(new JPanel(),
+		//					"The current system state contains more then " + OBJECTS_LARGE_SYSTEM + " instances." +
+		//							"This can slow down the object diagram.\r\nDo you want to start with an empty object diagram?",
+		//							"Large system state", JOptionPane.YES_NO_OPTION);
+		//
+		//			if (option == JOptionPane.YES_OPTION) {
+		//				odv.getDiagram().hideAll();
+		//			}
+		//		}
+		//		JComponent c = (JComponent) f.getContentPane();
+		//		c.setLayout(new BorderLayout());
+		//		c.add(odv, BorderLayout.CENTER);
+		//		int hSpace=130;
+		//		int vSpace=130;
+		//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
+		//
+		//		MainWindow.instance().addNewViewFrame(f);
+		//		MainWindow.instance().getObjectDiagrams().add(odv);
+		//
+		//		tile();
+		//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
+
 		createObjectDiagramCreatorFrame(iModel, session ); 
 
 	}
 	private void createObjectDiagramCreatorFrame(IModel iModel, Session session ) {
-//		ObjectDiagramCreator odc = new ObjectDiagramCreator(iModel, session);// IModel, session	
-//		try {
-//			odc.create(solution.instance().relationTuples());
-//		} catch (UseApiException e) {
-//			if (!e.getMessage().contains("Link creation failed!")) {
-//				e.printStackTrace();
-//			}
-//		}
+		//		ObjectDiagramCreator odc = new ObjectDiagramCreator(iModel, session);// IModel, session	
+		//		try {
+		//			odc.create(solution.instance().relationTuples());
+		//		} catch (UseApiException e) {
+		//			if (!e.getMessage().contains("Link creation failed!")) {
+		//				e.printStackTrace();
+		//			}
+		//		}
 
 		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
 		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");
@@ -900,7 +883,7 @@ public abstract class KodkodModelValidator {
 					kodkod.ast.Expression oExp = oInt.expression();
 					Map<String, kodkod.ast.Expression> oMap = oInt.typeLiterals();
 					// for para Map
-					// AQUI2
+
 					for (Entry<String, kodkod.ast.Expression> item : oMap.entrySet()){
 						String key = item.getKey();
 						kodkod.ast.Expression exp = item.getValue();
@@ -990,31 +973,31 @@ public abstract class KodkodModelValidator {
 		// Provis comento lo siguiente
 		createObjectDiagramCreatorFrame(model, session ); 
 		test_inv_state_dialog(mModel);
-		
+
 		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
 		Shell sh = Shell.getInstance();
-				
+
 		String line = "!create p2 : Person";
 		sh.processLineSafely(line);
-		
+
 		line = "!create p3 : Person";
 		sh.processLineSafely(line);
-		
+
 		MainWindow.instance().revalidate();
-		
+
 		line = "!set p2.age:=10";
 		sh.processLineSafely(line);
-		
+
 		line = "!set p3.age:=30";
 		sh.processLineSafely(line);
-		
+
 		line = "check";
 		sh.processLineSafely(line);
 
 		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
-		
+
 		tile();
-		
+
 		//--
 
 
@@ -1253,9 +1236,71 @@ public abstract class KodkodModelValidator {
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(param);	
-		// Aqui4
+		// Aqui4 -- Provisional para mostrar diagrama de objetos y estado invariantes
 		createObjectDiagramCreatorFrame(iModel, session ); 
 		show_inv_state_dialog( mModel);
+		//aqui5
+		//--
+		// segun las combinaciones satisfiables, podrian obtenerse los valores de atributos que las hacen satisfiables.
+		//listSatisfiables
+		for (String sInv : listSatisfiables){
+
+			System.out.println("sInv ["+sInv+"]");
+			// Si llamamos a Sover, podremos recuperar valores
+			//			Solution solution=null;
+			//			KodkodSolver kodkodSolver = new KodkodSolver();
+			//			try {
+			//				solution = calcular( sInv,  invClassTotal);
+			////				solution.instance().relationTuples().
+			//				for (Map.Entry<Relation, TupleSet> entry : solution.instance().relationTuples().entrySet()) {
+			//					System.out.println("entry key ["+entry.getKey()+"] value ["+entry.getValue()+"]");
+			//				}
+			//				System.out.println("solution["+solution.outcome().toString()+"]");
+			//
+			//			} catch (Exception e) {
+			//				e.printStackTrace();
+			//			}
+			analyzeValuesSAT(sInv);
+		}
+		//--
+	}
+
+	private void analyzeValuesSAT(String combination) {
+
+		Solution solution=null;
+		try {
+			solution = calcular( combination,  invClassTotal);
+			System.out.println("solution["+solution.sat()+"]");
+			for (Map.Entry<Relation, TupleSet> entry : solution.instance().relationTuples().entrySet()) {
+				Relation key = entry.getKey();
+				TupleSet tupleSet= entry.getValue();
+//				System.out.println("entry key ["+key+"] value ["+tupleSet+"]");
+				// Buscar clases existentes
+
+				// Buscar atributos de cada clase
+				for (IClass oClass : model.classes()) {
+					String className = oClass.name();
+					if(key.name().equals(className)) {
+						System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
+					}
+//					System.out.println("mClass [" + oClass.name() + "] -> ["+oClass+"]");//JG
+
+					// Attributes
+					for (IAttribute oAttr : oClass.allAttributes()){
+						String attrName = oAttr.name();
+						String key_attr=className+"_"+attrName;
+//						System.out.println("oAttr [" + oAttr.name() + "] -> ["+oAttr+"]");//JG
+						if(key.name().equals(key_attr)) {
+							System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
+						}
+					}
+				}
+			}
+			System.out.println("solution["+solution.outcome().toString()+"]");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static List<String> combListBitSetStr(List<BitSet> lBitSetV){
