@@ -288,7 +288,7 @@ public abstract class KodkodModelValidator {
 		return res;
 	}
 
-	//Aqui3
+	
 	// Test de llamadas a metodos
 
 	public void test_call_methods(MModel model, IModel iModelOri) {
@@ -967,36 +967,36 @@ public abstract class KodkodModelValidator {
 		// -- Pruebas de creacion
 		//ProvisJG
 		//		test_creation(mModel,model);
-		//AQUI3
+		
 		//		test_call_methods(mModel,model);
 
 		// Provis comento lo siguiente
-		createObjectDiagramCreatorFrame(model, session ); 
-		test_inv_state_dialog(mModel);
-
-		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
-		Shell sh = Shell.getInstance();
-
-		String line = "!create p2 : Person";
-		sh.processLineSafely(line);
-
-		line = "!create p3 : Person";
-		sh.processLineSafely(line);
-
-		MainWindow.instance().revalidate();
-
-		line = "!set p2.age:=10";
-		sh.processLineSafely(line);
-
-		line = "!set p3.age:=30";
-		sh.processLineSafely(line);
-
-		line = "check";
-		sh.processLineSafely(line);
-
-		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
-
-		tile();
+//		createObjectDiagramCreatorFrame(model, session ); 
+//		test_inv_state_dialog(mModel);
+//
+//		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
+//		Shell sh = Shell.getInstance();
+//
+//		String line = "!create p2 : Person";
+//		sh.processLineSafely(line);
+//
+//		line = "!create p3 : Person";
+//		sh.processLineSafely(line);
+//
+//		MainWindow.instance().revalidate();
+//
+//		line = "!set p2.age:=10";
+//		sh.processLineSafely(line);
+//
+//		line = "!set p3.age:=30";
+//		sh.processLineSafely(line);
+//
+//		line = "check";
+//		sh.processLineSafely(line);
+//
+//		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
+//
+//		tile();
 
 		//--
 
@@ -1236,10 +1236,11 @@ public abstract class KodkodModelValidator {
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(param);	
-		// Aqui4 -- Provisional para mostrar diagrama de objetos y estado invariantes
-		createObjectDiagramCreatorFrame(iModel, session ); 
-		show_inv_state_dialog( mModel);
-		//aqui5
+		//Aqui1
+		// -- Provisional para mostrar diagrama de objetos y estado invariantes
+//		createObjectDiagramCreatorFrame(iModel, session ); 
+//		show_inv_state_dialog( mModel);
+		
 		//--
 		// segun las combinaciones satisfiables, podrian obtenerse los valores de atributos que las hacen satisfiables.
 		//listSatisfiables
@@ -1262,6 +1263,30 @@ public abstract class KodkodModelValidator {
 			//			}
 			analyzeValuesSAT(sInv);
 		}
+		//--
+		System.out.println("IInvariant ----------------------------------------------------");
+		for (IInvariant invClass: invClassTotal) {
+			System.out.println("invClass name["+invClass.name()+"]");
+			System.out.println("formula ["+invClass.formula()+"]");
+			
+			System.out.println("relation ["+invClass.clazz().relation().name()+"]");
+		}
+		System.out.println("");
+		System.out.println("MClassInvariant -----------------------------------------------");
+		for (MClassInvariant mc:mModel.classInvariants() ) {
+			System.out.println("MclassInvariants mc ["+mc+"]");
+			System.out.println("   MclassInvariants name ["+mc.name()+"]");
+//			System.out.println("MClassInvariant name["+mc.name()+"]");
+			System.out.println("   MClassInvariant bodyExpression["+mc.bodyExpression()+"]");
+			Expression exp = (Expression) mc.bodyExpression();
+			System.out.println("  exp.type ["+exp.type()+"]");
+			System.out.println("  exp.getClass().getName() ["+exp.getClass().getName()+"]");
+			System.out.println("  exp.getClass().getCanonicalName() ["+exp.getClass().getCanonicalName()+"]");
+			Class<? extends Expression> cl = exp.getClass(); 
+			System.out.println(" ya");
+		}
+		System.out.println("");
+		
 		//--
 	}
 
@@ -1692,7 +1717,7 @@ public abstract class KodkodModelValidator {
 	 * @param start
 	 * @throws Exception
 	 */
-	//Aqui1
+	
 	private void calculateInBackGroundCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
 			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
 		// Lanzar el bruteforce pero ya con greedy calculado
@@ -1810,7 +1835,7 @@ public abstract class KodkodModelValidator {
 	//
 	//		System.out.println("                                                    Calculo ["+cmbCal+"] NO Calculo ["+cmbNoCal+"]");
 	//		Instant end5 = Instant.now();
-	//		// Aqui5
+	//		
 	//		Duration timeElapsed = Duration.between(start5, end5);
 	//		AddLogTime("Fin calculo resto Greedy (2)",timeElapsed);
 	//
