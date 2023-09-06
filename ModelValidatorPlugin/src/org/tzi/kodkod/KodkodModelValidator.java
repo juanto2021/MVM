@@ -288,7 +288,7 @@ public abstract class KodkodModelValidator {
 		return res;
 	}
 
-	
+
 	// Test de llamadas a metodos
 
 	public void test_call_methods(MModel model, IModel iModelOri) {
@@ -967,36 +967,36 @@ public abstract class KodkodModelValidator {
 		// -- Pruebas de creacion
 		//ProvisJG
 		//		test_creation(mModel,model);
-		
+
 		//		test_call_methods(mModel,model);
 
 		// Provis comento lo siguiente
-//		createObjectDiagramCreatorFrame(model, session ); 
-//		test_inv_state_dialog(mModel);
-//
-//		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
-//		Shell sh = Shell.getInstance();
-//
-//		String line = "!create p2 : Person";
-//		sh.processLineSafely(line);
-//
-//		line = "!create p3 : Person";
-//		sh.processLineSafely(line);
-//
-//		MainWindow.instance().revalidate();
-//
-//		line = "!set p2.age:=10";
-//		sh.processLineSafely(line);
-//
-//		line = "!set p3.age:=30";
-//		sh.processLineSafely(line);
-//
-//		line = "check";
-//		sh.processLineSafely(line);
-//
-//		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
-//
-//		tile();
+		//		createObjectDiagramCreatorFrame(model, session ); 
+		//		test_inv_state_dialog(mModel);
+		//
+		//		Shell.createInstance(session, MainWindow.instance().getfPluginRuntime());
+		//		Shell sh = Shell.getInstance();
+		//
+		//		String line = "!create p2 : Person";
+		//		sh.processLineSafely(line);
+		//
+		//		line = "!create p3 : Person";
+		//		sh.processLineSafely(line);
+		//
+		//		MainWindow.instance().revalidate();
+		//
+		//		line = "!set p2.age:=10";
+		//		sh.processLineSafely(line);
+		//
+		//		line = "!set p3.age:=30";
+		//		sh.processLineSafely(line);
+		//
+		//		line = "check";
+		//		sh.processLineSafely(line);
+		//
+		//		Options.quiet=true; // Para que no grabe historico y falle por null en la clase Shell
+		//
+		//		tile();
 
 		//--
 
@@ -1238,29 +1238,14 @@ public abstract class KodkodModelValidator {
 				new ValidatorMVMDialogSimple(param);	
 		//Aqui1
 		// -- Provisional para mostrar diagrama de objetos y estado invariantes
-//		createObjectDiagramCreatorFrame(iModel, session ); 
-//		show_inv_state_dialog( mModel);
-		
+		//		createObjectDiagramCreatorFrame(iModel, session ); 
+		//		show_inv_state_dialog( mModel);
+
 		//--
 		// segun las combinaciones satisfiables, podrian obtenerse los valores de atributos que las hacen satisfiables.
 		//listSatisfiables
 		for (String sInv : listSatisfiables){
-
 			System.out.println("sInv ["+sInv+"]");
-			// Si llamamos a Sover, podremos recuperar valores
-			//			Solution solution=null;
-			//			KodkodSolver kodkodSolver = new KodkodSolver();
-			//			try {
-			//				solution = calcular( sInv,  invClassTotal);
-			////				solution.instance().relationTuples().
-			//				for (Map.Entry<Relation, TupleSet> entry : solution.instance().relationTuples().entrySet()) {
-			//					System.out.println("entry key ["+entry.getKey()+"] value ["+entry.getValue()+"]");
-			//				}
-			//				System.out.println("solution["+solution.outcome().toString()+"]");
-			//
-			//			} catch (Exception e) {
-			//				e.printStackTrace();
-			//			}
 			analyzeValuesSAT(sInv);
 		}
 		//--
@@ -1268,15 +1253,21 @@ public abstract class KodkodModelValidator {
 		for (IInvariant invClass: invClassTotal) {
 			System.out.println("invClass name["+invClass.name()+"]");
 			System.out.println("formula ["+invClass.formula()+"]");
-			
+
 			System.out.println("relation ["+invClass.clazz().relation().name()+"]");
 		}
+		// Analiza cierta informacion sobre invariantes (nombre, bodyExpression)
+		analyzeInfoInv(mModel);
+		//--
+	}
+
+	private void analyzeInfoInv(MModel mModel) {
 		System.out.println("");
 		System.out.println("MClassInvariant -----------------------------------------------");
 		for (MClassInvariant mc:mModel.classInvariants() ) {
 			System.out.println("MclassInvariants mc ["+mc+"]");
 			System.out.println("   MclassInvariants name ["+mc.name()+"]");
-//			System.out.println("MClassInvariant name["+mc.name()+"]");
+			//			System.out.println("MClassInvariant name["+mc.name()+"]");
 			System.out.println("   MClassInvariant bodyExpression["+mc.bodyExpression()+"]");
 			Expression exp = (Expression) mc.bodyExpression();
 			System.out.println("  exp.type ["+exp.type()+"]");
@@ -1286,8 +1277,6 @@ public abstract class KodkodModelValidator {
 			System.out.println(" ya");
 		}
 		System.out.println("");
-		
-		//--
 	}
 
 	private void analyzeValuesSAT(String combination) {
@@ -1717,7 +1706,7 @@ public abstract class KodkodModelValidator {
 	 * @param start
 	 * @throws Exception
 	 */
-	
+
 	private void calculateInBackGroundCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
 			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
 		// Lanzar el bruteforce pero ya con greedy calculado
