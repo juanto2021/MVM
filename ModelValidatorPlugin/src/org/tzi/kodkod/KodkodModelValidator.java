@@ -84,6 +84,8 @@ import org.tzi.use.uml.ocl.expr.ExpStdOp;
 import org.tzi.use.uml.ocl.expr.Expression;
 import org.tzi.use.uml.ocl.expr.MultiplicityViolationException;
 import org.tzi.use.uml.ocl.type.EnumType;
+import org.tzi.use.uml.ocl.type.OclAnyType;
+import org.tzi.use.uml.ocl.type.Type;
 import org.tzi.use.uml.ocl.value.Value;
 import org.tzi.use.uml.sys.MObject;
 import org.tzi.use.uml.sys.MSystemException;
@@ -1248,14 +1250,17 @@ public abstract class KodkodModelValidator {
 			System.out.println("sInv ["+sInv+"]");
 			analyzeValuesSAT(sInv);
 		}
-		//--
-		System.out.println("IInvariant ----------------------------------------------------");
-		for (IInvariant invClass: invClassTotal) {
-			System.out.println("invClass name["+invClass.name()+"]");
-			System.out.println("formula ["+invClass.formula()+"]");
 
-			System.out.println("relation ["+invClass.clazz().relation().name()+"]");
-		}
+		// Muestra formulas Alloy
+		dispFormulasAlloy();
+		//--
+		//		System.out.println("IInvariant ----------------------------------------------------");
+		//		for (IInvariant invClass: invClassTotal) {
+		//			System.out.println("  invClass name["+invClass.name()+"]");
+		//			System.out.println("    formula ["+invClass.formula()+"]");
+		//
+		//			System.out.println("    relation ["+invClass.clazz().relation().name()+"]");
+		//		}
 		// Analiza cierta informacion sobre invariantes (nombre, bodyExpression)
 		analyzeInfoInv(mModel);
 		//--
@@ -1263,24 +1268,66 @@ public abstract class KodkodModelValidator {
 
 	private void analyzeInfoInv(MModel mModel) {
 		System.out.println("");
+		System.out.println("**************");
+		System.out.println("analyzeInfoInv");
+		System.out.println("**************");
 		System.out.println("MClassInvariant -----------------------------------------------");
 		for (MClassInvariant mc:mModel.classInvariants() ) {
-			System.out.println("MclassInvariants mc ["+mc+"]");
-			System.out.println("   MclassInvariants name ["+mc.name()+"]");
-			//			System.out.println("MClassInvariant name["+mc.name()+"]");
-			System.out.println("   MClassInvariant bodyExpression["+mc.bodyExpression()+"]");
-			Expression exp = (Expression) mc.bodyExpression();
-			System.out.println("  exp.type ["+exp.type()+"]");
-			System.out.println("  exp.getClass().getName() ["+exp.getClass().getName()+"]");
-			System.out.println("  exp.getClass().getCanonicalName() ["+exp.getClass().getCanonicalName()+"]");
+			System.out.println("");
+			System.out.println("  MclassInvariants mc ["+mc+"]");
+			System.out.println("     MclassInvariants name ["+mc.name()+"]");
+//			System.out.println("     MClassInvariant bodyExpression["+mc.bodyExpression()+"]");
+			//			Expression exp = (Expression) mc.bodyExpression();
+			ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
+			analyzeExpression(1,exp);
 			Class<? extends Expression> cl = exp.getClass(); 
-			System.out.println(" ya");
 		}
 		System.out.println("");
 	}
+	private void analyzeExpression(int nSpc,ExpStdOp exp) {
+		String indentSpc = fabSpc(nSpc);
+		System.out.println(indentSpc + "("+nSpc+")   Analiza bodyExpression [" + exp+"]");
+		System.out.println(indentSpc + "      exp.opname ["+exp.opname()+"]");
+		System.out.println(indentSpc + "      exp.Args -----------------");
+		for (Expression arg:exp.args() ) {
+			System.out.println(indentSpc + "        exp.arg ["+arg.toString() +"] arg.type ["+arg.type()+"]");
+			if (arg.type().isTypeOfBoolean()) {
+				System.out.println(indentSpc + "       arg.type.isTypeOfBoolean ["+arg.type().isTypeOfBoolean()+"]");
+				analyzeExpression(nSpc+1,(ExpStdOp) arg);
+			}
+		}
+		
+		System.out.println(indentSpc + "      exp.type ["+exp.type()+"]");
+		System.out.println(indentSpc + "      exp.getClass().getName() ["+exp.getClass().getName()+"]");
+		System.out.println(indentSpc + "      exp.getClass().getCanonicalName() ["+exp.getClass().getCanonicalName()+"]");
+
+	}
+	private String fabSpc(int nSpc) {
+		String spc="";
+		for (int n=0;n<nSpc*4;n++) {
+			spc+=" ";
+		}
+		return spc;
+	}
+	private void dispFormulasAlloy() {
+		System.out.println("");
+		System.out.println("*****************");
+		System.out.println("dispFormulasAlloy");
+		System.out.println("*****************");
+		System.out.println("IInvariant ----------------------------------------------------");
+		for (IInvariant invClass: invClassTotal) {
+			System.out.println("  invClass name["+invClass.name()+"]");
+			System.out.println("    formula ["+invClass.formula()+"]");
+
+			System.out.println("    relation ["+invClass.clazz().relation().name()+"]");
+		}
+	}
 
 	private void analyzeValuesSAT(String combination) {
-
+		System.out.println("");
+		System.out.println("****************");
+		System.out.println("analyzeValuesSAT");
+		System.out.println("****************");
 		Solution solution=null;
 		try {
 			solution = calcular( combination,  invClassTotal);
@@ -1306,7 +1353,7 @@ public abstract class KodkodModelValidator {
 				}
 			}
 			System.out.println("solution["+solution.outcome().toString()+"]");
-
+			System.out.println("-------------------------------------------");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
