@@ -80,6 +80,7 @@ import org.tzi.use.uml.mm.MElementAnnotation;
 import org.tzi.use.uml.mm.MInvalidModelException;
 import org.tzi.use.uml.mm.MModel;
 import org.tzi.use.uml.mm.ModelFactory;
+import org.tzi.use.uml.ocl.expr.ExpForAll;
 import org.tzi.use.uml.ocl.expr.ExpStdOp;
 import org.tzi.use.uml.ocl.expr.Expression;
 import org.tzi.use.uml.ocl.expr.MultiplicityViolationException;
@@ -1265,7 +1266,7 @@ public abstract class KodkodModelValidator {
 		analyzeInfoInv(mModel);
 		//--
 	}
-
+	//aqui1
 	private void analyzeInfoInv(MModel mModel) {
 		System.out.println("");
 		System.out.println("**************");
@@ -1276,15 +1277,42 @@ public abstract class KodkodModelValidator {
 			System.out.println("");
 			System.out.println("  MclassInvariants mc ["+mc+"]");
 			System.out.println("     MclassInvariants name ["+mc.name()+"]");
-//			System.out.println("     MClassInvariant bodyExpression["+mc.bodyExpression()+"]");
+			//			System.out.println("     MClassInvariant bodyExpression["+mc.bodyExpression()+"]");
 			//			Expression exp = (Expression) mc.bodyExpression();
-			ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
-			analyzeExpression(1,exp);
-			Class<? extends Expression> cl = exp.getClass(); 
+			System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
+			if (mc.bodyExpression().type().isTypeOfBoolean()) {
+				System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
+			}
+			//			if (mc.bodyExpression().) {
+			//				ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
+			//			else {	
+			//			}
+			System.out.println("mc.expandedExpression() [" + mc.expandedExpression() + "]");
+			Expression expIni = mc.bodyExpression();
+			Class<? extends Expression> cl = expIni.getClass(); 
+			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
+			System.out.println("cl.getName() [" + cl.getName() + "]");
+			System.out.println("cl.descriptorString() [" + cl.descriptorString() + "]");
+			System.out.println("cl.getSimpleName() [" + cl.getSimpleName() + "]");
+			System.out.println("cl.getCanonicalName() [" + cl.getCanonicalName() + "]");
+			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
+
+			Expression expExpanded = mc.expandedExpression();
+
+			System.out.println("expIni.name() [" + expIni.name() + "]");
+			String simpleName = cl.getSimpleName();
+			if (simpleName.equals("ExpForAll")) {
+				ExpForAll exp = (ExpForAll) mc.bodyExpression();
+				System.out.println("exp.name() [" + exp.name() + "]");
+			}else {
+				ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
+				analyzeExpStdOp(1,exp);
+			}
+			
 		}
 		System.out.println("");
 	}
-	private void analyzeExpression(int nSpc,ExpStdOp exp) {
+	private void analyzeExpStdOp(int nSpc,ExpStdOp exp) {
 		String indentSpc = fabSpc(nSpc);
 		System.out.println(indentSpc + "("+nSpc+")   Analiza bodyExpression [" + exp+"]");
 		System.out.println(indentSpc + "      exp.opname ["+exp.opname()+"]");
@@ -1293,10 +1321,10 @@ public abstract class KodkodModelValidator {
 			System.out.println(indentSpc + "        exp.arg ["+arg.toString() +"] arg.type ["+arg.type()+"]");
 			if (arg.type().isTypeOfBoolean()) {
 				System.out.println(indentSpc + "       arg.type.isTypeOfBoolean ["+arg.type().isTypeOfBoolean()+"]");
-				analyzeExpression(nSpc+1,(ExpStdOp) arg);
+				analyzeExpStdOp(nSpc+1,(ExpStdOp) arg);
 			}
 		}
-		
+
 		System.out.println(indentSpc + "      exp.type ["+exp.type()+"]");
 		System.out.println(indentSpc + "      exp.getClass().getName() ["+exp.getClass().getName()+"]");
 		System.out.println(indentSpc + "      exp.getClass().getCanonicalName() ["+exp.getClass().getCanonicalName()+"]");
