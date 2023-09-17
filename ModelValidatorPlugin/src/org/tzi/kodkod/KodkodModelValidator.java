@@ -1292,7 +1292,7 @@ public abstract class KodkodModelValidator {
 			Class<? extends Expression> cl = expIni.getClass(); 
 			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
 			System.out.println("cl.getName() [" + cl.getName() + "]");
-			System.out.println("cl.descriptorString() [" + cl.descriptorString() + "]");
+//			System.out.println("cl.descriptorString() [" + cl.descriptorString() + "]");
 			System.out.println("cl.getSimpleName() [" + cl.getSimpleName() + "]");
 			System.out.println("cl.getCanonicalName() [" + cl.getCanonicalName() + "]");
 			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
