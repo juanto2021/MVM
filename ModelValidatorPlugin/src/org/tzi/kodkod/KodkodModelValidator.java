@@ -1239,18 +1239,20 @@ public abstract class KodkodModelValidator {
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(param);	
-		//Aqui1
+		//
 		// -- Provisional para mostrar diagrama de objetos y estado invariantes
 		//		createObjectDiagramCreatorFrame(iModel, session ); 
 		//		show_inv_state_dialog( mModel);
 
 		//--
+		
 		// segun las combinaciones satisfiables, podrian obtenerse los valores de atributos que las hacen satisfiables.
 		//listSatisfiables
-		for (String sInv : listSatisfiables){
-			System.out.println("sInv ["+sInv+"]");
-			analyzeValuesSAT(sInv);
-		}
+		
+//		for (String sInv : listSatisfiables){
+//			System.out.println("sInv ["+sInv+"]");
+//			analyzeValuesSAT(sInv);
+//		}
 
 		// Muestra formulas Alloy
 		dispFormulasAlloy();
@@ -1263,9 +1265,32 @@ public abstract class KodkodModelValidator {
 		//			System.out.println("    relation ["+invClass.clazz().relation().name()+"]");
 		//		}
 		// Analiza cierta informacion sobre invariantes (nombre, bodyExpression)
-		analyzeInfoInv(mModel);
+//		analyzeInfoInv(mModel);//provis
 		//--
+		analyzeUnsatCmb();
+		System.out.println("ya");
 	}
+	//Aqui1
+	private void analyzeUnsatCmb() {
+		for (String combination : listUnSatisfiables){
+			System.out.println("Cmb Unsat ["+combination+"]");
+			List<IInvariant> listInv = new ArrayList<IInvariant>();
+			String[] invs = combination.split("-");	
+			for (String invStrID: invs) {
+				int invID=Integer.parseInt(invStrID);  
+				IInvariant invII = (IInvariant) tabInv[invID-1];
+				MClassInvariant invMC = (MClassInvariant) tabInvMClass[invID-1];
+				System.out.println("invII ["+invID + "] name ["+invII.name()+"]");
+				System.out.println("invMC ["+invID + "] name ["+invMC.name()+"]");
+				System.out.println("Class ["+invMC.cls().name()+"] Position ["+invMC.getPositionInModel()+"]");
+				
+				
+				listInv.add(invII);				
+			}
+		
+		}
+	}
+	
 	//aqui1
 	private void analyzeInfoInv(MModel mModel) {
 		System.out.println("");
