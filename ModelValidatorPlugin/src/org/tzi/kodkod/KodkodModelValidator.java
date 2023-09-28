@@ -659,7 +659,6 @@ public abstract class KodkodModelValidator {
 			e1.printStackTrace();
 		}
 
-
 	}
 
 	private void createObjectDiagramCreator(IModel iModel, Session session,Solution solution ) {
@@ -671,47 +670,11 @@ public abstract class KodkodModelValidator {
 				e.printStackTrace();
 			}
 		}
-
-		//		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
-		//		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");
-		//		int OBJECTS_LARGE_SYSTEM = 100;
-		//
-		//		if (session.system().state().allObjects().size() > OBJECTS_LARGE_SYSTEM) {
-		//
-		//			int option = JOptionPane.showConfirmDialog(new JPanel(),
-		//					"The current system state contains more then " + OBJECTS_LARGE_SYSTEM + " instances." +
-		//							"This can slow down the object diagram.\r\nDo you want to start with an empty object diagram?",
-		//							"Large system state", JOptionPane.YES_NO_OPTION);
-		//
-		//			if (option == JOptionPane.YES_OPTION) {
-		//				odv.getDiagram().hideAll();
-		//			}
-		//		}
-		//		JComponent c = (JComponent) f.getContentPane();
-		//		c.setLayout(new BorderLayout());
-		//		c.add(odv, BorderLayout.CENTER);
-		//		int hSpace=130;
-		//		int vSpace=130;
-		//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
-		//
-		//		MainWindow.instance().addNewViewFrame(f);
-		//		MainWindow.instance().getObjectDiagrams().add(odv);
-		//
-		//		tile();
-		//		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, true);
-
+	
 		createObjectDiagramCreatorFrame(iModel, session ); 
 
 	}
 	private void createObjectDiagramCreatorFrame(IModel iModel, Session session ) {
-		//		ObjectDiagramCreator odc = new ObjectDiagramCreator(iModel, session);// IModel, session	
-		//		try {
-		//			odc.create(solution.instance().relationTuples());
-		//		} catch (UseApiException e) {
-		//			if (!e.getMessage().contains("Link creation failed!")) {
-		//				e.printStackTrace();
-		//			}
-		//		}
 
 		NewObjectDiagramView odv = new NewObjectDiagramView(MainWindow.instance(), session.system());
 		ViewFrame f = new ViewFrame("Object diagram ("+iModel.name()+")", odv, "ObjectDiagram.gif");

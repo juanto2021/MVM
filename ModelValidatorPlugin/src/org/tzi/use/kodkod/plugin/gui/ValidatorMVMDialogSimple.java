@@ -52,6 +52,7 @@ import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.api.UseApiException;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
+import org.tzi.use.gui.views.ObjectPropertiesView;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
@@ -806,7 +807,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						if (solution.outcome().toString() == "SATISFIABLE") {
 							Session session = kodParent.getSession();
 							try {
+								// Aqui1
 								createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
+								createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
+								tile();
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -1315,6 +1319,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		tile();
 		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, rootPaneCheckingEnabled);
 
+	}
+	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
+//		ObjectPropertiesView o = parent.showMVMWizard();
+		parent.showMVMWizard();
 	}
 
 	/**
