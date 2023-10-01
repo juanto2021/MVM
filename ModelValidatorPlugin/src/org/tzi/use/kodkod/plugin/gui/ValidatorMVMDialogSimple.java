@@ -53,6 +53,7 @@ import org.tzi.use.api.UseApiException;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
 import org.tzi.use.gui.views.ObjectPropertiesView;
+import org.tzi.use.gui.views.WizardMVMView;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
@@ -1321,8 +1322,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
-//		ObjectPropertiesView o = parent.showMVMWizard();
-		parent.showMVMWizard();
+		WizardMVMView o = parent.showMVMWizard();
+//		parent.showMVMWizard();
 	}
 
 	/**
