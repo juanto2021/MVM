@@ -809,7 +809,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 							Session session = kodParent.getSession();
 							try {
 								// Aqui1
-								createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
+								NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
 								createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
 								tile();
 							} catch (Exception e) {
@@ -949,7 +949,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						if (solution.outcome().toString() == "SATISFIABLE") {
 							Session session = kodParent.getSession();
 							try {
-								createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
+								NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -1282,7 +1282,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * @param iModel
 	 * @param session
 	 */
-	private void createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
+	private NewObjectDiagramView createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
 		ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session	
 		try {
 			odc.create(solution.instance().relationTuples());
@@ -1320,6 +1320,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		tile();
 		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, rootPaneCheckingEnabled);
 
+		return odv;
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
 		WizardMVMView o = parent.showMVMWizard();
