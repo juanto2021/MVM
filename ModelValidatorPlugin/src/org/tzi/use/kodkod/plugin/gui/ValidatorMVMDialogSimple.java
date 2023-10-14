@@ -70,6 +70,8 @@ import kodkod.engine.Solution;
 public class ValidatorMVMDialogSimple extends JDialog {
 
 	private static final long serialVersionUID = 1L;
+	private static final String NAMEFRAMEMVMDIAGRAM = "MVM";
+	private static final String NAMEFRAMEMVMWIZARD = "MVMWizard";
 	JFrame frame;  
 	String strCmbSel=null;
 	String strCmb=null;
@@ -809,8 +811,29 @@ public class ValidatorMVMDialogSimple extends JDialog {
 							Session session = kodParent.getSession();
 							try {
 								// Aqui1
-								NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
-								createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
+								// Ver frames
+								JDesktopPane fDesk = parent.getFdesk();
+								JInternalFrame[] allframes = fDesk.getAllFrames();
+								boolean existDiagram=false;
+								boolean existWizard=false;
+								for (JInternalFrame ifr: allframes) {
+									if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+										existDiagram=true;
+										continue;
+									}
+									if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
+										existWizard=true;
+										continue;
+									}
+								}
+								if (!existDiagram) {
+									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
+									odv.setName(NAMEFRAMEMVMDIAGRAM);
+								}
+								if (!existWizard) {
+									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
+								}
+
 								tile();
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -949,7 +972,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						if (solution.outcome().toString() == "SATISFIABLE") {
 							Session session = kodParent.getSession();
 							try {
+								// Busqueda de todos los diagramas mostrados
+
 								NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
+								odv.setName("MVM");
+
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -1294,6 +1321,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		NewObjectDiagramView odv = new NewObjectDiagramView(parent, session.system());
 		ViewFrame f = new ViewFrame("Object diagram ("+combinacion+")", odv, "ObjectDiagram.gif");
+		f.setName("MVM");
 		int OBJECTS_LARGE_SYSTEM = 100;
 
 		if (session.system().state().allObjects().size() > OBJECTS_LARGE_SYSTEM) {
@@ -1323,8 +1351,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		return odv;
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
-		WizardMVMView o = parent.showMVMWizard();
-//		parent.showMVMWizard();
+		WizardMVMView o = parent.showMVMWizard("MVMWizard");
+		//		o.setName("MVMWizard");
+		//		o.setFrameName( "MVMWizard");
+		//		parent.showMVMWizard();
 	}
 
 	/**
