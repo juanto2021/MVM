@@ -181,6 +181,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 	int numberIter=1;
 
+	boolean existDiagram=false;
+	boolean existWizard=false;
+
 	//	public ValidatorMVMDialogSimple(final MainWindow parent, 
 	//			KodkodModelValidator kodParent,
 	//			Collection<IInvariant> pListInvSatisfiables, 
@@ -810,22 +813,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						if (solution.outcome().toString() == "SATISFIABLE") {
 							Session session = kodParent.getSession();
 							try {
-								// Aqui1
-								// Ver frames
-								JDesktopPane fDesk = parent.getFdesk();
-								JInternalFrame[] allframes = fDesk.getAllFrames();
-								boolean existDiagram=false;
-								boolean existWizard=false;
-								for (JInternalFrame ifr: allframes) {
-									if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
-										existDiagram=true;
-										continue;
-									}
-									if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
-										existWizard=true;
-										continue;
-									}
-								}
+								checkExistDiagram();
 								if (!existDiagram) {
 									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
 									odv.setName(NAMEFRAMEMVMDIAGRAM);
@@ -905,6 +893,23 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		actMakeErrorsCtrls();
 		return;
 	}
+	private void checkExistDiagram() {
+		existDiagram=false;
+		existWizard=false; 
+//		Ver frames
+		JDesktopPane fDesk = parent.getFdesk();
+		JInternalFrame[] allframes = fDesk.getAllFrames();
+		for (JInternalFrame ifr: allframes) {
+			if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+				existDiagram=true;
+//				continue;
+			}
+			if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
+				existWizard=true;
+//				continue;
+			}
+		}
+	}
 
 	/**
 	 * Build panel of best solutions
@@ -974,8 +979,22 @@ public class ValidatorMVMDialogSimple extends JDialog {
 							try {
 								// Busqueda de todos los diagramas mostrados
 
-								NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
-								odv.setName("MVM");
+//								NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
+//								odv.setName("MVM");
+								//---
+								checkExistDiagram();
+								if (!existDiagram) {
+									NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
+									odv.setName(NAMEFRAMEMVMDIAGRAM);
+								}
+								if (!existWizard) {
+									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
+								}
+
+								tile();
+								
+								//--
+								
 
 							} catch (Exception e) {
 								e.printStackTrace();
