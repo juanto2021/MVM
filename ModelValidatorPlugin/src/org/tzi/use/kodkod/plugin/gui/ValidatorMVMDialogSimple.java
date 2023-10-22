@@ -657,7 +657,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		scrollPaneErr = new JScrollPane (lCombisErr,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
 		lCombisErr.setSelectedIndex(0);
-		strCmb="";
+		strCmb="-";
 		if (lUNSAT.size()>0) {
 			strCmb = lCombisErr.getSelectedValue().trim();
 		}
@@ -727,7 +727,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		lNames = new JList<String>(lNamesInv);
 
-		scrollPaneNameErr = new JScrollPane (lNames,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		scrollPaneNameErr = new JScrollPane (lNames, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 		
 
 		// Evento clic
