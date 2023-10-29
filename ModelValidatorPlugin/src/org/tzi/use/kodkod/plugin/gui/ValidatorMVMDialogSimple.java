@@ -184,22 +184,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	boolean existDiagram=false;
 	boolean existWizard=false;
 
-	//	public ValidatorMVMDialogSimple(final MainWindow parent, 
-	//			KodkodModelValidator kodParent,
-	//			Collection<IInvariant> pListInvSatisfiables, 
-	//			Collection<IInvariant> pListInvUnSatisfiables,
-	//			Collection<IInvariant> pListInvOthers,
-	//			List<String> pListStrSatisfiables,
-	//			List<String> pListStrUnSatisfiables,
-	//			HashMap<String, ResInv> pMapInvRes,
-	//			MModel mModel,
-	//			Collection<IInvariant> pInvClassTotal ,
-	//			Duration timeElapsed,
-	//			int pNumCallSolver,
-	//			int pNumCallSolverSAT,
-	//			int pNumCallSolverUNSAT,
-	//			String tipoSearchMSS,
-	//			int pNumberIter, ParamDialogValidator param) {
 	public ValidatorMVMDialogSimple(ParamDialogValidator param) {	
 
 		this.parent=param.getParent();
@@ -218,7 +202,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		this.numberIter=param.getNumberIter();
 
-		//		this.mapInvRes = param.getMapInvRes();
 		this.tabInv = param.getTabInv();
 		this.tabInvMClass = param.getTabInvMClass();
 		this.timeElapsed = param.getTimeElapsed();
@@ -241,7 +224,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbTextOCLSat = new JLabel("OCL for inv.: ---", SwingConstants.CENTER);
 
 		mapInvSAT = new HashMap<>();
-		//		mapGRP_SAT_MAX = pMapGRP_SAT_MAX;
+
 		int i = 0;
 		for (IInvariant invClass: listInvSatisfiables) {
 			i+=1;
@@ -424,21 +407,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		MClassInvariant invariant2 = tabInvMClass[intOrder];
 		String descInvs=strNameInv;
 		descInvs+="\n   "+invariant2.bodyExpression().toString();
-		// JG
 
-
-		//		if (mapInvRes.containsKey(strNameInv)) {//Provis
-		//		 descInvs="";
-		//			for (MClassInvariant invariant: mModel.classInvariants()) {
-		//				String strInvariant = invariant.cls().name()+"::"+invariant.name();
-		//				if (strInvariant.equals(strNameInv)) {
-		//					descInvs=strNameInv;
-		//					descInvs+="\n   "+invariant.bodyExpression().toString();
-		//					break;
-		//				}
-		//			}
-
-		//		}		
 		return descInvs;
 	}
 	/**
@@ -447,7 +416,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * @return
 	 */
 	private List<String> getListInv(String cmb){
-		//		System.out.println("Entra cmb " + cmb);
 		List<String> lNInv = new ArrayList<String>();
 		if (cmb.equals("")) {
 			return lNInv;
@@ -461,22 +429,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			IInvariant inv = (tabInv[order-1]);
 			String strInv = order+"-"+inv.clazz()+"::"+inv.name();
 			lNInv.add(strInv);
-			// Nuevo
-
-			// Provis			
-			//			boolean hallado=false;
-			//
-			//			for (Map.Entry<String, ResInv> entry : mapInvRes.entrySet()) {
-			//				if (!hallado) {
-			//					ResInv invRes = (ResInv) entry.getValue();
-			//					if (invRes.getIntOrden()==order) {
-			//						lNInv.add(invRes.getStrInv());
-			//						hallado=true;
-			//					}
-			//				}
-			//			}		
-			// Provis
-
 		}
 
 		return lNInv;
@@ -494,14 +446,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		try {
 
 			// Busca el numero de orden de la invariante
-			//			int orden = -1;
-			//			if (mapInvRes.containsKey(inv)) {
-			//				ResInv invRes = (ResInv) mapInvRes.get(inv);
-			//				orden=invRes.getIntOrden();
-			//			}			
+	
 			String[] partesI = inv.split("-");
 			String strOrden=partesI[0];
-			//			int orden = Integer.parseInt(strOrden)-1;	//Antes
 			int orden = Integer.parseInt(strOrden);	
 
 			// Buscar combinaciones satisfiables que no tengan esa invariante
@@ -675,15 +622,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				lNames.setSelectedIndex(0);
 
 				String valor = lNames.getSelectedValue().trim();
-				//				int orden = -1;
-				//				if (mapInvRes.containsKey(valor)) {
-				//					ResInv invRes = (ResInv) mapInvRes.get(valor);
-				//					orden=invRes.getIntOrden();
-				//				}
-				// aqui7
+
 				String[] partes = valor.split("-");
 				String strOrden=partes[0];
-				//				int intOrder = Integer.parseInt(strOrden)-1;				
 
 				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");// JG Cambiado orden
 				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
@@ -735,33 +676,19 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lNames.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				String valor = lNames.getSelectedValue().trim();
-				//aqui6
+
 				String[] partes = valor.split("-");
 				String strOrden=partes[0];
 				int intOrder = Integer.parseInt(strOrden)-1;
-				// Nuevo
-				//				IInvariant inv = (tabInv[intOrder-1]);
-
-				//				String strInv = intOrder+"-"+inv.clazz()+"::"+inv.name();
-				//							provis
-				//				int orden = -1;
-				//				if (mapInvRes.containsKey(valor)) {
-				//					ResInv invRes = (ResInv) mapInvRes.get(valor);
-				//					orden=invRes.getIntOrden();
-				//				}
-				//				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+orden+")"); //Provis
-
-				// provis
-
 
 				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");
 				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
-				//				String name = lNames.getSelectedValue().trim();// Provis
+
 				String textOCL = getOCL(lNames.getSelectedValue().trim());
-				//				String textOCL = inv.bodyExpression().toString());
+
 				textAreaOCL.setText(textOCL);
 				textAreaOCL.setCaretPosition(0);
-				//aqui3
+
 				DefaultListModel<String> lCmbs = new DefaultListModel<String>();
 				if (lNamesInv.size()>0) {
 					String elementSelected = lNames.getSelectedValue().trim();
@@ -808,9 +735,13 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 					Solution solution=null;
 					KodkodSolver kodkodSolver = new KodkodSolver();
+					// hay que ver sa el check de invariants es correcto
+					// Provisionalmente decimos que si
+					boolean bCheckInvs = kodParent.check_inv_state();
 					try {
 						solution = kodParent.calcular( combinacion,  invClassTotal);
-						if (solution.outcome().toString() == "SATISFIABLE") {
+						//						if (solution.outcome().toString() == "SATISFIABLE") {
+						if (solution.outcome().toString() == "SATISFIABLE" || bCheckInvs) {
 							Session session = kodParent.getSession();
 							try {
 								checkExistDiagram();
@@ -827,8 +758,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								e.printStackTrace();
 							}
 						}else {
-							String st = "Unsatisfactory combinations don't create object diagram!!";
-							JOptionPane.showMessageDialog(null, st);
+							//							String st = "Unsatisfactory combinations don't create object diagram!!";//Provis
+							//							JOptionPane.showMessageDialog(null, st);//Provis
+							// Lo creo igual de forma provisional
 						}
 
 					} catch (Exception e) {
@@ -868,11 +800,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		if (lNamesInv.size()>0) {
 			String valor = lNames.getSelectedValue().trim();
-			//			int orden = -1;
-			//			if (mapInvRes.containsKey(valor)) {
-			//				ResInv invRes = (ResInv) mapInvRes.get(valor);
-			//				orden=invRes.getIntOrden();
-			//			}
 
 			String[] partes = valor.split("-");
 			String strOrden=partes[0];
@@ -896,17 +823,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	private void checkExistDiagram() {
 		existDiagram=false;
 		existWizard=false; 
-//		Ver frames
+		//		Ver frames
 		JDesktopPane fDesk = parent.getFdesk();
 		JInternalFrame[] allframes = fDesk.getAllFrames();
 		for (JInternalFrame ifr: allframes) {
 			if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
 				existDiagram=true;
-//				continue;
 			}
 			if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
 				existWizard=true;
-//				continue;
 			}
 		}
 	}
@@ -974,14 +899,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					Solution solution=null;
 					try {
 						solution = kodParent.calcular( strCmbSAT,  invClassTotal);
-						if (solution.outcome().toString() == "SATISFIABLE") {
+						boolean bCheckInvs = true;
+						//						if (solution.outcome().toString() == "SATISFIABLE") {
+						if (solution.outcome().toString() == "SATISFIABLE"||bCheckInvs) {
 							Session session = kodParent.getSession();
 							try {
-								// Busqueda de todos los diagramas mostrados
-
-//								NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
-//								odv.setName("MVM");
-								//---
 								checkExistDiagram();
 								if (!existDiagram) {
 									NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
@@ -992,16 +914,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								}
 
 								tile();
-								
-								//--
-								
+
 
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}else {
-							String st = "Unsatisfactory combinations don't create object diagram!!";
-							JOptionPane.showMessageDialog(null, st);
+							//							String st = "Unsatisfactory combinations don't create object diagram!!";//Provis
+							//							JOptionPane.showMessageDialog(null, st);//Provis
+							// lo creo igualmente
 						}
 
 					} catch (Exception e) {
@@ -1331,7 +1252,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	private NewObjectDiagramView createObjectDiagramCreator(String combinacion, Solution solution,IModel iModel, Session session) {
 		ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session	
 		try {
-			odc.create(solution.instance().relationTuples());
+			if (solution.instance()!=null) {
+				odc.create(solution.instance().relationTuples());
+			}else {
+				// de momento nada
+			}
+
 		} catch (UseApiException e) {
 			if (!e.getMessage().contains("Link creation failed!")) {
 				e.printStackTrace();
@@ -1371,9 +1297,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
 		WizardMVMView o = parent.showMVMWizard("MVMWizard");
-		//		o.setName("MVMWizard");
-		//		o.setFrameName( "MVMWizard");
-		//		parent.showMVMWizard();
 	}
 
 	/**

@@ -17,6 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
@@ -63,6 +69,8 @@ import org.tzi.use.config.Options;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
 import org.tzi.use.gui.views.ClassInvariantView;
+//import org.tzi.use.gui.views.WizardMVMView.EvalResult;
+//import org.tzi.use.gui.views.WizardMVMView.MyEvaluatorCallable;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.gui.views.evalbrowser.ExprEvalBrowser;
@@ -87,6 +95,7 @@ import org.tzi.use.uml.ocl.expr.MultiplicityViolationException;
 import org.tzi.use.uml.ocl.type.EnumType;
 import org.tzi.use.uml.ocl.type.OclAnyType;
 import org.tzi.use.uml.ocl.type.Type;
+import org.tzi.use.uml.ocl.value.BooleanValue;
 import org.tzi.use.uml.ocl.value.Value;
 import org.tzi.use.uml.sys.MObject;
 import org.tzi.use.uml.sys.MSystemException;
@@ -185,6 +194,8 @@ public abstract class KodkodModelValidator {
 	public static int numCallSolverSAT=0;
 	public static int numCallSolverUNSAT=0;
 
+	private List<Future<EvalResult>> futures;
+
 	public IModel getIModel() {
 		return model;
 	}
@@ -259,6 +270,8 @@ public abstract class KodkodModelValidator {
 		Solution solution = null;
 		try {
 			Instant iniSolver = Instant.now();
+
+
 			solution = kodkodSolver.solve(model);
 			Instant endSolver = Instant.now();
 			Duration timeSolver = Duration.between(iniSolver, endSolver);
@@ -487,7 +500,249 @@ public abstract class KodkodModelValidator {
 		}
 		return res;
 	}
+	private boolean checkStructure() {
+		//Aqui2
+		StringWriter buffer = new StringWriter();
+		PrintWriter out = new PrintWriter(buffer);
 
+		boolean ok = session.system().state().checkStructure(out);
+		//--
+		boolean res=false;
+		// check all associations
+		boolean reportAllErrors = true;
+		for (MAssociation assoc : session.system().model().associations()) {
+			StringWriter buffer2 = new StringWriter();
+			PrintWriter out2 = new PrintWriter(buffer2);
+			res = session.system().state().checkStructure(assoc, out2, reportAllErrors) ;
+			System.out.println("Para assoc ["+assoc.name()+" -  ["+res+"] ["+buffer2+"]");
+		}
+
+		System.out.println("Total ["+ok+"]");
+		System.out.println("Totalout ["+buffer+"]");
+		return ok;
+	}
+	private EvalResult[] load_Values() {
+		//		EvalResult[] fValues;
+		MModel fModel = session.system().model();
+		int n = fModel.classInvariants().size();
+		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
+		fClassInvariants = new MClassInvariant[n];
+		System.arraycopy(fModel.classInvariants().toArray(), 0,
+				fClassInvariants, 0, n);
+		Arrays.sort(fClassInvariants);
+		EvalResult[] fValues;
+		fValues = new EvalResult[n];
+		for (int i = 0; i < fValues.length; i++) {
+			fValues[i] = null;
+		}
+		ExecutorService executor = Executors.newFixedThreadPool(Options.EVAL_NUMTHREADS);
+		futures = new ArrayList<Future<EvalResult>>();
+		ExecutorCompletionService<EvalResult> ecs = new ExecutorCompletionService<EvalResult>(executor);
+		boolean violationLabel = false; 
+		int numFailures = 0;
+		boolean structureOK = true;
+		for (int i = 0; i < fClassInvariants.length; i++) {
+			if(!fClassInvariants[i].isActive()){
+				continue;
+			}
+			MyEvaluatorCallable cb = new MyEvaluatorCallable(session.system().state(), i, fClassInvariants[i]);
+			futures.add(ecs.submit(cb));
+		}
+
+		for (int i = 0; i < fClassInvariants.length && !isCancelled(); i++) {
+			if(!fClassInvariants[i].isActive()){
+				continue;
+			}
+			try {
+				EvalResult res;
+				res = ecs.take().get();
+				fValues[res.index] = res;
+
+				boolean ok = false;
+				// if v == null it is not considered as a failure, rather it is
+				// a MultiplicityViolation and it is skipped as failure count
+				boolean skip = false;
+				if (res.result != null) {
+					ok = res.result.isDefined() && ((BooleanValue)res.result).isTrue();
+				} else {
+					violationLabel = true;
+					skip = true;
+				}
+
+				if (!skip && !ok)
+					numFailures++;
+
+			} catch (InterruptedException ex) {
+				break;
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+
+		for (Future<EvalResult> f : futures) {
+			f.cancel(true);
+		}
+		executor.shutdown();
+		return fValues;
+	}
+
+	/*
+	 * Chequea estado de invariantes
+	 */
+	public boolean check_inv_state() {
+		boolean bRes = false;
+
+		//		MModel fModel = session.system().model();
+		//		int n = fModel.classInvariants().size();
+		//		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
+		//		fClassInvariants = new MClassInvariant[n];
+		//		System.arraycopy(fModel.classInvariants().toArray(), 0,
+		//				fClassInvariants, 0, n);
+		//		Arrays.sort(fClassInvariants);
+		//		EvalResult[] fValues;
+		//		fValues = new EvalResult[n];
+		//		for (int i = 0; i < fValues.length; i++) {
+		//			fValues[i] = null;
+		//		}
+		//		ExecutorService executor = Executors.newFixedThreadPool(Options.EVAL_NUMTHREADS);
+		//		futures = new ArrayList<Future<EvalResult>>();
+		//		ExecutorCompletionService<EvalResult> ecs = new ExecutorCompletionService<EvalResult>(executor);
+		//		boolean violationLabel = false; 
+		//		int numFailures = 0;
+		//		boolean structureOK = true;
+		//		for (int i = 0; i < fClassInvariants.length; i++) {
+		//			if(!fClassInvariants[i].isActive()){
+		//				continue;
+		//			}
+		//			MyEvaluatorCallable cb = new MyEvaluatorCallable(session.system().state(), i, fClassInvariants[i]);
+		//			futures.add(ecs.submit(cb));
+		//		}
+		//
+		//		for (int i = 0; i < fClassInvariants.length && !isCancelled(); i++) {
+		//			if(!fClassInvariants[i].isActive()){
+		//				continue;
+		//			}
+		//			try {
+		//				EvalResult res;
+		//				res = ecs.take().get();
+		//				fValues[res.index] = res;
+		//
+		//				boolean ok = false;
+		//				// if v == null it is not considered as a failure, rather it is
+		//				// a MultiplicityViolation and it is skipped as failure count
+		//				boolean skip = false;
+		//				if (res.result != null) {
+		//					ok = res.result.isDefined() && ((BooleanValue)res.result).isTrue();
+		//				} else {
+		//					violationLabel = true;
+		//					skip = true;
+		//				}
+		//
+		//				if (!skip && !ok)
+		//					numFailures++;
+		//
+		//			} catch (InterruptedException ex) {
+		//				break;
+		//			} catch (ExecutionException e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
+		//
+		//		for (Future<EvalResult> f : futures) {
+		//			f.cancel(true);
+		//		}
+
+		//		structureOK = fSystem.state().checkStructure(new PrintWriter(new NullWriter()), false);
+		EvalResult[] fValues = load_Values();
+		MModel fModel = session.system().model();
+		int n = fModel.classInvariants().size();
+		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
+		fClassInvariants = new MClassInvariant[n];
+		System.arraycopy(fModel.classInvariants().toArray(), 0,
+				fClassInvariants, 0, n);
+		Arrays.sort(fClassInvariants);
+		boolean todosOk=true;
+		for (EvalResult res : fValues) {
+			Boolean boolRes=  ((BooleanValue)res.result).value();
+
+			if (boolRes.equals(false)) todosOk=false;
+			System.out.println("res.index ["+res.index+"]");
+			System.out.println("Para invs res ["+fClassInvariants[res.index].name()+"] result ["+res.result+"]");
+		}
+		System.out.println("todosOk ["+todosOk+"]");
+		//		executor.shutdown();
+
+		return todosOk;
+
+	}
+	private boolean check_inv_state_one(MClassInvariant invMClass) {
+		boolean bRes=false;
+		EvalResult[] fValues = load_Values();
+		MModel fModel = session.system().model();
+		int n = fModel.classInvariants().size();
+		MClassInvariant[] fClassInvariants = new MClassInvariant[0];
+		fClassInvariants = new MClassInvariant[n];
+		System.arraycopy(fModel.classInvariants().toArray(), 0,
+				fClassInvariants, 0, n);
+		Arrays.sort(fClassInvariants);
+		for (EvalResult res : fValues) {
+			Boolean boolRes=  ((BooleanValue)res.result).value();
+			MClassInvariant inv= fClassInvariants[res.index];
+			if (invMClass.qualifiedName().equals(inv.qualifiedName())) {
+				System.out.println("res.index ["+res.index+"]");
+				System.out.println("Para invs res ["+fClassInvariants[res.index].name()+"] result ["+res.result+"]");	
+				return boolRes;
+			}
+		}
+
+		return bRes;
+	}
+	private class EvalResult {
+		public final int index;
+		public final Value result;
+		public final String message;
+		public final long duration;
+
+		public EvalResult(int index, Value result, String message, long duration) {
+			this.index = index;
+			this.result = result;
+			this.message = message;
+			this.duration = duration;
+		}
+	}
+	private class MyEvaluatorCallable implements Callable<EvalResult> {
+		final int index;
+		final MSystemState state;
+		final MClassInvariant inv;
+
+		public MyEvaluatorCallable(MSystemState state, int index, MClassInvariant inv) {
+			this.state = state;
+			this.index = index;
+			this.inv = inv;
+		}
+
+		@Override
+		public EvalResult call() throws Exception {
+			if (isCancelled()) return null;
+
+			org.tzi.use.uml.ocl.expr.Evaluator eval = new org.tzi.use.uml.ocl.expr.Evaluator();
+			Value v = null;
+			String message = null;
+			long start = System.currentTimeMillis();
+
+			try {
+				v = eval.eval(inv.flaggedExpression(), state);
+			} catch (MultiplicityViolationException e) {
+				message = e.getMessage();
+			}
+
+			return new EvalResult(index, v, message, System.currentTimeMillis() - start);
+		}
+	}
+	public final boolean isCancelled() {
+		//        return future.isCancelled();
+		return false;
+	}
 	public boolean test_inv_state_dialog(MModel model) {
 		boolean res=false;
 		//		ClassInvariantView civ = new ClassInvariantView(MainWindow.instance(),
@@ -670,7 +925,7 @@ public abstract class KodkodModelValidator {
 				e.printStackTrace();
 			}
 		}
-	
+
 		createObjectDiagramCreatorFrame(iModel, session ); 
 
 	}
@@ -1033,15 +1288,13 @@ public abstract class KodkodModelValidator {
 			for (IInvariant invClass: invClassTotal) {
 				//				System.out.println("Montando tablas class "+invClass);
 				tabInv[nOrdenInv] = invClass;
+				MClassInvariant invMClassOActual=null;
 				for (MClassInvariant invMClass: mModel.classInvariants()) {
 					System.out.println("invMClass ["+invMClass.qualifiedName()+"]");//JG
 					System.out.println("invClass ["+invClass.qualifiedName()+"]");//JG
-					//					if (invMClass.name().equals(invClass.name())&& 
-					//							invMClass.cls().name().equals(invClass.clazz().name())) {
-					//						tabInvMClass[nOrdenInv] = invMClass;
-					//					}
 					if (invMClass.qualifiedName().equals(invClass.qualifiedName())) {
 						tabInvMClass[nOrdenInv] = invMClass;
+						//						invMClassOActual = invMClass;
 					}					
 				}	
 				//				System.out.println("Fin montaje tablas");
@@ -1052,17 +1305,31 @@ public abstract class KodkodModelValidator {
 
 				//				Solution solution = kodkodSolver.solve(model);//JG
 				solution = call_Solver(model);
+				// Probar que pasa si evaluamos con el check
+				//Aqui0
+				boolean bResInvs = check_inv_state();
+				//aqui7 obtener invMClass
+				invMClassOActual=getMClassInvariantFromIInvariant(mModel,invClass) ;
+				boolean bResInvOne = false;
+				if (invMClassOActual!=null) {
+					bResInvOne=check_inv_state_one(invMClassOActual);
+				}
+
+
 
 				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
 				invClass.clazz();
 				String strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "]";
 
 				System.out.println("Resultado [" +invClass.name()+" " +  strCombinacion+"]");
+				System.out.println("Resultado con check [" +bResInvs+"] ["+invClass.name()+" " +  strCombinacion+"]");
 				System.out.println();
 				nOrdenInv+=1;
 				dispMVM("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
 				dispMVM("MVM: Invariants State: " + strCombinacion);
-				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
+				//bResInvs
+				//				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
+				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE" ||bResInvOne) {
 					invClassSatisfiables.add(invClass);
 				}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
@@ -1101,7 +1368,11 @@ public abstract class KodkodModelValidator {
 			if (debMVM) {
 				LOG.info("MVM: Tratamiento OCL");
 			}
-			if (invClassSatisfiables.size()==0) {
+			// Ver si check_inv_state() devuelve que las invs cumplen o no
+			boolean bResInvs = check_inv_state();
+			boolean bResAssocs = checkStructure();
+
+			if (invClassSatisfiables.size()==0 && !bResInvs) {
 				//mensaje de que todas son insatisfactibles
 				//All invariants are unsatisfiable
 				LOG.info("All invariants are unsatisfiable");
@@ -1208,14 +1479,14 @@ public abstract class KodkodModelValidator {
 		//		show_inv_state_dialog( mModel);
 
 		//--
-		
+
 		// segun las combinaciones satisfiables, podrian obtenerse los valores de atributos que las hacen satisfiables.
 		//listSatisfiables
-		
-//		for (String sInv : listSatisfiables){
-//			System.out.println("sInv ["+sInv+"]");
-//			analyzeValuesSAT(sInv);
-//		}
+
+		//		for (String sInv : listSatisfiables){
+		//			System.out.println("sInv ["+sInv+"]");
+		//			analyzeValuesSAT(sInv);
+		//		}
 
 		// Muestra formulas Alloy
 		dispFormulasAlloy();
@@ -1228,11 +1499,26 @@ public abstract class KodkodModelValidator {
 		//			System.out.println("    relation ["+invClass.clazz().relation().name()+"]");
 		//		}
 		// Analiza cierta informacion sobre invariantes (nombre, bodyExpression)
-//		analyzeInfoInv(mModel);//provis
+		//		analyzeInfoInv(mModel);//provis
 		//--
 		analyzeUnsatCmb();
 		System.out.println("ya");
 	}
+
+	private MClassInvariant getMClassInvariantFromIInvariant(MModel mModel,IInvariant invClass) {
+		MClassInvariant invMClass=null;
+		for (MClassInvariant invMC: mModel.classInvariants()) {
+			System.out.println("invMC ["+invMC.qualifiedName()+"]");//JG
+			System.out.println("invClass ["+invClass.qualifiedName()+"]");//JG
+			if (invMC.qualifiedName().equals(invClass.qualifiedName())) {
+				//				tabInvMClass[nOrdenInv] = invMClass;
+				//				invMClassOActual = invMClass;
+				return invMC;
+			}					
+		}	
+		return invMClass;
+	}
+
 	//Aqui1
 	private void analyzeUnsatCmb() {
 		for (String combination : listUnSatisfiables){
@@ -1246,15 +1532,17 @@ public abstract class KodkodModelValidator {
 				System.out.println("invII ["+invID + "] name ["+invII.name()+"]");
 				System.out.println("invMC ["+invID + "] name ["+invMC.name()+"]");
 				System.out.println("Class ["+invMC.cls().name()+"] Position ["+invMC.getPositionInModel()+"]");
-				
-				
+
+
 				listInv.add(invII);				
 			}
-		
+
 		}
 	}
-	
+
 	//aqui1
+
+
 	private void analyzeInfoInv(MModel mModel) {
 		System.out.println("");
 		System.out.println("**************");
@@ -1280,7 +1568,7 @@ public abstract class KodkodModelValidator {
 			Class<? extends Expression> cl = expIni.getClass(); 
 			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
 			System.out.println("cl.getName() [" + cl.getName() + "]");
-//			System.out.println("cl.descriptorString() [" + cl.descriptorString() + "]");
+			//			System.out.println("cl.descriptorString() [" + cl.descriptorString() + "]");
 			System.out.println("cl.getSimpleName() [" + cl.getSimpleName() + "]");
 			System.out.println("cl.getCanonicalName() [" + cl.getCanonicalName() + "]");
 			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
@@ -1296,7 +1584,7 @@ public abstract class KodkodModelValidator {
 				ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
 				analyzeExpStdOp(1,exp);
 			}
-			
+
 		}
 		System.out.println("");
 	}

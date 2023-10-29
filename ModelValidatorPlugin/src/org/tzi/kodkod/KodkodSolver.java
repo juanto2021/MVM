@@ -58,9 +58,12 @@ public class KodkodSolver {
 		}
 		solver.options().setSolver(configuration.satFactory());
 		solver.options().setBitwidth(configuration.bitwidth());
+		
+		
 //		System.out.println(solver.options().toString());//JG
 
 		Solution solution = solver.solve(constraint, bounds);
+		
 
 		createEvaluator(solver, solution);
 
