@@ -1296,7 +1296,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		return odv;
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
-		WizardMVMView o = parent.showMVMWizard("MVMWizard");
+//		WizardMVMView o = parent.showMVMWizard("MVMWizard");
+		WizardMVMView o = parent.showMVMWizard(NAMEFRAMEMVMWIZARD);
 	}
 
 	/**
