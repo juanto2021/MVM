@@ -516,9 +516,7 @@ public abstract class KodkodModelValidator {
 			res = session.system().state().checkStructure(assoc, out2, reportAllErrors) ;
 			System.out.println("Para assoc ["+assoc.name()+" -  ["+res+"] ["+buffer2+"]");
 		}
-
-		System.out.println("Total ["+ok+"]");
-		System.out.println("Totalout ["+buffer+"]");
+		
 		return ok;
 	}
 	private EvalResult[] load_Values() {
@@ -1314,7 +1312,7 @@ public abstract class KodkodModelValidator {
 				if (invMClassOActual!=null) {
 					bResInvOne=check_inv_state_one(invMClassOActual);
 				}
-
+				bResInvOne=false;// PROVIS JG
 
 
 				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
@@ -1370,9 +1368,11 @@ public abstract class KodkodModelValidator {
 			}
 			// Ver si check_inv_state() devuelve que las invs cumplen o no
 			boolean bResInvs = check_inv_state();
+			bResInvs=false;//provis JG
 			boolean bResAssocs = checkStructure();
 
-			if (invClassSatisfiables.size()==0 && !bResInvs) {
+//			if (invClassSatisfiables.size()==0 && !bResInvs) { // Provis JG
+				if (invClassSatisfiables.size()==0) {
 				//mensaje de que todas son insatisfactibles
 				//All invariants are unsatisfiable
 				LOG.info("All invariants are unsatisfiable");
