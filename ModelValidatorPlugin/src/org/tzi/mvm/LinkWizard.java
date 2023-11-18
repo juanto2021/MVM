@@ -1,5 +1,8 @@
 package org.tzi.mvm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LinkWizard {
 	private String object;
 	private String nomClass;
@@ -9,6 +12,9 @@ public class LinkWizard {
 	private String multiSpecified;
 	private String cause;
 	private String fullMessage;
+	private int needed;
+	private Map<String, String> mapActions;
+	
 
 	public LinkWizard() {
 		super();
@@ -20,10 +26,13 @@ public class LinkWizard {
 		this.multiSpecified = "";
 		this.cause = "";
 		this.fullMessage = "";
+		this.needed = 0;
+		this.mapActions = new HashMap<String, String>();
 	}
 
 	public LinkWizard(String object, String nomClass, String connectedTo, String ofClass,
-			String assocEnd, String multiSpecified, String cause, String fullMessage) {
+			String assocEnd, String multiSpecified, String cause, String fullMessage, int needed,
+			Map<String, String> mapActions) {
 		super();
 		this.object = object;
 		this.nomClass = nomClass;
@@ -32,12 +41,15 @@ public class LinkWizard {
 		this.assocEnd = assocEnd;
 		this.multiSpecified = multiSpecified;
 		this.cause = cause;
-		this.fullMessage = fullMessage;		
+		this.fullMessage = fullMessage;	
+		this.needed = needed;
+		this.mapActions = mapActions;
 	}
 
 	public String getObject() {
 		return object;
 	}
+
 	public void setObject(String object) {
 		this.object = object;
 	}
@@ -83,9 +95,26 @@ public class LinkWizard {
 	public String getFullMessage() {
 		return fullMessage;
 	}
-
+	
 	public void setFullMessage(String fullMessage) {
 		this.fullMessage = fullMessage;
 	}
+	
+	public int getNeeded() {
+		return needed;
+	}	
+	
+	public void setNeeded(int needed) {
+		this.needed = needed;
+	}
+
+	public Map<String, String> getMapActions() {
+		return mapActions;
+	}
+
+	public void setMapActions(Map<String, String> mapActions) {
+		this.mapActions = mapActions;
+	}
+	
 
 }

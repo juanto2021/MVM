@@ -1,5 +1,6 @@
 package org.tzi.mvm;
 import java.awt.Color;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -70,10 +71,13 @@ public class MVMWizardAssoc extends JPanel {
 	private int HEIGHT_TABLE = 100;
 
 	public MVMWizardAssoc(List<AssocWizard> lAssocsParent) {
+		
 		lAssocsWizard = lAssocsParent;
 		frame = new JFrame("Wizard Association");
+		frame.setAlwaysOnTop(true);
+		frame.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		frame.setSize(910,490);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 
 		modelTabAssocs = new DefaultTableModel();
