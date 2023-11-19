@@ -91,6 +91,7 @@ public class MVMWizardAssoc extends JPanel {
 
 		panel.setLayout(null);
 		//		
+		
 		lbAssociations = new JLabel("Associations");
 		lbAssociations.setBounds(15, 15, 100, 25);
 		panel.add(lbAssociations);	
