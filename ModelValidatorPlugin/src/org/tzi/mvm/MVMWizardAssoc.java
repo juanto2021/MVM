@@ -302,6 +302,7 @@ public class MVMWizardAssoc extends JDialog {
 		String strAction="";
 		String textAction="";
 		String strCommand="";
+		String strObjPral="";
 		for (Map.Entry<String, String> entry : mapActions.entrySet()) {
 
 			String actionW =  entry.getKey();
@@ -312,10 +313,10 @@ public class MVMWizardAssoc extends JDialog {
 			switch(pCar) {
 			case "A":
 				textAction = "Assign";
-				if (strCommand!="") {
-					strCommand+="|";
-				}
-				strCommand=strCommand+"A "+infoW;
+//				if (strCommand!="") {
+//					strCommand+="|";
+//				}
+//				strCommand=strCommand+"A "+infoW;
 				break;
 			case "C":
 				String sCar = actionW.substring(2,actionW.length());
@@ -323,14 +324,19 @@ public class MVMWizardAssoc extends JDialog {
 				if (strCommand!="") {
 					strCommand+="|";
 				}
-				strCommand=strCommand+"C "+sCar+" "+infoW;
+				strCommand=strCommand+"C "+sCar+":"+infoW;
 				break;
 			case "I":
 				textAction = "Insert link";
 				if (strCommand!="") {
-					strCommand+="|";
+					strCommand+="-";
 				}
 				strCommand=strCommand+"I "+infoW;
+				String[] partes = infoW.split(":");
+				int nPartes = partes.length;
+				if (nPartes>0) {
+					strObjPral=partes[0];
+				}
 				break;			    
 			default:
 
@@ -345,8 +351,8 @@ public class MVMWizardAssoc extends JDialog {
 		actionLinks[0][0] = strAction;
 		actionLinks[0][1] = strCommand;
 		//strCommand
-		actionLinks[1][0] = "Delete";
-		actionLinks[1][1] = "D";
+		actionLinks[1][0] = "Delete "+strObjPral;
+		actionLinks[1][1] = "D "+strObjPral;
 		return actionLinks;
 	}
 	private void showInfoAssocFromRow(int row) {
@@ -392,9 +398,10 @@ public class MVMWizardAssoc extends JDialog {
 			JRadioButton rb = new JRadioButton (strAction);
 			if (pVez) {
 				rb.setSelected(true);
-				rb.setActionCommand(strCommand);
+//				rb.setActionCommand(strCommand);
 				pVez=false;
 			}
+			rb.setActionCommand(strCommand);
 			pProposals.add(rb);
 			group.add(rb);		
 		}
