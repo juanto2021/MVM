@@ -37,6 +37,7 @@ import org.tzi.mvm.AssocWizard;
 import org.tzi.mvm.LinkWizard;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.views.WizardMVMView;
+import org.tzi.use.uml.mm.MAssociation;
 
 public class MVMWizardAssoc extends JDialog {
 
@@ -80,6 +81,7 @@ public class MVMWizardAssoc extends JDialog {
 
 	private AssocWizard assocPral;
 	private String commandWizard;
+	private MAssociation assocSelectWizard;
 
 	private List<AssocWizard> lAssocsWizard;
 
@@ -131,6 +133,8 @@ public class MVMWizardAssoc extends JDialog {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				int row = tabAssocs.rowAtPoint(evt.getPoint());
 				showInfoAssocFromRow(row);
+				tabLinks.setRowSelectionInterval(0, 0);
+				showInfoLinkFromRow(0);
 			}
 		});
 
@@ -140,6 +144,8 @@ public class MVMWizardAssoc extends JDialog {
 				if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP ){
 					int row = tabAssocs.getSelectedRow();
 					showInfoAssocFromRow(row);
+					tabLinks.setRowSelectionInterval(0, 0);
+					showInfoLinkFromRow(0);
 				}
 			}
 			@Override
@@ -147,6 +153,9 @@ public class MVMWizardAssoc extends JDialog {
 				if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP ){
 					int row = tabAssocs.getSelectedRow();
 					showInfoAssocFromRow(row);
+//					showInfoLinkFromRow(0);
+					tabLinks.setRowSelectionInterval(0, 0);
+					showInfoLinkFromRow(0);
 				}
 			}
 		});
@@ -266,6 +275,8 @@ public class MVMWizardAssoc extends JDialog {
 
 					if (button.isSelected()) {
 						commandWizard=button.getActionCommand();
+						//Aqui
+//						assocSelectWizard=null;
 					}
 				}
 				dispose();
@@ -292,6 +303,9 @@ public class MVMWizardAssoc extends JDialog {
 
 	public String getCommandWizard() {
 		return commandWizard;
+	}
+	public MAssociation getAssocWizard() {
+		return assocSelectWizard;
 	}
 	private String[][] createActionLinks(Map<String, String> mapActions) {
 
@@ -360,6 +374,7 @@ public class MVMWizardAssoc extends JDialog {
 
 		assocPral = findInfoAssoc(nomAssoc);
 		loadTableLinks(assocPral);
+		assocSelectWizard=assocPral.getassocModel();
 
 		List<LinkWizard> lLinks = assocPral.getlLinks();
 		LinkWizard oLink = findInfoLink(lLinks,0);

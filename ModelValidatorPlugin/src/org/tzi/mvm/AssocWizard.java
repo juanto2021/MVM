@@ -3,10 +3,13 @@ package org.tzi.mvm;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.tzi.use.uml.mm.MAssociation;
+
 public class AssocWizard {
 	private String name;
 	private String state ;
 	private List<LinkWizard> lLinks;
+	private MAssociation assocModel;
 
 	public AssocWizard() {
 		super();
@@ -14,13 +17,15 @@ public class AssocWizard {
 		this.state = "";
 		ArrayList<LinkWizard> lLinks = new ArrayList<LinkWizard>();
 		this.lLinks = lLinks;
+		this.assocModel= null;
 	}
 
-	public AssocWizard(String name, String state, List<LinkWizard> lLinks) {
+	public AssocWizard(String name, String state, List<LinkWizard> lLinks, MAssociation assocModel) {
 		super();
 		this.name = name;
 		this.state = state;
 		this.lLinks = lLinks;
+		this.assocModel = assocModel;
 	}
 
 	public String getName() {
@@ -46,4 +51,11 @@ public class AssocWizard {
 	public void setlLinks(List<LinkWizard> lLinks) {
 		this.lLinks = lLinks;
 	}
+	public MAssociation getassocModel() {
+		return assocModel;
+	}
+
+	public void setassocModel(MAssociation assocModel) {
+		this.assocModel = assocModel;
+	}	
 }
