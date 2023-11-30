@@ -852,8 +852,9 @@ public abstract class KodkodModelValidator {
 			System.out.println("Ha creado nuevo modelo MModel ["+mModel.name()+"]");
 
 			// Crear IModel
-			//			IModel iModel =  PluginModelFactory.INSTANCE.getModel(mModel);
-			IModel iModel =  PluginModelFactory.INSTANCE.getModel(model);//Pruebas
+			//JG
+						IModel iModel =  PluginModelFactory.INSTANCE.getModel(mModel);
+//			IModel iModel =  PluginModelFactory.INSTANCE.getModel(model);//Pruebas
 
 			//			IConfigurator<IModel> configurator = new ModelConfigurator(iModel);
 			//			iModel.setConfigurator(configurator);

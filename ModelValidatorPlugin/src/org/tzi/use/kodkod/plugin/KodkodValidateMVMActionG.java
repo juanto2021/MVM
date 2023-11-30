@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.UseKodkodModelValidator;
@@ -40,10 +41,14 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 
 		MSystem mSystem= session.system();
 		MModel mModel = mSystem.model();
+try {
+	PluginModelFactory.INSTANCE.registerForSession(session);
+} catch (Exception e) {
 
-		PluginModelFactory.INSTANCE.registerForSession(session);
+}
 
-		IModel model = PluginModelFactory.INSTANCE.getModel(mModel);
+//		PluginModelFactory.INSTANCE.registerForSession(session);// Provis
+		IModel model = PluginModelFactory.INSTANCE.getModel(mModel);// provis
 
 		KodkodValidateCmd cmd = new KodkodValidateCmd();
 		cmd.session=session;
