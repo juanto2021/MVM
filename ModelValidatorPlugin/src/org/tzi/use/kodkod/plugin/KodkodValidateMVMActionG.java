@@ -41,13 +41,13 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 
 		MSystem mSystem= session.system();
 		MModel mModel = mSystem.model();
-try {
-	PluginModelFactory.INSTANCE.registerForSession(session);
-} catch (Exception e) {
+		//try {
+		PluginModelFactory.INSTANCE.registerForSession(session);
+		//} catch (Exception e) {
+		//
+		//}
 
-}
-
-//		PluginModelFactory.INSTANCE.registerForSession(session);// Provis
+		//		PluginModelFactory.INSTANCE.registerForSession(session);// Provis
 		IModel model = PluginModelFactory.INSTANCE.getModel(mModel);// provis
 
 		KodkodValidateCmd cmd = new KodkodValidateCmd();
