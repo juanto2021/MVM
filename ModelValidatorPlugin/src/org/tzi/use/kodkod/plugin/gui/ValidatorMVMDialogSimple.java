@@ -42,7 +42,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
+import org.tzi.use.gui.views.WizardMVMView;
 import org.tzi.kodkod.KodkodModelValidator;
 import org.tzi.kodkod.KodkodSolver;
 import org.tzi.kodkod.ResInv;
@@ -53,7 +53,7 @@ import org.tzi.use.api.UseApiException;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
 import org.tzi.use.gui.views.ObjectPropertiesView;
-import org.tzi.use.gui.views.WizardMVMView;
+
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
