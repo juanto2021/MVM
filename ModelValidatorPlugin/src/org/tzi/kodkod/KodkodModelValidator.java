@@ -1015,154 +1015,154 @@ public abstract class KodkodModelValidator {
 	 * Analisis de MModel ()
 	 * @param mModel
 	 */
-	public void model_analyzer_MModel(MModel mModel) {
-		for (MClassInvariant oClassInv : mModel.classInvariants()) {
-			ExpStdOp eso = (ExpStdOp) oClassInv.bodyExpression();
-			System.out.println("var ["+oClassInv.var()+"]");
-			System.out.println("vars ["+oClassInv.vars()+"]");
-			System.out.println("oClassInv.flaggedExpression() ["+oClassInv.flaggedExpression()+"]");
-			System.out.println("oClassInv.expandedExpression() ["+oClassInv.expandedExpression()+"]");
-
-			for (Expression oExp : eso.args()) {
-
-				System.out.println("oExp.type() ["+ oExp.type()+"]");
-				//				System.out.println("oExp.toString() ["+ oExp.toString()+"]");
-				StringBuilder sb = new StringBuilder();
-				System.out.println("oExp.toString() ["+ oExp.toString()+"] oExp.toString sb ["+ oExp.toString(sb)+"]");
-				System.out.println();
-				if (oExp.type().isTypeOfAssociation()) {
-				}else if (oExp.type().isTypeOfBag()) {
-				}else if (oExp.type().isTypeOfBoolean()) {
-					ExpStdOp oExpSO = (ExpStdOp) oExp;
-					System.out.println("oExp.type().shortName()["+oExp.type().shortName()+"] ["+oExp+"]");
-					System.out.println("oExpSO.opname() ["+oExpSO.opname()+"]");
-					int n = oExpSO.args().length;
-					System.out.println("num args ["+n+"]");
-				}else if (oExp.type().isTypeOfClass()) {
-
-				}else if (oExp.type().isTypeOfClassifier()) {
-				}else if (oExp.type().isTypeOfCollection()) {
-				}else if (oExp.type().isTypeOfEnum()) {
-				}else if (oExp.type().isTypeOfInteger()) {
-					System.out.println("oExp.type().shortName()["+oExp.type().shortName()+"] ["+oExp+"]");
-
-					//					ExpAttrOp oExpAttrOp = (ExpAttrOp) oExp;
-					//					System.out.println("oExpSO.getVarname() ["+oExpAttrOp.attr().name()+"]");
-				}else if (oExp.type().isTypeOfOclAny()) {
-				}else if (oExp.type().isTypeOfOrderedSet()) {
-				}else if (oExp.type().isTypeOfReal()) {
-				}else if (oExp.type().isTypeOfSequence()) {
-				}else if (oExp.type().isTypeOfSet()) {
-				}else if (oExp.type().isTypeOfString()) {
-				}else if (oExp.type().isTypeOfTupleType()) {
-				}else if (oExp.type().isTypeOfUnlimitedNatural()) {
-				}else if (oExp.type().isTypeOfVoidType()) {
-				}else if (oExp.type().isVoidOrElementTypeIsVoid()) {
-				}else {
-
-				}
-
-
-			}
-			System.out.println(oClassInv.bodyExpression().name());
-
-		}
-	}
+//	public void model_analyzer_MModel(MModel mModel) {
+//		for (MClassInvariant oClassInv : mModel.classInvariants()) {
+//			ExpStdOp eso = (ExpStdOp) oClassInv.bodyExpression();
+//			System.out.println("var ["+oClassInv.var()+"]");
+//			System.out.println("vars ["+oClassInv.vars()+"]");
+//			System.out.println("oClassInv.flaggedExpression() ["+oClassInv.flaggedExpression()+"]");
+//			System.out.println("oClassInv.expandedExpression() ["+oClassInv.expandedExpression()+"]");
+//
+//			for (Expression oExp : eso.args()) {
+//
+//				System.out.println("oExp.type() ["+ oExp.type()+"]");
+//				//				System.out.println("oExp.toString() ["+ oExp.toString()+"]");
+//				StringBuilder sb = new StringBuilder();
+//				System.out.println("oExp.toString() ["+ oExp.toString()+"] oExp.toString sb ["+ oExp.toString(sb)+"]");
+//				System.out.println();
+//				if (oExp.type().isTypeOfAssociation()) {
+//				}else if (oExp.type().isTypeOfBag()) {
+//				}else if (oExp.type().isTypeOfBoolean()) {
+//					ExpStdOp oExpSO = (ExpStdOp) oExp;
+//					System.out.println("oExp.type().shortName()["+oExp.type().shortName()+"] ["+oExp+"]");
+//					System.out.println("oExpSO.opname() ["+oExpSO.opname()+"]");
+//					int n = oExpSO.args().length;
+//					System.out.println("num args ["+n+"]");
+//				}else if (oExp.type().isTypeOfClass()) {
+//
+//				}else if (oExp.type().isTypeOfClassifier()) {
+//				}else if (oExp.type().isTypeOfCollection()) {
+//				}else if (oExp.type().isTypeOfEnum()) {
+//				}else if (oExp.type().isTypeOfInteger()) {
+//					System.out.println("oExp.type().shortName()["+oExp.type().shortName()+"] ["+oExp+"]");
+//
+//					//					ExpAttrOp oExpAttrOp = (ExpAttrOp) oExp;
+//					//					System.out.println("oExpSO.getVarname() ["+oExpAttrOp.attr().name()+"]");
+//				}else if (oExp.type().isTypeOfOclAny()) {
+//				}else if (oExp.type().isTypeOfOrderedSet()) {
+//				}else if (oExp.type().isTypeOfReal()) {
+//				}else if (oExp.type().isTypeOfSequence()) {
+//				}else if (oExp.type().isTypeOfSet()) {
+//				}else if (oExp.type().isTypeOfString()) {
+//				}else if (oExp.type().isTypeOfTupleType()) {
+//				}else if (oExp.type().isTypeOfUnlimitedNatural()) {
+//				}else if (oExp.type().isTypeOfVoidType()) {
+//				}else if (oExp.type().isVoidOrElementTypeIsVoid()) {
+//				}else {
+//
+//				}
+//
+//
+//			}
+//			System.out.println(oClassInv.bodyExpression().name());
+//
+//		}
+//	}
 
 	/**
 	 * Analyze IModel (Modelo en formato model validator)
 	 */
-	public void model_analyzer_IModel() {
-		int minInt=0;
-		int maxInt=0;
-		boolean pvezInt=true;
-		System.out.println(model.classes());
-
-		for (IClass oClass : model.classes()) {
-
-			System.out.println("mClass [" + oClass.name() + "] -> ["+oClass+"]\n");//JG
-			// Attributes
-			for (IAttribute oAttr : oClass.allAttributes()){
-				System.out.println(oAttr.relation());
-				//				System.out.println(oAttr.type().expression());
-				IElement oType = oAttr.type();
-				//				System.out.println(oType.toString());
-				IConfigurator<IAttribute> oConf = oAttr.getConfigurator();
-
-				//				switch(oAttr.type()) {
-				if(oAttr.type().isInteger()) {
-					IntegerType oInt =(IntegerType) oType;
-					ITypeConfigurator<ConfigurableType> oTypeConf =  oInt.getConfigurator();
-					List<Range> oRanges = oTypeConf.getRanges();
-					Range rg1 = (Range) oRanges.get(0);
-					System.out.println("Rangos en configuration - Integer rg1.getLower() [" + rg1.getLower()+ "] rg1.getUpper() [" + rg1.getUpper()+"]");
-					//						System.out.println("Integer rg1.getUpper() " + rg1.getUpper());
-
-					List<Object> oObj = oInt.toStringAtoms();
-
-					kodkod.ast.Expression oExp = oInt.expression();
-					Map<String, kodkod.ast.Expression> oMap = oInt.typeLiterals();
-					// for para Map
-
-					for (Entry<String, kodkod.ast.Expression> item : oMap.entrySet()){
-						String key = item.getKey();
-						kodkod.ast.Expression exp = item.getValue();
-						IntToExprCast ite = (IntToExprCast) item.getValue();
-						//							System.out.println(ite.lone());
-						String strVal=ite.intExpr().toString();
-						int intVal=Integer.parseInt(strVal);
-						System.out.println("Valor [" + strVal+"]");
-
-						if (pvezInt) {
-							minInt=Integer.parseInt(ite.intExpr().toString());
-							maxInt=Integer.parseInt(ite.intExpr().toString());
-							pvezInt=false;
-						}else {
-							if (intVal<minInt) minInt=intVal;
-							if (intVal>maxInt) maxInt=intVal;
-						}
-						//							System.out.println("key [" + key+ "] exp [" + exp + "]");
-						//							System.out.println("exp " + exp);
-					}
-
-				}else if (oAttr.type().isReal()) {
-					RealType oReal =(RealType) oType;
-					ITypeConfigurator<ConfigurableType> oTypeConf =  oReal.getConfigurator();
-					List<Range> oRanges = oTypeConf.getRanges();
-					Range rg1 = (Range) oRanges.get(0);
-					System.out.println("Rangos en configuration - Real rg1.getLower() " + rg1.getLower()+ " rg1.getUpper() " + rg1.getUpper());
-					//						System.out.println("Real rg1.getUpper() " + rg1.getUpper());
-				}else if (oAttr.type().isString()) {					  
-					StringType oString =(StringType) oType;
-					ITypeConfigurator<ConfigurableType> oTypeConf =  oString.getConfigurator();
-					List<Range> oRanges = oTypeConf.getRanges();
-					Range rg1 = (Range) oRanges.get(0);
-					System.out.println("Rangos en configuration - String rg1.getLower() " + rg1.getLower()+" rg1.getUpper() " + rg1.getUpper());
-					//						System.out.println("String rg1.getUpper() " + rg1.getUpper());						
-				}else {
-					System.out.println("Tipo desconocido ["+oAttr.type().getClass()+"]");
-				}
-				List<String> lVal = new ArrayList<String>();
-				System.out.println("Para int el rango deberia ser ["+minInt+","+maxInt+"]");
-			}
-			// Invariants
-			for (IInvariant oInv : oClass.allInvariants()){
-				System.out.println("oInv [" + oInv.name()+"]");
-				System.out.println("formula [" + oInv.formula()+"]");
-				System.out.println("qualifiedName [" + oInv.qualifiedName()+"]");
-				System.out.println("oInv.clazz().constraints() [" + oInv.clazz().constraints()+"]");
-				System.out.println("oInv.clazz().getInvariant(oInv.name() [" + oInv.clazz().getInvariant(oInv.name())+"]");
-
-				QuantifiedFormula f = (QuantifiedFormula) oInv.formula();
-				for (Decl oDecl : f.decls()){
-					System.out.println("oDecl.expression().arity() ["+oDecl.expression().arity());
-
-					System.out.println("oDecl.expression().some() ["+oDecl.expression().some());
-				}
-				System.out.println("Ya");
-			}
-		}
-	}
+//	public void model_analyzer_IModel() {
+//		int minInt=0;
+//		int maxInt=0;
+//		boolean pvezInt=true;
+//		System.out.println(model.classes());
+//
+//		for (IClass oClass : model.classes()) {
+//
+//			System.out.println("mClass [" + oClass.name() + "] -> ["+oClass+"]\n");//JG
+//			// Attributes
+//			for (IAttribute oAttr : oClass.allAttributes()){
+//				System.out.println(oAttr.relation());
+//				//				System.out.println(oAttr.type().expression());
+//				IElement oType = oAttr.type();
+//				//				System.out.println(oType.toString());
+//				IConfigurator<IAttribute> oConf = oAttr.getConfigurator();
+//
+//				//				switch(oAttr.type()) {
+//				if(oAttr.type().isInteger()) {
+//					IntegerType oInt =(IntegerType) oType;
+//					ITypeConfigurator<ConfigurableType> oTypeConf =  oInt.getConfigurator();
+//					List<Range> oRanges = oTypeConf.getRanges();
+//					Range rg1 = (Range) oRanges.get(0);
+//					System.out.println("Rangos en configuration - Integer rg1.getLower() [" + rg1.getLower()+ "] rg1.getUpper() [" + rg1.getUpper()+"]");
+//					//						System.out.println("Integer rg1.getUpper() " + rg1.getUpper());
+//
+//					List<Object> oObj = oInt.toStringAtoms();
+//
+//					kodkod.ast.Expression oExp = oInt.expression();
+//					Map<String, kodkod.ast.Expression> oMap = oInt.typeLiterals();
+//					// for para Map
+//
+//					for (Entry<String, kodkod.ast.Expression> item : oMap.entrySet()){
+//						String key = item.getKey();
+//						kodkod.ast.Expression exp = item.getValue();
+//						IntToExprCast ite = (IntToExprCast) item.getValue();
+//						//							System.out.println(ite.lone());
+//						String strVal=ite.intExpr().toString();
+//						int intVal=Integer.parseInt(strVal);
+//						System.out.println("Valor [" + strVal+"]");
+//
+//						if (pvezInt) {
+//							minInt=Integer.parseInt(ite.intExpr().toString());
+//							maxInt=Integer.parseInt(ite.intExpr().toString());
+//							pvezInt=false;
+//						}else {
+//							if (intVal<minInt) minInt=intVal;
+//							if (intVal>maxInt) maxInt=intVal;
+//						}
+//						//							System.out.println("key [" + key+ "] exp [" + exp + "]");
+//						//							System.out.println("exp " + exp);
+//					}
+//
+//				}else if (oAttr.type().isReal()) {
+//					RealType oReal =(RealType) oType;
+//					ITypeConfigurator<ConfigurableType> oTypeConf =  oReal.getConfigurator();
+//					List<Range> oRanges = oTypeConf.getRanges();
+//					Range rg1 = (Range) oRanges.get(0);
+//					System.out.println("Rangos en configuration - Real rg1.getLower() " + rg1.getLower()+ " rg1.getUpper() " + rg1.getUpper());
+//					//						System.out.println("Real rg1.getUpper() " + rg1.getUpper());
+//				}else if (oAttr.type().isString()) {					  
+//					StringType oString =(StringType) oType;
+//					ITypeConfigurator<ConfigurableType> oTypeConf =  oString.getConfigurator();
+//					List<Range> oRanges = oTypeConf.getRanges();
+//					Range rg1 = (Range) oRanges.get(0);
+//					System.out.println("Rangos en configuration - String rg1.getLower() " + rg1.getLower()+" rg1.getUpper() " + rg1.getUpper());
+//					//						System.out.println("String rg1.getUpper() " + rg1.getUpper());						
+//				}else {
+//					System.out.println("Tipo desconocido ["+oAttr.type().getClass()+"]");
+//				}
+//				List<String> lVal = new ArrayList<String>();
+//				System.out.println("Para int el rango deberia ser ["+minInt+","+maxInt+"]");
+//			}
+//			// Invariants
+//			for (IInvariant oInv : oClass.allInvariants()){
+//				System.out.println("oInv [" + oInv.name()+"]");
+//				System.out.println("formula [" + oInv.formula()+"]");
+//				System.out.println("qualifiedName [" + oInv.qualifiedName()+"]");
+//				System.out.println("oInv.clazz().constraints() [" + oInv.clazz().constraints()+"]");
+//				System.out.println("oInv.clazz().getInvariant(oInv.name() [" + oInv.clazz().getInvariant(oInv.name())+"]");
+//
+//				QuantifiedFormula f = (QuantifiedFormula) oInv.formula();
+//				for (Decl oDecl : f.decls()){
+//					System.out.println("oDecl.expression().arity() ["+oDecl.expression().arity());
+//
+//					System.out.println("oDecl.expression().some() ["+oDecl.expression().some());
+//				}
+//				System.out.println("Ya");
+//			}
+//		}
+//	}
 
 
 	/**
