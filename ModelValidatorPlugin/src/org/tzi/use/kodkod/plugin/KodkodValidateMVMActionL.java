@@ -66,7 +66,6 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 		// Activamos hourglass
 		MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		UseKodkodModelValidator uk = new UseKodkodModelValidator(session);
-//		uk.validateVariable(model, mModel,session);
 		String tipoSearchMSS = "L";
 		uk.validateVariable(model, mModel, session, tipoSearchMSS);
 		// Desactivamos hourglass
