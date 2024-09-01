@@ -1,7 +1,5 @@
 package org.tzi.mvm;
 import java.awt.Color;
-import java.awt.Dialog.ModalExclusionType;
-import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -18,7 +16,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,10 +30,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-import org.tzi.mvm.AssocWizard;
-import org.tzi.mvm.LinkWizard;
-import org.tzi.use.gui.main.MainWindow;
-import org.tzi.use.gui.views.WizardMVMView;
 import org.tzi.use.uml.mm.MAssociation;
 
 public class MVMWizardAssoc extends JDialog {
@@ -153,7 +146,6 @@ public class MVMWizardAssoc extends JDialog {
 				if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP ){
 					int row = tabAssocs.getSelectedRow();
 					showInfoAssocFromRow(row);
-//					showInfoLinkFromRow(0);
 					tabLinks.setRowSelectionInterval(0, 0);
 					showInfoLinkFromRow(0);
 				}
@@ -269,14 +261,11 @@ public class MVMWizardAssoc extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//	ver que option esta seleccionada
 				for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
 					AbstractButton button = buttons.nextElement();
 
 					if (button.isSelected()) {
 						commandWizard=button.getActionCommand();
-						//Aqui
-//						assocSelectWizard=null;
 					}
 				}
 				dispose();
@@ -310,8 +299,8 @@ public class MVMWizardAssoc extends JDialog {
 	private String[][] createActionLinks(Map<String, String> mapActions) {
 
 		// [x][y]
-		// [x]->Acciones
-		// [y]->Comandos a devolver para su ejecucion
+		// [x]->Actions
+		// [y]->Commands to return for execution
 		String actionLinks[][] = new String[2][2];
 		String strAction="";
 		String textAction="";
@@ -413,7 +402,6 @@ public class MVMWizardAssoc extends JDialog {
 			JRadioButton rb = new JRadioButton (strAction);
 			if (pVez) {
 				rb.setSelected(true);
-//				rb.setActionCommand(strCommand);
 				pVez=false;
 			}
 			rb.setActionCommand(strCommand);
@@ -509,7 +497,6 @@ public class MVMWizardAssoc extends JDialog {
 			objects[i][4]= data.get(i).getAssocEnd();
 			objects[i][5]= data.get(i).getMultiSpecified();
 		}
-
 
 		modelTabLinks = new DefaultTableModel(objects,columns);
 		tabLinks.setModel(modelTabLinks);
