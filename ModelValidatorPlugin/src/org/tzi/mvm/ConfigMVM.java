@@ -19,6 +19,23 @@ public class ConfigMVM {
 	
 	private static String nomFile = "numIter.txt";
 	private static String nomFileDebMVM = "debMVM.txt";
+//	private static String nomWrkReplaceBodyInv="wrkReplaceBodyInv";
+//	private static String nomFileNameWork="WRKReplaceInv";
+//	private static String nomGroupActions="groupActions";
+//	
+//	public static String getNomGroupActions() {
+//		return nomGroupActions;
+//	}
+//	
+//	public static String getNomWrkReplaceBodyInv() {
+//		return nomWrkReplaceBodyInv;
+//	}
+//	
+//	public static String getNomFileNameWork() {
+//		return nomFileNameWork;
+//	}
+	
+	
 	public static int getNumIter() {
 		int numIter=3;
 		Path path = Paths.get("");
