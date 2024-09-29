@@ -1,4 +1,4 @@
-# MVM (Model Validator Mixer)
+# MVM (Model Validator Mixer - - )
 
 
 This project is a extension of the USE Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
