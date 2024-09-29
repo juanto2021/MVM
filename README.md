@@ -33,6 +33,7 @@ Once downloaded to the same workspace, locate the **MVM project's** 'build.xml' 
 ```
 
 Next, select the use '[MVMuse main]' project and create a Debug Configuration by setting the following values to Main:
+![](https://github.com/juanto2021/MVM/blob/main/01_Config.png)
 
 >***Project:***    **use**
 
