@@ -160,7 +160,9 @@ public abstract class KodkodModelValidator {
 	private static Duration timeDeactivateAll=null;
 	private static Duration timeCalcIndividually=null;
 	private static Duration timeBruteCombCalc=null;
-	private static Duration timeCallSolver=null;
+//	private static Duration timeCallSolver=null;
+	private static Duration timeCallSolver=Duration.between(Instant.now(), Instant.now());
+	//Duration.between(Instant.now(), Instant.now())
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -215,7 +217,7 @@ public abstract class KodkodModelValidator {
 			return;
 		}
 		LOG.info(solution.outcome());
-		LOG.info("MVM: Llega solution en validate en KodkodModelValidator " + solution.outcome());
+//		LOG.info("MVM: Llega solution en validate en KodkodModelValidator " + solution.outcome());
 		Statistics statistics = solution.stats();
 		LOG.info(LogMessages.kodkodStatistics(statistics));
 		switch (solution.outcome()) {
@@ -894,7 +896,7 @@ public abstract class KodkodModelValidator {
 		// Save initial time to later calculate the time it takes
 		Instant start = Instant.now();
 		timeInitFind= Instant.now();
-		timeCallSolver=Duration.between(start, start);;//
+		timeCallSolver=Duration.between(start, start);//
 		logTime="";
 
 		this.model = model;
