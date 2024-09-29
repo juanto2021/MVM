@@ -1,11 +1,11 @@
-# MVM (Model Validator Mixer)
+# MVM (Model Validator Mixer -)
 
 
-This project is a extension of the USE Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
+This project is a extension of the USE Model Validator plug-in from Martin Gogolla, Fabian Bï¿½ttner, and Mark Richters 
 for the UML-Based Specification Environment (http://useocl.sourceforge.net/w/index.php/Main_Page).
 The code is developed in Java as an Eclipse plug-in. The output ".jar" file can be added as a plugin for USE v.0. 
 
-Author: ***Juan Antonio Gómez Gutiérrez(2022)***
+Author: ***Juan Antonio Gï¿½mez Gutiï¿½rrez(2022)***
 
 ----
 # Instructions for installation and testing
@@ -87,7 +87,7 @@ This tab shows the satisfiable combinations with the highest number of invariant
 
 ![](https://github.com/juanto2021/MVM/blob/main/img06.png)
     
-The computation of unsatisfiable cores relies on USE’s Model Validator to check if a given combination of invariants is satisfiable or not. If a combination of invariants is deemed unsatisfiable, supersets of this combination will also be unsatisfiable. Similarly, if a combination is found to be satisfiable, it is not necessary to explore subsets of this combination. Thus, it is not necessary to invoke the Model Validator for each combination: many calls can be pruned.
+The computation of unsatisfiable cores relies on USEï¿½s Model Validator to check if a given combination of invariants is satisfiable or not. If a combination of invariants is deemed unsatisfiable, supersets of this combination will also be unsatisfiable. Similarly, if a combination is found to be satisfiable, it is not necessary to explore subsets of this combination. Thus, it is not necessary to invoke the Model Validator for each combination: many calls can be pruned.
 
   This tab shows information about the computation of unsatisfiable cores and sample instances. It describes the CPU time spent searching for combinations, the number of calls to the solver, and the number of calls that produced a satisfiable/unsatisfiable result.
 
@@ -97,7 +97,7 @@ Special thanks to ***Robert Clariso*** for his invaluable help and perseverance 
 ## CITATION
 
 Work on this tool has been published in the paper: 
-"A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams". J. A. Gómez, R. Clarisó, J. Cabot. EMMSAD'2022. LNCS, Springer. To appear.
+"A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams". J. A. Gï¿½mez, R. Clarisï¿½, J. Cabot. EMMSAD'2022. LNCS, Springer. To appear.
 
    
 ## REFERENCES
