@@ -46,6 +46,44 @@ The first time you run the utility, you must also configure the properties throu
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
 
+# Instructions for minimal installation for testing
+
+# Tool Description
+
+# Case Study
+
+## Launch Brute force
+
+## Launch MVM Wizard & Object diagram
+
+## Check Objects Satisfiability
+
+## Create new Order_line
+
+## Create new link
+
+## Solving invariants with problems
+
+### password_min_length
+
+### distinctProductsInOrderLines
+
+#### Delete link between orders_line2 and products1
+
+#### Create a new product (products2)
+
+#### Create a link between it and categories1
+
+#### Create link between orders_line2 and products2
+
+### calculate_total
+
+### sufficient_stock
+
+## Save actions
+
+## Check invariants state
+
 Put the rest of 'readme.md'
 
 UNDER CONSTRUCTION
