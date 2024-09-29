@@ -12,18 +12,15 @@ Author: ***Juan Antonio Gómez Gutiérrez(2024)***
 
 To test **MVM** you need to have **Eclipse IDE for Java developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
 
-|**MVM**   	|https://github.com/juanto2021/MVM.git             |
-|:-----------|:--------------------------------------------------|
-|**Use**	|https://github.com/juanto2021/MVMUse.git         |
-|**Usecompi**	|https://github.com/juanto2021/MVMUseCompi.git|
+|Repository    |URL                                            |
+|:-------------|:----------------------------------------------|
+|**MVM**   	   |https://github.com/juanto2021/MVM.git          |
+|**Use**	     |https://github.com/juanto2021/MVMUse.git     |
+|**Usecompi**	 |https://github.com/juanto2021/MVMUseCompi.git|
 
 
 
-* **MVM**       - https://github.com/juanto2021/MVM.git<BR>
-* **Use**       - https://github.com/juanto2021/JuantoUse.git<BR>
-* **Usecompi**  - https://github.com/juanto2021/JuantoUseCompi.git<BR>
-
-Once downloaded in the same workspace, locate the `build.xml` file of the **MVM project** and make sure that the following properties are well defined:
+Once downloaded to the same workspace, locate the **MVM project's** 'build.xml' file  and make sure the following properties are well defined:
 
 ```html
 ...
