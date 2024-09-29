@@ -33,24 +33,16 @@ Once downloaded to the same workspace, locate the **MVM project's** 'build.xml' 
 ```
 
 Next, select the use '[MVMuse main]' project and create a Debug Configuration by setting the following values to Main:
+
 ![](https://github.com/juanto2021/MVM/blob/main/01_Config.png)
 
->***Project:***    **use**
+Click the **Debug** button and then open the **shop.use** definition file:
 
->***Main class:*** **org.tzi.use.main.Main**
-
-
-Click on the Debug button and select:
-
->***File->Open Specification***
-
->***..\use\examples\Others\Juanto\Animals.use***
+![](https://github.com/juanto2021/MVM/blob/main/02_Open_Specification.png)
 
 The first time you run the utility, you must also configure the properties through the **Plugins->Model Validator->Configuration** option to the following values:
   
->Check `Integer` and define **Minimum: -10** y **Maximum: 10**
-  
->Check `String` and define **Min. Div. Values: 0** y **Max. Div. Values: 10**
+![](https://github.com/juanto2021/MVM/blob/main/03_Shop_Properties.png)
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
   
