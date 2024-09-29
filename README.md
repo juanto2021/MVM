@@ -24,20 +24,15 @@ Once downloaded to the same workspace, locate the **MVM project's** 'build.xml' 
 
 ```html
 ...
-<property name="use.path" value="..\..\JuantoUseCompi\usecompi" />
-
+<property name="use.path" value="..\..\MVMUseCompi\usecompi" />
 ...
-
 <target name="deployDebug" depends="jar"\>
-
   <copy file="dist/${filename}" todir="${use.path}/lib/plugins"/\>
-  
-  <copy file="dist/${filename}" todir="../../JuantoUse/use/lib/plugins"/\>
-  
-</target\>
+    <copy file="dist/${filename}" todir="../../MVMUse/use/lib/plugins"/\>
+  </target\>
 ```
 
-Next, select the use `[JuantoUse main]` project and create a **Debug configuration** by defining the following values in Main:
+Next, select the use '[MVMuse main]' project and create a Debug Configuration by setting the following values to Main:
 
 >***Project:***    **use**
 
