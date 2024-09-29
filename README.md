@@ -2,16 +2,15 @@
 
 
 This project is a extension of the USE Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
-for the UML-Based Specification Environment (http://useocl.sourceforge.net/w/index.php/Main_Page).
-The code is developed in Java as an Eclipse plug-in. The output ".jar" file can be added as a plugin for USE v.0. 
+for the UML-Based Specification Environment (https://sourceforge.net/projects/useocl/). The code is developed in Java.
 
-Author: ***Juan Antonio Gómez Gutiérrez(2022)***
+Author: ***Juan Antonio Gómez Gutiérrez(2024)***
 
 ----
-# Instructions for installation and testing
+# Instructions for full installation
 
 
-In order to test **MVM** you need to have **Eclipse IDE for Java Developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
+To test **MVM** you need to have **Eclipse IDE for Java developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
 
 * **MVM**       - https://github.com/juanto2021/MVM.git<BR>
 * **Use**       - https://github.com/juanto2021/JuantoUse.git<BR>
