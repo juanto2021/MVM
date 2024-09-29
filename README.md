@@ -36,7 +36,7 @@ Next, select the use '[MVMuse main]' project and create a Debug Configuration by
 
 ![](https://github.com/juanto2021/MVM/blob/main/01_Config.png)
 
-Click the **Debug** button and then open the **shop.use** definition file:
+Click the **Debug** button and then, open the **shop.use** definition file:
 
 ![](https://github.com/juanto2021/MVM/blob/main/02_Open_Specification.png)
 
@@ -45,42 +45,10 @@ The first time you run the utility, you must also configure the properties throu
 ![](https://github.com/juanto2021/MVM/blob/main/03_Shop_Properties.png)
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
-  
-To run MVM, use the **Plugins->ValidationMVM->ValidationMVM** option or locate the green icon containing an uppercase `M`.
-  
-At this point you will already see a dialog box with the tabs:
 
-## Errors 
+Put the rest of 'readme.md'
 
-![](https://github.com/juanto2021/MVM/blob/main/img02.png)
-    
-In this tab, we show the minimal combinations of invariants that are unsatisfiable (minimal unsatisfiable cores). It consists of the following panels:
-  
-* ***Faulty combinations:*** The leftmost panel shows the minimal unsatisfiable core. When a combination is selected in this list, the following two views are synchronized.
-  
-* ***Example instances without the selected invariant:*** This panel shows examples of satisfiable combinations that do not contain one invariant from the core. Double-clicking a combination (each excludes one invariant from the core) creates an object diagram that satisfies the invariant in that combination.
-  
-* ***OCL for inv:*** For convenience, this panel displays the OCL definition of the selected invariant.
- 
-## Best approximate solutions 
-    
-![](https://github.com/juanto2021/MVM/blob/main/img05.png)
-    
-This tab shows the satisfiable combinations with the highest number of invariants:
-  
-* ***Invariants:*** The leftmost panel shows the list of satisfiable combinations with the highest number of invariants.
-  
-* ***Combination panel:*** When clicking on a combination, the invariants that compose it are shown in the upper right panel.
-  
-* ***OCL for inv:*** When clicking on a specific invariant, the definition of that invariant is shown in the lower panel.
-  
-## Statistics 
-
-![](https://github.com/juanto2021/MVM/blob/main/img06.png)
-    
-The computation of unsatisfiable cores relies on USE’s Model Validator to check if a given combination of invariants is satisfiable or not. If a combination of invariants is deemed unsatisfiable, supersets of this combination will also be unsatisfiable. Similarly, if a combination is found to be satisfiable, it is not necessary to explore subsets of this combination. Thus, it is not necessary to invoke the Model Validator for each combination: many calls can be pruned.
-
-  This tab shows information about the computation of unsatisfiable cores and sample instances. It describes the CPU time spent searching for combinations, the number of calls to the solver, and the number of calls that produced a satisfiable/unsatisfiable result.
+UNDER CONSTRUCTION
 
 ## ACKNOWLEDGMENT
 Special thanks to ***Robert Clariso*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
