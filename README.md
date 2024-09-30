@@ -56,9 +56,9 @@ Once downloaded, we will extract it to the folder we consider appropriate (e.g. 
 
 |Repository    |URL                                            |
 |:-------------|:----------------------------------------------|
-|**MVM**   	   |https://github.com/juanto2021/MVM.git          |
-|**Use**	     |https://github.com/juanto2021/MVMUse.git     |
-|**Usecompi**	 |https://github.com/juanto2021/MVMUseCompi.git|
+|**groupActions**   	   |Folder that will store the files with the action groups that we want to save.          |
+|**jre**	     |JRE using the tool.     |
+|**MVMUse**	 |Original USE content with the MVM-provided extension required for its execution.|
 
 
 
