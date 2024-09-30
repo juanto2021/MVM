@@ -54,6 +54,8 @@ Once downloaded, we will extract it to the folder we consider appropriate (e.g. 
 
 ![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png){width=300px height=200px}
 
+<img src="[ruta/a/tu/imagen.png](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)" style="width:50%;">
+
 
 # Tool Description
 
