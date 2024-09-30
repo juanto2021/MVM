@@ -52,9 +52,9 @@ If you just want to try the tool, simply download the following compressed file:
 https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
 Once downloaded, we will extract it to the folder we consider appropriate (e.g. C:\Temp) and we will notice that the folder created after extraction has the following contents:
 
-![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png){width=300px height=200px}
+![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png){width=50%}
 
-<img src="[ruta/a/tu/imagen.png](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)" style="width:50%;">
+
 
 
 # Tool Description
