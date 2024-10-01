@@ -252,6 +252,22 @@ If we click on **Multiplicities**, we access the following screen:
 
 ![](https://github.com/juanto2021/MVM/blob/main/09_W_Wizard_Association.png)
 
+This screen shows the existing associations and for each of them, the links created so far with information on connections, multiplicities, etc. that show a problem to be solved. At the bottom, actions are proposed to automatically resolve the problems associated with the link that we find previously selected in the **Links** table. Once a proposal has been selected, when we return to the main screen we will see the actions that have been carried out, such as the creation of objects and their assignment to establish links in an association:
+
+![](https://github.com/juanto2021/MVM/blob/main/10_W_Object_Diagram.png)
+
+Verify Object Satisfiability
+
+To check the satisfiability of the invariants in each of the existing objects, you can access the Check Satisfiability Object of MVM window by clicking on the OBJs button that is in red indicating the existence of a problem:
+
+![](https://github.com/juanto2021/MVM/blob/main/11_W_Objects_Satisfiability.png)
+
+On this screen we can filter which objects have a problem and which invariant are not met in each case. When selecting an object, we can also see an auxiliary table where the expressions of each invariant are shown to facilitate comparison with the naked eye.
+
+## Actions wizard
+
+MVM records each of the actions performed (creation, modification and deletion of objects and links) in order to store collections of actions and retrieve them later to reproduce a certain situation. To access the management of these groups of actions we can click on the Actions button:
+
 
 
 
