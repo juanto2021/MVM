@@ -337,7 +337,17 @@ After the creation of this last link, we see how the multiplicities have been so
 
 ## Solving invariants with problems
 
+If we click on the **OBJs** button to see which invariants fail, we will see that the following ones fail:
+
+![](https://github.com/juanto2021/MVM/blob/main/23_W_Invs_fail01.png)
+
+
 ### password_min_length
+
+To start to solve problems, we'll close the dialog by pressing the **Exit** button   and move on to modifying the **customers1** pwd. In the main window of the wizard, select the **Customers** class, the **customer1** object and, after modifying the **password** to enter for example '**my_password**' we will click on the **Save Obj** button:
+
+![](https://github.com/juanto2021/MVM/blob/main/24_W_Modify_pwd.png)
+
 
 ### distinctProductsInOrderLines
 
