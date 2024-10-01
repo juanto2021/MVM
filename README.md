@@ -274,7 +274,19 @@ On this screen we can save and/or retrieve groups of actions and within each gro
 
 # Case Study
 
+This case study is based on a very simple model in which customers can place orders made up of several detail lines. The model contains several invariants for each class in which certain characteristics of the same can be controlled, such as the uniqueness of **ID's**, positive values for **ID's**, or controls such as that the total of an order coincides with the **sum** of  the product of **quantity * price** of the detail lines of the same or that it is stock of a product matches the sum of quantities of the same ordered product on all  detail lines. 
+To simplify the explanation, we omitted all the classic management of partial requests, modifications and cancellations of orders since the simple example proposed is enough to detail the functionalities of the tool.
+
+
 ## Launch Brute force
+To test the tool, we can load the '**shop**' model into **USE** and then run the search for combinations for example using the '**Brute force**' method:
+
+![](https://github.com/juanto2021/MVM/blob/main/13_Launch_Brute_Force.png)
+
+After you run this option, a dialog box with the search results will be displayed. If we look at the '**Best approximate solutions**' tab, we will see that it shows a group of invariants that allow us to make the model satisfactory:
+
+![](https://github.com/juanto2021/MVM/blob/main/14_Resultado_Brute_Force.png)
+
 
 ## Launch MVM Wizard & Object diagram
 
