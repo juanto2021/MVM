@@ -81,6 +81,8 @@ The first time you run the utility, you must also configure the properties throu
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
 
+[(Up)](#Table-of-Contents)
+
 # Instructions for minimal installation for testing
 
 If you just want to try the tool, simply download the following compressed file:
@@ -114,6 +116,7 @@ Next, we'll see the application running:
 
 ![](https://github.com/juanto2021/MVM/blob/main/06_MVM_Wizard.png)
 
+[(Up)](#Table-of-Contents)
 
 # Tool Description
 
@@ -465,6 +468,8 @@ If we click on the button with the text '**Correct**' in green that is associate
 
 ![](https://github.com/juanto2021/MVM/blob/main/36_W_AllInvsCorrect_ClassInvariants.png)
 
+[(Up)](#Table-of-Contents)
+
 # ACKNOWLEDGMENT
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
 
@@ -479,3 +484,5 @@ Work on this tool has been published in the paper:
 * **Eclipse** - https://www.eclipse.org/downloads/
 * **GitHub**  - https://desktop.github.com/
 * **USE**     - http://useocl.sourceforge.net/w/index.php/Main_Page
+
+[(Up)](#Table-of-Contents)
