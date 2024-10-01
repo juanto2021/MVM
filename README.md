@@ -311,6 +311,14 @@ That is, in the **customers1** object, it fails because it does not have a  **lo
 
 ## Create new Order_line
 
+To make a richer example, we're going to add one more detail line to the current order. To do this, we close this dialog by clicking on the Exit button and, once on the main screen of the Wizard, we will select '**Orders_line**' from the list of classes and create a new one automatically by simply clicking on the '**+**'  button:
+
+![](https://github.com/juanto2021/MVM/blob/main/18_W_Add_orderline.png)
+
+After creating the new object, we can see how it has been added to the object diagram and how the states relative to multiplicities and the state of invariants have changed so that now, the instance of this model is unsatisfiable:
+
+![](https://github.com/juanto2021/MVM/blob/main/19_W_After_Add_orderline.png)
+
 ## Create new link
 
 ## Solving invariants with problems
