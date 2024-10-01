@@ -1,6 +1,6 @@
 # MVM (Model Validator Mixer - - )
 
-## Índice
+## Table of Contents
 - [Introduction](#introduction)
 - [Instructions for full installation](#instructions-for-full-installation)
 - [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
@@ -439,16 +439,16 @@ If we click on the button with the text '**Correct**' in green that is associate
 
 ![](https://github.com/juanto2021/MVM/blob/main/36_W_AllInvsCorrect_ClassInvariants.png)
 
-## ACKNOWLEDGMENT
+# ACKNOWLEDGMENT
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
 
-## CITATION
+# CITATION
 
 Work on this tool has been published in the paper: 
 "A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams". J. A. Gómez, R. Clarisó, J. Cabot. EMMSAD'2022. LNCS, Springer. To appear.
 
    
-## REFERENCES
+# REFERENCES
 
 * **Eclipse** - https://www.eclipse.org/downloads/
 * **GitHub**  - https://desktop.github.com/
