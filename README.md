@@ -1,6 +1,6 @@
-# MVM (Model Validator Mixer - - )
+# MVM (Model Validator Mixer)
 
-## Table of Contents
+# Table of Contents
 - [Introduction](#introduction)
 - [Instructions for full installation](#instructions-for-full-installation)
 - [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
