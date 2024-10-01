@@ -280,9 +280,11 @@ To simplify the explanation, we omitted all the classic management of partial re
 
 ## Launch Brute force
 To test the tool, we can load the '**shop**' model into **USE** and then run the search for combinations for example using the '**Brute force**' method:
-<center>
+
+<p align="center">
 ![](https://github.com/juanto2021/MVM/blob/main/13_Launch_Brute_Force.png)
-</center>
+</p>
+
 After you run this option, a dialog box with the search results will be displayed. If we look at the '**Best approximate solutions**' tab, we will see that it shows a group of invariants that allow us to make the model satisfactory:
 
 ![](https://github.com/juanto2021/MVM/blob/main/14_Resultado_Brute_Force.png)
