@@ -1,7 +1,7 @@
 # MVM (Model Validator Mixer - - )
 
 ## Índice
-- [Introduction2](#Introduction)
+- [Introduction](#Introduction)
 - [Instructions for full installation](#Instructions_full)
 - [Instructions for minimal installation for testing](#Intructions_test)
 
@@ -13,7 +13,7 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 Author: ***Juan Antonio Gómez Gutiérrez(2024)***
 
 ----
-# [Instructions_full]Instructions for full installation
+# Instructions for full installation
 
 
 To test **MVM** you need to have **Eclipse IDE for Java developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
