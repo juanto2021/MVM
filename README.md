@@ -39,7 +39,7 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 
 Author: ***Juan Antonio Gómez Gutiérrez(2024)***
 
-[<up>](#Table-of-Contents)
+[Up](#Table-of-Contents)
 
 ----
 # Instructions for full installation
