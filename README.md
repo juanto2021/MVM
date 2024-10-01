@@ -50,6 +50,7 @@ Press Validate and verify that through the 'standard' validation of **USE**, the
 
 If you just want to try the tool, simply download the following compressed file:
 https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
+
 Once downloaded, we will extract it to the folder we consider appropriate (e.g. C:\Temp) and we will notice that the folder created after extraction has the following contents:
 
 ![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)
@@ -59,7 +60,19 @@ Once downloaded, we will extract it to the folder we consider appropriate (e.g. 
 |**groupActions**   	   |Folder that will store the files with the action groups that we want to save.          |
 |**jre**	     |JRE using the tool.     |
 |**MVMUse**	 |Original USE content with the MVM-provided extension required for its execution.|
+|**wrkReplaceBodyInv**	 |MVM Toolkit for Compute and Storage of Invariant Alternatives.|
+|**command_use_Runtime.bat**	 |Batch process running MVM.|
+|**shop.properties**	 |Properties defined to test the sample model.|
+|**shop.use**	 |Definition of the example model.|
 
+To run the application, double-click on the file:
+
+```
+command_use_Runtime.bat
+```
+A CMD window will open:
+
+![](https://github.com/juanto2021/MVM/blob/main/05_CMD.png)
 
 
 # Tool Description
