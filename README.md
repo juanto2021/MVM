@@ -1,6 +1,7 @@
 <h1>MVM (Model Validator Mixer)</h1>
 
-**<span style="font-size: 64px;">Título Principal Grande</span>**
+<h1 style="font-size: 50px; text-align: center; color: #0000FF; margin-top: 20px;">Rótulo Principal</h1>
+
 
 
 # Table of Contents
