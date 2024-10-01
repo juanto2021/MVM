@@ -290,7 +290,24 @@ After you run this option, a dialog box with the search results will be displaye
 
 ## Launch MVM Wizard & Object diagram
 
+Double-clicking on the line that contains this group (top-left panel) will cause the Wizard to open for the processing of objects and links, and an object diagram will also be displayed with the result of the previous search:
+
+![](https://github.com/juanto2021/MVM/blob/main/15_W_Pral.png)
+
+In this case, we see that all the necessary links have been satisfied so that the 'multiplicities' section is displayed without problems.
+
 ## Check Objects Satisfiability
+
+If we click on the **OBJs** button to see which invariants are met or not, the '**Check Objects Satisfiability**' dialog will appear showing the status of all the invariants so that we can start making decisions:
+
+![](https://github.com/juanto2021/MVM/blob/main/16_W_Check_Objects_Satisfiability.png)
+
+Analysing in a little more detail, we see that the invariants that fail are the following:
+
+![](https://github.com/juanto2021/MVM/blob/main/17_W_COS_Fail01.png)
+
+That is, in the **customers1** object, it fails because it does not have a  **long enough pwd** (**password_min_length**) and **orders1** (**calculate_total**) fails because the order total (**total = 2.0**) does not match the **sum of price*quantity of orders_line (2.0*10=20.0)**. 
+
 
 ## Create new Order_line
 
