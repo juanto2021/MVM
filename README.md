@@ -1,8 +1,8 @@
 # MVM (Model Validator Mixer - - )
 
 ## Índice
-- [Introduction](#Introduction)
-- [Instructions for full installation](#Intructions_full)
+- [Introduction2](#Introduction)
+- [Instructions for full installation](#Instructions_full)
 - [Instructions for minimal installation for testing](#Intructions_test)
 
 # Introduction
@@ -13,7 +13,7 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 Author: ***Juan Antonio Gómez Gutiérrez(2024)***
 
 ----
-# [Intructions_full]Instructions for full installation
+# [Instructions_full]Instructions for full installation
 
 
 To test **MVM** you need to have **Eclipse IDE for Java developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
@@ -52,7 +52,7 @@ The first time you run the utility, you must also configure the properties throu
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
 
-# [Intructions_test]Instructions for minimal installation for testing
+# [Instructions_test]Instructions for minimal installation for testing
 
 If you just want to try the tool, simply download the following compressed file:
 https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
