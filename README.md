@@ -321,6 +321,20 @@ After creating the new object, we can see how it has been added to the object di
 
 ## Create new link
 
+Because the new **order_line2** requires a product, we could either associate the existing product (**products1**) or create a new one. To test the link building functionality, we're going to manually associate **products1** with **orders_line2**. To do this, we will select the association '**OrderLineProduct**', then in the **From** drop-down of **Object->Orders_line** we will select **orders_line2**. Then in the **To** drop-down of **Products**, we will select products1 and finally click on **Insert Link**:
+
+![](https://github.com/juanto2021/MVM/blob/main/20_W_Add_Link_orderline_products01.png)
+
+Similarly, we will create a link between **orders1** and **orders_line2** by selecting the classes and objects corresponding to the new link we want to create and clicking on '**Insert Link**':
+
+![](https://github.com/juanto2021/MVM/blob/main/21_W_Add_Link_orderline2_orders1.png)
+
+After the creation of this last link, we see how the multiplicities have been solved and reorganizing the object diagram, we will see a result similar to the following:
+
+![](https://github.com/juanto2021/MVM/blob/main/22_W_Add_Link_orderline2_orders1_diagram.png)
+
+
+
 ## Solving invariants with problems
 
 ### password_min_length
