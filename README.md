@@ -256,7 +256,7 @@ This screen shows the existing associations and for each of them, the links crea
 
 ![](https://github.com/juanto2021/MVM/blob/main/10_W_Object_Diagram.png)
 
-Verify Object Satisfiability
+## Verify Object Satisfiability
 
 To check the satisfiability of the invariants in each of the existing objects, you can access the Check Satisfiability Object of MVM window by clicking on the OBJs button that is in red indicating the existence of a problem:
 
@@ -268,8 +268,9 @@ On this screen we can filter which objects have a problem and which invariant ar
 
 MVM records each of the actions performed (creation, modification and deletion of objects and links) in order to store collections of actions and retrieve them later to reproduce a certain situation. To access the management of these groups of actions we can click on the Actions button:
 
+![](https://github.com/juanto2021/MVM/blob/main/12_W_Wizard_Actions.png)  
 
-
+On this screen we can save and/or retrieve groups of actions and within each group we can select a specific action to recreate all the objects and links that are displayed after the completion of that action. In this way we can reconstruct a situation over and over again easily and quickly.
 
 # Case Study
 
