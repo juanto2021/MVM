@@ -3,6 +3,8 @@
 
 ## Table of Contents
 
+- [Introduction](#introduction)
+- [Instructions for full installation](#instructions-for-full-installation)
 - [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
 - [Tool Description](#tool-description)
   - [Model](#model)
@@ -30,6 +32,7 @@
 - [ACKNOWLEDGMENT](#acknowledgment)
 - [CITATION](#citation)
 - [REFERENCES](#references)
+
 
 
 # Introduction
