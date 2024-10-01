@@ -388,14 +388,16 @@ If we click on the **OBJs** button to see how we have been solving problems, we 
 
 The **current body** of the invariant is as follows:
 ```
-(self.stock = Orders_line.allInstances->select(ol : Orders_line | (ol.product = self))->collect(ol : Orders_line | ol.quantity)->sum)
+(self.stock = Orders_line.allInstances->select(ol : Orders_line | (ol.product = self))
+     ->collect(ol : Orders_line | ol.quantity)->sum)
 ```
 Coincidentally, we see in the example that this expression is **true** for **orders_line1** since its **quantity** is **10** and the stock of **products1** is also **10**. However, we see that it is **not true** for **orders_line2** since its **quantity** is **10** but the stock of **products2** is **5**.
 Normally, the stock of a product would always be higher than the total of the existing detail lines in all **order**s so that they can be served without problems.
 If we look at the '**Body alternatives**' block, we see that one of the proposed alternatives is indeed the one we assume to be 'ideal':
 
 ```
-(self.stock <= Orders_line.allInstances->select(ol : Orders_line | (ol.product = self))->collect(ol : Orders_line | ol.quantity)->sum)
+(self.stock <= Orders_line.allInstances->select(ol : Orders_line | (ol.product = self))
+     ->collect(ol : Orders_line | ol.quantity)->sum)
 ```
 If we select that alternative, we see how the 'New Invariant body' block shows a correct result:
 
@@ -429,7 +431,7 @@ If we click on the button with the text '**Correct**' in green that is associate
 ![](https://github.com/juanto2021/MVM/blob/main/36_W_AllInvsCorrect_ClassInvariants.png)
 
 ## ACKNOWLEDGMENT
-Special thanks to ***Robert Clariso*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
+Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
 
 ## CITATION
 
