@@ -1,5 +1,11 @@
 # MVM (Model Validator Mixer - - )
 
+## Índice
+- [Introducción](#Introduction)
+- [Instalación](#Intructions_full)
+- [Configuración](#Intructions_test)****
+
+# [Introduction]Introduction
 
 This project is a extension of the USE Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
 for the UML-Based Specification Environment (https://sourceforge.net/projects/useocl/). The code is developed in Java.
@@ -7,7 +13,7 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 Author: ***Juan Antonio Gómez Gutiérrez(2024)***
 
 ----
-# Instructions for full installation
+# [Intructions_full]Instructions for full installation
 
 
 To test **MVM** you need to have **Eclipse IDE for Java developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
@@ -46,7 +52,7 @@ The first time you run the utility, you must also configure the properties throu
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
 
-# Instructions for minimal installation for testing
+# [Intructions_test]Instructions for minimal installation for testing
 
 If you just want to try the tool, simply download the following compressed file:
 https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
