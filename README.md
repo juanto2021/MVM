@@ -90,6 +90,169 @@ MVM offers a variety of capabilities to help detect inconsistencies in your mode
 -	Checking the structure according to associations
 -	Action history  that allows you to save and retrieve a set of actions
 
+## Model
+
+```
+model shop
+
+-- Definition of the Products class
+class Products 
+    attributes
+        ID: Integer
+        description: String
+        price: Real
+        stock: Integer
+end
+
+-- Definition of the Categories class
+class Categories 
+    attributes
+        ID: Integer
+        name: String
+end
+
+-- Definition of the Customers class
+class Customers 
+    attributes
+        ID: Integer
+        name: String
+        email: String
+        pwd: String
+        blocked: Integer
+end
+
+-- Definition of the Orders class
+class Orders 
+    attributes
+        ID: Integer
+        total: Real
+end
+
+-- Definition of the Orders_line class
+class Orders_line 
+    attributes
+        quantity: Integer
+end
+
+-- Association between Orders and Customers
+association OrderCustomer between
+    Orders[*] role order
+    Customers[1] role customer
+end
+
+-- Association between Orders_line and Orders
+association OrderLineOrder between
+    Orders_line[1..*] role orderLine
+    Orders[1] role order
+end
+
+-- Association between Products and Categories
+association ProductCategory between
+    Products[*] role product
+    Categories[1] role category
+end
+
+-- Association between Orders_line and Products
+association OrderLineProduct between
+    Orders_line[*] role orderLine
+    Products[1] role product
+end
+
+constraints
+
+-- Constraints block
+
+-- Invariants for Products
+context Products inv ID_positive:
+    self.ID > 0
+
+context Products inv description_not_empty:
+    self.description.size() > 0
+
+context Products inv price_non_negative:
+    self.price >= 0.0
+
+context Products inv stock_non_negative:
+    self.stock >= 0
+
+context Products inv stock_reasonable:
+    self.stock <= 10000
+
+context Products inv unique_product_id:
+    Products.allInstances()->forAll(p | p <> self implies p.ID <> self.ID)
+
+context Products inv sufficient_stock:
+    self.stock = Orders_line.allInstances()
+                    ->select(ol | ol.product = self)
+                    ->collect(ol | ol.quantity)
+                    ->sum()
+
+-- Invariants for Categories
+context Categories inv ID_positive:
+  self.ID > 0
+
+context Categories inv name_not_empty:
+  self.name.size() > 0
+
+context Categories inv name_unique:
+  Categories.allInstances()->forAll(c | c <> self implies c.name <> self.name)
+
+context Categories inv name_valid_length:
+  self.name.size() <= 50
+  
+-- Invariants for Customers
+context Customers inv ID_positive:
+    self.ID > 0
+
+context Customers inv name_not_empty:
+    self.name.size() > 0
+
+context Customers inv password_min_length:
+    self.pwd.size() >= 8
+
+context Customers inv blocked_status:
+    self.blocked >= 0 and self.blocked <= 1
+
+context Customers inv customer_not_blocked:
+    self.order->notEmpty() implies self.blocked = 0
+  
+-- Invariants for Orders
+context Orders inv ID_positive:
+    self.ID > 0
+
+context Orders inv customer_assigned:
+    self.customer->notEmpty()
+
+context Orders inv unique_order_id:
+    Orders.allInstances()->forAll(o | o <> self implies o.ID <> self.ID)
+
+context Orders inv calculate_total:
+    self.total = self.orderLine
+       ->collect(ol | ol.quantity * ol.product.price)
+       ->sum()
+
+context Orders inv distinctProductsInOrderLines:
+    self.orderLine->forAll(ol1, ol2 | ol1 <> ol2 implies ol1.product <> ol2.product)
+
+```
+
+![](https://github.com/juanto2021/MVM/blob/main/07_Class_Diagram_Shop.png)
+
+## Main window
+
+The listed functionalities are offered from several screens that are accessed from the following main screen:
+
+![](https://github.com/juanto2021/MVM/blob/main/08_Main_Window.png)
+
+To continue with the explanation, we can use the 'Fill' option and create an object from each of the classes. The panels are synchronized so that selecting a class displays its existing objects, and selecting an object displays its corresponding attributes and values.
+
+## Multiplicities
+
+If we click on **Multiplicities**, we access the following screen:
+
+![](https://github.com/juanto2021/MVM/blob/main/09_W_Wizard_Association.png)
+
+
 
 
 # Case Study
