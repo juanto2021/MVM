@@ -77,10 +77,20 @@ A CMD window will open:
 
 Next, we'll see the application running:
 
-![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)
+![](https://github.com/juanto2021/MVM/blob/main/06_MVM_Wizard.png)
 
 
 # Tool Description
+
+MVM offers a variety of capabilities to help detect inconsistencies in your models and correct them based on various suggestions based on object creation and association links.
+-	Search for the  Minimal Unsatisfiable Subsets (MUS) and Maximum Satisfiable Subsets (MSS)
+-	Creation of objects and links between objects according to the associations involved.
+-	Displaying such creation in an  object diagram
+-	Check for invariant compliance  for each object
+-	Checking the structure according to associations
+-	Action history  that allows you to save and retrieve a set of actions
+
+
 
 # Case Study
 
