@@ -51,6 +51,7 @@ Press Validate and verify that through the 'standard' validation of **USE**, the
 If you just want to try the tool, simply download the following compressed file:
 https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
 
+
 Once downloaded, we will extract it to the folder we consider appropriate (e.g. C:\Temp) and we will notice that the folder created after extraction has the following contents:
 
 ![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)
@@ -73,6 +74,10 @@ command_use_Runtime.bat
 A CMD window will open:
 
 ![](https://github.com/juanto2021/MVM/blob/main/05_CMD.png)
+
+Next, we'll see the application running:
+
+![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)
 
 
 # Tool Description
