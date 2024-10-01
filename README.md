@@ -382,13 +382,51 @@ To solve this invariant, simply modify the total **orders1** attribute  and assi
 
 ### sufficient_stock
 
+If we click on the **OBJs** button to see how we have been solving problems, we will see that we have indeed only one left to solve:
+
+![](https://github.com/juanto2021/MVM/blob/main/30_W_stock01.png)
+
+The **current body** of the invariant is as follows:
+```
+(self.stock = Orders_line.allInstances->select(ol : Orders_line | (ol.product = self))->collect(ol : Orders_line | ol.quantity)->sum)
+```
+Coincidentally, we see in the example that this expression is **true** for **orders_line1** since its **quantity** is **10** and the stock of **products1** is also **10**. However, we see that it is **not true** for **orders_line2** since its **quantity** is **10** but the stock of **products2** is **5**.
+Normally, the stock of a product would always be higher than the total of the existing detail lines in all **order**s so that they can be served without problems.
+If we look at the '**Body alternatives**' block, we see that one of the proposed alternatives is indeed the one we assume to be 'ideal':
+
+```
+(self.stock <= Orders_line.allInstances->select(ol : Orders_line | (ol.product = self))->collect(ol : Orders_line | ol.quantity)->sum)
+```
+If we select that alternative, we see how the 'New Invariant body' block shows a correct result:
+
+![](https://github.com/juanto2021/MVM/blob/main/31_W_alt_stock.png)
+
+Intuitively, we can notice that, if we type any **bodyexpression** in the text box associated with '**New Invariant body**' and click on the **Test** button, it will verify whether the text is a correct body or not.
+At this point, if we wanted to make a copy of the current model where we replaced the current invariant with the new alternative, it would be enough to click on the **Save file** button and give a name to the destination file (e.g. **shop_v2.use**):
+
+![](https://github.com/juanto2021/MVM/blob/main/32_W_save_file.png)
+
 ## Save actions
+
+Finally, if we wanted to save all the actions carried out regarding the creation of objects and links, we would exit this dialog by clicking on the **Exit** button and in the main wizard window we would click on the **Actions** button:
+
+![](https://github.com/juanto2021/MVM/blob/main/33_W_Actions01.png)
+
+In the dialog that appears, we will simply give the file a name , enter a description (recommended) and click on **Save actions**:
+
+![](https://github.com/juanto2021/MVM/blob/main/34_W_Save_Actions.png)
+
+One way to check the whole process described so far would be to abandon the current model (**shop.use**) and recover the copy we have made in the example (**shop_v2.use**).
+If we load **shop_v2.use** and invoke the wizard view, we can click on the **Actions** button to find the previously saved action file and finally load these actions to reproduce the changes made to get the desired objects, values and links to make almost the entire instance of the example satisfactory (except for the change of body expression for one of the proposed alternatives):
+
+![](https://github.com/juanto2021/MVM/blob/main/35_W_Test_new_model.png)
 
 ## Check invariants state
 
-Put the rest of 'readme.md'
+Finally, we see how we have indeed managed to get all the checks correct and an object diagram correct.
+If we click on the button with the text '**Correct**' in green that is associated with the '**State invariants**' label, we will see how all the invariants in show in green:
 
-UNDER CONSTRUCTION
+![](https://github.com/juanto2021/MVM/blob/main/36_W_AllInvsCorrect_ClassInvariants.png)
 
 ## ACKNOWLEDGMENT
 Special thanks to ***Robert Clariso*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
