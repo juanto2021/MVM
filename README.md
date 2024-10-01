@@ -2,8 +2,8 @@
 
 ## Índice
 - [Introduction](#Introduction)
-- [Instructions for full installation](#Instructions_full)
-- [Instructions for minimal installation for testing](#Intructions_test)
+- [Instructions for full installation](#Instructions for full installation)
+- [Instructions for minimal installation for testing](#Instructions for minimal installation for testing)
 
 # Introduction
 
@@ -52,7 +52,7 @@ The first time you run the utility, you must also configure the properties throu
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
 
-# [Instructions_test]Instructions for minimal installation for testing
+# Instructions for minimal installation for testing
 
 If you just want to try the tool, simply download the following compressed file:
 https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
