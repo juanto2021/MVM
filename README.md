@@ -39,6 +39,8 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 
 Author: ***Juan Antonio Gómez Gutiérrez(2024)***
 
+[Table of Contents](#Table-of-Contents)
+
 ----
 # Instructions for full installation
 
