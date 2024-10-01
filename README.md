@@ -1,9 +1,12 @@
 # MVM (Model Validator Mixer - - )
 
 ## Índice
-- [Introduction](#Introduction)
-- [Instructions for full installation](#Instructions for full installation)
-- [Instructions for minimal installation for testing](#Instructions for minimal installation for testing)
+- [Introduction](#introduction)
+- [Instructions for full installation](#instructions-for-full-installation)
+- [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
+- [Tool Description](#tool-description)
+  - [Model](#model)
+  - [Main window](#main-window)
 
 # Introduction
 
