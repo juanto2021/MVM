@@ -351,15 +351,34 @@ To start to solve problems, we'll close the dialog by pressing the **Exit** butt
 
 ### distinctProductsInOrderLines
 
+Next, we see that the invariant 'distinctProductsInOrderLines' forces us to have different products in the same order and that our lines (1 and 2) use the same product (products1). To resolve this, we need to perform the following actions:
+-	Borrar link entre orders_line2 y products1
+-	Create a new product (products2)
+-	Create a link between it and categories1
+-	Crear link entre orders_line2 y products2
+
+
 #### Delete link between orders_line2 and products1
+
+![](https://github.com/juanto2021/MVM/blob/main/25_W_delete_line_orders_line2_products1.png)
 
 #### Create a new product (products2)
 
+![](https://github.com/juanto2021/MVM/blob/main/26_W_Create_products2.png)
+
 #### Create a link between it and categories1
+
+![](https://github.com/juanto2021/MVM/blob/main/27_W_insert_products2_categories1.png)
 
 #### Create link between orders_line2 and products2
 
+![](https://github.com/juanto2021/MVM/blob/main/28_W_insert_products2_orders_line2.png)
+
 ### calculate_total
+
+To solve this invariant, simply modify the total **orders1** attribute  and assign it the value of **50**,  which is the sum of the **product quantity*price** of all the lines of **order_lines**:
+
+![](https://github.com/juanto2021/MVM/blob/main/29_W_modif_total.png)
 
 ### sufficient_stock
 
