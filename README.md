@@ -285,6 +285,10 @@ To test the tool, we can load the '**shop**' model into **USE** and then run the
 ![](https://github.com/juanto2021/MVM/blob/main/13_Launch_Brute_Force.png)
 </p>
 
+<center>
+  <img src="[ruta/a/tu/imagen.png](https://github.com/juanto2021/MVM/blob/main/13_Launch_Brute_Force.png)" alt="Texto Alternativo" width="300">
+</center>
+
 After you run this option, a dialog box with the search results will be displayed. If we look at the '**Best approximate solutions**' tab, we will see that it shows a group of invariants that allow us to make the model satisfactory:
 
 ![](https://github.com/juanto2021/MVM/blob/main/14_Resultado_Brute_Force.png)
