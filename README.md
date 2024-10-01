@@ -5,7 +5,7 @@
 - [Instalación](#Intructions_full)
 - [Configuración](#Intructions_test)****
 
-# [Introduction]Introduction
+# Introduction
 
 This project is a extension of the USE Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
 for the UML-Based Specification Environment (https://sourceforge.net/projects/useocl/). The code is developed in Java.
