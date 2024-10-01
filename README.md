@@ -1,9 +1,7 @@
-<h1>MVM (Model Validator Mixer)</h1>
-
 # _MVM (Model Validator Mixer)_
 
 
-# Table of Contents
+## Table of Contents
 
 - [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
 - [Tool Description](#tool-description)
