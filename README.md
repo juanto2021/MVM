@@ -1,12 +1,35 @@
 # MVM (Model Validator Mixer)
 
 # Table of Contents
-- [Introduction](#introduction)
-- [Instructions for full installation](#instructions-for-full-installation)
+
 - [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
 - [Tool Description](#tool-description)
   - [Model](#model)
   - [Main window](#main-window)
+  - [Multiplicities](#multiplicities)
+  - [Verify Object Satisfiability](#verify-object-satisfiability)
+  - [Actions wizard](#actions-wizard)
+- [Case Study](#case-study)
+  - [Launch Brute force](#launch-brute-force)
+  - [Launch MVM Wizard & Object diagram](#launch-mvm-wizard--object-diagram)
+  - [Check Objects Satisfiability](#check-objects-satisfiability)
+  - [Create new Order_line](#create-new-order_line)
+  - [Create new link](#create-new-link)
+  - [Solving invariants with problems](#solving-invariants-with-problems)
+    - [password_min_length](#password_min_length)
+    - [distinctProductsInOrderLines](#distinctproductsinorderlines)
+      - [Delete link between orders_line2 and products1](#delete-link-between-orders_line2-and-products1)
+      - [Create a new product (products2)](#create-a-new-product-products2)
+      - [Create a link between it and categories1](#create-a-link-between-it-and-categories1)
+      - [Create link between orders_line2 and products2](#create-link-between-orders_line2-and-products2)
+    - [calculate_total](#calculate_total)
+    - [sufficient_stock](#sufficient_stock)
+  - [Save actions](#save-actions)
+  - [Check invariants state](#check-invariants-state)
+- [ACKNOWLEDGMENT](#acknowledgment)
+- [CITATION](#citation)
+- [REFERENCES](#references)
+
 
 # Introduction
 
