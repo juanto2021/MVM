@@ -478,14 +478,17 @@ Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance
 
 # CITATION
 
-Work on this tool has been published in the paper: 
-"A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams". J. A. Gómez, R. Clarisó, J. Cabot. EMMSAD'2022. LNCS, Springer. To appear.
+Juan Antonio Gómez-Gutiérrez, Robert Clarisó, Jordi Cabot.
+A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams.
+In Proc. 27th International Working Conference on Exploring Modeling Methods for Systems Analysis and Development (EMMSAD’2022). Lecture Notes in Business Information Processing vol. 450, pp. 267–275, Springer.
+
+https://link.springer.com/chapter/10.1007/978-3-031-07475-2_18
 
    
 # REFERENCES
 
 * **Eclipse** - https://www.eclipse.org/downloads/
 * **GitHub**  - https://desktop.github.com/
-* **USE**     - http://useocl.sourceforge.net/w/index.php/Main_Page
+* **USE**     - https://github.com/useocl/use/
 
 [(Up)](#Table-of-Contents)
