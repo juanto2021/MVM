@@ -1077,7 +1077,8 @@ public abstract class KodkodModelValidator {
 		logTime="";
 
 		BitSet bCmbBase = new BitSet();
-
+		//AQUI
+// For SAT
 		int i = 0;
 		for (IInvariant invClass: invClassSatisfiables) {
 			// Search satisfiable inv in listInvRes to obtain then position
@@ -1089,7 +1090,17 @@ public abstract class KodkodModelValidator {
 
 		}
 		lBitCmb = comRestoB(bCmbBase,true);
+// For UNSAT
+		 i = 0;
+		for (IInvariant invClass: invClassUnSatisfiables) {
+			// Search satisfiable inv in listInvRes to obtain then position
+			i = searchNumInv(invClass);
+			bCmbBase.set(i-1);
+			BitSet bit=new BitSet();
+			bit.set(i-1);
+			lBitCmbUNSAT = review_store_UNSAT(lBitCmbUNSAT,bit);
 
+		}
 		// --------------------------------------------------------------------
 		// Provisionalmente monto listas a partir de las nuevas estructuras
 		TraspasaCHB();
@@ -1143,16 +1154,16 @@ public abstract class KodkodModelValidator {
 
 	private void analyzeUnsatCmb() {
 		for (String combination : listUnSatisfiables){
-			System.out.println("Cmb Unsat ["+combination+"]");
+//			System.out.println("Cmb Unsat ["+combination+"]");
 			List<IInvariant> listInv = new ArrayList<IInvariant>();
 			String[] invs = combination.split("-");	
 			for (String invStrID: invs) {
 				int invID=Integer.parseInt(invStrID);  
 				IInvariant invII = (IInvariant) tabInv[invID-1];
 				MClassInvariant invMC = (MClassInvariant) tabInvMClass[invID-1];
-				System.out.println("invII ["+invID + "] name ["+invII.name()+"]");
-				System.out.println("invMC ["+invID + "] name ["+invMC.name()+"]");
-				System.out.println("Class ["+invMC.cls().name()+"] Position ["+invMC.getPositionInModel()+"]");
+//				System.out.println("invII ["+invID + "] name ["+invII.name()+"]");
+//				System.out.println("invMC ["+invID + "] name ["+invMC.name()+"]");
+//				System.out.println("Class ["+invMC.cls().name()+"] Position ["+invMC.getPositionInModel()+"]");
 
 				listInv.add(invII);				
 			}
@@ -1869,14 +1880,19 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}
 	private static int searchNumInv(IInvariant inv) {
+		// Buscar numero por inv//JG
 		int numInvGral=-1;
 		for (int nInv = 0; nInv < tabInv.length; nInv++) {
-			if(inv.name().equals(tabInv[nInv].name())) {
+//			System.out.println("inv [" + inv + "] inv.clazz().name() ["+inv.name()+"] tabInv[nInv].name()["+tabInv[nInv].name()+"]");
+//			System.out.println("inv [" + inv + "] inv.clazz().name() ["+inv.clazz().name()+"] tabInv[nInv].clazz().name()["+tabInv[nInv].clazz().name()+"]");
+			//			if(inv.name().equals(tabInv[nInv].name())) {//old
+				if(inv.name().equals(tabInv[nInv].name()) && inv.clazz().name().equals(tabInv[nInv].clazz().name())) {
 				numInvGral=nInv+1;
-				continue;
+//				continue;//PROVIS
+				break;
 			}
 		}
-
+//		System.out.println("inv " + inv + " numInvGral ["+numInvGral+"]");
 		if (debMVM) {
 			if (numInvGral<0) {
 				System.out.println("inv " + inv + " numInv<0 en searchNumInv");
