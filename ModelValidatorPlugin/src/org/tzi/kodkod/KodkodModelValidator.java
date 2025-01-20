@@ -898,7 +898,7 @@ public abstract class KodkodModelValidator {
 		timeInitFind= Instant.now();
 		timeCallSolver=Duration.between(start, start);//
 		logTime="";
-
+//		debMVM=true;//provis
 		this.model = model;
 		evaluator = null;
 		kodkodSolver = new KodkodSolver();
