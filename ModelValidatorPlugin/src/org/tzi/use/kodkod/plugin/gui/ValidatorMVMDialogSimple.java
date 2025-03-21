@@ -180,6 +180,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	String strFileOut = strRuta + "\\" + strNomFileOut;
 
 	int numberIter=1;
+	int numCmbsTOTAL=0;
+	int numCmbsSAT=0;
+	int numCmbsUNSAT=0;
 
 	boolean existDiagram=false;
 	boolean existWizard=false;
@@ -205,6 +208,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.tabInv = param.getTabInv();
 		this.tabInvMClass = param.getTabInvMClass();
 		this.timeElapsed = param.getTimeElapsed();
+		this.numCmbsTOTAL=param.getNumCmbsTOTAL();
+		this.numCmbsSAT=param.getNumCmbsSAT();
+		this.numCmbsUNSAT=param.getNumCmbsUNSAT();
 
 		this.strCmbSel="";
 
@@ -238,7 +244,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			//		}else if (tipoSearchMSS.equals("N")){
 			//			titleFrame+=" (Greedy-N) - Initial";
 		}else {
-			titleFrame+=" (Greedy-N"+numberIter+") - Initial";
+			if (tipoSearchMSS.equals("G")){
+				titleFrame+=" (Greedy) - Initial";
+			}else{
+				if (tipoSearchMSS.equals("R")){
+					titleFrame+=" (Greedy-R) - Initial";
+				} else if (tipoSearchMSS.equals("N")){
+					titleFrame+=" (Greedy-N"+numberIter+") - Initial";	
+				} else if (tipoSearchMSS.equals("T")){
+					titleFrame+=" (Greedy-T) - Initial";
+				}
+			}
 		}
 		titleFrame+=" - Model: '"+mModel.name()+"'";
 		frame = new JFrame(titleFrame);
@@ -302,7 +318,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	 * @param pNumCallSolverUNSAT
 	 */
 	public void updateInfo(List<String> pListStrSatisfiables, List<String> pListStrUnSatisfiables, 
-			Duration pTimeElapsed, int pNumCallSolver, int pNumCallSolverSAT, int pNumCallSolverUNSAT) {
+			Duration pTimeElapsed, int pNumCallSolver, int pNumCallSolverSAT, int pNumCallSolverUNSAT,
+			int pNumCmbsTOTAL, int pNumCmbsSAT, int pNumCmbsUNSAT) {
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
 		//		this.listStrOthers = pListStrOthers;
@@ -310,6 +327,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.numCallSolver=pNumCallSolver;
 		this.numCallSolverSAT=pNumCallSolverSAT;
 		this.numCallSolverUNSAT=pNumCallSolverUNSAT;
+		this.numCmbsTOTAL=pNumCmbsTOTAL;
+		this.numCmbsSAT=pNumCmbsSAT;
+		this.numCmbsUNSAT=pNumCmbsUNSAT;
 
 		// Refresca resultados tras el calculo en background
 		actMakeErrorsCtrls();
@@ -317,7 +337,30 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		actMakeStatisticsCtrls();
 
 		String titleFrame = "Validator with combinations";
-		titleFrame+=" (Greedy-N"+numberIter+") - End";
+		
+		if (tipoSearchMSS.equals("L")){
+			titleFrame+=" (Brute)";
+			//		}else if (tipoSearchMSS.equals("N")){
+			//			titleFrame+=" (Greedy-N) - Initial";
+		}else {
+			if (tipoSearchMSS.equals("G")){
+				titleFrame+=" (Greedy) - End";
+			}else{
+				if (tipoSearchMSS.equals("R")){
+					titleFrame+=" (Greedy-R) - End";
+				} else if (tipoSearchMSS.equals("N")){
+					titleFrame+=" (Greedy-N"+numberIter+") - End";	
+				} else if (tipoSearchMSS.equals("T")){
+					titleFrame+=" (Greedy-T) - End";
+				}
+			}
+		}
+		
+		
+		
+		
+		
+//		titleFrame+=" (Greedy-N"+numberIter+") - End";
 		titleFrame+=" - Model: '"+mModel.name()+"'";
 
 		frame.setTitle(titleFrame);
@@ -446,7 +489,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		try {
 
 			// Busca el numero de orden de la invariante
-	
+
 			String[] partesI = inv.split("-");
 			String strOrden=partesI[0];
 			int orden = Integer.parseInt(strOrden);	
@@ -1059,7 +1102,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JLabel lbNumCalls = new JLabel("Number of calls to the solver ");
 		lbNumCalls.setPreferredSize(dl);
 
-		txNumCalls = new JTextField(String.valueOf(numCallSolver)); 
+		txNumCalls = new JTextField(String.valueOf(numCallSolver));
+		//		txNumCalls = new JTextField(String.valueOf(numCmbsTOTAL));
 		txNumCalls.setPreferredSize(dt);
 		txNumCalls.setEditable(false);
 		txNumCalls.setHorizontalAlignment(JTextField.RIGHT);
@@ -1072,6 +1116,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbNumCallsSAT.setPreferredSize(dl);
 
 		txNumCallsSAT = new JTextField(String.valueOf(numCallSolverSAT)); 
+		//		txNumCallsSAT = new JTextField(String.valueOf(numCmbsSAT));
 		txNumCallsSAT.setPreferredSize(dt);
 		txNumCallsSAT.setEditable(false);
 		txNumCallsSAT.setHorizontalAlignment(JTextField.RIGHT);
@@ -1084,6 +1129,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbNumCallsUNSAT.setPreferredSize(dl);
 
 		txNumCallsUNSAT = new JTextField(String.valueOf(numCallSolverUNSAT)); 
+		//		txNumCallsUNSAT = new JTextField(String.valueOf(numCmbsUNSAT)); 
 		txNumCallsUNSAT.setPreferredSize(dt);
 		txNumCallsUNSAT.setEditable(false);
 		txNumCallsUNSAT.setHorizontalAlignment(JTextField.RIGHT);
@@ -1095,7 +1141,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JLabel lbNumCmbTotal = new JLabel("Total number of combinations ");
 		lbNumCmbTotal.setPreferredSize(dl);
 
-		txNumCmbTotal = new JTextField(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
+		//		txNumCmbTotal = new JTextField(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
+		txNumCmbTotal = new JTextField(Integer.toString(numCmbsTOTAL));
 		txNumCmbTotal.setPreferredSize(dt);
 		txNumCmbTotal.setEditable(false);
 		txNumCmbTotal.setHorizontalAlignment(JTextField.RIGHT);
@@ -1107,7 +1154,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JLabel lbNumCmbSAT = new JLabel("Total number of combinations satisfiable ");
 		lbNumCmbSAT.setPreferredSize(dl);
 
-		txNumCmbSAT = new JTextField(Integer.toString(listStrSatisfiables.size())); 
+		//		txNumCmbSAT = new JTextField(Integer.toString(listStrSatisfiables.size()));
+		txNumCmbSAT = new JTextField(Integer.toString(numCmbsSAT)); 
 		txNumCmbSAT.setPreferredSize(dt);
 		txNumCmbSAT.setEditable(false);
 		txNumCmbSAT.setHorizontalAlignment(JTextField.RIGHT);
@@ -1119,7 +1167,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JLabel lbNumCmbUNSAT = new JLabel("Total number of combinations unsatisfiable ");
 		lbNumCmbUNSAT.setPreferredSize(dl);
 
-		txNumCmbUNSAT = new JTextField(Integer.toString(listStrUnSatisfiables.size())); 
+		//		txNumCmbUNSAT = new JTextField(Integer.toString(listStrUnSatisfiables.size())); 
+		txNumCmbUNSAT = new JTextField(Integer.toString(numCmbsUNSAT));
 		txNumCmbUNSAT.setPreferredSize(dt);
 		txNumCmbUNSAT.setEditable(false);
 		txNumCmbUNSAT.setHorizontalAlignment(JTextField.RIGHT);
@@ -1237,9 +1286,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		txNumCalls.setText(String.valueOf(numCallSolver)); 
 		txNumCallsSAT.setText(String.valueOf(numCallSolverSAT)); 
 		txNumCallsUNSAT.setText(String.valueOf(numCallSolverUNSAT)); 
-		txNumCmbTotal.setText(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
-		txNumCmbSAT.setText(Integer.toString(listStrSatisfiables.size()));
-		txNumCmbUNSAT.setText(Integer.toString(listStrUnSatisfiables.size()));		
+		//		txNumCmbTotal.setText(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
+		//		txNumCmbSAT.setText(Integer.toString(listStrSatisfiables.size()));
+		//		txNumCmbUNSAT.setText(Integer.toString(listStrUnSatisfiables.size()));
+		txNumCmbTotal.setText(Integer.toString(numCmbsTOTAL)); 
+		txNumCmbSAT.setText(Integer.toString(numCmbsSAT));
+		txNumCmbUNSAT.setText(Integer.toString(numCmbsUNSAT));	
 	}
 
 	/**
@@ -1296,7 +1348,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		return odv;
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
-//		WizardMVMView o = parent.showMVMWizard("MVMWizard");
+		//		WizardMVMView o = parent.showMVMWizard("MVMWizard");
 		WizardMVMView o = parent.showMVMWizard(NAMEFRAMEMVMWIZARD);
 	}
 

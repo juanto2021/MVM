@@ -34,6 +34,9 @@ public class ParamDialogValidator {
 	private int numCallSolverUNSAT;
 	private String pTipoSearchMSS;	
 	private int numberIter=1;
+	private int numCmbsTOTAL;
+	private int numCmbsSAT;
+	private int numCmbsUNSAT;
 
 	public ParamDialogValidator(final MainWindow parent, 
 			KodkodModelValidator kodParent,
@@ -52,7 +55,10 @@ public class ParamDialogValidator {
 			int pNumCallSolverSAT,
 			int pNumCallSolverUNSAT,
 			String tipoSearchMSS,
-			int pNumberIter) {
+			int pNumberIter,
+			int numCmbsTOTAL,
+			int numCmbsSAT,
+			int numCmbsUNSAT) {
 
 		this.parent=parent;
 		this.kodParent=kodParent;
@@ -70,7 +76,11 @@ public class ParamDialogValidator {
 		this.numCallSolverSAT = pNumCallSolverSAT;
 		this.numCallSolverUNSAT = pNumCallSolverUNSAT;
 		this.pTipoSearchMSS=tipoSearchMSS;
-		numberIter=pNumberIter;
+		this.numberIter=pNumberIter;
+		this.numCmbsTOTAL=numCmbsTOTAL;
+		this.numCmbsSAT=numCmbsSAT;
+		this.numCmbsUNSAT=numCmbsUNSAT;
+		
 	}
 
 	public ParamDialogValidator() {
@@ -212,6 +222,31 @@ public class ParamDialogValidator {
 	public void setNumberIter(int numberIter) {
 		this.numberIter = numberIter;
 	}
+	
+	public int getNumCmbsTOTAL() {
+		return numCmbsTOTAL;
+	}
+
+	public void setNumCmbsTOTAL(int numCmbsTOTAL) {
+		this.numCmbsTOTAL = numCmbsTOTAL;
+	}
+	
+	public int getNumCmbsSAT() {
+		return numCmbsSAT;
+	}
+
+	public void setNumCmbsSAT(int numCmbsSAT) {
+		this.numCmbsSAT = numCmbsSAT;
+	}
+	
+	public int getNumCmbsUNSAT() {
+		return numCmbsUNSAT;
+	}
+
+	public void setNumCmbsUNSAT(int numCmbsUNSAT) {
+		this.numCmbsUNSAT = numCmbsUNSAT;
+	}
+
 
 	private List<String> sortBynNumInvs(List<String> listaIn, boolean descending){
 		List<String> listaOut=new ArrayList<String>();

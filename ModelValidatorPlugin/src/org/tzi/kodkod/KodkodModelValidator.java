@@ -176,6 +176,10 @@ public abstract class KodkodModelValidator {
 	public static int numCallSolver=0;
 	public static int numCallSolverSAT=0;
 	public static int numCallSolverUNSAT=0;
+	
+	public static int numCmbsTOTAL=0;
+	public static int numCmbsSAT=0;
+	public static int numCmbsUNSAT=0;
 
 	private List<Future<EvalResult>> futures;
 
@@ -898,6 +902,9 @@ public abstract class KodkodModelValidator {
 		timeInitFind= Instant.now();
 		timeCallSolver=Duration.between(start, start);//
 		logTime="";
+		numCmbsSAT=0;
+		numCmbsUNSAT=0;
+		numCmbsTOTAL=0;
 //		debMVM=true;//provis
 		this.model = model;
 		evaluator = null;
@@ -970,7 +977,9 @@ public abstract class KodkodModelValidator {
 
 				invClass.activate(); // Activate just one
 				solution = call_Solver(model);
-
+				numCallSolver+=1;
+				
+				
 				boolean bResInvs = check_inv_state();
 
 				invMClassOActual=getMClassInvariantFromIInvariant(mModel,invClass) ;
@@ -990,11 +999,13 @@ public abstract class KodkodModelValidator {
 
 				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE" ||bResInvOne) {
 					invClassSatisfiables.add(invClass);
+					numCallSolverSAT+=1;
 				}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
 					BitSet bit=new BitSet();
 					bit.set(nOrdenInv-1);
-					lBitCmbUNSAT.add(bit);						
+					lBitCmbUNSAT.add(bit);
+					numCallSolverUNSAT+=1;
 //
 //				} else {
 //					//QUITAR
@@ -1134,9 +1145,13 @@ public abstract class KodkodModelValidator {
 				numCallSolverSAT,
 				numCallSolverUNSAT,
 				tipoSearchMSS,
-				numberIter
+				numberIter,
+				numCmbsTOTAL,
+				numCmbsSAT,
+				numCmbsUNSAT
 				);
 
+		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(param);	
 		analyzeUnsatCmb();
@@ -1338,10 +1353,12 @@ public abstract class KodkodModelValidator {
 										String solucion = calcularGreedyCHB(invCmb, true,invClassTotal);
 										// si es UNSAT, no hace falta mirar el resto										
 										addSolutionGHB(invCmb, solucion);
-										if (!solucion.equals("SATISFIABLE")) {										
+										if (!solucion.equals("SATISFIABLE")) {	
+//											numCmbsUNSAT+=1;
 											calcular=false;
 											break;
 										}
+//										numCmbsSAT+=1;
 									}
 								}else {
 									String solucion = calcularGreedyCHB(invCmb, true,invClassTotal);	
@@ -1515,10 +1532,8 @@ public abstract class KodkodModelValidator {
 			// An inv is related to another because it uses common attributes or associations
 			preparaMapInfoInvSet();
 
-
-
 			// Prepare a table of common attributes for each pair of invariants
-			preparaProbMat(mModel.classInvariants());
+//			preparaProbMat(mModel.classInvariants());// *provis Parece que no es necesario este paso
 			// Shows structures resulting from the Visitor
 			if (showStructuresAO) {
 				printStructuresAO();
@@ -1578,6 +1593,9 @@ public abstract class KodkodModelValidator {
 		tipoSearchMSS="G";	
 		int numberIter=numIterGreedy;
 		Instant insShowVal1 = Instant.now();
+		
+		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
+		
 		// Send to MVMDialogSimple
 		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
 				invClassUnSatisfiables, 
@@ -1585,7 +1603,10 @@ public abstract class KodkodModelValidator {
 				mModel,
 				timeElapsed,
 				tipoSearchMSS,
-				numberIter);
+				numberIter,
+				numCmbsTOTAL,
+				numCmbsSAT,
+				numCmbsUNSAT);
 		Instant endShowVal1 = Instant.now();
 		Duration timeShowVal1 = Duration.between(insShowVal1, endShowVal1);
 		AddLogTime("Show Dialog",timeShowVal1);
@@ -1655,7 +1676,7 @@ public abstract class KodkodModelValidator {
 					// I build lists from the new structures
 					TraspasaCHB();
 					validatorMVMDialog.updateInfo(listSatisfiables,listUnSatisfiables,
-							timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT);
+							timeElapsed, numCallSolver, numCallSolverSAT, numCallSolverUNSAT, numCmbsTOTAL, numCmbsSAT, numCmbsUNSAT);
 
 					timeFinFind = Instant.now();
 					timeElapsed = Duration.between(timeInitFind, timeFinFind);
@@ -1704,7 +1725,10 @@ public abstract class KodkodModelValidator {
 			MModel mModel,
 			Duration timeElapsed,
 			String tipoSearchMSS,
-			int numberIter) {
+			int numberIter,
+			int pNumCmbsTOTAL,
+			int pNumCmbsSAT,
+			int pNumCmbsUNSAT) {
 
 		ParamDialogValidator param = new ParamDialogValidator(
 				MainWindow.instance(), 
@@ -1723,7 +1747,10 @@ public abstract class KodkodModelValidator {
 				numCallSolverSAT,
 				numCallSolverUNSAT,
 				tipoSearchMSS,
-				numberIter
+				numberIter,
+				pNumCmbsTOTAL,
+				pNumCmbsSAT,
+				pNumCmbsUNSAT
 				);
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
@@ -2374,10 +2401,13 @@ public abstract class KodkodModelValidator {
 	 */
 
 	public static void addSolutionGHB(BitSet bit, String solucion) {
+		numCmbsTOTAL+=1;
 		if (solucion.equals("SATISFIABLE") || solucion.equals("TRIVIALLY_SATISFIABLE")) {
 			lBitCmbSAT=review_store_SAT( lBitCmbSAT,  bit);		
+			numCmbsSAT+=1;
 		}else if (solucion.equals("UNSATISFIABLE") || solucion.equals("TRIVIALLY_UNSATISFIABLE")) {
-			lBitCmbUNSAT=review_store_UNSAT( lBitCmbUNSAT,  bit);			
+			lBitCmbUNSAT=review_store_UNSAT( lBitCmbUNSAT,  bit);	
+			numCmbsUNSAT+=1;
 		} else {
 			// do nothing
 		}
