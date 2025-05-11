@@ -118,11 +118,15 @@ public abstract class KodkodModelValidator {
 	protected static Solution solution;
 	protected Evaluator evaluator;
 	protected static KodkodSolver kodkodSolver;
+	
+	public int invsMModel;
+	public int invsIModel;
 
 	public static Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
 	public static Collection<IInvariant> invClassTotalBck = new ArrayList<IInvariant>();
-
+	
 	public static Collection<MClassInvariant> invClassTotalMC = new ArrayList<MClassInvariant>();
+	public static Collection<MClassInvariant> invClassTotalBckMC = new ArrayList<MClassInvariant>();
 
 	public static HashMap<String, String> listCmb = new HashMap<>();
 	public static HashMap<String, String> listCmbSel = new HashMap<>();
@@ -899,6 +903,8 @@ public abstract class KodkodModelValidator {
 	 */
 	public void validateVariable(IModel model, MModel mModel, Session session, String tipoSearchMSS ) {
 		this.session=session;
+		invsMModel = mModel.classInvariants().size();
+		invsIModel = model.classInvariants().size();
 		// Save initial time to later calculate the time it takes
 		Instant start = Instant.now();
 		timeInitFind= Instant.now();
@@ -930,6 +936,10 @@ public abstract class KodkodModelValidator {
 		Collection<IInvariant> invClassSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassUnSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassOthers = new ArrayList<IInvariant>();
+		
+		Collection<MClassInvariant> invClassSatisfiablesMC = new ArrayList<MClassInvariant>();
+		Collection<MClassInvariant> invClassUnSatisfiablesMC = new ArrayList<MClassInvariant>();
+		Collection<MClassInvariant> invClassOthersMC = new ArrayList<MClassInvariant>();
 
 		int nOrdenInv=0;
 		try {
@@ -946,6 +956,15 @@ public abstract class KodkodModelValidator {
 					invClassTotal.add(oInv);
 				}
 			}
+			
+			//--- AQUI
+			for (MClassInvariant oInvMC: mModel.classInvariants()){
+				if (!invClassTotalMC.contains(oInvMC))	{
+					invClassTotalMC.add(oInvMC);
+				}
+			}
+			
+			//---
 
 			longInvs = String.valueOf(invClassTotal.size()).length();
 
@@ -960,6 +979,13 @@ public abstract class KodkodModelValidator {
 			for (IInvariant invClass: invClassTotal) {
 				invClass.deactivate();
 			}
+			// --- Podria ser si se cambia ... (CHG)
+//			for (MClassInvariant invClassMC: invClassTotalMC) {
+//				invClassMC.setActive(false);
+//			}
+			
+			//-----------------------
+			
 			Instant end0 = Instant.now();
 			timeDeactivateAll = Duration.between(start0, end0);
 
@@ -974,16 +1000,21 @@ public abstract class KodkodModelValidator {
 				for (MClassInvariant invMClass: mModel.classInvariants()) {
 					if (invMClass.qualifiedName().equals(invClass.qualifiedName())) {
 						tabInvMClass[nOrdenInv] = invMClass;
+						invMClassOActual=invMClass;//OJO
 					}					
 				}	
 
 				invClass.activate(); // Activate just one
+				// Podria ser si se cambia (CHG)
+//				invMClassOActual.setActive(true);
+				
 				solution = call_Solver(model);
 				numCallSolver+=1;
 
 
 				boolean bResInvs = check_inv_state();
 
+				// La siguiente instruccion no seria necesaria si se cambia CHG
 				invMClassOActual=getMClassInvariantFromIInvariant(mModel,invClass) ;
 				boolean bResInvOne = false;
 				if (invMClassOActual!=null) {
@@ -992,8 +1023,12 @@ public abstract class KodkodModelValidator {
 				bResInvOne=false;
 
 				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
-				invClass.clazz();
+				
+				String strNameInvMC = invMClassOActual.cls().name()+"::"+invMClassOActual.name();
+				
+//				invClass.clazz();// Lo quito a ver
 				String strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "]";
+				String strCombinacionMC = "Solution: ["+ solution.outcome()+"] Class name: ["+ invMClassOActual.cls().name()+ "]";
 
 				nOrdenInv+=1;
 				dispMVM("MVM: ["+nOrdenInv+"] Invariants State: " + strCombinacion);
@@ -1001,9 +1036,11 @@ public abstract class KodkodModelValidator {
 
 				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE" ||bResInvOne) {
 					invClassSatisfiables.add(invClass);
+					invClassSatisfiablesMC.add(invMClassOActual);
 					numCallSolverSAT+=1;
 				}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
 					invClassUnSatisfiables.add(invClass);
+					invClassUnSatisfiablesMC.add(invMClassOActual);
 					BitSet bit=new BitSet();
 					bit.set(nOrdenInv-1);
 					lBitCmbUNSAT.add(bit);
@@ -1015,6 +1052,8 @@ public abstract class KodkodModelValidator {
 
 				// At the end we deactivate the treated invariant to leave all of them deactivated.
 				invClass.deactivate();
+				// Podria ser si se cambia a MClassInvariant (CHG)
+//				invMClassOActual.setActive(false);
 			}
 
 			if (debMVM) {
@@ -1052,10 +1091,12 @@ public abstract class KodkodModelValidator {
 						JOptionPane.ERROR_MESSAGE);
 			}else {
 				if (tipoSearchMSS == "G") {
-					analysis_OCL(model, mModel,invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);	
+					analysis_OCL(model, mModel,invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
+							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);	
 				}
 				if (tipoSearchMSS == "L") {
-					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,start);
+					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
+							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);
 				}
 				// aqui
 				model_metrics();
@@ -1074,9 +1115,13 @@ public abstract class KodkodModelValidator {
 	 * @param invClassOthers
 	 * @param start
 	 */
-	private void bruteForceMethod(IModel iModel,MModel mModel,Collection<IInvariant> invClassSatisfiables,
+	private void bruteForceMethod(IModel iModel,MModel mModel,
+			Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
 			Collection<IInvariant> invClassOthers,
+			Collection<MClassInvariant> invClassSatisfiablesMC,
+			Collection<MClassInvariant> invClassUnSatisfiablesMC,
+			Collection<MClassInvariant> invClassOthersMC,
 			Instant start) {
 		// Make combinations
 		Instant start6 = Instant.now();	
@@ -1102,8 +1147,22 @@ public abstract class KodkodModelValidator {
 			BitSet bit=new BitSet();
 			bit.set(i-1);
 			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
-
 		}
+		
+		//-- posible si se cambia MClass (CHG)
+//		int i = 0;
+//		for (MClassInvariant invClassMC: invClassSatisfiablesMC) {
+//			// Search satisfiable inv in listInvRes to obtain then position
+//			i = searchNumInvMC(invClassMC);
+//			bCmbBase.set(i-1);
+//			BitSet bit=new BitSet();
+//			bit.set(i-1);
+//			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
+//		}
+		//---
+		
+		
+
 		lBitCmb = comRestoB(bCmbBase,true);
 		// For UNSAT
 		i = 0;
@@ -1114,8 +1173,20 @@ public abstract class KodkodModelValidator {
 			BitSet bit=new BitSet();
 			bit.set(i-1);
 			lBitCmbUNSAT = review_store_UNSAT(lBitCmbUNSAT,bit);
-
 		}
+
+		//-- posible si se cambia MClass (CHG)
+//		i = 0;
+//		for (MClassInvariant invClassMC: invClassUnSatisfiablesMC) {
+//			// Search satisfiable inv in listInvRes to obtain then position
+//			i = searchNumInvMC(invClassMC);
+//			bCmbBase.set(i-1);
+//			BitSet bit=new BitSet();
+//			bit.set(i-1);
+//			lBitCmbUNSAT = review_store_UNSAT(lBitCmbUNSAT,bit);
+//		}		
+		
+		
 		// --------------------------------------------------------------------
 		// Provisionalmente monto listas a partir de las nuevas estructuras
 		TraspasaCHB();
@@ -1138,6 +1209,9 @@ public abstract class KodkodModelValidator {
 				invClassSatisfiables, 
 				invClassUnSatisfiables, 
 				invClassOthers,
+				invClassSatisfiablesMC, 
+				invClassUnSatisfiablesMC, 
+				invClassOthersMC,					
 				listSatisfiables,
 				listUnSatisfiables,
 				tabInv,
@@ -1158,7 +1232,7 @@ public abstract class KodkodModelValidator {
 		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(param);	
-		analyzeUnsatCmb();
+//		analyzeUnsatCmb(); // Para que usar? JG CHG
 
 	}
 
@@ -1173,8 +1247,10 @@ public abstract class KodkodModelValidator {
 		int nAssociations=model.associations().size();
 		System.out.println("Number of Associations ..: " + nAssociations);
 		//		• Number of Invariants (OCL Constraints)
-		int nClassInvariants=model.classInvariants().size();
-		System.out.println("Number of classInvariants: " + nClassInvariants);
+		
+//		int nClassInvariants=model.classInvariants().size();
+		System.out.println("Invs MModel: " + invsMModel);
+		System.out.println("Invs IModel: " + invsIModel);
 		System.out.println();
 		//		• Number of Attributes per Class
 		System.out.printf("| %-30s | %-10s%n", "Class name", "Attributes");
@@ -1214,24 +1290,24 @@ public abstract class KodkodModelValidator {
 		return invMClass;
 	}
 
-	private void analyzeUnsatCmb() {
-		for (String combination : listUnSatisfiables){
-			//			System.out.println("Cmb Unsat ["+combination+"]");
-			List<IInvariant> listInv = new ArrayList<IInvariant>();
-			String[] invs = combination.split("-");	
-			for (String invStrID: invs) {
-				int invID=Integer.parseInt(invStrID);  
-				IInvariant invII = (IInvariant) tabInv[invID-1];
-				MClassInvariant invMC = (MClassInvariant) tabInvMClass[invID-1];
-				//				System.out.println("invII ["+invID + "] name ["+invII.name()+"]");
-				//				System.out.println("invMC ["+invID + "] name ["+invMC.name()+"]");
-				//				System.out.println("Class ["+invMC.cls().name()+"] Position ["+invMC.getPositionInModel()+"]");
-
-				listInv.add(invII);				
-			}
-
-		}
-	}
+//	private void analyzeUnsatCmb() {
+//		for (String combination : listUnSatisfiables){
+//			//			System.out.println("Cmb Unsat ["+combination+"]");
+//			List<IInvariant> listInv = new ArrayList<IInvariant>();
+//			String[] invs = combination.split("-");	
+//			for (String invStrID: invs) {
+//				int invID=Integer.parseInt(invStrID);  
+//				IInvariant invII = (IInvariant) tabInv[invID-1];
+//				MClassInvariant invMC = (MClassInvariant) tabInvMClass[invID-1];
+//				//				System.out.println("invII ["+invID + "] name ["+invII.name()+"]");
+//				//				System.out.println("invMC ["+invID + "] name ["+invMC.name()+"]");
+//				//				System.out.println("Class ["+invMC.cls().name()+"] Position ["+invMC.getPositionInModel()+"]");
+//
+//				listInv.add(invII);				
+//			}
+//
+//		}
+//	}
 
 	private void analyzeInfoInv(MModel mModel) {
 		System.out.println("");
@@ -1547,7 +1623,10 @@ public abstract class KodkodModelValidator {
 	private void analysis_OCL(IModel iModel,MModel mModel,
 			Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
-			Collection<IInvariant> invClassOthers,			
+			Collection<IInvariant> invClassOthers,
+			Collection<MClassInvariant> invClassSatisfiablesMC,
+			Collection<MClassInvariant> invClassUnSatisfiablesMC,
+			Collection<MClassInvariant> invClassOthersMC,
 			Instant start) throws Exception {
 		Instant start2 = Instant.now();
 		logTime="";
@@ -1563,6 +1642,9 @@ public abstract class KodkodModelValidator {
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		col = makeCollectionInvs(invClassSatisfiables);
 
+		// Si cambiamos a MClassInvs seeria lo siguienye (CHG)
+//		col = makeCollectionInvsMC(invClassSatisfiablesMC);
+		
 		BitSet cmbTotalHB = new BitSet();
 		cmbTotalHB = makeTotalCmbCHB(col);
 
@@ -1644,9 +1726,13 @@ public abstract class KodkodModelValidator {
 		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
 
 		// Send to MVMDialogSimple
-		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(invClassSatisfiables, 
+		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(
+				invClassSatisfiables, 
 				invClassUnSatisfiables, 
 				invClassOthers,
+				invClassSatisfiablesMC, 
+				invClassUnSatisfiablesMC, 
+				invClassOthersMC,				
 				mModel,
 				timeElapsed,
 				tipoSearchMSS,
@@ -1766,9 +1852,13 @@ public abstract class KodkodModelValidator {
 	 * @param numberIter
 	 * @return
 	 */
-	private ValidatorMVMDialogSimple showDialogMVM(Collection<IInvariant> invClassSatisfiables,
+	private ValidatorMVMDialogSimple showDialogMVM(
+			Collection<IInvariant> invClassSatisfiables,
 			Collection<IInvariant> invClassUnSatisfiables,
-			Collection<IInvariant> invClassOthers ,
+			Collection<IInvariant> invClassOthers,
+			Collection<MClassInvariant> invClassSatisfiablesMC,
+			Collection<MClassInvariant> invClassUnSatisfiablesMC,
+			Collection<MClassInvariant> invClassOthersMC,			
 			MModel mModel,
 			Duration timeElapsed,
 			String tipoSearchMSS,
@@ -1783,6 +1873,9 @@ public abstract class KodkodModelValidator {
 				invClassSatisfiables, 
 				invClassUnSatisfiables, 
 				invClassOthers,
+				invClassSatisfiablesMC, 
+				invClassUnSatisfiablesMC, 
+				invClassOthersMC,				
 				listSatisfiables,
 				listUnSatisfiables,
 				tabInv,
@@ -1885,6 +1978,20 @@ public abstract class KodkodModelValidator {
 		}
 		return col;
 	}
+	
+	private static Collection<MClassInvariant> makeCollectionInvsMC(Collection<MClassInvariant> invClassSatisfiables) {
+		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
+		col = invClassSatisfiables;
+//		for (int nInv=0;nInv<invClassTotalMC.size();nInv++) {
+////			IInvariant inv = tabInv[nInv];
+////			if (invClassSatisfiables.contains(inv)) {
+////				MClassInvariant invClass=tabInvMClass[nInv];
+////				col.add(invClass);
+////			}
+//			MClassInvariant invClass = invClassTotalMC.get(nInv);
+//		}
+		return col;
+	}
 	/**
 	 * Build invariant relation tree using Visitor
 	 * @param col
@@ -1941,6 +2048,23 @@ public abstract class KodkodModelValidator {
 		int numInvGral=-1;
 		for (int nInv = 0; nInv < tabInv.length; nInv++) {
 			if(inv.name().equals(tabInv[nInv].name())) {
+				numInvGral=nInv+1;
+				continue;
+			}
+		}
+
+		if (debMVM) {
+			if (numInvGral<0) {
+				System.out.println("inv " + inv + " numInv<0 en searchNumInv");
+			}
+		}
+		return numInvGral;
+	}
+
+	private static int searchNumInvMC(MClassInvariant inv) {
+		int numInvGral=-1;
+		for (int nInv = 0; nInv < tabInvMClass.length; nInv++) {
+			if(inv.name().equals(tabInvMClass[nInv].name())) {
 				numInvGral=nInv+1;
 				continue;
 			}

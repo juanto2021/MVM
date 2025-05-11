@@ -82,11 +82,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	Collection<IInvariant> listInvSatisfiables = null;
 	Collection<IInvariant> listInvUnSatisfiables = null;
 	Collection<IInvariant> invClassTotal=null;
+	
+	Collection<MClassInvariant> listInvSatisfiablesMC = null;
+	Collection<MClassInvariant> listInvUnSatisfiablesMC = null;
+	Collection<MClassInvariant> invClassTotalMC=null;
+	
 	List<String> listStrSatisfiables = null;
 	List<String> listStrUnSatisfiables = null;
 	List<String> listStrGrupos = null;
 
 	Map<Integer, IInvariant> mapInvSAT=null;
+	Map<Integer, MClassInvariant> mapInvSATMC=null;
 	//	HashMap<String, ResInv> mapInvRes=null;
 	IInvariant tabInv[];
 	MClassInvariant tabInvMClass[];
@@ -193,6 +199,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		this.kodParent=param.getKodParent();
 		this.listInvSatisfiables = param.getListInvSatisfiables();
 		this.listInvUnSatisfiables = param.getListInvUnSatisfiables();
+		this.listInvSatisfiablesMC = param.getListInvSatisfiablesMC();
+		this.listInvUnSatisfiablesMC = param.getListInvUnSatisfiablesMC();		
 
 		this.listStrSatisfiables = sortBynNumInvs(param.getListStrSatisfiables(),true);
 		this.listStrUnSatisfiables = sortBynNumInvs(param.getListStrUnSatisfiables(),false);
@@ -230,12 +238,18 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbTextOCLSat = new JLabel("OCL for inv.: ---", SwingConstants.CENTER);
 
 		mapInvSAT = new HashMap<>();
+		mapInvSATMC = new HashMap<>();
 
 		int i = 0;
 		for (IInvariant invClass: listInvSatisfiables) {
 			i+=1;
 			mapInvSAT.put(i, invClass);
 		}
+		int j = 0;
+		for (MClassInvariant invClassMC: listInvSatisfiablesMC) {
+			j+=1;
+			mapInvSATMC.put(j, invClassMC);
+		}		
 
 		this.mModel=param.getmModel();
 		String titleFrame = "Validator with combinations";
@@ -476,6 +490,25 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return lNInv;
 	}
+	
+	private List<String> getListInvMC(String cmb){
+		List<String> lNInv = new ArrayList<String>();
+		if (cmb.equals("")) {
+			return lNInv;
+		}
+		String[] partes = cmb.split("-");		
+		int numPartes=partes.length;
+		for (int nParte = 0 ; nParte < numPartes ; nParte++) {
+			String nInv = partes[nParte];
+			int order = Integer.parseInt(nInv);
+			// Nuevo
+			MClassInvariant inv = (tabInvMClass[order-1]);
+			String strInv = order+"-"+inv.getClass().getName()+"::"+inv.name();
+			lNInv.add(strInv);
+		}
+
+		return lNInv;
+	}
 	/**
 	 * Busca combinaciones satisfiables sin la invariante indicada
 	 * @param cmb
@@ -528,8 +561,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		boolean res=true;
 		int totalInv = listInvSatisfiables.size() + listInvUnSatisfiables.size() ;
-
 		String strFormat="%0"+String.valueOf(totalInv).length()+"d";
+		
+		// Si hay cambio a MClass ... (CHG)
+//		int totalInv = listInvSatisfiablesMC.size() + listInvUnSatisfiablesMC.size() ;
+//		String strFormat="%0"+String.valueOf(totalInv).length()+"d";
 
 		Map<String,String> mapResLimpia = new HashMap<>();
 		String[] partesA = cmbA.split("-");
@@ -661,6 +697,13 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					String strLineList = nameInv;
 					lNamesInv.addElement(strLineList);
 				}
+				//--- si hay cambio a MClassInvariant será CHG)
+				// getListInvMC
+//				for (String nameInv: getListInvMC(strCmb)) {
+//					String strLineList = nameInv;
+//					lNamesInv.addElement(strLineList);
+//				}
+				//---
 				lNames.setModel(lNamesInv);
 				lNames.setSelectedIndex(0);
 

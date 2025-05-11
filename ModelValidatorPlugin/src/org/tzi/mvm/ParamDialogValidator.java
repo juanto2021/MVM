@@ -21,6 +21,8 @@ public class ParamDialogValidator {
 	private KodkodModelValidator kodParent=null;
 	private Collection<IInvariant> listInvSatisfiables = null;
 	private Collection<IInvariant> listInvUnSatisfiables = null;
+	private Collection<MClassInvariant> listInvSatisfiablesMC = null;
+	private Collection<MClassInvariant> listInvUnSatisfiablesMC = null;	
 	private List<String> listStrSatisfiables = null;
 	private List<String> listStrUnSatisfiables = null;
 	//	private HashMap<String, ResInv> mapInvRes=null;
@@ -43,6 +45,9 @@ public class ParamDialogValidator {
 			Collection<IInvariant> pListInvSatisfiables, 
 			Collection<IInvariant> pListInvUnSatisfiables,
 			Collection<IInvariant> pListInvOthers,
+			Collection<MClassInvariant> pListInvSatisfiablesMC, 
+			Collection<MClassInvariant> pListInvUnSatisfiablesMC,
+			Collection<MClassInvariant> pListInvOthersMC,			
 			List<String> pListStrSatisfiables,
 			List<String> pListStrUnSatisfiables,
 			//			HashMap<String, ResInv> pMapInvRes,
@@ -64,8 +69,12 @@ public class ParamDialogValidator {
 		this.kodParent=kodParent;
 		this.listInvSatisfiables = pListInvSatisfiables;
 		this.listInvUnSatisfiables = pListInvUnSatisfiables;
+		this.listInvSatisfiablesMC = pListInvSatisfiablesMC;
+		this.listInvUnSatisfiablesMC = pListInvUnSatisfiablesMC;		
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
+
+		
 		//		this.mapInvRes = pMapInvRes;	
 		this.tabInv = pTabInv;
 		this.tabInvMClass = pTabInvMClass;
@@ -118,6 +127,24 @@ public class ParamDialogValidator {
 	public void setListInvUnSatisfiables(Collection<IInvariant> listInvUnSatisfiables) {
 		this.listInvUnSatisfiables = listInvUnSatisfiables;
 	}
+
+	public Collection<MClassInvariant> getListInvSatisfiablesMC() {
+		return listInvSatisfiablesMC;
+	}
+	
+	public void setListInvSatisfiablesMC(Collection<MClassInvariant> listInvSatisfiablesMC) {
+		this.listInvSatisfiablesMC = listInvSatisfiablesMC;
+	}
+	
+	public Collection<MClassInvariant> getListInvUnSatisfiablesMC() {
+		return listInvUnSatisfiablesMC;
+	}
+	
+	public void setListInvUnSatisfiablesMC(Collection<MClassInvariant> listInvUnSatisfiablesMC) {
+		this.listInvUnSatisfiablesMC = listInvUnSatisfiablesMC;
+	}	
+
+
 
 	public List<String> getListStrSatisfiables() {
 		return listStrSatisfiables;
