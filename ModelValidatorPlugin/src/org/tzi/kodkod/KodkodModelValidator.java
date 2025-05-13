@@ -899,7 +899,7 @@ public abstract class KodkodModelValidator {
 	/**
 	 * Validates the given model.
 	 * 
-	 * @param model (Juanto-v1214)
+	 * @param model (Juanto-v1239**)
 	 */
 	public void validateVariable(IModel model, MModel mModel, Session session, String tipoSearchMSS ) {
 		this.session=session;
