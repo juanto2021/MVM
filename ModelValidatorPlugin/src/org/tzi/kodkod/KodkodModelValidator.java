@@ -1642,7 +1642,7 @@ public abstract class KodkodModelValidator {
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		col = makeCollectionInvs(invClassSatisfiables);
 
-		// Si cambiamos a MClassInvs seeria lo siguienye (CHG)
+		// Si cambiamos a MClassInvs seria lo siguienye (CHG)
 //		col = makeCollectionInvsMC(invClassSatisfiablesMC);
 		
 		BitSet cmbTotalHB = new BitSet();
