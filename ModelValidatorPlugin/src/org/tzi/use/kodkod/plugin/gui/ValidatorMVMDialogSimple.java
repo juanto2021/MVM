@@ -14,7 +14,6 @@ import java.beans.PropertyVetoException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,18 +41,16 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.tzi.use.gui.views.WizardMVMView;
+
 import org.tzi.kodkod.KodkodModelValidator;
 import org.tzi.kodkod.KodkodSolver;
-import org.tzi.kodkod.ResInv;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.api.UseApiException;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
-import org.tzi.use.gui.views.ObjectPropertiesView;
-
+import org.tzi.use.gui.views.WizardMVMView;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
@@ -82,11 +79,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	Collection<IInvariant> listInvSatisfiables = null;
 	Collection<IInvariant> listInvUnSatisfiables = null;
 	Collection<IInvariant> invClassTotal=null;
-	
+
 	Collection<MClassInvariant> listInvSatisfiablesMC = null;
 	Collection<MClassInvariant> listInvUnSatisfiablesMC = null;
 	Collection<MClassInvariant> invClassTotalMC=null;
-	
+
 	List<String> listStrSatisfiables = null;
 	List<String> listStrUnSatisfiables = null;
 	List<String> listStrGrupos = null;
@@ -194,7 +191,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	boolean existWizard=false;
 
 	public ValidatorMVMDialogSimple(ParamDialogValidator param) {	
-
+		super(param.getParent(), "Validator with combinations", true); // The 'true' makes it modal AQUI
 		this.parent=param.getParent();
 		this.kodParent=param.getKodParent();
 		this.listInvSatisfiables = param.getListInvSatisfiables();
@@ -276,12 +273,19 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		//JG Cambiar url resource MvMJG.png
 
 		Image icono = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\MvMJG.png");
+		//		frame.setIconImage(icono);
+		//
+		//		frame.setSize(900, 400);// antes 900, 400
+		//		frame.setVisible(true);
+		//		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+		//		frame.getContentPane().setLayout(new BorderLayout());
+		//JG
 		frame.setIconImage(icono);
 
-		frame.setSize(900, 400);// antes 900, 400
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
-		frame.getContentPane().setLayout(new BorderLayout());
+		//		setSize(900, 400);// antes 900, 400//JG
+		//		setVisible(true);//JG
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE); 
+		getContentPane().setLayout(new BorderLayout());
 
 		JPanel p = new JPanel();
 		p.setLayout(new BorderLayout());
@@ -316,10 +320,19 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		p.add(makeBottom(), BorderLayout.SOUTH);
 
-		frame.getContentPane().add(p);
-		frame.setMinimumSize(new Dimension(getWidth(), getHeight()));
-		frame.setLocationRelativeTo(this);
-		frame.setEnabled(true);
+		//		frame.getContentPane().add(p);
+		//		frame.setMinimumSize(new Dimension(getWidth(), getHeight()));
+		//		frame.setLocationRelativeTo(this);
+		//		frame.setEnabled(true);
+		//JG
+		getContentPane().add(p);
+		//		setMinimumSize(new Dimension(getWidth(), getHeight()));
+		setSize(900, 400);// antes 900, 400
+		setMinimumSize(new Dimension(getWidth(), getHeight()));
+		//		setLocationRelativeTo(this);//JG
+		setLocationRelativeTo(this.parent);
+		setEnabled(true);
+		//		setVisible(true);
 	}
 	/**
 	 * Update information from Validator
@@ -351,7 +364,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		actMakeStatisticsCtrls();
 
 		String titleFrame = "Validator with combinations";
-		
+
 		if (tipoSearchMSS.equals("L")){
 			titleFrame+=" (Brute)";
 			//		}else if (tipoSearchMSS.equals("N")){
@@ -369,15 +382,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				}
 			}
 		}
-		
-		
-		
-		
-		
-//		titleFrame+=" (Greedy-N"+numberIter+") - End";
+
+
+
+
+
+		//		titleFrame+=" (Greedy-N"+numberIter+") - End";
 		titleFrame+=" - Model: '"+mModel.name()+"'";
 
-		frame.setTitle(titleFrame);
+		//		frame.setTitle(titleFrame);
+		//JG
+		setTitle(titleFrame);
 
 		//		System.out.println("Actualizo info!!");
 	}
@@ -391,7 +406,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
+				//				frame.dispose();
+				//JG
+				dispose();
 			}
 		});
 
@@ -490,7 +507,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return lNInv;
 	}
-	
+
 	private List<String> getListInvMC(String cmb){
 		List<String> lNInv = new ArrayList<String>();
 		if (cmb.equals("")) {
@@ -562,10 +579,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		boolean res=true;
 		int totalInv = listInvSatisfiables.size() + listInvUnSatisfiables.size() ;
 		String strFormat="%0"+String.valueOf(totalInv).length()+"d";
-		
+
 		// Si hay cambio a MClass ... (CHG)
-//		int totalInv = listInvSatisfiablesMC.size() + listInvUnSatisfiablesMC.size() ;
-//		String strFormat="%0"+String.valueOf(totalInv).length()+"d";
+		//		int totalInv = listInvSatisfiablesMC.size() + listInvUnSatisfiablesMC.size() ;
+		//		String strFormat="%0"+String.valueOf(totalInv).length()+"d";
 
 		Map<String,String> mapResLimpia = new HashMap<>();
 		String[] partesA = cmbA.split("-");
@@ -699,10 +716,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				}
 				//--- si hay cambio a MClassInvariant será CHG)
 				// getListInvMC
-//				for (String nameInv: getListInvMC(strCmb)) {
-//					String strLineList = nameInv;
-//					lNamesInv.addElement(strLineList);
-//				}
+				//				for (String nameInv: getListInvMC(strCmb)) {
+				//					String strLineList = nameInv;
+				//					lNamesInv.addElement(strLineList);
+				//				}
 				//---
 				lNames.setModel(lNamesInv);
 				lNames.setSelectedIndex(0);
@@ -837,9 +854,14 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								}
 								if (!existWizard) {
 									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
+								}else {
+									// Actualizar con objetos JG
+//									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);//Provis JG
+									parent.refreshMVMWizard();
 								}
 
 								tile();
+								dispose();//JG
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -997,10 +1019,14 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								}
 								if (!existWizard) {
 									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
+								}else {
+//									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);// Provis JG
+									parent.refreshMVMWizard();
 								}
 
 								tile();
 
+								dispose();//JG
 
 							} catch (Exception e) {
 								e.printStackTrace();

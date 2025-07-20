@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="C:/Users/utopi/git/MVM/ModelValidatorPlugin/lib/java-json.jar"/>
 	<classpathentry kind="lib" path="C:/Users/utopi/git/MVM/ModelValidatorPlugin/lib/okhttp-3.9.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/utopi/git/MVM/ModelValidatorPlugin/lib/okio-1.13.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/utopi/git/MVM/ModelValidatorPlugin/lib/guava-20.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -201,6 +201,8 @@ public abstract class KodkodModelValidator {
 	public static boolean showCmbSendToValidator  = true;
 
 	public static List<BitSet> lBitCmb= new ArrayList<BitSet>();
+	
+	public ParamDialogValidator param;
 
 
 	/**
@@ -1203,7 +1205,8 @@ public abstract class KodkodModelValidator {
 		String tipoSearchMSS="L";
 		int numberIter=1;
 
-		ParamDialogValidator param = new ParamDialogValidator(
+//		ParamDialogValidator param = new ParamDialogValidator(
+				param = new ParamDialogValidator(
 				MainWindow.instance(), 
 				this,
 				invClassSatisfiables, 
@@ -1229,11 +1232,18 @@ public abstract class KodkodModelValidator {
 				numCmbsUNSAT
 				);
 
-		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
+//		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
+//		ValidatorMVMDialogSimple validatorMVMDialog= 
+//				new ValidatorMVMDialogSimple(param);	
+//		validatorMVMDialog.setVisible(true);//JG
+//		analyzeUnsatCmb(); // Para que usar? JG CHG
+		showValidatorMVMDialogSimple();
+
+	}
+	private void showValidatorMVMDialogSimple() {
 		ValidatorMVMDialogSimple validatorMVMDialog= 
 				new ValidatorMVMDialogSimple(param);	
-//		analyzeUnsatCmb(); // Para que usar? JG CHG
-
+		validatorMVMDialog.setVisible(true);//JG
 	}
 
 	private void model_metrics() {
@@ -1740,6 +1750,7 @@ public abstract class KodkodModelValidator {
 				numCmbsTOTAL,
 				numCmbsSAT,
 				numCmbsUNSAT);
+		validatorMVMDialog.setVisible(true);//JG
 		Instant endShowVal1 = Instant.now();
 		Duration timeShowVal1 = Duration.between(insShowVal1, endShowVal1);
 		AddLogTime("Show Dialog",timeShowVal1);
