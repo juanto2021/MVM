@@ -58,8 +58,6 @@ import org.tzi.mvm.ParamDialogValidator;
 import org.tzi.use.api.UseApiException;
 import org.tzi.use.api.UseSystemApi;
 import org.tzi.use.config.Options;
-//
-//
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
 import org.tzi.use.gui.views.ClassInvariantView;
@@ -118,13 +116,13 @@ public abstract class KodkodModelValidator {
 	protected static Solution solution;
 	protected Evaluator evaluator;
 	protected static KodkodSolver kodkodSolver;
-	
+
 	public int invsMModel;
 	public int invsIModel;
 
 	public static Collection<IInvariant> invClassTotal = new ArrayList<IInvariant>();
 	public static Collection<IInvariant> invClassTotalBck = new ArrayList<IInvariant>();
-	
+
 	public static Collection<MClassInvariant> invClassTotalMC = new ArrayList<MClassInvariant>();
 	public static Collection<MClassInvariant> invClassTotalBckMC = new ArrayList<MClassInvariant>();
 
@@ -166,9 +164,7 @@ public abstract class KodkodModelValidator {
 	private static Duration timeDeactivateAll=null;
 	private static Duration timeCalcIndividually=null;
 	private static Duration timeBruteCombCalc=null;
-	//	private static Duration timeCallSolver=null;
 	private static Duration timeCallSolver=Duration.between(Instant.now(), Instant.now());
-	//Duration.between(Instant.now(), Instant.now())
 
 	/**
 	 * Show the result of NOT repeated combinations
@@ -189,6 +185,8 @@ public abstract class KodkodModelValidator {
 
 	private List<Future<EvalResult>> futures;
 
+	private static EventThreads hiloGreedy;
+
 	public IModel getIModel() {
 		return model;
 	}
@@ -201,7 +199,7 @@ public abstract class KodkodModelValidator {
 	public static boolean showCmbSendToValidator  = true;
 
 	public static List<BitSet> lBitCmb= new ArrayList<BitSet>();
-	
+
 	public ParamDialogValidator param;
 
 
@@ -229,7 +227,6 @@ public abstract class KodkodModelValidator {
 			return;
 		}
 		LOG.info(solution.outcome());
-		//		LOG.info("MVM: Llega solution en validate en KodkodModelValidator " + solution.outcome());
 		Statistics statistics = solution.stats();
 		LOG.info(LogMessages.kodkodStatistics(statistics));
 		switch (solution.outcome()) {
@@ -271,10 +268,8 @@ public abstract class KodkodModelValidator {
 			timeCallSolver = timeCallSolver.plus(timeSolver);
 		} catch (Exception e) {
 			LOG.error(LogMessages.validationException + " (" + e.getMessage() + ")");
-			//		return solution;
 		} catch (OutOfMemoryError oome) {
 			LOG.error(LogMessages.validationOutOfMemory + " (" + oome.getMessage() + ")");
-			//		return solution;
 		}
 		return solution;
 	}
@@ -301,7 +296,7 @@ public abstract class KodkodModelValidator {
 
 	public void test_call_methods(MModel model, IModel iModelOri) {
 		//------------------------------------------------------------------------------------		
-		// Evalua expresiones OCL
+		// Evaluates OCL expressions
 		String result="";
 		String expression = "2+3";
 		result = test_eval_expr(expression);
@@ -499,7 +494,6 @@ public abstract class KodkodModelValidator {
 		PrintWriter out = new PrintWriter(buffer);
 
 		boolean ok = session.system().state().checkStructure(out);
-		//--
 		boolean res=false;
 		// check all associations
 		boolean reportAllErrors = true;
@@ -576,7 +570,7 @@ public abstract class KodkodModelValidator {
 	}
 
 	/*
-	 * Chequea estado de invariantes
+	 * Checks the state of invariants
 	 */
 	public boolean check_inv_state() {
 		boolean bRes = false;
@@ -595,7 +589,6 @@ public abstract class KodkodModelValidator {
 
 			if (boolRes.equals(false)) todosOk=false;
 		}
-
 
 		return todosOk;
 
@@ -762,7 +755,7 @@ public abstract class KodkodModelValidator {
 
 			Solution solution;
 			try {
-				KodkodSolver kS = new KodkodSolver();
+//				KodkodSolver kS = new KodkodSolver();
 
 				solution = kodkodSolver.solve(iModel);
 				solution = call_Solver(iModelOri);
@@ -790,7 +783,6 @@ public abstract class KodkodModelValidator {
 						System.out.println("Crea objeto clase ["+mObject.name()+"]");
 					}
 				}
-
 
 			} catch (UseApiException e) {
 				e.printStackTrace();
@@ -934,11 +926,14 @@ public abstract class KodkodModelValidator {
 		numCallSolver=0;
 		numCallSolverSAT=0;
 		numCallSolverUNSAT=0;
+		
+		//AQUI
+//		MainWindow.instance().setKodKod(this);
 
 		Collection<IInvariant> invClassSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassUnSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassOthers = new ArrayList<IInvariant>();
-		
+
 		Collection<MClassInvariant> invClassSatisfiablesMC = new ArrayList<MClassInvariant>();
 		Collection<MClassInvariant> invClassUnSatisfiablesMC = new ArrayList<MClassInvariant>();
 		Collection<MClassInvariant> invClassOthersMC = new ArrayList<MClassInvariant>();
@@ -958,14 +953,14 @@ public abstract class KodkodModelValidator {
 					invClassTotal.add(oInv);
 				}
 			}
-			
+
 			//--- AQUI
 			for (MClassInvariant oInvMC: mModel.classInvariants()){
 				if (!invClassTotalMC.contains(oInvMC))	{
 					invClassTotalMC.add(oInvMC);
 				}
 			}
-			
+
 			//---
 
 			longInvs = String.valueOf(invClassTotal.size()).length();
@@ -982,12 +977,12 @@ public abstract class KodkodModelValidator {
 				invClass.deactivate();
 			}
 			// --- Podria ser si se cambia ... (CHG)
-//			for (MClassInvariant invClassMC: invClassTotalMC) {
-//				invClassMC.setActive(false);
-//			}
-			
+			//			for (MClassInvariant invClassMC: invClassTotalMC) {
+			//				invClassMC.setActive(false);
+			//			}
+
 			//-----------------------
-			
+
 			Instant end0 = Instant.now();
 			timeDeactivateAll = Duration.between(start0, end0);
 
@@ -1008,15 +1003,15 @@ public abstract class KodkodModelValidator {
 
 				invClass.activate(); // Activate just one
 				// Podria ser si se cambia (CHG)
-//				invMClassOActual.setActive(true);
-				
+				//				invMClassOActual.setActive(true);
+
 				solution = call_Solver(model);
 				numCallSolver+=1;
 
 
 				boolean bResInvs = check_inv_state();
 
-				// La siguiente instruccion no seria necesaria si se cambia CHG
+				// The following instruction would not be necessary if CHG is changed
 				invMClassOActual=getMClassInvariantFromIInvariant(mModel,invClass) ;
 				boolean bResInvOne = false;
 				if (invMClassOActual!=null) {
@@ -1025,10 +1020,9 @@ public abstract class KodkodModelValidator {
 				bResInvOne=false;
 
 				String strNameInv = invClass.clazz().name()+"::"+invClass.name();
-				
+
 				String strNameInvMC = invMClassOActual.cls().name()+"::"+invMClassOActual.name();
-				
-//				invClass.clazz();// Lo quito a ver
+
 				String strCombinacion = "Solution: ["+ solution.outcome()+"] Clazz name: ["+ invClass.clazz().name()+ "]";
 				String strCombinacionMC = "Solution: ["+ solution.outcome()+"] Class name: ["+ invMClassOActual.cls().name()+ "]";
 
@@ -1047,15 +1041,12 @@ public abstract class KodkodModelValidator {
 					bit.set(nOrdenInv-1);
 					lBitCmbUNSAT.add(bit);
 					numCallSolverUNSAT+=1;
-					//
-					//				} else {
-					//					//QUITAR
 				}
 
 				// At the end we deactivate the treated invariant to leave all of them deactivated.
 				invClass.deactivate();
-				// Podria ser si se cambia a MClassInvariant (CHG)
-//				invMClassOActual.setActive(false);
+				// Could be if you change to MClassInvariant (CHG)
+				//				invMClassOActual.setActive(false);
 			}
 
 			if (debMVM) {
@@ -1100,7 +1091,6 @@ public abstract class KodkodModelValidator {
 					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
 							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);
 				}
-				// aqui
 				model_metrics();
 			}
 
@@ -1139,7 +1129,6 @@ public abstract class KodkodModelValidator {
 		logTime="";
 
 		BitSet bCmbBase = new BitSet();
-		//AQUI
 		// For SAT
 		int i = 0;
 		for (IInvariant invClass: invClassSatisfiables) {
@@ -1150,22 +1139,22 @@ public abstract class KodkodModelValidator {
 			bit.set(i-1);
 			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
 		}
-		
-		//-- posible si se cambia MClass (CHG)
-//		int i = 0;
-//		for (MClassInvariant invClassMC: invClassSatisfiablesMC) {
-//			// Search satisfiable inv in listInvRes to obtain then position
-//			i = searchNumInvMC(invClassMC);
-//			bCmbBase.set(i-1);
-//			BitSet bit=new BitSet();
-//			bit.set(i-1);
-//			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
-//		}
-		//---
-		
-		
 
-		lBitCmb = comRestoB(bCmbBase,true);
+		//-- possible if MClass is changed (CHG)
+		//		int i = 0;
+		//		for (MClassInvariant invClassMC: invClassSatisfiablesMC) {
+		//			// Search satisfiable inv in listInvRes to obtain then position
+		//			i = searchNumInvMC(invClassMC);
+		//			bCmbBase.set(i-1);
+		//			BitSet bit=new BitSet();
+		//			bit.set(i-1);
+		//			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
+		//		}
+		//---
+
+
+
+		lBitCmb = comRestoB(bCmbBase,true, null);
 		// For UNSAT
 		i = 0;
 		for (IInvariant invClass: invClassUnSatisfiables) {
@@ -1178,19 +1167,19 @@ public abstract class KodkodModelValidator {
 		}
 
 		//-- posible si se cambia MClass (CHG)
-//		i = 0;
-//		for (MClassInvariant invClassMC: invClassUnSatisfiablesMC) {
-//			// Search satisfiable inv in listInvRes to obtain then position
-//			i = searchNumInvMC(invClassMC);
-//			bCmbBase.set(i-1);
-//			BitSet bit=new BitSet();
-//			bit.set(i-1);
-//			lBitCmbUNSAT = review_store_UNSAT(lBitCmbUNSAT,bit);
-//		}		
-		
-		
+		//		i = 0;
+		//		for (MClassInvariant invClassMC: invClassUnSatisfiablesMC) {
+		//			// Search satisfiable inv in listInvRes to obtain then position
+		//			i = searchNumInvMC(invClassMC);
+		//			bCmbBase.set(i-1);
+		//			BitSet bit=new BitSet();
+		//			bit.set(i-1);
+		//			lBitCmbUNSAT = review_store_UNSAT(lBitCmbUNSAT,bit);
+		//		}		
+
+
 		// --------------------------------------------------------------------
-		// Provisionalmente monto listas a partir de las nuevas estructuras
+		// I add lists from the new structures
 		TraspasaCHB();
 		Instant end6 = Instant.now();
 		timeBruteCombCalc = Duration.between(start6, end6);
@@ -1205,8 +1194,7 @@ public abstract class KodkodModelValidator {
 		String tipoSearchMSS="L";
 		int numberIter=1;
 
-//		ParamDialogValidator param = new ParamDialogValidator(
-				param = new ParamDialogValidator(
+		param = new ParamDialogValidator(
 				MainWindow.instance(), 
 				this,
 				invClassSatisfiables, 
@@ -1231,18 +1219,12 @@ public abstract class KodkodModelValidator {
 				numCmbsSAT,
 				numCmbsUNSAT
 				);
-
-//		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
-//		ValidatorMVMDialogSimple validatorMVMDialog= 
-//				new ValidatorMVMDialogSimple(param);	
-//		validatorMVMDialog.setVisible(true);//JG
-//		analyzeUnsatCmb(); // Para que usar? JG CHG
 		showValidatorMVMDialogSimple();
 
 	}
 	private void showValidatorMVMDialogSimple() {
 		ValidatorMVMDialogSimple validatorMVMDialog= 
-				new ValidatorMVMDialogSimple(param);	
+				new ValidatorMVMDialogSimple(param, true);	
 		validatorMVMDialog.setVisible(true);//JG
 	}
 
@@ -1257,8 +1239,6 @@ public abstract class KodkodModelValidator {
 		int nAssociations=model.associations().size();
 		System.out.println("Number of Associations ..: " + nAssociations);
 		//		• Number of Invariants (OCL Constraints)
-		
-//		int nClassInvariants=model.classInvariants().size();
 		System.out.println("Invs MModel: " + invsMModel);
 		System.out.println("Invs IModel: " + invsIModel);
 		System.out.println();
@@ -1270,23 +1250,23 @@ public abstract class KodkodModelValidator {
 		}
 		System.out.println();
 		//		• Number of Association Roles
-		
+
 		System.out.printf("| %-25s | %-10s | %-40s |%n", "Association name", "Num roles", "Roles");
 		System.out.println("|---------------------------|------------|------------------------------------------|");
 
 		for (IAssociation assoc : model.associations()) {
-		    StringBuilder strRoles = new StringBuilder();
-		    strRoles.append("(");
-		    for (IAssociationEnd assocEnd : assoc.associationEnds()) {
-		        if (!strRoles.toString().equals("(")) strRoles.append(", ");
-		        strRoles.append(assocEnd.name());
-		    }
-		    strRoles.append(")");
-		    
-		    System.out.printf("| %-25s | %-10d | %-40s |%n", 
-		                      assoc.name(), 
-		                      assoc.associationEnds().size(), 
-		                      strRoles.toString());
+			StringBuilder strRoles = new StringBuilder();
+			strRoles.append("(");
+			for (IAssociationEnd assocEnd : assoc.associationEnds()) {
+				if (!strRoles.toString().equals("(")) strRoles.append(", ");
+				strRoles.append(assocEnd.name());
+			}
+			strRoles.append(")");
+
+			System.out.printf("| %-25s | %-10d | %-40s |%n", 
+					assoc.name(), 
+					assoc.associationEnds().size(), 
+					strRoles.toString());
 		}
 		System.out.println();
 	}
@@ -1299,25 +1279,6 @@ public abstract class KodkodModelValidator {
 		}	
 		return invMClass;
 	}
-
-//	private void analyzeUnsatCmb() {
-//		for (String combination : listUnSatisfiables){
-//			//			System.out.println("Cmb Unsat ["+combination+"]");
-//			List<IInvariant> listInv = new ArrayList<IInvariant>();
-//			String[] invs = combination.split("-");	
-//			for (String invStrID: invs) {
-//				int invID=Integer.parseInt(invStrID);  
-//				IInvariant invII = (IInvariant) tabInv[invID-1];
-//				MClassInvariant invMC = (MClassInvariant) tabInvMClass[invID-1];
-//				//				System.out.println("invII ["+invID + "] name ["+invII.name()+"]");
-//				//				System.out.println("invMC ["+invID + "] name ["+invMC.name()+"]");
-//				//				System.out.println("Class ["+invMC.cls().name()+"] Position ["+invMC.getPositionInModel()+"]");
-//
-//				listInv.add(invII);				
-//			}
-//
-//		}
-//	}
 
 	private void analyzeInfoInv(MModel mModel) {
 		System.out.println("");
@@ -1456,15 +1417,26 @@ public abstract class KodkodModelValidator {
 		return res;
 	}
 
-	private List<BitSet> comRestoB(BitSet bRestoIn,boolean prune) {
+	private List<BitSet> comRestoB(BitSet bRestoIn,boolean prune, EventThreads hilo) {
 		List<BitSet> listRes = new ArrayList<BitSet>();
+		//---
+		//		if (hilo.isStopRequested()) {
+		if (hiloGreedy!=null) {
+			if (hiloGreedy.isInterrupted()) {
+				System.out.println("Cancelación solicitada. Terminando cálculo...");
+				return listRes;
+			}
+		}
+		//---
+
+
 		int nInvsRestoB = bRestoIn.cardinality();
 		int nElem = bRestoIn.length();
 		boolean calcular=true;
 		for (int num=1;num<nInvsRestoB+1;num++) {
 			for (int i=0;i<nElem;i++) {
 				calcular=true;
-				// Toma primer elemento y lo combina con todos los demas
+				// Take the first element and combine it with all the others.
 				if (bRestoIn.get(i)) {
 					int pElem = i;
 					int cuantos = num;
@@ -1487,11 +1459,9 @@ public abstract class KodkodModelValidator {
 										// si es UNSAT, no hace falta mirar el resto										
 										addSolutionGHB(invCmb, solucion);
 										if (!solucion.equals("SATISFIABLE")) {	
-											//											numCmbsUNSAT+=1;
 											calcular=false;
 											break;
 										}
-										//										numCmbsSAT+=1;
 									}
 								}else {
 									String solucion = calcularGreedyCHB(invCmb, true,invClassTotal);	
@@ -1653,8 +1623,8 @@ public abstract class KodkodModelValidator {
 		col = makeCollectionInvs(invClassSatisfiables);
 
 		// Si cambiamos a MClassInvs seria lo siguienye (CHG)
-//		col = makeCollectionInvsMC(invClassSatisfiablesMC);
-		
+		//		col = makeCollectionInvsMC(invClassSatisfiablesMC);
+
 		BitSet cmbTotalHB = new BitSet();
 		cmbTotalHB = makeTotalCmbCHB(col);
 
@@ -1717,7 +1687,6 @@ public abstract class KodkodModelValidator {
 			Instant end3 = Instant.now();
 
 			Duration timeElapsed3 = Duration.between(start3, end3);
-			//			LOG.info("MVM: Time taken for Greedy: "+ timeElapsed3.toMillis() +" milliseconds");
 			AddLogTime(".. Analysis OCL (Greedy1) - End",timeElapsed3);
 
 		}
@@ -1749,8 +1718,10 @@ public abstract class KodkodModelValidator {
 				numberIter,
 				numCmbsTOTAL,
 				numCmbsSAT,
-				numCmbsUNSAT);
+				numCmbsUNSAT,
+				false);
 		validatorMVMDialog.setVisible(true);//JG
+		MainWindow.instance().setValidatorDialog(validatorMVMDialog);
 		Instant endShowVal1 = Instant.now();
 		Duration timeShowVal1 = Duration.between(insShowVal1, endShowVal1);
 		AddLogTime("Show Dialog",timeShowVal1);
@@ -1786,15 +1757,32 @@ public abstract class KodkodModelValidator {
 		Instant start4 = Instant.now();
 
 		EventThreads hilo1 = new EventThreads(false) {
+			//-- JG
+			private volatile boolean stopRequested = false;
+			//--
+
 			@Override
 			public void operacionesRun() {
 				dispMVM("Lanzamos operaciones en tarea background");
 				try {
-					calculateInBackGroundCHB(listResGreedyCHB, cmbTotalCHB, validatorMVMDialog, start );
+					hiloGreedy=this;//JG
+					//					MainWindow.instance().hiloGreedy=hiloGreedy;
+
+					calculateInBackGroundCHB(listResGreedyCHB, cmbTotalCHB, validatorMVMDialog, start,this );
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
+			//--- JG
+			public void requestStop() {
+				stopRequested = true;
+			}
+
+			public boolean isStopRequested() {
+				return stopRequested;
+			}
+
+			//---
 		};
 
 		hilo1.addListenerStarted(new EventThreads.IEventStarted() {
@@ -1845,10 +1833,11 @@ public abstract class KodkodModelValidator {
 	 */
 
 	private void calculateInBackGroundCHB(List<BitSet> listResGreedyCHB, BitSet cmbTotalCHB, 
-			ValidatorMVMDialogSimple validatorMVMDialog, Instant start ) throws Exception {
-		// Lanzar el bruteforce pero ya con greedy calculado
-		//		System.out.println("Revisar listas");
-		lBitCmb = comRestoB(cmbTotalCHB,true);
+			ValidatorMVMDialogSimple validatorMVMDialog, Instant start, EventThreads hilo ) throws Exception {
+		// Launch the bruteforce but already with greedy calculated
+		lBitCmb = comRestoB(cmbTotalCHB,true, hilo);
+		//aqui3
+		//		MainWindow.instance().hiloGreedy=(Thread) hilo;
 
 	}
 
@@ -1876,7 +1865,8 @@ public abstract class KodkodModelValidator {
 			int numberIter,
 			int pNumCmbsTOTAL,
 			int pNumCmbsSAT,
-			int pNumCmbsUNSAT) {
+			int pNumCmbsUNSAT,
+			boolean doModal) {
 
 		ParamDialogValidator param = new ParamDialogValidator(
 				MainWindow.instance(), 
@@ -1905,7 +1895,7 @@ public abstract class KodkodModelValidator {
 				);
 
 		ValidatorMVMDialogSimple validatorMVMDialog= 
-				new ValidatorMVMDialogSimple(param);		
+				new ValidatorMVMDialogSimple(param,doModal);		
 		return validatorMVMDialog;
 	}
 
@@ -1989,18 +1979,10 @@ public abstract class KodkodModelValidator {
 		}
 		return col;
 	}
-	
+
 	private static Collection<MClassInvariant> makeCollectionInvsMC(Collection<MClassInvariant> invClassSatisfiables) {
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		col = invClassSatisfiables;
-//		for (int nInv=0;nInv<invClassTotalMC.size();nInv++) {
-////			IInvariant inv = tabInv[nInv];
-////			if (invClassSatisfiables.contains(inv)) {
-////				MClassInvariant invClass=tabInvMClass[nInv];
-////				col.add(invClass);
-////			}
-//			MClassInvariant invClass = invClassTotalMC.get(nInv);
-//		}
 		return col;
 	}
 	/**
@@ -2089,19 +2071,15 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}
 	private static int searchNumInv(IInvariant inv) {
-		// Buscar numero por inv//JG
+		// Search number by inv//JG
 		int numInvGral=-1;
 		for (int nInv = 0; nInv < tabInv.length; nInv++) {
-			//			System.out.println("inv [" + inv + "] inv.clazz().name() ["+inv.name()+"] tabInv[nInv].name()["+tabInv[nInv].name()+"]");
-			//			System.out.println("inv [" + inv + "] inv.clazz().name() ["+inv.clazz().name()+"] tabInv[nInv].clazz().name()["+tabInv[nInv].clazz().name()+"]");
-			//			if(inv.name().equals(tabInv[nInv].name())) {//old
+
 			if(inv.name().equals(tabInv[nInv].name()) && inv.clazz().name().equals(tabInv[nInv].clazz().name())) {
 				numInvGral=nInv+1;
-				//				continue;//PROVIS
 				break;
 			}
 		}
-		//		System.out.println("inv " + inv + " numInvGral ["+numInvGral+"]");
 		if (debMVM) {
 			if (numInvGral<0) {
 				System.out.println("inv " + inv + " numInv<0 en searchNumInv");
@@ -2830,55 +2808,55 @@ public abstract class KodkodModelValidator {
  * @author Juanto
  *
  */
-abstract class EventThreads extends Thread {
-
-	private List<IEventStarted> listenersStarted = new ArrayList<>();
-	private List<IEventEnded> listenersEnded = new ArrayList<>();
-
-	public EventThreads() {
-		this(false);
-	}
-
-	public EventThreads(final boolean isDaemon) {
-		this.setDaemon(isDaemon);
-	}
-
-	public void run () {
-		for (IEventStarted o : listenersStarted) {
-			o.started();
-		}
-
-		operacionesRun();
-
-		for (IEventEnded o : listenersEnded) {
-			o.finalizado();
-		}
-	}
-
-	public abstract void operacionesRun();
-
-	public void addListenerStarted(IEventStarted IEventStarted) {
-		listenersStarted.add(IEventStarted);
-	}
-
-	public void removeListenerStarted(IEventStarted escuchador) {
-		listenersStarted.remove(escuchador);
-	}
-
-	public void addListenerEnded(IEventEnded escuchador) {
-		listenersEnded.add(escuchador);
-	}
-
-	public void removeListenerEnded(IEventEnded escuchador) {
-		listenersEnded.remove(escuchador);
-	}
-
-	public interface IEventStarted {
-		void started();
-	}
-
-	public interface IEventEnded {
-		void finalizado();
-	}
-}
-
+//abstract class EventThreads extends Thread {
+//
+//	private List<IEventStarted> listenersStarted = new ArrayList<>();
+//	private List<IEventEnded> listenersEnded = new ArrayList<>();
+//
+//	public EventThreads() {
+//		this(false);
+//	}
+//
+//	public EventThreads(final boolean isDaemon) {
+//		this.setDaemon(isDaemon);
+//	}
+//
+//	public void run () {
+//		for (IEventStarted o : listenersStarted) {
+//			o.started();
+//		}
+//
+//		operacionesRun();
+//
+//		for (IEventEnded o : listenersEnded) {
+//			o.finalizado();
+//		}
+//	}
+//
+//	public abstract void operacionesRun();
+//
+//	public void addListenerStarted(IEventStarted IEventStarted) {
+//		listenersStarted.add(IEventStarted);
+//	}
+//
+//	public void removeListenerStarted(IEventStarted escuchador) {
+//		listenersStarted.remove(escuchador);
+//	}
+//
+//	public void addListenerEnded(IEventEnded escuchador) {
+//		listenersEnded.add(escuchador);
+//	}
+//
+//	public void removeListenerEnded(IEventEnded escuchador) {
+//		listenersEnded.remove(escuchador);
+//	}
+//
+//	public interface IEventStarted {
+//		void started();
+//	}
+//
+//	public interface IEventEnded {
+//		void finalizado();
+//	}
+//}
+//

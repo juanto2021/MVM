@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -69,6 +70,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private static final String NAMEFRAMEMVMDIAGRAM = "MVM";
 	private static final String NAMEFRAMEMVMWIZARD = "MVMWizard";
+	JDialog fDialog;
 	JFrame frame;  
 	String strCmbSel=null;
 	String strCmb=null;
@@ -190,9 +192,11 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	boolean existDiagram=false;
 	boolean existWizard=false;
 
-	public ValidatorMVMDialogSimple(ParamDialogValidator param) {	
-		super(param.getParent(), "Validator with combinations", true); // The 'true' makes it modal AQUI
+	public ValidatorMVMDialogSimple(ParamDialogValidator param, boolean doModal) {	
+		super(param.getParent(), "Validator with combinations", doModal); // The 'true' makes it modal AQUI
+		setName("ValidatorMVMDialogSimple");
 		this.parent=param.getParent();
+	
 		this.kodParent=param.getKodParent();
 		this.listInvSatisfiables = param.getListInvSatisfiables();
 		this.listInvUnSatisfiables = param.getListInvUnSatisfiables();
@@ -269,6 +273,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		}
 		titleFrame+=" - Model: '"+mModel.name()+"'";
 		frame = new JFrame(titleFrame);
+		setTitle(titleFrame);
 
 		//JG Cambiar url resource MvMJG.png
 
@@ -284,7 +289,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		//		setSize(900, 400);// antes 900, 400//JG
 		//		setVisible(true);//JG
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE); 
+//		setDefaultCloseOperation(DISPOSE_ON_CLOSE); //JG AQUI
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
 		getContentPane().setLayout(new BorderLayout());
 
 		JPanel p = new JPanel();
@@ -333,6 +339,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		setLocationRelativeTo(this.parent);
 		setEnabled(true);
 		//		setVisible(true);
+		fDialog=this;
+		parent.setValidatorDialog(fDialog);
+		
 	}
 	/**
 	 * Update information from Validator
@@ -408,7 +417,14 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				//				frame.dispose();
 				//JG
-				dispose();
+				//---------- aqui4
+				
+//				hide();
+//				setVisible(false);
+				
+				//-----------
+//				dispose();
+				closeDialog();
 			}
 		});
 
@@ -857,11 +873,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								}else {
 									// Actualizar con objetos JG
 //									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);//Provis JG
-									parent.refreshMVMWizard();
+									//Aqui provis
+//									parent.setValidatorDialog(fDialog);
+//									parent.refreshMVMWizard();
+//									parent.btnViewCmbs.setEnabled(true);
+									
 								}
 
 								tile();
-								dispose();//JG
+//								dispose();//JG
+								closeDialog();
+//								setVisible(false);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -870,6 +892,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 							//							JOptionPane.showMessageDialog(null, st);//Provis
 							// Lo creo igual de forma provisional
 						}
+						parent.setValidatorDialog(fDialog);
+						parent.refreshMVMWizard();
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -934,6 +958,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		//		Ver frames
 		JDesktopPane fDesk = parent.getFdesk();
 		JInternalFrame[] allframes = fDesk.getAllFrames();
+		Window[]  ws = parent.getOwnedWindows();
 		for (JInternalFrame ifr: allframes) {
 			if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
 				existDiagram=true;
@@ -1026,7 +1051,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 								tile();
 
-								dispose();//JG
+//								dispose();//JG
+								closeDialog();
+//								setVisible(false);
 
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -1113,6 +1140,17 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		actMakeSolutionsCtrls();
 
 		return;
+	}
+	public void closeDialog() {
+		try {
+			finalize();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		dispose();
+//		setVisible(false);
 	}
 
 	/**
