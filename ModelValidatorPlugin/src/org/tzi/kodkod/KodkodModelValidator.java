@@ -185,7 +185,7 @@ public abstract class KodkodModelValidator {
 
 	private List<Future<EvalResult>> futures;
 
-	private static EventThreads hiloGreedy;
+	private static EventThreads threadGreedy;
 
 	public IModel getIModel() {
 		return model;
@@ -1421,8 +1421,8 @@ public abstract class KodkodModelValidator {
 		List<BitSet> listRes = new ArrayList<BitSet>();
 		//---
 		//		if (hilo.isStopRequested()) {
-		if (hiloGreedy!=null) {
-			if (hiloGreedy.isInterrupted()) {
+		if (threadGreedy!=null) {
+			if (threadGreedy.isInterrupted()) {
 				System.out.println("Cancelación solicitada. Terminando cálculo...");
 				return listRes;
 			}
@@ -1765,8 +1765,8 @@ public abstract class KodkodModelValidator {
 			public void operacionesRun() {
 				dispMVM("Lanzamos operaciones en tarea background");
 				try {
-					hiloGreedy=this;//JG
-					//					MainWindow.instance().hiloGreedy=hiloGreedy;
+					threadGreedy=this;//JG
+					//					MainWindow.instance().threadGreedy=threadGreedy;
 
 					calculateInBackGroundCHB(listResGreedyCHB, cmbTotalCHB, validatorMVMDialog, start,this );
 				} catch (Exception e) {
@@ -1823,6 +1823,32 @@ public abstract class KodkodModelValidator {
 		hilo1.start();
 	}	
 
+	public void stopThreadCmb() {
+//		JOptionPane.showMessageDialog(MainWindow.instance(),
+//				"Stop calc. en KODKOD", "Combinations", JOptionPane.INFORMATION_MESSAGE);
+		// ver si el hilo esta en ejecucion
+		if (threadGreedy.isAlive()) {
+			System.out.println("Esta vivo");
+//			threadGreedy.stop();
+			if (threadGreedy != null) {
+			    threadGreedy.requestStop();
+			    try {
+					threadGreedy.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // Espera hasta que finalice
+			    threadGreedy = null;
+
+			}
+
+			System.out.println("lo paro");
+//			threadGreedy.
+		}else {
+			System.out.println("Esta parado");
+		}
+		
+	}
 	/**
 	 * Calculation of the rest of the combinations in the background
 	 * @param resGreedy
@@ -1837,7 +1863,7 @@ public abstract class KodkodModelValidator {
 		// Launch the bruteforce but already with greedy calculated
 		lBitCmb = comRestoB(cmbTotalCHB,true, hilo);
 		//aqui3
-		//		MainWindow.instance().hiloGreedy=(Thread) hilo;
+		//		MainWindow.instance().threadGreedy=(Thread) hilo;
 
 	}
 

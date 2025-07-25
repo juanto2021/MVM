@@ -15,6 +15,9 @@ public abstract class EventThreads extends Thread {
 
 	private List<IEventStarted> listenersStarted = new ArrayList<>();
 	private List<IEventEnded> listenersEnded = new ArrayList<>();
+	
+	 // Control de parada
+    private volatile boolean stopRequested = false;
 
 	public EventThreads() {
 		this(false);
@@ -54,6 +57,16 @@ public abstract class EventThreads extends Thread {
 	public void removeListenerEnded(IEventEnded escuchador) {
 		listenersEnded.remove(escuchador);
 	}
+	
+	   // Métodos para solicitar la detención
+    public void requestStop() {
+        stopRequested = true;
+    }
+
+    public boolean isStopRequested() {
+        return stopRequested;
+    }
+
 
 	public interface IEventStarted {
 		void started();

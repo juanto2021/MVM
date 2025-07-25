@@ -20,7 +20,7 @@
 			menuitem="ValidationMVMG" 
 			toolbaritem="plugins"
 			id="org.tzi.use.kodkod.plugin.KodkodValidateMVMG">
-		</action>		
+		</action>	
 		<action label="Kodkod Validation"
 			icon="resources/kodkod.png"
 			class="org.tzi.use.kodkod.plugin.KodkodValidatePropertyAction"
@@ -38,7 +38,16 @@
 			menuitem="Configuration"
 			toolbaritem="plugins"
 			id="org.tzi.use.kodkod.plugin.KodkodValidateConfigurationAction">
-		</action>			
+		</action>	
+		<action label="Stop calculating combinations" 
+		    icon="resources/stopCmb.png"
+			class="org.tzi.use.kodkod.plugin.StopCalcCmb"
+			tooltip="Test to stop calculating combinations." 
+			menu="ValidationMVM"
+			menuitem="StopCalcCmb" 
+			toolbaritem="plugins"
+			id="org.tzi.use.kodkod.plugin.StopCalcCmb">
+		</action>	
 	</actions>
 	<commands>
 		<command id="org.tzi.use.kodkod.plugin.KodkodValidateCmd"
