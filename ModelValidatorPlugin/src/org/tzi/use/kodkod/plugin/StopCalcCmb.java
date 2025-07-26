@@ -23,7 +23,6 @@ public class StopCalcCmb implements IPluginActionDelegate {
 
 	@Override
 	public void performAction(IPluginAction pluginAction) {
-		// Llama al validador Alternativo
 
 		if(!pluginAction.getSession().hasSystem()){
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
@@ -34,14 +33,8 @@ public class StopCalcCmb implements IPluginActionDelegate {
 
 		MSystem mSystem= session.system();
 		MModel mModel = mSystem.model();
-		//try {
-		PluginModelFactory.INSTANCE.registerForSession(session);
-		//} catch (Exception e) {
-		//
-		//}
 
-		//		PluginModelFactory.INSTANCE.registerForSession(session);// Provis
-		IModel model = PluginModelFactory.INSTANCE.getModel(mModel);// provis
+		PluginModelFactory.INSTANCE.registerForSession(session);
 
 		KodkodValidateCmd cmd = new KodkodValidateCmd();
 		cmd.session=session;
@@ -49,30 +42,16 @@ public class StopCalcCmb implements IPluginActionDelegate {
 		cmd.mModel = mModel;
 		cmd.useShell = null;
 
-//		ModelValidatorConfigurationWindowMVM modelValidatorConfigurationWindow = 
-//				new ModelValidatorConfigurationWindowMVM(MainWindow.instance(), model, mModel.filename());
-//
-//		Configuration config = modelValidatorConfigurationWindow.getChosenConfiguration();
-//
-//		StringWriter errorBuffer = new StringWriter();
-//		try {
-//			cmd.configureModel(config, new PrintWriter(errorBuffer, true));
-//		} catch (ConfigurationException e) {
-//			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-//			e.printStackTrace();
-//		}
 		// Activamos hourglass
-		MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		UseKodkodModelValidator uk = MainWindow.instance().getKodKod();
-////		MainWindow.instance().v
-//		MainWindow.instance().setKodKod(uk);
-//		String tipoSearchMSS = "G";
-//		uk.validateVariable(model, mModel, session, tipoSearchMSS);
-		// Desactivamos hourglass
-//		JOptionPane.showMessageDialog(pluginAction.getParent(),
-//				"Stop calc.", "Combinations", JOptionPane.INFORMATION_MESSAGE);
-		uk.stopThreadCmb();
-		MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 
+		UseKodkodModelValidator uk = MainWindow.instance().getKodKod();
+		if (uk!=null) {
+			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			uk.stopThreadCmb();
+			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+		}else {
+			JOptionPane.showMessageDialog(pluginAction.getParent(),
+					"No calculations running.", "Search for combinations", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

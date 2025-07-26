@@ -1421,12 +1421,12 @@ public abstract class KodkodModelValidator {
 		List<BitSet> listRes = new ArrayList<BitSet>();
 		//---
 		//		if (hilo.isStopRequested()) {
-		if (threadGreedy!=null) {
-			if (threadGreedy.isInterrupted()) {
-				System.out.println("Cancelación solicitada. Terminando cálculo...");
-				return listRes;
-			}
-		}
+//		if (threadGreedy!=null) {
+//			if (threadGreedy.isInterrupted()) {
+//				System.out.println("Cancelación solicitada. Terminando cálculo...");
+//				return listRes;
+//			}
+//		}
 		//---
 
 
@@ -1498,6 +1498,13 @@ public abstract class KodkodModelValidator {
 									}
 								}
 							}
+						}
+					}
+					// Posible AQUI
+					if (threadGreedy!=null) {
+						if (threadGreedy.isInterrupted()) {
+							System.out.println("Cancelación solicitada. Terminando cálculo...");
+							return listRes;
 						}
 					}
 				}
@@ -1776,6 +1783,7 @@ public abstract class KodkodModelValidator {
 			//--- JG
 			public void requestStop() {
 				stopRequested = true;
+				this.interrupt();
 			}
 
 			public boolean isStopRequested() {
@@ -1824,30 +1832,26 @@ public abstract class KodkodModelValidator {
 	}	
 
 	public void stopThreadCmb() {
-//		JOptionPane.showMessageDialog(MainWindow.instance(),
-//				"Stop calc. en KODKOD", "Combinations", JOptionPane.INFORMATION_MESSAGE);
-		// ver si el hilo esta en ejecucion
-		if (threadGreedy.isAlive()) {
-			System.out.println("Esta vivo");
-//			threadGreedy.stop();
-			if (threadGreedy != null) {
-			    threadGreedy.requestStop();
-			    try {
-					threadGreedy.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} // Espera hasta que finalice
-			    threadGreedy = null;
+		if (threadGreedy!=null) {
+			// ver si el hilo esta en ejecucion
+			if (threadGreedy.isAlive()) {
+				System.out.println("Esta vivo");
 
+				if (threadGreedy != null) {
+					threadGreedy.requestStop();
+					try {
+						threadGreedy.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} // Espera hasta que finalice
+					threadGreedy = null;
+				}
+
+				System.out.println("lo paro");
+			}else {
+				System.out.println("Esta parado");
 			}
-
-			System.out.println("lo paro");
-//			threadGreedy.
-		}else {
-			System.out.println("Esta parado");
 		}
-		
 	}
 	/**
 	 * Calculation of the rest of the combinations in the background
