@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.tzi.kodkod.EventThreads;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.UseKodkodModelValidator;
@@ -29,7 +30,6 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 
 	@Override
 	public void performAction(IPluginAction pluginAction) {
-		// Llama al validador Alternativo
 
 		if(!pluginAction.getSession().hasSystem()){
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
@@ -63,14 +63,27 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 			e.printStackTrace();
 		}
-		// Activamos hourglass
-		MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		UseKodkodModelValidator uk = new UseKodkodModelValidator(session);
-		String tipoSearchMSS = "L";
-		uk.validateVariable(model, mModel, session, tipoSearchMSS);
-		// Desactivamos hourglass
-		MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 
+		UseKodkodModelValidator uk = MainWindow.instance().getKodKod();
+		if (uk==null) {
+			uk = new UseKodkodModelValidator(session);
+		}
+		EventThreads threadGreedy = uk.getThreadGreedy();
+
+		boolean calON=uk.getCalON();
+		if (calON || threadGreedy !=null) {
+			JOptionPane.showMessageDialog(pluginAction.getParent(),
+					"A combination search already exists. Stop it first.", "Greedy calculation launches", JOptionPane.ERROR_MESSAGE);
+		}else {
+			// We activate the hourglass
+			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			MainWindow.instance().setKodKod(uk);
+			String tipoSearchMSS = "L";
+			uk.validateVariable(model, mModel, session, tipoSearchMSS);
+			// We deactivate the hourglass		
+			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+			MainWindow.instance().setCursor(Cursor.getDefaultCursor());	
+		}
 	}
 
 }

@@ -186,6 +186,7 @@ public abstract class KodkodModelValidator {
 	private List<Future<EvalResult>> futures;
 
 	private static EventThreads threadGreedy;
+	private static boolean calON;
 
 	public IModel getIModel() {
 		return model;
@@ -755,7 +756,7 @@ public abstract class KodkodModelValidator {
 
 			Solution solution;
 			try {
-//				KodkodSolver kS = new KodkodSolver();
+				//				KodkodSolver kS = new KodkodSolver();
 
 				solution = kodkodSolver.solve(iModel);
 				solution = call_Solver(iModelOri);
@@ -926,9 +927,9 @@ public abstract class KodkodModelValidator {
 		numCallSolver=0;
 		numCallSolverSAT=0;
 		numCallSolverUNSAT=0;
-		
+
 		//AQUI
-//		MainWindow.instance().setKodKod(this);
+		//		MainWindow.instance().setKodKod(this);
 
 		Collection<IInvariant> invClassSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassUnSatisfiables = new ArrayList<IInvariant>();
@@ -1088,8 +1089,10 @@ public abstract class KodkodModelValidator {
 							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);	
 				}
 				if (tipoSearchMSS == "L") {
+					calON=true;
 					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
 							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);
+					calON=false;
 				}
 				model_metrics();
 			}
@@ -1421,12 +1424,12 @@ public abstract class KodkodModelValidator {
 		List<BitSet> listRes = new ArrayList<BitSet>();
 		//---
 		//		if (hilo.isStopRequested()) {
-//		if (threadGreedy!=null) {
-//			if (threadGreedy.isInterrupted()) {
-//				System.out.println("Cancelación solicitada. Terminando cálculo...");
-//				return listRes;
-//			}
-//		}
+		//		if (threadGreedy!=null) {
+		//			if (threadGreedy.isInterrupted()) {
+		//				System.out.println("Cancelación solicitada. Terminando cálculo...");
+		//				return listRes;
+		//			}
+		//		}
 		//---
 
 
@@ -1749,6 +1752,14 @@ public abstract class KodkodModelValidator {
 		System.out.println("[" + textoFormateado + "] ["+numeroFormateado+"]");
 	}
 
+	public EventThreads getThreadGreedy() {
+		return threadGreedy;
+	}
+	
+	public boolean getCalON() {
+		return calON;
+	}
+	
 	/**
 	 * Launches the calculation of the rest of the combinations in the background
 	 * @param resGreedy
@@ -2704,15 +2715,18 @@ public abstract class KodkodModelValidator {
 		try {
 			numCallSolver+=1;
 			solution = call_Solver(model);
-			if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
-				numCallSolverSAT+=1;
-				solucion="SATISFIABLE";
-			}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
-				numCallSolverUNSAT+=1;
-				solucion="UNSATISFIABLE";
-			} else {
-				// do nothing
+			if (solution!=null) {
+				if (solution.outcome().toString() == "SATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_SATISFIABLE") {
+					numCallSolverSAT+=1;
+					solucion="SATISFIABLE";
+				}else if (solution.outcome().toString() == "UNSATISFIABLE" || solution.outcome().toString() == "TRIVIALLY_UNSATISFIABLE") {
+					numCallSolverUNSAT+=1;
+					solucion="UNSATISFIABLE";
+				} else {
+					// do nothing
+				}			
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

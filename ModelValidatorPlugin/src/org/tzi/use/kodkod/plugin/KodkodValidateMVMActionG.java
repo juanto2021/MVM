@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
-import org.tzi.kodkod.helper.LogMessages;
+import org.tzi.kodkod.EventThreads;
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.UseKodkodModelValidator;
@@ -30,7 +30,6 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 
 	@Override
 	public void performAction(IPluginAction pluginAction) {
-		// Llama al validador Alternativo
 
 		if(!pluginAction.getSession().hasSystem()){
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
@@ -41,13 +40,8 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 
 		MSystem mSystem= session.system();
 		MModel mModel = mSystem.model();
-		//try {
-		PluginModelFactory.INSTANCE.registerForSession(session);
-		//} catch (Exception e) {
-		//
-		//}
 
-		//		PluginModelFactory.INSTANCE.registerForSession(session);// Provis
+		PluginModelFactory.INSTANCE.registerForSession(session);
 		IModel model = PluginModelFactory.INSTANCE.getModel(mModel);// provis
 
 		KodkodValidateCmd cmd = new KodkodValidateCmd();
@@ -68,16 +62,23 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 			e.printStackTrace();
 		}
-		// Activamos hourglass
-		MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
 		UseKodkodModelValidator uk = new UseKodkodModelValidator(session);
-//		MainWindow.instance().v
-		MainWindow.instance().setKodKod(uk);
-		String tipoSearchMSS = "G";
-		uk.validateVariable(model, mModel, session, tipoSearchMSS);
-		// Desactivamos hourglass
-		MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 
+		EventThreads threadGreedy = uk.getThreadGreedy();
+		boolean calON=uk.getCalON();
+		if (threadGreedy==null && calON==false) {
+			// We activate the hourglass
+			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			MainWindow.instance().setKodKod(uk);
+			String tipoSearchMSS = "G";
+			uk.validateVariable(model, mModel, session, tipoSearchMSS);
+			// We deactivate the hourglass		
+			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+			MainWindow.instance().setCursor(Cursor.getDefaultCursor());	
+		}else {
+			JOptionPane.showMessageDialog(pluginAction.getParent(),
+					"A combination search already exists. Stop it first.", "Greedy calculation launches", JOptionPane.ERROR_MESSAGE);
+		}
 	}
-
 }
