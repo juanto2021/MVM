@@ -44,27 +44,29 @@ public class StopCalcCmb implements IPluginActionDelegate {
 				JOptionPane.showMessageDialog(pluginAction.getParent(),
 						"No calculations running.", "Stop searching for combinations", JOptionPane.ERROR_MESSAGE);
 			}else {
-				//			if (uk!=null) {
-				// We activate the hourglass
-				MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				uk.stopThreadCmb();
-				// We deactivate the hourglass		
-				MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+
+				int respuesta = JOptionPane.showConfirmDialog(pluginAction.getParent(),
+						"Do you really want to stop the current calculation?",
+						"Confirm Stop",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+
+				if (respuesta == JOptionPane.YES_OPTION) {
+					// Activate the wait cursor
+					MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+					uk.stopThreadCmb(); // Stops the calculation	
+
+					// Restore the cursor
+					MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+					MainWindow.instance().enableAction("StopCalcCmb","stopCmb", false);
+				}
 			}
+
 		}else {
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
 					"No calculations running.", "Stop searching for combinations", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	//		if (uk!=null) {
-	//			// We activate the hourglass
-	//			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	//			uk.stopThreadCmb();
-	//			// We deactivate the hourglass		
-	//			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-	//		}else {
-	//			JOptionPane.showMessageDialog(pluginAction.getParent(),
-	//					"No calculations running.", "Stop searching for combinations", JOptionPane.ERROR_MESSAGE);
-	//		}
 }
 

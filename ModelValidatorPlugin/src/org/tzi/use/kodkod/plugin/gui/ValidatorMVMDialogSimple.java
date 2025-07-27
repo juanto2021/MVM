@@ -196,7 +196,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		super(param.getParent(), "Validator with combinations", doModal); // The 'true' makes it modal AQUI
 		setName("ValidatorMVMDialogSimple");
 		this.parent=param.getParent();
-	
+
 		this.kodParent=param.getKodParent();
 		this.listInvSatisfiables = param.getListInvSatisfiables();
 		this.listInvUnSatisfiables = param.getListInvUnSatisfiables();
@@ -289,7 +289,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		//		setSize(900, 400);// antes 900, 400//JG
 		//		setVisible(true);//JG
-//		setDefaultCloseOperation(DISPOSE_ON_CLOSE); //JG AQUI
+		//		setDefaultCloseOperation(DISPOSE_ON_CLOSE); //JG AQUI
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
 		getContentPane().setLayout(new BorderLayout());
 
@@ -341,7 +341,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		//		setVisible(true);
 		fDialog=this;
 		parent.setValidatorDialog(fDialog);
-		
+
 	}
 	/**
 	 * Update information from Validator
@@ -418,12 +418,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				//				frame.dispose();
 				//JG
 				//---------- aqui4
-				
-//				hide();
-//				setVisible(false);
-				
+
+				//				hide();
+				//				setVisible(false);
+
 				//-----------
-//				dispose();
+				//				dispose();
 				closeDialog();
 			}
 		});
@@ -524,24 +524,24 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		return lNInv;
 	}
 
-	private List<String> getListInvMC(String cmb){
-		List<String> lNInv = new ArrayList<String>();
-		if (cmb.equals("")) {
-			return lNInv;
-		}
-		String[] partes = cmb.split("-");		
-		int numPartes=partes.length;
-		for (int nParte = 0 ; nParte < numPartes ; nParte++) {
-			String nInv = partes[nParte];
-			int order = Integer.parseInt(nInv);
-			// Nuevo
-			MClassInvariant inv = (tabInvMClass[order-1]);
-			String strInv = order+"-"+inv.getClass().getName()+"::"+inv.name();
-			lNInv.add(strInv);
-		}
-
-		return lNInv;
-	}
+//	private List<String> getListInvMC(String cmb){
+//		List<String> lNInv = new ArrayList<String>();
+//		if (cmb.equals("")) {
+//			return lNInv;
+//		}
+//		String[] partes = cmb.split("-");		
+//		int numPartes=partes.length;
+//		for (int nParte = 0 ; nParte < numPartes ; nParte++) {
+//			String nInv = partes[nParte];
+//			int order = Integer.parseInt(nInv);
+//			// Nuevo
+//			MClassInvariant inv = (tabInvMClass[order-1]);
+//			String strInv = order+"-"+inv.getClass().getName()+"::"+inv.name();
+//			lNInv.add(strInv);
+//		}
+//
+//		return lNInv;
+//	}
 	/**
 	 * Busca combinaciones satisfiables sin la invariante indicada
 	 * @param cmb
@@ -798,7 +798,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 				String[] partes = valor.split("-");
 				String strOrden=partes[0];
-				int intOrder = Integer.parseInt(strOrden)-1;
+//				int intOrder = Integer.parseInt(strOrden)-1;
 
 				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");
 				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
@@ -853,7 +853,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
 
 					Solution solution=null;
-					KodkodSolver kodkodSolver = new KodkodSolver();
+//					KodkodSolver kodkodSolver = new KodkodSolver();
 					// hay que ver sa el check de invariants es correcto
 					// Provisionalmente decimos que si
 					boolean bCheckInvs = kodParent.check_inv_state();
@@ -864,26 +864,31 @@ public class ValidatorMVMDialogSimple extends JDialog {
 							Session session = kodParent.getSession();
 							try {
 								checkExistDiagram();
-								if (!existDiagram) {
-									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
-									odv.setName(NAMEFRAMEMVMDIAGRAM);
-								}
 								if (!existWizard) {
 									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
 								}else {
 									// Actualizar con objetos JG
-//									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);//Provis JG
+									//									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);//Provis JG
 									//Aqui provis
-//									parent.setValidatorDialog(fDialog);
-//									parent.refreshMVMWizard();
-//									parent.btnViewCmbs.setEnabled(true);
-									
+									//									parent.setValidatorDialog(fDialog);
+									//									parent.refreshMVMWizard();
+									//									parent.btnViewCmbs.setEnabled(true);
+
+								}								
+//								tile();//Provis
+//								parent.repaint();
+//								parent.invalidate();
+								if (!existDiagram) {
+									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
+									odv.setName(NAMEFRAMEMVMDIAGRAM);
 								}
 
-								tile();
-//								dispose();//JG
+
+//								tile();
+								//								dispose();//JG
 								closeDialog();
-//								setVisible(false);
+								tile();
+								//								setVisible(false);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -935,7 +940,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 			String[] partes = valor.split("-");
 			String strOrden=partes[0];
-			int intOrder = Integer.parseInt(strOrden)-1;
+//			int intOrder = Integer.parseInt(strOrden)-1;
 
 			lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");	// JG Cambiado	
 		}else {
@@ -958,7 +963,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		//		Ver frames
 		JDesktopPane fDesk = parent.getFdesk();
 		JInternalFrame[] allframes = fDesk.getAllFrames();
-		Window[]  ws = parent.getOwnedWindows();
+//		Window[] ws = parent.getOwnedWindows();
 		for (JInternalFrame ifr: allframes) {
 			if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
 				existDiagram=true;
@@ -1038,22 +1043,23 @@ public class ValidatorMVMDialogSimple extends JDialog {
 							Session session = kodParent.getSession();
 							try {
 								checkExistDiagram();
+								if (!existWizard) {
+									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
+								}else {
+									//									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);// Provis JG
+									parent.refreshMVMWizard();
+								}							
 								if (!existDiagram) {
 									NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
 									odv.setName(NAMEFRAMEMVMDIAGRAM);
 								}
-								if (!existWizard) {
-									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
-								}else {
-//									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);// Provis JG
-									parent.refreshMVMWizard();
-								}
+
 
 								tile();
 
-//								dispose();//JG
+								//								dispose();//JG
 								closeDialog();
-//								setVisible(false);
+								//								setVisible(false);
 
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -1143,14 +1149,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	}
 	public void closeDialog() {
 		try {
-			finalize();
+//			finalize();
+			dispose();
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		dispose();
-//		setVisible(false);
+		//		setVisible(false);
 	}
 
 	/**

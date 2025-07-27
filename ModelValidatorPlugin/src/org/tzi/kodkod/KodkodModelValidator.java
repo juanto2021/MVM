@@ -1422,17 +1422,6 @@ public abstract class KodkodModelValidator {
 
 	private List<BitSet> comRestoB(BitSet bRestoIn,boolean prune, EventThreads hilo) {
 		List<BitSet> listRes = new ArrayList<BitSet>();
-		//---
-		//		if (hilo.isStopRequested()) {
-		//		if (threadGreedy!=null) {
-		//			if (threadGreedy.isInterrupted()) {
-		//				System.out.println("Cancelación solicitada. Terminando cálculo...");
-		//				return listRes;
-		//			}
-		//		}
-		//---
-
-
 		int nInvsRestoB = bRestoIn.cardinality();
 		int nElem = bRestoIn.length();
 		boolean calcular=true;
@@ -1743,6 +1732,7 @@ public abstract class KodkodModelValidator {
 
 
 		if (lBitCmbSAT.size()>0) {
+			MainWindow.instance().enableAction("StopCalcCmb","stopCmb", true);
 			LanzacalculoBckCHB(listResGreedyCHB, cmbTotalHB, validatorMVMDialog, start );
 		}
 	}
