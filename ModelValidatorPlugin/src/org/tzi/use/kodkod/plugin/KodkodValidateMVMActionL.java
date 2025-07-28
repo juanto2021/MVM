@@ -13,6 +13,7 @@ import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.kodkod.UseKodkodModelValidator;
 import org.tzi.use.kodkod.plugin.gui.ModelValidatorConfigurationWindowMVM;
+import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.main.Session;
 import org.tzi.use.runtime.gui.IPluginAction;
 import org.tzi.use.runtime.gui.IPluginActionDelegate;
@@ -78,11 +79,23 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 			// We activate the hourglass
 			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			MainWindow.instance().setKodKod(uk);
+			
+			// If the dialogue exists, we delete it.
+			ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
+
+			if (dia!=null) {
+				dia.dispose();
+				MainWindow.instance().setValidatorDialog(null);
+			}
+
+			
 			String tipoSearchMSS = "L";
 			uk.validateVariable(model, mModel, session, tipoSearchMSS);
 			// We deactivate the hourglass		
 			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-			MainWindow.instance().setCursor(Cursor.getDefaultCursor());	
+			MainWindow.instance().enableAction("ValidationMVMG", true);
+			MainWindow.instance().enableAction("ValidationMVMB", true);
+			MainWindow.instance().enableAction("StopCalcCmb", false);
 		}
 	}
 

@@ -70,7 +70,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private static final String NAMEFRAMEMVMDIAGRAM = "MVM";
 	private static final String NAMEFRAMEMVMWIZARD = "MVMWizard";
-	JDialog fDialog;
+//	JDialog fDialog;
+	ValidatorMVMDialogSimple fDialog;
 	JFrame frame;  
 	String strCmbSel=null;
 	String strCmb=null;

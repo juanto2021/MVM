@@ -71,6 +71,13 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 			// We activate the hourglass
 			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			MainWindow.instance().setKodKod(uk);
+			
+			// We deactivate greedy and brute options and activate stop
+
+			MainWindow.instance().enableAction("ValidationMVMG", false);
+			MainWindow.instance().enableAction("ValidationMVMB", false);
+			MainWindow.instance().enableAction("StopCalcCmb", true);
+			
 			String tipoSearchMSS = "G";
 			uk.validateVariable(model, mModel, session, tipoSearchMSS);
 			// We deactivate the hourglass		

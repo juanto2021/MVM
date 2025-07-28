@@ -56,6 +56,10 @@ public class StopCalcCmb implements IPluginActionDelegate {
 					MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 					uk.stopThreadCmb(); // Stops the calculation	
+					
+					MainWindow.instance().enableAction("ValidationMVMG", true);
+					MainWindow.instance().enableAction("ValidationMVMB", true);
+					MainWindow.instance().enableAction("StopCalcCmb", false);
 
 					// Restore the cursor
 					MainWindow.instance().setCursor(Cursor.getDefaultCursor());

@@ -29,6 +29,7 @@ import java.util.concurrent.Future;
 
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -293,7 +294,7 @@ public abstract class KodkodModelValidator {
 	}
 
 
-	// Test de llamadas a metodos
+	// Method call testing
 
 	public void test_call_methods(MModel model, IModel iModelOri) {
 		//------------------------------------------------------------------------------------		
@@ -480,10 +481,8 @@ public abstract class KodkodModelValidator {
 
 			try {
 				v = eval.eval(inv.flaggedExpression(), systemState);
-				//				System.out.println("inv ["+inv.name()+"] valor ["+v+"]");
 			} catch (MultiplicityViolationException e) {
 				message = e.getMessage();
-				//				System.out.println("message ["+message+"]");
 			}
 
 		}
@@ -495,13 +494,15 @@ public abstract class KodkodModelValidator {
 		PrintWriter out = new PrintWriter(buffer);
 
 		boolean ok = session.system().state().checkStructure(out);
-		boolean res=false;
+		//		boolean res=false;
 		// check all associations
 		boolean reportAllErrors = true;
 		for (MAssociation assoc : session.system().model().associations()) {
 			StringWriter buffer2 = new StringWriter();
 			PrintWriter out2 = new PrintWriter(buffer2);
-			res = session.system().state().checkStructure(assoc, out2, reportAllErrors) ;
+			//			boolean res = session.system().state().checkStructure(assoc, out2, reportAllErrors) ;
+			// AQUI
+			session.system().state().checkStructure(assoc, out2, reportAllErrors) ;
 		}
 
 		return ok;
@@ -574,7 +575,7 @@ public abstract class KodkodModelValidator {
 	 * Checks the state of invariants
 	 */
 	public boolean check_inv_state() {
-		boolean bRes = false;
+		//		boolean bRes = false;
 
 		EvalResult[] fValues = load_Values();
 		MModel fModel = session.system().model();
@@ -735,11 +736,11 @@ public abstract class KodkodModelValidator {
 				}
 
 				Map<String, MElementAnnotation> oAnnot = model.getAllAnnotations();
-				int nAnnotations = oAnnot.size();
+				//				int nAnnotations = oAnnot.size();
 
 				// Annotations
 				for (Entry<String, MElementAnnotation> item : oAnnot.entrySet()){
-					String key = item.getKey();
+					//					String key = item.getKey();
 					MElementAnnotation oME = item.getValue();
 					mModel.addAnnotation(oME);
 				}
@@ -748,7 +749,7 @@ public abstract class KodkodModelValidator {
 					mModel.addEnumType(mEnumType);
 				}
 			}
-			System.out.println("Ha creado nuevo modelo MModel ["+mModel.name()+"]");
+			//			System.out.println("Ha creado nuevo modelo MModel ["+mModel.name()+"]");
 
 			// Create IModel
 
@@ -767,13 +768,13 @@ public abstract class KodkodModelValidator {
 			}
 
 			UseSystemApi systemApi = UseSystemApi.create(session);
-			// Crea objeto para primera clase
+			// Create object for first class
 			int contObj=0;
 			int numObjs=2;
 			String prefixObj = "obj";
 			// Create diagram and add objects
 
-			ObjectDiagramCreator odc = new ObjectDiagramCreator(getIModel(), session);		
+			//			ObjectDiagramCreator odc = new ObjectDiagramCreator(getIModel(), session);		
 
 			try {
 				for (MClass mClass: model.classes()) {
@@ -928,9 +929,6 @@ public abstract class KodkodModelValidator {
 		numCallSolverSAT=0;
 		numCallSolverUNSAT=0;
 
-		//AQUI
-		//		MainWindow.instance().setKodKod(this);
-
 		Collection<IInvariant> invClassSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassUnSatisfiables = new ArrayList<IInvariant>();
 		Collection<IInvariant> invClassOthers = new ArrayList<IInvariant>();
@@ -961,8 +959,6 @@ public abstract class KodkodModelValidator {
 					invClassTotalMC.add(oInvMC);
 				}
 			}
-
-			//---
 
 			longInvs = String.valueOf(invClassTotal.size()).length();
 
@@ -998,7 +994,7 @@ public abstract class KodkodModelValidator {
 				for (MClassInvariant invMClass: mModel.classInvariants()) {
 					if (invMClass.qualifiedName().equals(invClass.qualifiedName())) {
 						tabInvMClass[nOrdenInv] = invMClass;
-						invMClassOActual=invMClass;//OJO
+						invMClassOActual=invMClass;
 					}					
 				}	
 
@@ -1088,8 +1084,12 @@ public abstract class KodkodModelValidator {
 					analysis_OCL(model, mModel,invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
 							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);	
 				}
+				//AQUI
 				if (tipoSearchMSS == "L") {
 					calON=true;
+					MainWindow.instance().enableAction("ValidationMVMG", false);
+					MainWindow.instance().enableAction("ValidationMVMB", false);
+					MainWindow.instance().enableAction("StopCalcCmb", true);
 					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
 							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);
 					calON=false;
@@ -1226,33 +1226,38 @@ public abstract class KodkodModelValidator {
 
 	}
 	private void showValidatorMVMDialogSimple() {
-		ValidatorMVMDialogSimple validatorMVMDialog= 
-				new ValidatorMVMDialogSimple(param, true);	
-		validatorMVMDialog.setVisible(true);//JG
+		JDialog dia = MainWindow.instance().getValidatorDialog();
+		if (dia!=null) {
+			dia.setVisible(true);
+		}else {
+			ValidatorMVMDialogSimple validatorMVMDialog= 
+					new ValidatorMVMDialogSimple(param, true);	
+			validatorMVMDialog.setVisible(true);//JG
+		}
 	}
 
 	private void model_metrics() {
 		System.out.println("====================================");
 		System.out.println("Model metrics [" + model.name()+"]");
 		System.out.println("====================================");
-		//		•	Number of Classes
+		// Number of Classes
 		int nClasses=model.classes().size();
 		System.out.println("Number of Classes .......: " + nClasses);
-		//		• Number of Associations
+		// Number of Associations
 		int nAssociations=model.associations().size();
 		System.out.println("Number of Associations ..: " + nAssociations);
-		//		• Number of Invariants (OCL Constraints)
+		// Number of Invariants (OCL Constraints)
 		System.out.println("Invs MModel: " + invsMModel);
 		System.out.println("Invs IModel: " + invsIModel);
 		System.out.println();
-		//		• Number of Attributes per Class
+		// Number of Attributes per Class
 		System.out.printf("| %-30s | %-10s%n", "Class name", "Attributes");
 		System.out.printf("| %-30s | %-10s%n", "------------------------------", "----------");
 		for (IClass clazz : model.classes()) {
 			System.out.printf("| %-30s | %-10d%n", clazz.name(), clazz.allAttributes().size());
 		}
 		System.out.println();
-		//		• Number of Association Roles
+		// Number of Association Roles
 
 		System.out.printf("| %-25s | %-10s | %-40s |%n", "Association name", "Num roles", "Roles");
 		System.out.println("|---------------------------|------------|------------------------------------------|");
@@ -1283,119 +1288,119 @@ public abstract class KodkodModelValidator {
 		return invMClass;
 	}
 
-	private void analyzeInfoInv(MModel mModel) {
-		System.out.println("");
-		System.out.println("**************");
-		System.out.println("analyzeInfoInv");
-		System.out.println("**************");
-		System.out.println("MClassInvariant -----------------------------------------------");
-		for (MClassInvariant mc:mModel.classInvariants() ) {
-			System.out.println("");
-			System.out.println("  MclassInvariants mc ["+mc+"]");
-			System.out.println("     MclassInvariants name ["+mc.name()+"]");
-			System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
-			if (mc.bodyExpression().type().isTypeOfBoolean()) {
-				System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
-			}
+	//	private void analyzeInfoInv(MModel mModel) {
+	//		System.out.println("");
+	//		System.out.println("**************");
+	//		System.out.println("analyzeInfoInv");
+	//		System.out.println("**************");
+	//		System.out.println("MClassInvariant -----------------------------------------------");
+	//		for (MClassInvariant mc:mModel.classInvariants() ) {
+	//			System.out.println("");
+	//			System.out.println("  MclassInvariants mc ["+mc+"]");
+	//			System.out.println("     MclassInvariants name ["+mc.name()+"]");
+	//			System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
+	//			if (mc.bodyExpression().type().isTypeOfBoolean()) {
+	//				System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
+	//			}
+	//
+	//			System.out.println("mc.expandedExpression() [" + mc.expandedExpression() + "]");
+	//			Expression expIni = mc.bodyExpression();
+	//			Class<? extends Expression> cl = expIni.getClass(); 
+	//			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
+	//			System.out.println("cl.getName() [" + cl.getName() + "]");
+	//			System.out.println("cl.getSimpleName() [" + cl.getSimpleName() + "]");
+	//			System.out.println("cl.getCanonicalName() [" + cl.getCanonicalName() + "]");
+	//			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
+	//
+	//			Expression expExpanded = mc.expandedExpression();
+	//
+	//			System.out.println("expIni.name() [" + expIni.name() + "]");
+	//			String simpleName = cl.getSimpleName();
+	//			if (simpleName.equals("ExpForAll")) {
+	//				ExpForAll exp = (ExpForAll) mc.bodyExpression();
+	//				System.out.println("exp.name() [" + exp.name() + "]");
+	//			}else {
+	//				ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
+	//				analyzeExpStdOp(1,exp);
+	//			}
+	//
+	//		}
+	//		System.out.println("");
+	//	}
+	//	private void analyzeExpStdOp(int nSpc,ExpStdOp exp) {
+	//		String indentSpc = fabSpc(nSpc);
+	//		System.out.println(indentSpc + "("+nSpc+")   Analiza bodyExpression [" + exp+"]");
+	//		System.out.println(indentSpc + "      exp.opname ["+exp.opname()+"]");
+	//		System.out.println(indentSpc + "      exp.Args -----------------");
+	//		for (Expression arg:exp.args() ) {
+	//			System.out.println(indentSpc + "        exp.arg ["+arg.toString() +"] arg.type ["+arg.type()+"]");
+	//			if (arg.type().isTypeOfBoolean()) {
+	//				System.out.println(indentSpc + "       arg.type.isTypeOfBoolean ["+arg.type().isTypeOfBoolean()+"]");
+	//				analyzeExpStdOp(nSpc+1,(ExpStdOp) arg);
+	//			}
+	//		}
+	//
+	//		System.out.println(indentSpc + "      exp.type ["+exp.type()+"]");
+	//		System.out.println(indentSpc + "      exp.getClass().getName() ["+exp.getClass().getName()+"]");
+	//		System.out.println(indentSpc + "      exp.getClass().getCanonicalName() ["+exp.getClass().getCanonicalName()+"]");
+	//
+	//	}
+	//	private String fabSpc(int nSpc) {
+	//		String spc="";
+	//		for (int n=0;n<nSpc*4;n++) {
+	//			spc+=" ";
+	//		}
+	//		return spc;
+	//	}
+	//	private void dispFormulasAlloy() {
+	//		System.out.println("");
+	//		System.out.println("*****************");
+	//		System.out.println("dispFormulasAlloy");
+	//		System.out.println("*****************");
+	//		System.out.println("IInvariant ----------------------------------------------------");
+	//		for (IInvariant invClass: invClassTotal) {
+	//			System.out.println("  invClass name["+invClass.name()+"]");
+	//			System.out.println("    formula ["+invClass.formula()+"]");
+	//
+	//			System.out.println("    relation ["+invClass.clazz().relation().name()+"]");
+	//		}
+	//	}
 
-			System.out.println("mc.expandedExpression() [" + mc.expandedExpression() + "]");
-			Expression expIni = mc.bodyExpression();
-			Class<? extends Expression> cl = expIni.getClass(); 
-			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
-			System.out.println("cl.getName() [" + cl.getName() + "]");
-			System.out.println("cl.getSimpleName() [" + cl.getSimpleName() + "]");
-			System.out.println("cl.getCanonicalName() [" + cl.getCanonicalName() + "]");
-			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
-
-			Expression expExpanded = mc.expandedExpression();
-
-			System.out.println("expIni.name() [" + expIni.name() + "]");
-			String simpleName = cl.getSimpleName();
-			if (simpleName.equals("ExpForAll")) {
-				ExpForAll exp = (ExpForAll) mc.bodyExpression();
-				System.out.println("exp.name() [" + exp.name() + "]");
-			}else {
-				ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
-				analyzeExpStdOp(1,exp);
-			}
-
-		}
-		System.out.println("");
-	}
-	private void analyzeExpStdOp(int nSpc,ExpStdOp exp) {
-		String indentSpc = fabSpc(nSpc);
-		System.out.println(indentSpc + "("+nSpc+")   Analiza bodyExpression [" + exp+"]");
-		System.out.println(indentSpc + "      exp.opname ["+exp.opname()+"]");
-		System.out.println(indentSpc + "      exp.Args -----------------");
-		for (Expression arg:exp.args() ) {
-			System.out.println(indentSpc + "        exp.arg ["+arg.toString() +"] arg.type ["+arg.type()+"]");
-			if (arg.type().isTypeOfBoolean()) {
-				System.out.println(indentSpc + "       arg.type.isTypeOfBoolean ["+arg.type().isTypeOfBoolean()+"]");
-				analyzeExpStdOp(nSpc+1,(ExpStdOp) arg);
-			}
-		}
-
-		System.out.println(indentSpc + "      exp.type ["+exp.type()+"]");
-		System.out.println(indentSpc + "      exp.getClass().getName() ["+exp.getClass().getName()+"]");
-		System.out.println(indentSpc + "      exp.getClass().getCanonicalName() ["+exp.getClass().getCanonicalName()+"]");
-
-	}
-	private String fabSpc(int nSpc) {
-		String spc="";
-		for (int n=0;n<nSpc*4;n++) {
-			spc+=" ";
-		}
-		return spc;
-	}
-	private void dispFormulasAlloy() {
-		System.out.println("");
-		System.out.println("*****************");
-		System.out.println("dispFormulasAlloy");
-		System.out.println("*****************");
-		System.out.println("IInvariant ----------------------------------------------------");
-		for (IInvariant invClass: invClassTotal) {
-			System.out.println("  invClass name["+invClass.name()+"]");
-			System.out.println("    formula ["+invClass.formula()+"]");
-
-			System.out.println("    relation ["+invClass.clazz().relation().name()+"]");
-		}
-	}
-
-	private void analyzeValuesSAT(String combination) {
-		System.out.println("");
-		System.out.println("****************");
-		System.out.println("analyzeValuesSAT");
-		System.out.println("****************");
-		Solution solution=null;
-		try {
-			solution = calcular( combination,  invClassTotal);
-			System.out.println("solution["+solution.sat()+"]");
-			for (Map.Entry<Relation, TupleSet> entry : solution.instance().relationTuples().entrySet()) {
-				Relation key = entry.getKey();
-				TupleSet tupleSet= entry.getValue();
-				// Buscar clases existentes
-				for (IClass oClass : model.classes()) {
-					String className = oClass.name();
-					if(key.name().equals(className)) {
-						System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
-					}
-
-					// Attributes
-					for (IAttribute oAttr : oClass.allAttributes()){
-						String attrName = oAttr.name();
-						String key_attr=className+"_"+attrName;
-						if(key.name().equals(key_attr)) {
-							System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
-						}
-					}
-				}
-			}
-			System.out.println("solution["+solution.outcome().toString()+"]");
-			System.out.println("-------------------------------------------");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	//	private void analyzeValuesSAT(String combination) {
+	//		System.out.println("");
+	//		System.out.println("****************");
+	//		System.out.println("analyzeValuesSAT");
+	//		System.out.println("****************");
+	//		Solution solution=null;
+	//		try {
+	//			solution = calcular( combination,  invClassTotal);
+	//			System.out.println("solution["+solution.sat()+"]");
+	//			for (Map.Entry<Relation, TupleSet> entry : solution.instance().relationTuples().entrySet()) {
+	//				Relation key = entry.getKey();
+	//				TupleSet tupleSet= entry.getValue();
+	//				// Buscar clases existentes
+	//				for (IClass oClass : model.classes()) {
+	//					String className = oClass.name();
+	//					if(key.name().equals(className)) {
+	//						System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
+	//					}
+	//
+	//					// Attributes
+	//					for (IAttribute oAttr : oClass.allAttributes()){
+	//						String attrName = oAttr.name();
+	//						String key_attr=className+"_"+attrName;
+	//						if(key.name().equals(key_attr)) {
+	//							System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
+	//						}
+	//					}
+	//				}
+	//			}
+	//			System.out.println("solution["+solution.outcome().toString()+"]");
+	//			System.out.println("-------------------------------------------");
+	//		} catch (Exception e) {
+	//			e.printStackTrace();
+	//		}
+	//	}
 
 	private static List<String> combListBitSetStr(List<BitSet> lBitSetV){
 		List<String> lString= new ArrayList<String>();
@@ -1640,8 +1645,6 @@ public abstract class KodkodModelValidator {
 			// An inv is related to another because it uses common attributes or associations
 			preparaMapInfoInvSet();
 
-			// Prepare a table of common attributes for each pair of invariants
-			//			preparaProbMat(mModel.classInvariants());// *provis Parece que no es necesario este paso
 			// Shows structures resulting from the Visitor
 			if (showStructuresAO) {
 				printStructuresAO();
@@ -1703,6 +1706,14 @@ public abstract class KodkodModelValidator {
 
 		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
 
+		// If the dialogue exists, we delete it.
+		ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
+
+		if (dia!=null) {
+			dia.dispose();
+			MainWindow.instance().setValidatorDialog(null);
+		}
+
 		// Send to MVMDialogSimple
 		ValidatorMVMDialogSimple validatorMVMDialog = showDialogMVM(
 				invClassSatisfiables, 
@@ -1719,8 +1730,10 @@ public abstract class KodkodModelValidator {
 				numCmbsSAT,
 				numCmbsUNSAT,
 				false);
+
 		validatorMVMDialog.setVisible(true);//JG
 		MainWindow.instance().setValidatorDialog(validatorMVMDialog);
+
 		Instant endShowVal1 = Instant.now();
 		Duration timeShowVal1 = Duration.between(insShowVal1, endShowVal1);
 		AddLogTime("Show Dialog",timeShowVal1);
@@ -1745,11 +1758,11 @@ public abstract class KodkodModelValidator {
 	public EventThreads getThreadGreedy() {
 		return threadGreedy;
 	}
-	
+
 	public boolean getCalON() {
 		return calON;
 	}
-	
+
 	/**
 	 * Launches the calculation of the rest of the combinations in the background
 	 * @param resGreedy
@@ -1781,7 +1794,7 @@ public abstract class KodkodModelValidator {
 					e.printStackTrace();
 				}
 			}
-			//--- JG
+
 			public void requestStop() {
 				stopRequested = true;
 				this.interrupt();
@@ -1791,7 +1804,6 @@ public abstract class KodkodModelValidator {
 				return stopRequested;
 			}
 
-			//---
 		};
 
 		hilo1.addListenerStarted(new EventThreads.IEventStarted() {
@@ -1823,6 +1835,12 @@ public abstract class KodkodModelValidator {
 					timeElapsed = Duration.between(timeInitFind, timeFinFind);
 					AddLogTime("Total greedy2",timeElapsed);
 					AddLogTime("Total Solver2",timeCallSolver);
+					// Aqui enable stop
+					MainWindow.instance().enableAction("ValidationMVMG", true);
+					MainWindow.instance().enableAction("ValidationMVMB", true);
+					MainWindow.instance().enableAction("StopCalcCmb", false);
+					threadGreedy = null;
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1834,17 +1852,18 @@ public abstract class KodkodModelValidator {
 
 	public void stopThreadCmb() {
 		if (threadGreedy!=null) {
-			// ver si el hilo esta en ejecucion
+			// see if the thread is running
 			if (threadGreedy.isAlive()) {
 				System.out.println("Esta vivo");
 
 				if (threadGreedy != null) {
 					threadGreedy.requestStop();
 					try {
+						// Wait until it finishes
 						threadGreedy.join();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-					} // Espera hasta que finalice
+					} 
 					threadGreedy = null;
 				}
 
@@ -1925,8 +1944,22 @@ public abstract class KodkodModelValidator {
 				pNumCmbsUNSAT
 				);
 
-		ValidatorMVMDialogSimple validatorMVMDialog= 
-				new ValidatorMVMDialogSimple(param,doModal);		
+		ValidatorMVMDialogSimple validatorMVMDialog=null;
+		ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
+		if (dia!=null) {
+			dia.setVisible(true);
+			//			dia.dispose();
+			validatorMVMDialog=dia;
+		}else {
+			//			validatorMVMDialog.setVisible(true);//JG
+			validatorMVMDialog= 
+					new ValidatorMVMDialogSimple(param,doModal);
+			validatorMVMDialog.setVisible(true);
+		}
+
+
+		//		ValidatorMVMDialogSimple validatorMVMDialog= 
+		//				new ValidatorMVMDialogSimple(param,doModal);		
 		return validatorMVMDialog;
 	}
 
@@ -2085,22 +2118,22 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}
 
-	private static int searchNumInvMC(MClassInvariant inv) {
-		int numInvGral=-1;
-		for (int nInv = 0; nInv < tabInvMClass.length; nInv++) {
-			if(inv.name().equals(tabInvMClass[nInv].name())) {
-				numInvGral=nInv+1;
-				continue;
-			}
-		}
-
-		if (debMVM) {
-			if (numInvGral<0) {
-				System.out.println("inv " + inv + " numInv<0 en searchNumInv");
-			}
-		}
-		return numInvGral;
-	}
+	//	private static int searchNumInvMC(MClassInvariant inv) {
+	//		int numInvGral=-1;
+	//		for (int nInv = 0; nInv < tabInvMClass.length; nInv++) {
+	//			if(inv.name().equals(tabInvMClass[nInv].name())) {
+	//				numInvGral=nInv+1;
+	//				continue;
+	//			}
+	//		}
+	//
+	//		if (debMVM) {
+	//			if (numInvGral<0) {
+	//				System.out.println("inv " + inv + " numInv<0 en searchNumInv");
+	//			}
+	//		}
+	//		return numInvGral;
+	//	}
 	private static int searchNumInv(IInvariant inv) {
 		// Search number by inv//JG
 		int numInvGral=-1;
@@ -2119,102 +2152,102 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}	
 
-	/**
-	 * Prepare structure and matrix for the calculation of probabilities that one invariant interferes with another
-	 * @param col
-	 */
-	private void preparaProbMat(Collection<MClassInvariant> col) {
-		int nInvs = invClassTotal.size();		
-		String strFormat="%0"+String.valueOf(nInvs).length()+"d";
-
-		List<MAttribute> attrComun=new ArrayList<MAttribute>();
-		matP = new HashMap<String,List<MAttribute>>();
-		matProb = new int[nInvs][nInvs];
-		for (int X=1;X<=nInvs;X++) {
-			for (int Y=1;Y<=nInvs;Y++) {
-				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
-				attrComun=new ArrayList<MAttribute>();
-				matP.put(KeyMatP, attrComun);
-				matProb[X-1][Y-1]=0;
-			}
-		}
-
-		for (MClassInvariant invPral:col) {
-			int numInvPral = searchNumInv(invPral);
-			boolean revPral=true;
-			// Atributos de numInvPral
-			List<MAttribute> lAttrPral = new ArrayList<MAttribute>();
-			if (mapInfoInv.containsKey(invPral)) {
-				InfoInv oInfoInvPral = mapInfoInv.get(invPral);
-				lAttrPral = oInfoInvPral.getlAttr();
-			}else {
-				revPral=false;
-			}
-			if (revPral) {
-				for (MClassInvariant invRel:col) {
-					int numInvRel = searchNumInv(invRel);
-					// Attributes of numInvRel
-					boolean revRel=true;
-					List<MAttribute> lAttrRel = new ArrayList<MAttribute>();
-					if (mapInfoInv.containsKey(invRel)) {
-						InfoInv oInfoInvRel = mapInfoInv.get(invRel);
-						lAttrRel = oInfoInvRel.getlAttr();
-					}else {
-						revRel=false;
-					}				
-
-					if (revRel) {
-						// We look to see if both inv are related
-						boolean bRel=false;
-						if (mapInfoInvSet.containsKey(invPral)) {
-							Set<MClassInvariant> lSetInvRel = new HashSet<MClassInvariant>();
-							lSetInvRel=mapInfoInvSet.get(invPral);
-							bRel = lSetInvRel.contains(invRel);
-						}
-						String KeyMatP = String.format(strFormat,numInvPral)+"-"+String.format(strFormat,numInvRel);
-						String KeyMatP2 = String.format(strFormat,numInvRel)+"-"+String.format(strFormat,numInvPral);
-
-						// Look for common attributes
-						if (bRel) {
-							attrComun = new ArrayList<MAttribute>();
-							if (matP.get(KeyMatP)!=null) {
-								attrComun = (List<MAttribute>) matP.get(KeyMatP);
-							}
-							for (MAttribute attrPral: lAttrPral) {
-								// We compare by name
-								for (MAttribute attrRel: lAttrRel) {
-									if(attrPral.name().equals(attrRel.name())) {
-										if (!attrComun.contains(attrPral)) {
-											attrComun.add(attrPral);
-											matP.put(KeyMatP, attrComun);
-											attrComun = new ArrayList<MAttribute>();
-											if (matP.get(KeyMatP2)!=null) {
-												attrComun = (List<MAttribute>) matP.get(KeyMatP2);
-												if (!attrComun.contains(attrPral)) {
-													attrComun.add(attrPral);
-												}
-											}
-											matP.put(KeyMatP2, attrComun);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		TreeMap<String, List<MAttribute>> sorted = new TreeMap<>();
-		sorted.putAll(matP);
-		matP=sorted;
-		for (int X=1;X<=nInvs;X++) {
-			for (int Y=1;Y<=nInvs;Y++) {
-				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
-				List<MAttribute> AC=(List<MAttribute>) matP.get(KeyMatP);
-				matProb[X-1][Y-1]=AC.size();
-			}
-		}
-	}
+	//	/**
+	//	 * Prepare structure and matrix for the calculation of probabilities that one invariant interferes with another
+	//	 * @param col
+	//	 */
+	//	private void preparaProbMat(Collection<MClassInvariant> col) {
+	//		int nInvs = invClassTotal.size();		
+	//		String strFormat="%0"+String.valueOf(nInvs).length()+"d";
+	//
+	//		List<MAttribute> attrComun=new ArrayList<MAttribute>();
+	//		matP = new HashMap<String,List<MAttribute>>();
+	//		matProb = new int[nInvs][nInvs];
+	//		for (int X=1;X<=nInvs;X++) {
+	//			for (int Y=1;Y<=nInvs;Y++) {
+	//				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
+	//				attrComun=new ArrayList<MAttribute>();
+	//				matP.put(KeyMatP, attrComun);
+	//				matProb[X-1][Y-1]=0;
+	//			}
+	//		}
+	//
+	//		for (MClassInvariant invPral:col) {
+	//			int numInvPral = searchNumInv(invPral);
+	//			boolean revPral=true;
+	//			// Atributos de numInvPral
+	//			List<MAttribute> lAttrPral = new ArrayList<MAttribute>();
+	//			if (mapInfoInv.containsKey(invPral)) {
+	//				InfoInv oInfoInvPral = mapInfoInv.get(invPral);
+	//				lAttrPral = oInfoInvPral.getlAttr();
+	//			}else {
+	//				revPral=false;
+	//			}
+	//			if (revPral) {
+	//				for (MClassInvariant invRel:col) {
+	//					int numInvRel = searchNumInv(invRel);
+	//					// Attributes of numInvRel
+	//					boolean revRel=true;
+	//					List<MAttribute> lAttrRel = new ArrayList<MAttribute>();
+	//					if (mapInfoInv.containsKey(invRel)) {
+	//						InfoInv oInfoInvRel = mapInfoInv.get(invRel);
+	//						lAttrRel = oInfoInvRel.getlAttr();
+	//					}else {
+	//						revRel=false;
+	//					}				
+	//
+	//					if (revRel) {
+	//						// We look to see if both inv are related
+	//						boolean bRel=false;
+	//						if (mapInfoInvSet.containsKey(invPral)) {
+	//							Set<MClassInvariant> lSetInvRel = new HashSet<MClassInvariant>();
+	//							lSetInvRel=mapInfoInvSet.get(invPral);
+	//							bRel = lSetInvRel.contains(invRel);
+	//						}
+	//						String KeyMatP = String.format(strFormat,numInvPral)+"-"+String.format(strFormat,numInvRel);
+	//						String KeyMatP2 = String.format(strFormat,numInvRel)+"-"+String.format(strFormat,numInvPral);
+	//
+	//						// Look for common attributes
+	//						if (bRel) {
+	//							attrComun = new ArrayList<MAttribute>();
+	//							if (matP.get(KeyMatP)!=null) {
+	//								attrComun = (List<MAttribute>) matP.get(KeyMatP);
+	//							}
+	//							for (MAttribute attrPral: lAttrPral) {
+	//								// We compare by name
+	//								for (MAttribute attrRel: lAttrRel) {
+	//									if(attrPral.name().equals(attrRel.name())) {
+	//										if (!attrComun.contains(attrPral)) {
+	//											attrComun.add(attrPral);
+	//											matP.put(KeyMatP, attrComun);
+	//											attrComun = new ArrayList<MAttribute>();
+	//											if (matP.get(KeyMatP2)!=null) {
+	//												attrComun = (List<MAttribute>) matP.get(KeyMatP2);
+	//												if (!attrComun.contains(attrPral)) {
+	//													attrComun.add(attrPral);
+	//												}
+	//											}
+	//											matP.put(KeyMatP2, attrComun);
+	//										}
+	//									}
+	//								}
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//		TreeMap<String, List<MAttribute>> sorted = new TreeMap<>();
+	//		sorted.putAll(matP);
+	//		matP=sorted;
+	//		for (int X=1;X<=nInvs;X++) {
+	//			for (int Y=1;Y<=nInvs;Y++) {
+	//				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
+	//				List<MAttribute> AC=(List<MAttribute>) matP.get(KeyMatP);
+	//				matProb[X-1][Y-1]=AC.size();
+	//			}
+	//		}
+	//	}
 	/**
 	 * Print structures created using Visitor
 	 */
@@ -2837,60 +2870,3 @@ public abstract class KodkodModelValidator {
 	protected abstract void unsatisfiable();
 
 }
-/**
- * Allows you to create a thread to calculate the rest of the combinations to complement the Greedy method
- * @author Juanto
- *
- */
-//abstract class EventThreads extends Thread {
-//
-//	private List<IEventStarted> listenersStarted = new ArrayList<>();
-//	private List<IEventEnded> listenersEnded = new ArrayList<>();
-//
-//	public EventThreads() {
-//		this(false);
-//	}
-//
-//	public EventThreads(final boolean isDaemon) {
-//		this.setDaemon(isDaemon);
-//	}
-//
-//	public void run () {
-//		for (IEventStarted o : listenersStarted) {
-//			o.started();
-//		}
-//
-//		operacionesRun();
-//
-//		for (IEventEnded o : listenersEnded) {
-//			o.finalizado();
-//		}
-//	}
-//
-//	public abstract void operacionesRun();
-//
-//	public void addListenerStarted(IEventStarted IEventStarted) {
-//		listenersStarted.add(IEventStarted);
-//	}
-//
-//	public void removeListenerStarted(IEventStarted escuchador) {
-//		listenersStarted.remove(escuchador);
-//	}
-//
-//	public void addListenerEnded(IEventEnded escuchador) {
-//		listenersEnded.add(escuchador);
-//	}
-//
-//	public void removeListenerEnded(IEventEnded escuchador) {
-//		listenersEnded.remove(escuchador);
-//	}
-//
-//	public interface IEventStarted {
-//		void started();
-//	}
-//
-//	public interface IEventEnded {
-//		void finalizado();
-//	}
-//}
-//
