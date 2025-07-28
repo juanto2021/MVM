@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -71,6 +72,8 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 		}
 		EventThreads threadGreedy = uk.getThreadGreedy();
 
+		final UseKodkodModelValidator uk2 = uk;
+
 		boolean calON=uk.getCalON();
 		if (calON || threadGreedy !=null) {
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
@@ -78,24 +81,41 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 		}else {
 			// We activate the hourglass
 			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			MainWindow.instance().setKodKod(uk);
-			
-			// If the dialogue exists, we delete it.
-			ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
+			MainWindow.instance().statusBar().showMessage("Searching for combinations using Brute force1...");
 
-			if (dia!=null) {
-				dia.dispose();
-				MainWindow.instance().setValidatorDialog(null);
-			}
+			MainWindow.instance().enableAction("ValidationMVMG", false);
+			MainWindow.instance().enableAction("ValidationMVMB", false);
+			MainWindow.instance().enableAction("StopCalcCmb", true);	
+			MainWindow.instance().statusBar().validate();
 
-			
-			String tipoSearchMSS = "L";
-			uk.validateVariable(model, mModel, session, tipoSearchMSS);
-			// We deactivate the hourglass		
-			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-			MainWindow.instance().enableAction("ValidationMVMG", true);
-			MainWindow.instance().enableAction("ValidationMVMB", true);
-			MainWindow.instance().enableAction("StopCalcCmb", false);
+			SwingUtilities.invokeLater(() -> {		
+
+				MainWindow.instance().statusBar().showMessage("Searching for combinations using Brute force...");
+			});
+
+			SwingUtilities.invokeLater(() -> {
+				MainWindow.instance().setKodKod(uk2);
+
+				// If the dialogue exists, we delete it.
+				ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
+
+				if (dia!=null) {
+					dia.dispose();
+					MainWindow.instance().setValidatorDialog(null);
+				}
+
+				String tipoSearchMSS = "L";
+				uk2.validateVariable(model, mModel, session, tipoSearchMSS);
+				// We deactivate the hourglass		
+				MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+				MainWindow.instance().statusBar().showMessage("");
+				MainWindow.instance().enableAction("ValidationMVMG", true);
+				MainWindow.instance().enableAction("ValidationMVMB", true);
+				MainWindow.instance().enableAction("StopCalcCmb", false);
+			});
+
+
+
 		}
 	}
 

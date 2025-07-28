@@ -898,6 +898,7 @@ public abstract class KodkodModelValidator {
 	 * @param model (Juanto-v1242)
 	 */
 	public void validateVariable(IModel model, MModel mModel, Session session, String tipoSearchMSS ) {
+		MainWindow.instance().statusBar().showMessage("Searching for combinations using Brute force...");
 		this.session=session;
 		invsMModel = mModel.classInvariants().size();
 		invsIModel = model.classInvariants().size();
@@ -1746,6 +1747,7 @@ public abstract class KodkodModelValidator {
 
 		if (lBitCmbSAT.size()>0) {
 			MainWindow.instance().enableAction("StopCalcCmb", true);
+			MainWindow.instance().statusBar().showMessage("Searching for combinations using Greedy in background...");
 			LanzacalculoBckCHB(listResGreedyCHB, cmbTotalHB, validatorMVMDialog, start );
 		}
 	}
@@ -1840,6 +1842,7 @@ public abstract class KodkodModelValidator {
 					MainWindow.instance().enableAction("ValidationMVMB", true);
 					MainWindow.instance().enableAction("StopCalcCmb", false);
 					threadGreedy = null;
+					MainWindow.instance().statusBar().showMessage("");
 
 				} catch (Exception e) {
 					e.printStackTrace();
