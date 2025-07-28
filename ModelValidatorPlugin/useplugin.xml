@@ -41,14 +41,12 @@
 		</action>	
 		<action label="Stop calculating combinations" 
 		    icon="resources/stopCmb.png"
-		    disableIcon="resources/stopCmb_disabled.png"
 			class="org.tzi.use.kodkod.plugin.StopCalcCmb"
 			tooltip="Stop calculating combinations" 
 			menu="ValidationMVM"
 			menuitem="StopCalcCmb" 
 			toolbaritem="plugins"
-			id="org.tzi.use.kodkod.plugin.StopCalcCmb"
-			name="StopCalcCmbButton">
+			id="org.tzi.use.kodkod.plugin.StopCalcCmb">
 
 		</action>	
 	</actions>

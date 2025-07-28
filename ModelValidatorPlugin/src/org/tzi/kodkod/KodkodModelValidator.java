@@ -1732,7 +1732,7 @@ public abstract class KodkodModelValidator {
 
 
 		if (lBitCmbSAT.size()>0) {
-			MainWindow.instance().enableAction("StopCalcCmb","stopCmb", true);
+			MainWindow.instance().enableAction("StopCalcCmb", true);
 			LanzacalculoBckCHB(listResGreedyCHB, cmbTotalHB, validatorMVMDialog, start );
 		}
 	}

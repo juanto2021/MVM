@@ -59,7 +59,7 @@ public class StopCalcCmb implements IPluginActionDelegate {
 
 					// Restore the cursor
 					MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-					MainWindow.instance().enableAction("StopCalcCmb","stopCmb", false);
+					MainWindow.instance().enableAction("StopCalcCmb", false);
 				}
 			}
 
