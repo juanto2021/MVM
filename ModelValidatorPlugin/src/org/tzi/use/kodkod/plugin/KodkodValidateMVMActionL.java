@@ -108,10 +108,10 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 				uk2.validateVariable(model, mModel, session, tipoSearchMSS);
 				// We deactivate the hourglass		
 				MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-				MainWindow.instance().statusBar().showMessage("");
-				MainWindow.instance().enableAction("ValidationMVMG", true);
-				MainWindow.instance().enableAction("ValidationMVMB", true);
-				MainWindow.instance().enableAction("StopCalcCmb", false);
+//				MainWindow.instance().statusBar().showMessage("");
+//				MainWindow.instance().enableAction("ValidationMVMG", true);
+//				MainWindow.instance().enableAction("ValidationMVMB", true);
+//				MainWindow.instance().enableAction("StopCalcCmb", false);
 			});
 
 

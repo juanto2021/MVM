@@ -39,6 +39,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -1465,6 +1466,14 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
 		//		WizardMVMView o = parent.showMVMWizard("MVMWizard");
 		WizardMVMView o = parent.showMVMWizard(NAMEFRAMEMVMWIZARD);
+		o.refreshComponents();
+//		JFrame wizardFrame = o.frame; // o como se exponga
+//
+//		wizardFrame.setVisible(true);
+//		SwingUtilities.invokeLater(() -> {
+//			wizardFrame.requestFocusInWindow();
+//		});	
+		
 	}
 
 	/**

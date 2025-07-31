@@ -1,6 +1,7 @@
 package org.tzi.kodkod;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.io.PrintWriter;
@@ -19,7 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -33,12 +33,12 @@ import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IAssociation;
 import org.tzi.kodkod.model.iface.IAssociationEnd;
-import org.tzi.kodkod.model.iface.IAttribute;
 import org.tzi.kodkod.model.iface.IClass;
 import org.tzi.kodkod.model.iface.IInvariant;
 import org.tzi.kodkod.model.iface.IModel;
@@ -80,8 +80,6 @@ import org.tzi.use.uml.mm.MElementAnnotation;
 import org.tzi.use.uml.mm.MInvalidModelException;
 import org.tzi.use.uml.mm.MModel;
 import org.tzi.use.uml.mm.ModelFactory;
-import org.tzi.use.uml.ocl.expr.ExpForAll;
-import org.tzi.use.uml.ocl.expr.ExpStdOp;
 import org.tzi.use.uml.ocl.expr.Expression;
 import org.tzi.use.uml.ocl.expr.MultiplicityViolationException;
 import org.tzi.use.uml.ocl.type.EnumType;
@@ -96,11 +94,9 @@ import org.tzi.use.util.StringUtil;
 import org.tzi.use.util.TeeWriter;
 import org.tzi.use.util.USEWriter;
 
-import kodkod.ast.Relation;
 import kodkod.engine.Evaluator;
 import kodkod.engine.Solution;
 import kodkod.engine.Statistics;
-import kodkod.instance.TupleSet;
 
 /**
  * Abstract base class for all validation functionalities.
@@ -188,6 +184,7 @@ public abstract class KodkodModelValidator {
 
 	private static EventThreads threadGreedy;
 	private static boolean calON;
+	private static boolean stopBrute=false;
 
 	public IModel getIModel() {
 		return model;
@@ -1091,9 +1088,77 @@ public abstract class KodkodModelValidator {
 					MainWindow.instance().enableAction("ValidationMVMG", false);
 					MainWindow.instance().enableAction("ValidationMVMB", false);
 					MainWindow.instance().enableAction("StopCalcCmb", true);
-					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
-							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);
-					calON=false;
+					//Aqui
+					//					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
+					//							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);
+
+					//---
+
+
+					//					SwingWorker<Void, Void> worker = new SwingWorker<>() {
+					//						@Override
+					//						protected Void doInBackground() {
+					//							bruteForceMethod(model, mModel,
+					//									invClassSatisfiables,
+					//									invClassUnSatisfiables,
+					//									invClassOthers,
+					//									invClassSatisfiablesMC,
+					//									invClassUnSatisfiablesMC,
+					//									invClassOthersMC,
+					//									Instant.now());
+					//							return null;
+					//						}
+					//
+					//						@Override
+					//						protected void done() {
+					//							// Aquí sabes que el hilo ha terminado
+					//							System.out.println("El cálculo ha finalizado.");
+					//							MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+					//							MainWindow.instance().statusBar().showMessage("");
+					//							MainWindow.instance().enableAction("ValidationMVMG", true);
+					//							MainWindow.instance().enableAction("ValidationMVMB", true);
+					//							MainWindow.instance().enableAction("StopCalcCmb", false);
+					//							calON=false;
+					//						}
+					//					};
+					//					worker.execute();
+
+					SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+						@Override
+						protected Void doInBackground() {
+							bruteForceMethod(model, mModel,
+									invClassSatisfiables,
+									invClassUnSatisfiables,
+									invClassOthers,
+									invClassSatisfiablesMC,
+									invClassUnSatisfiablesMC,
+									invClassOthersMC,
+									Instant.now());
+							return null;
+						}
+
+						@Override
+						protected void done() {
+							// Aquí sabes que el hilo ha terminado
+							System.out.println("El cálculo ha finalizado.");
+							MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+							MainWindow.instance().statusBar().showMessage("");
+							MainWindow.instance().enableAction("ValidationMVMG", true);
+							MainWindow.instance().enableAction("ValidationMVMB", true);
+							MainWindow.instance().enableAction("StopCalcCmb", false);
+							calON=false;
+						}
+					};
+					worker.execute();
+
+
+
+					//---
+
+					//					 calON=false;
+
+
+
 				}
 				model_metrics();
 			}
@@ -1159,6 +1224,21 @@ public abstract class KodkodModelValidator {
 
 
 		lBitCmb = comRestoB(bCmbBase,true, null);
+
+		//		// Si hay un dialogo se ha de eliminar previamente AQUI
+		//		ValidatorMVMDialogSimple validatorDialog = MainWindow.instance().getValidatorDialog();
+		//		if (validatorDialog!=null) {
+		//			validatorDialog.dispose();
+		//			validatorDialog = null;
+		//			return;
+		//		}
+		if (stopBrute) {
+			stopBrute=false;
+			return;
+		}
+
+
+
 		// For UNSAT
 		i = 0;
 		for (IInvariant invClass: invClassUnSatisfiables) {
@@ -1505,6 +1585,11 @@ public abstract class KodkodModelValidator {
 							return listRes;
 						}
 					}
+					if (calON &&stopBrute) {
+						System.out.println("Cancelación solicitada. Terminando cálculo...");
+						//						stopBrute=false;
+						return listRes;
+					}
 				}
 			}
 		}
@@ -1789,8 +1874,6 @@ public abstract class KodkodModelValidator {
 				dispMVM("Lanzamos operaciones en tarea background");
 				try {
 					threadGreedy=this;//JG
-					//					MainWindow.instance().threadGreedy=threadGreedy;
-
 					calculateInBackGroundCHB(listResGreedyCHB, cmbTotalCHB, validatorMVMDialog, start,this );
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -1875,6 +1958,9 @@ public abstract class KodkodModelValidator {
 				System.out.println("Esta parado");
 			}
 		}
+		//		stopBrute
+		stopBrute=true;
+
 	}
 	/**
 	 * Calculation of the rest of the combinations in the background
