@@ -62,8 +62,6 @@ import org.tzi.use.config.Options;
 import org.tzi.use.gui.main.MainWindow;
 import org.tzi.use.gui.main.ViewFrame;
 import org.tzi.use.gui.views.ClassInvariantView;
-//import org.tzi.use.gui.views.WizardMVMView.EvalResult;
-//import org.tzi.use.gui.views.WizardMVMView.MyEvaluatorCallable;
 import org.tzi.use.gui.views.diagrams.DiagramView.LayoutType;
 import org.tzi.use.gui.views.diagrams.objectdiagram.NewObjectDiagramView;
 import org.tzi.use.gui.views.evalbrowser.ExprEvalBrowser;
@@ -125,7 +123,6 @@ public abstract class KodkodModelValidator {
 
 	public static HashMap<String, String> listCmb = new HashMap<>();
 	public static HashMap<String, String> listCmbSel = new HashMap<>();
-	//	public static HashMap<String, ResInv> 		 = new HashMap<>();
 
 	public static HashMap<MClass, List<KeyClassAttr>> mapCAI = new HashMap<>();	// Class, Attribute, invariants
 	public static HashMap<MClassInvariant, InfoInv> mapInfoInv = new HashMap<>();	
@@ -289,7 +286,6 @@ public abstract class KodkodModelValidator {
 		System.out.println("Showed");
 		return res;
 	}
-
 
 	// Method call testing
 
@@ -712,11 +708,11 @@ public abstract class KodkodModelValidator {
 
 		// Create an instance of the current model
 
-		TypeFactory tf = new PrimitiveTypeFactory();
+		//		TypeFactory tf = new PrimitiveTypeFactory();
 
 		// Create object of a class
 		ModelFactory mFactory = new ModelFactory();
-		IModelFactory iMFactory = new SimpleFactory();
+		//		IModelFactory iMFactory = new SimpleFactory();
 		MModel mModel = mFactory.createModel("Test");
 		System.out.println("Crea modelo MModel");
 		try {
@@ -746,7 +742,6 @@ public abstract class KodkodModelValidator {
 					mModel.addEnumType(mEnumType);
 				}
 			}
-			//			System.out.println("Ha creado nuevo modelo MModel ["+mModel.name()+"]");
 
 			// Create IModel
 
@@ -754,8 +749,6 @@ public abstract class KodkodModelValidator {
 
 			Solution solution;
 			try {
-				//				KodkodSolver kS = new KodkodSolver();
-
 				solution = kodkodSolver.solve(iModel);
 				solution = call_Solver(iModelOri);
 
@@ -769,9 +762,6 @@ public abstract class KodkodModelValidator {
 			int contObj=0;
 			int numObjs=2;
 			String prefixObj = "obj";
-			// Create diagram and add objects
-
-			//			ObjectDiagramCreator odc = new ObjectDiagramCreator(getIModel(), session);		
 
 			try {
 				for (MClass mClass: model.classes()) {
@@ -1088,40 +1078,6 @@ public abstract class KodkodModelValidator {
 					MainWindow.instance().enableAction("ValidationMVMG", false);
 					MainWindow.instance().enableAction("ValidationMVMB", false);
 					MainWindow.instance().enableAction("StopCalcCmb", true);
-					//Aqui
-					//					bruteForceMethod( model, mModel, invClassSatisfiables, invClassUnSatisfiables,invClassOthers,
-					//							invClassSatisfiablesMC, invClassUnSatisfiablesMC,invClassOthersMC, start);
-
-					//---
-
-
-					//					SwingWorker<Void, Void> worker = new SwingWorker<>() {
-					//						@Override
-					//						protected Void doInBackground() {
-					//							bruteForceMethod(model, mModel,
-					//									invClassSatisfiables,
-					//									invClassUnSatisfiables,
-					//									invClassOthers,
-					//									invClassSatisfiablesMC,
-					//									invClassUnSatisfiablesMC,
-					//									invClassOthersMC,
-					//									Instant.now());
-					//							return null;
-					//						}
-					//
-					//						@Override
-					//						protected void done() {
-					//							// Aquí sabes que el hilo ha terminado
-					//							System.out.println("El cálculo ha finalizado.");
-					//							MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-					//							MainWindow.instance().statusBar().showMessage("");
-					//							MainWindow.instance().enableAction("ValidationMVMG", true);
-					//							MainWindow.instance().enableAction("ValidationMVMB", true);
-					//							MainWindow.instance().enableAction("StopCalcCmb", false);
-					//							calON=false;
-					//						}
-					//					};
-					//					worker.execute();
 
 					SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 						@Override
@@ -1140,7 +1096,7 @@ public abstract class KodkodModelValidator {
 						@Override
 						protected void done() {
 							// Aquí sabes que el hilo ha terminado
-							System.out.println("El cálculo ha finalizado.");
+							System.out.println("The calculation is complete.");
 							MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 							MainWindow.instance().statusBar().showMessage("");
 							MainWindow.instance().enableAction("ValidationMVMG", true);
@@ -1150,14 +1106,6 @@ public abstract class KodkodModelValidator {
 						}
 					};
 					worker.execute();
-
-
-
-					//---
-
-					//					 calON=false;
-
-
 
 				}
 				model_metrics();
@@ -1225,13 +1173,6 @@ public abstract class KodkodModelValidator {
 
 		lBitCmb = comRestoB(bCmbBase,true, null);
 
-		//		// Si hay un dialogo se ha de eliminar previamente AQUI
-		//		ValidatorMVMDialogSimple validatorDialog = MainWindow.instance().getValidatorDialog();
-		//		if (validatorDialog!=null) {
-		//			validatorDialog.dispose();
-		//			validatorDialog = null;
-		//			return;
-		//		}
 		if (stopBrute) {
 			stopBrute=false;
 			MainWindow.instance().enableAction("ShowDiaCmb", false);
@@ -1306,6 +1247,7 @@ public abstract class KodkodModelValidator {
 				);
 		showValidatorMVMDialogSimple();
 
+
 	}
 	private void showValidatorMVMDialogSimple() {
 		JDialog dia = MainWindow.instance().getValidatorDialog();
@@ -1370,120 +1312,6 @@ public abstract class KodkodModelValidator {
 		}	
 		return invMClass;
 	}
-
-	//	private void analyzeInfoInv(MModel mModel) {
-	//		System.out.println("");
-	//		System.out.println("**************");
-	//		System.out.println("analyzeInfoInv");
-	//		System.out.println("**************");
-	//		System.out.println("MClassInvariant -----------------------------------------------");
-	//		for (MClassInvariant mc:mModel.classInvariants() ) {
-	//			System.out.println("");
-	//			System.out.println("  MclassInvariants mc ["+mc+"]");
-	//			System.out.println("     MclassInvariants name ["+mc.name()+"]");
-	//			System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
-	//			if (mc.bodyExpression().type().isTypeOfBoolean()) {
-	//				System.out.println("mc.bodyExpression().type() ("+ mc.bodyExpression().type()+")");
-	//			}
-	//
-	//			System.out.println("mc.expandedExpression() [" + mc.expandedExpression() + "]");
-	//			Expression expIni = mc.bodyExpression();
-	//			Class<? extends Expression> cl = expIni.getClass(); 
-	//			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
-	//			System.out.println("cl.getName() [" + cl.getName() + "]");
-	//			System.out.println("cl.getSimpleName() [" + cl.getSimpleName() + "]");
-	//			System.out.println("cl.getCanonicalName() [" + cl.getCanonicalName() + "]");
-	//			System.out.println("cl.getTypeName() [" + cl.getTypeName() + "]");
-	//
-	//			Expression expExpanded = mc.expandedExpression();
-	//
-	//			System.out.println("expIni.name() [" + expIni.name() + "]");
-	//			String simpleName = cl.getSimpleName();
-	//			if (simpleName.equals("ExpForAll")) {
-	//				ExpForAll exp = (ExpForAll) mc.bodyExpression();
-	//				System.out.println("exp.name() [" + exp.name() + "]");
-	//			}else {
-	//				ExpStdOp exp = (ExpStdOp) mc.bodyExpression();
-	//				analyzeExpStdOp(1,exp);
-	//			}
-	//
-	//		}
-	//		System.out.println("");
-	//	}
-	//	private void analyzeExpStdOp(int nSpc,ExpStdOp exp) {
-	//		String indentSpc = fabSpc(nSpc);
-	//		System.out.println(indentSpc + "("+nSpc+")   Analiza bodyExpression [" + exp+"]");
-	//		System.out.println(indentSpc + "      exp.opname ["+exp.opname()+"]");
-	//		System.out.println(indentSpc + "      exp.Args -----------------");
-	//		for (Expression arg:exp.args() ) {
-	//			System.out.println(indentSpc + "        exp.arg ["+arg.toString() +"] arg.type ["+arg.type()+"]");
-	//			if (arg.type().isTypeOfBoolean()) {
-	//				System.out.println(indentSpc + "       arg.type.isTypeOfBoolean ["+arg.type().isTypeOfBoolean()+"]");
-	//				analyzeExpStdOp(nSpc+1,(ExpStdOp) arg);
-	//			}
-	//		}
-	//
-	//		System.out.println(indentSpc + "      exp.type ["+exp.type()+"]");
-	//		System.out.println(indentSpc + "      exp.getClass().getName() ["+exp.getClass().getName()+"]");
-	//		System.out.println(indentSpc + "      exp.getClass().getCanonicalName() ["+exp.getClass().getCanonicalName()+"]");
-	//
-	//	}
-	//	private String fabSpc(int nSpc) {
-	//		String spc="";
-	//		for (int n=0;n<nSpc*4;n++) {
-	//			spc+=" ";
-	//		}
-	//		return spc;
-	//	}
-	//	private void dispFormulasAlloy() {
-	//		System.out.println("");
-	//		System.out.println("*****************");
-	//		System.out.println("dispFormulasAlloy");
-	//		System.out.println("*****************");
-	//		System.out.println("IInvariant ----------------------------------------------------");
-	//		for (IInvariant invClass: invClassTotal) {
-	//			System.out.println("  invClass name["+invClass.name()+"]");
-	//			System.out.println("    formula ["+invClass.formula()+"]");
-	//
-	//			System.out.println("    relation ["+invClass.clazz().relation().name()+"]");
-	//		}
-	//	}
-
-	//	private void analyzeValuesSAT(String combination) {
-	//		System.out.println("");
-	//		System.out.println("****************");
-	//		System.out.println("analyzeValuesSAT");
-	//		System.out.println("****************");
-	//		Solution solution=null;
-	//		try {
-	//			solution = calcular( combination,  invClassTotal);
-	//			System.out.println("solution["+solution.sat()+"]");
-	//			for (Map.Entry<Relation, TupleSet> entry : solution.instance().relationTuples().entrySet()) {
-	//				Relation key = entry.getKey();
-	//				TupleSet tupleSet= entry.getValue();
-	//				// Buscar clases existentes
-	//				for (IClass oClass : model.classes()) {
-	//					String className = oClass.name();
-	//					if(key.name().equals(className)) {
-	//						System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
-	//					}
-	//
-	//					// Attributes
-	//					for (IAttribute oAttr : oClass.allAttributes()){
-	//						String attrName = oAttr.name();
-	//						String key_attr=className+"_"+attrName;
-	//						if(key.name().equals(key_attr)) {
-	//							System.out.println("   HALLA !!! entry key ["+key+"] value ["+tupleSet+"]");
-	//						}
-	//					}
-	//				}
-	//			}
-	//			System.out.println("solution["+solution.outcome().toString()+"]");
-	//			System.out.println("-------------------------------------------");
-	//		} catch (Exception e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
 
 	private static List<String> combListBitSetStr(List<BitSet> lBitSetV){
 		List<String> lString= new ArrayList<String>();
@@ -1833,13 +1661,13 @@ public abstract class KodkodModelValidator {
 		AddLogTime("Total greedy1",timeTotalGreedy1);
 		AddLogTime("Total Solver1",timeCallSolver);
 
-
 		if (lBitCmbSAT.size()>0) {
 			MainWindow.instance().enableAction("StopCalcCmb", true);
 			MainWindow.instance().statusBar().showMessage("Searching for combinations using Greedy in background...");
 			LanzacalculoBckCHB(listResGreedyCHB, cmbTotalHB, validatorMVMDialog, start );
 		}
 	}
+
 	private void AddLogTime(String txtLog, Duration timeElapsed) {
 		String textoFormateado = String.format("%-35s", txtLog);
 		String numeroFormateado = String.format("%10d", timeElapsed.toMillis());
@@ -1869,9 +1697,8 @@ public abstract class KodkodModelValidator {
 		Instant start4 = Instant.now();
 
 		EventThreads hilo1 = new EventThreads(false) {
-			//-- JG
+
 			private volatile boolean stopRequested = false;
-			//--
 
 			@Override
 			public void operacionesRun() {
@@ -1958,12 +1785,11 @@ public abstract class KodkodModelValidator {
 				}
 
 				//				System.out.println("lo paro");
-				System.out.println("Cancelación solicitada. Terminando cálculo...");
-				System.out.println("El cálculo ha finalizado.");
+				System.out.println("Cancellation requested. Calculation is being completed...");
+				System.out.println("The calculation is complete.");
 			}else {
-				System.out.println("Esta parado");
+				System.out.println("It has stopped");
 			}
-			// Tal vez aqui deberia ser stopBrute = false;
 		}
 		if (calON) {
 			stopBrute=true;
@@ -2044,18 +1870,13 @@ public abstract class KodkodModelValidator {
 		ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
 		if (dia!=null) {
 			dia.setVisible(true);
-			//			dia.dispose();
 			validatorMVMDialog=dia;
 		}else {
-			//			validatorMVMDialog.setVisible(true);//JG
-			validatorMVMDialog= 
-					new ValidatorMVMDialogSimple(param,doModal);
+			validatorMVMDialog= new ValidatorMVMDialogSimple(param,doModal);
 			validatorMVMDialog.setVisible(true);
 		}
 
 		MainWindow.instance().enableAction("ShowDiaCmb", true);
-		//		ValidatorMVMDialogSimple validatorMVMDialog= 
-		//				new ValidatorMVMDialogSimple(param,doModal);		
 		return validatorMVMDialog;
 	}
 
@@ -2140,11 +1961,12 @@ public abstract class KodkodModelValidator {
 		return col;
 	}
 
-	private static Collection<MClassInvariant> makeCollectionInvsMC(Collection<MClassInvariant> invClassSatisfiables) {
-		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
-		col = invClassSatisfiables;
-		return col;
-	}
+	// Si cambiamos a MClassInvs seria lo siguienye (CHG)
+	//	private static Collection<MClassInvariant> makeCollectionInvsMC(Collection<MClassInvariant> invClassSatisfiables) {
+	//		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
+	//		col = invClassSatisfiables;
+	//		return col;
+	//	}
 	/**
 	 * Build invariant relation tree using Visitor
 	 * @param col
@@ -2214,6 +2036,7 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}
 
+	//-- possible if MClass is changed (CHG)
 	//	private static int searchNumInvMC(MClassInvariant inv) {
 	//		int numInvGral=-1;
 	//		for (int nInv = 0; nInv < tabInvMClass.length; nInv++) {
@@ -2248,102 +2071,6 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}	
 
-	//	/**
-	//	 * Prepare structure and matrix for the calculation of probabilities that one invariant interferes with another
-	//	 * @param col
-	//	 */
-	//	private void preparaProbMat(Collection<MClassInvariant> col) {
-	//		int nInvs = invClassTotal.size();		
-	//		String strFormat="%0"+String.valueOf(nInvs).length()+"d";
-	//
-	//		List<MAttribute> attrComun=new ArrayList<MAttribute>();
-	//		matP = new HashMap<String,List<MAttribute>>();
-	//		matProb = new int[nInvs][nInvs];
-	//		for (int X=1;X<=nInvs;X++) {
-	//			for (int Y=1;Y<=nInvs;Y++) {
-	//				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
-	//				attrComun=new ArrayList<MAttribute>();
-	//				matP.put(KeyMatP, attrComun);
-	//				matProb[X-1][Y-1]=0;
-	//			}
-	//		}
-	//
-	//		for (MClassInvariant invPral:col) {
-	//			int numInvPral = searchNumInv(invPral);
-	//			boolean revPral=true;
-	//			// Atributos de numInvPral
-	//			List<MAttribute> lAttrPral = new ArrayList<MAttribute>();
-	//			if (mapInfoInv.containsKey(invPral)) {
-	//				InfoInv oInfoInvPral = mapInfoInv.get(invPral);
-	//				lAttrPral = oInfoInvPral.getlAttr();
-	//			}else {
-	//				revPral=false;
-	//			}
-	//			if (revPral) {
-	//				for (MClassInvariant invRel:col) {
-	//					int numInvRel = searchNumInv(invRel);
-	//					// Attributes of numInvRel
-	//					boolean revRel=true;
-	//					List<MAttribute> lAttrRel = new ArrayList<MAttribute>();
-	//					if (mapInfoInv.containsKey(invRel)) {
-	//						InfoInv oInfoInvRel = mapInfoInv.get(invRel);
-	//						lAttrRel = oInfoInvRel.getlAttr();
-	//					}else {
-	//						revRel=false;
-	//					}				
-	//
-	//					if (revRel) {
-	//						// We look to see if both inv are related
-	//						boolean bRel=false;
-	//						if (mapInfoInvSet.containsKey(invPral)) {
-	//							Set<MClassInvariant> lSetInvRel = new HashSet<MClassInvariant>();
-	//							lSetInvRel=mapInfoInvSet.get(invPral);
-	//							bRel = lSetInvRel.contains(invRel);
-	//						}
-	//						String KeyMatP = String.format(strFormat,numInvPral)+"-"+String.format(strFormat,numInvRel);
-	//						String KeyMatP2 = String.format(strFormat,numInvRel)+"-"+String.format(strFormat,numInvPral);
-	//
-	//						// Look for common attributes
-	//						if (bRel) {
-	//							attrComun = new ArrayList<MAttribute>();
-	//							if (matP.get(KeyMatP)!=null) {
-	//								attrComun = (List<MAttribute>) matP.get(KeyMatP);
-	//							}
-	//							for (MAttribute attrPral: lAttrPral) {
-	//								// We compare by name
-	//								for (MAttribute attrRel: lAttrRel) {
-	//									if(attrPral.name().equals(attrRel.name())) {
-	//										if (!attrComun.contains(attrPral)) {
-	//											attrComun.add(attrPral);
-	//											matP.put(KeyMatP, attrComun);
-	//											attrComun = new ArrayList<MAttribute>();
-	//											if (matP.get(KeyMatP2)!=null) {
-	//												attrComun = (List<MAttribute>) matP.get(KeyMatP2);
-	//												if (!attrComun.contains(attrPral)) {
-	//													attrComun.add(attrPral);
-	//												}
-	//											}
-	//											matP.put(KeyMatP2, attrComun);
-	//										}
-	//									}
-	//								}
-	//							}
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//		TreeMap<String, List<MAttribute>> sorted = new TreeMap<>();
-	//		sorted.putAll(matP);
-	//		matP=sorted;
-	//		for (int X=1;X<=nInvs;X++) {
-	//			for (int Y=1;Y<=nInvs;Y++) {
-	//				String KeyMatP = String.format(strFormat,X)+"-"+String.format(strFormat,Y);
-	//				List<MAttribute> AC=(List<MAttribute>) matP.get(KeyMatP);
-	//				matProb[X-1][Y-1]=AC.size();
-	//			}
-	//		}
-	//	}
 	/**
 	 * Print structures created using Visitor
 	 */
@@ -2638,11 +2365,11 @@ public abstract class KodkodModelValidator {
 	 * @return
 	 */
 
-	private static BitSet makeRestCmbCHB(BitSet cmbBaseB, BitSet cmbTotalB) {
-		BitSet cmbResB = (BitSet) cmbBaseB.clone();
-		cmbResB.xor(cmbTotalB);
-		return cmbResB;
-	}	
+	//	private static BitSet makeRestCmbCHB(BitSet cmbBaseB, BitSet cmbTotalB) {
+	//		BitSet cmbResB = (BitSet) cmbBaseB.clone();
+	//		cmbResB.xor(cmbTotalB);
+	//		return cmbResB;
+	//	}	
 
 	/**
 	 * Print content of mapInfoInvSet
