@@ -1,12 +1,8 @@
 package org.tzi.use.kodkod.plugin;
 
-import java.awt.Cursor;
-
 import javax.swing.JOptionPane;
 
-import org.tzi.kodkod.EventThreads;
 import org.tzi.use.gui.main.MainWindow;
-import org.tzi.use.kodkod.UseKodkodModelValidator;
 import org.tzi.use.kodkod.plugin.gui.ValidatorMVMDialogSimple;
 import org.tzi.use.main.Session;
 import org.tzi.use.runtime.gui.IPluginAction;
@@ -18,8 +14,6 @@ public class ShowDiaCmb implements IPluginActionDelegate {
 
 	@Override
 	public void performAction(IPluginAction pluginAction) {
-		
-
 
 		if(!pluginAction.getSession().hasSystem()){
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
@@ -39,50 +33,11 @@ public class ShowDiaCmb implements IPluginActionDelegate {
 		cmd.mModel = mModel;
 		cmd.useShell = null;
 
-		UseKodkodModelValidator uk = MainWindow.instance().getKodKod();
-		
-//		JOptionPane.showMessageDialog(pluginAction.getParent(),
-//				"Show dia.", "Show dia2", JOptionPane.INFORMATION_MESSAGE);
-		
 		ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
 		if (dia!=null) {
 			dia.setVisible(true);
 		}
-		
-//		if (uk!=null) {
-//			EventThreads threadGreedy = uk.getThreadGreedy();
-//			boolean calON=uk.getCalON();
-//			if (threadGreedy==null && calON==false) {
-//				JOptionPane.showMessageDialog(pluginAction.getParent(),
-//						"No calculations running.", "Stop searching for combinations", JOptionPane.ERROR_MESSAGE);
-//			}else {
-//
-//				int respuesta = JOptionPane.showConfirmDialog(pluginAction.getParent(),
-//						"Do you really want to stop the current calculation?",
-//						"Confirm Stop",
-//						JOptionPane.YES_NO_OPTION,
-//						JOptionPane.QUESTION_MESSAGE);
-//
-//				if (respuesta == JOptionPane.YES_OPTION) {
-//					// Activate the wait cursor
-//					MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-//
-//					uk.stopThreadCmb(); // Stops the calculation	
-//					
-//					MainWindow.instance().enableAction("ValidationMVMG", true);
-//					MainWindow.instance().enableAction("ValidationMVMB", true);
-//					MainWindow.instance().enableAction("StopCalcCmb", false);
-//
-//					// Restore the cursor
-//					MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-//					MainWindow.instance().enableAction("StopCalcCmb", false);
-//				}
-//			}
-//
-//		}else {
-//			JOptionPane.showMessageDialog(pluginAction.getParent(),
-//					"No calculations running.", "Stop searching for combinations", JOptionPane.ERROR_MESSAGE);
-//		}
+
 	}
 }
 

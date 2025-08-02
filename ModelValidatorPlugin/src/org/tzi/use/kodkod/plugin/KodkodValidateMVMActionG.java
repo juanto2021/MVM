@@ -70,7 +70,6 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 		if (threadGreedy==null && calON==false) {
 			// We activate the hourglass
 			MainWindow.instance().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-//			MainWindow.instance().setStatusText("Searching for combinations using Greedy...");
 			MainWindow.instance().statusBar().showMessage("Searching for combinations using Greedy...");
 
 			MainWindow.instance().setKodKod(uk);
