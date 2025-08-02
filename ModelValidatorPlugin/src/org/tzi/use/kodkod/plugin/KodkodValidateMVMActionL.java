@@ -85,7 +85,8 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 
 			MainWindow.instance().enableAction("ValidationMVMG", false);
 			MainWindow.instance().enableAction("ValidationMVMB", false);
-			MainWindow.instance().enableAction("StopCalcCmb", true);	
+			MainWindow.instance().enableAction("StopCalcCmb", true);
+			MainWindow.instance().enableAction("ShowDiaCmb", false);
 			MainWindow.instance().statusBar().validate();
 
 			SwingUtilities.invokeLater(() -> {		

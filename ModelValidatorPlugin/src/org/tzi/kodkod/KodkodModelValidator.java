@@ -1234,6 +1234,7 @@ public abstract class KodkodModelValidator {
 		//		}
 		if (stopBrute) {
 			stopBrute=false;
+			MainWindow.instance().enableAction("ShowDiaCmb", false);
 			return;
 		}
 
@@ -1315,6 +1316,7 @@ public abstract class KodkodModelValidator {
 					new ValidatorMVMDialogSimple(param, true);	
 			validatorMVMDialog.setVisible(true);//JG
 		}
+		MainWindow.instance().enableAction("ShowDiaCmb", true);
 	}
 
 	private void model_metrics() {
@@ -1798,6 +1800,7 @@ public abstract class KodkodModelValidator {
 		if (dia!=null) {
 			dia.dispose();
 			MainWindow.instance().setValidatorDialog(null);
+			MainWindow.instance().enableAction("ShowDiaCmb", false);
 		}
 
 		// Send to MVMDialogSimple
@@ -1819,6 +1822,7 @@ public abstract class KodkodModelValidator {
 
 		validatorMVMDialog.setVisible(true);//JG
 		MainWindow.instance().setValidatorDialog(validatorMVMDialog);
+		MainWindow.instance().enableAction("ShowDiaCmb", true);
 
 		Instant endShowVal1 = Instant.now();
 		Duration timeShowVal1 = Duration.between(insShowVal1, endShowVal1);
@@ -1953,14 +1957,17 @@ public abstract class KodkodModelValidator {
 					threadGreedy = null;
 				}
 
-				System.out.println("lo paro");
+				//				System.out.println("lo paro");
+				System.out.println("Cancelación solicitada. Terminando cálculo...");
+				System.out.println("El cálculo ha finalizado.");
 			}else {
 				System.out.println("Esta parado");
 			}
+			// Tal vez aqui deberia ser stopBrute = false;
 		}
-		//		stopBrute
-		stopBrute=true;
-
+		if (calON) {
+			stopBrute=true;
+		}
 	}
 	/**
 	 * Calculation of the rest of the combinations in the background
@@ -2046,7 +2053,7 @@ public abstract class KodkodModelValidator {
 			validatorMVMDialog.setVisible(true);
 		}
 
-
+		MainWindow.instance().enableAction("ShowDiaCmb", true);
 		//		ValidatorMVMDialogSimple validatorMVMDialog= 
 		//				new ValidatorMVMDialogSimple(param,doModal);		
 		return validatorMVMDialog;

@@ -47,8 +47,16 @@
 			menuitem="StopCalcCmb" 
 			toolbaritem="plugins"
 			id="org.tzi.use.kodkod.plugin.StopCalcCmb">
-
-		</action>	
+		</action>
+		<action label="Show Dialog combinations" 
+		    icon="resources/showDiaCmb.png"
+			class="org.tzi.use.kodkod.plugin.ShowDiaCmb"
+			tooltip="Show Dialog combinations" 
+			menu="ValidationMVM"
+			menuitem="ShowDiaCmb" 
+			toolbaritem="plugins"
+			id="org.tzi.use.kodkod.plugin.ShowDiaCmb">
+		</action>
 	</actions>
 	<commands>
 		<command id="org.tzi.use.kodkod.plugin.KodkodValidateCmd"
