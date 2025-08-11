@@ -37,7 +37,7 @@
 
 # Introduction
 
-This project is a extension of the USE Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
+This project is a extension of the **USE** Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
 for the UML-Based Specification Environment (https://sourceforge.net/projects/useocl/). The code is developed in Java.
 
 Author: ***Juan Antonio Gómez Gutiérrez(2024)***
