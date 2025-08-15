@@ -40,7 +40,7 @@ import org.tzi.kodkod.helper.LogMessages;
 import org.tzi.kodkod.model.iface.IAssociation;
 import org.tzi.kodkod.model.iface.IAssociationEnd;
 import org.tzi.kodkod.model.iface.IClass;
-import org.tzi.kodkod.model.iface.IInvariant;
+import org.tzi.kodkod.model.iface.IInvariant; 
 import org.tzi.kodkod.model.iface.IModel;
 import org.tzi.mvm.CollectionBitSet;
 import org.tzi.mvm.Combination;
