@@ -4,8 +4,8 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Instructions for full installation](#instructions-for-full-installation)
 - [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
+- [Instructions for full installation](#instructions-for-full-installation)
 - [Tool Description](#tool-description)
   - [Model](#model)
   - [Main window](#main-window)
@@ -40,11 +40,47 @@
 This project is a extension of the **USE** Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
 for the UML-Based Specification Environment (https://sourceforge.net/projects/useocl/). The code is developed in Java.
 
-Author: ***Juan Antonio Gómez Gutiérrez(2024)***
+Author: ***Juan Antonio Gómez Gutiérrez(2025)***
 
 [(Up)](#Table-of-Contents)
 
 ----
+
+# Instructions for minimal installation for testing
+
+If you just want to try the tool, simply download the following compressed file:
+https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
+
+
+Once downloaded, we will extract it to the folder we consider appropriate (e.g. C:\Temp) and we will notice that the folder created after extraction has the following contents:
+
+![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)
+
+|Repository    |URL                                            |
+|:-------------|:----------------------------------------------|
+|**groupActions**   	   |Folder that will store the files with the action groups that we want to save.          |
+|**jre**	     |JRE using the tool.     |
+|**MVMUse**	 |Original USE content with the MVM-provided extension required for its execution.|
+|**wrkReplaceBodyInv**	 |MVM Toolkit for Compute and Storage of Invariant Alternatives.|
+|**command_use_Runtime.bat**	 |Batch process running MVM.|
+|**shop.properties**	 |Properties defined to test the sample model.|
+|**shop.use**	 |Definition of the example model.|
+
+To run the application, double-click on the file:
+
+```
+command_use_Runtime.bat
+```
+A CMD window will open:
+
+![](https://github.com/juanto2021/MVM/blob/main/05_CMD.png)
+
+Next, we'll see the application running:
+
+![](https://github.com/juanto2021/MVM/blob/main/06_MVM_Wizard.png)
+
+[(Up)](#Table-of-Contents)
+
 # Instructions for full installation
 
 
@@ -83,41 +119,6 @@ The first time you run the utility, you must also configure the properties throu
 ![](https://github.com/juanto2021/MVM/blob/main/03_Shop_Properties.png)
   
 Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
-
-[(Up)](#Table-of-Contents)
-
-# Instructions for minimal installation for testing
-
-If you just want to try the tool, simply download the following compressed file:
-https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
-
-
-Once downloaded, we will extract it to the folder we consider appropriate (e.g. C:\Temp) and we will notice that the folder created after extraction has the following contents:
-
-![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)
-
-|Repository    |URL                                            |
-|:-------------|:----------------------------------------------|
-|**groupActions**   	   |Folder that will store the files with the action groups that we want to save.          |
-|**jre**	     |JRE using the tool.     |
-|**MVMUse**	 |Original USE content with the MVM-provided extension required for its execution.|
-|**wrkReplaceBodyInv**	 |MVM Toolkit for Compute and Storage of Invariant Alternatives.|
-|**command_use_Runtime.bat**	 |Batch process running MVM.|
-|**shop.properties**	 |Properties defined to test the sample model.|
-|**shop.use**	 |Definition of the example model.|
-
-To run the application, double-click on the file:
-
-```
-command_use_Runtime.bat
-```
-A CMD window will open:
-
-![](https://github.com/juanto2021/MVM/blob/main/05_CMD.png)
-
-Next, we'll see the application running:
-
-![](https://github.com/juanto2021/MVM/blob/main/06_MVM_Wizard.png)
 
 [(Up)](#Table-of-Contents)
 
@@ -477,6 +478,10 @@ If we click on the button with the text '**Correct**' in green that is associate
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
 
 # CITATION
+
+Juan Antonio Gómez-Gutiérrez, Robert Clarisó.
+Interactive Repair of Inconsistencies in Conceptual Models. 
+In Proc. 44th International Conference on Conceptual Modeling (ER'2025). Lecture Notes in Computer Science, to appear, Springer.
 
 Juan Antonio Gómez-Gutiérrez, Robert Clarisó, Jordi Cabot.
 A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams.
