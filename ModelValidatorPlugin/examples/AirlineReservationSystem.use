@@ -1,0 +1,202 @@
+model AirlineReservationSystem
+
+-- Classes
+class Profile
+  attributes
+    profileId: Integer
+    profileTitle: String
+    userCount: Integer
+end
+
+class Permission
+  attributes
+    permissionId: Integer
+    permissionTitle: String
+    accessLevel: Integer
+end
+
+class Reservation
+  attributes
+    reservationId: Integer
+    description: String
+    type: String
+    passengerCount: Integer
+    confirmationNumber: Integer
+end
+
+class User
+  attributes
+    userId: Integer
+    name: String
+    email: String
+    age: Integer
+    reservationCount: Integer
+end
+
+class Employee
+  attributes
+    employeeId: Integer
+    name: String
+    mobileNumber: String
+    yearsOfService: Integer
+end
+
+class AirlineQuery
+  attributes
+    queryId: Integer
+    title: String
+    priorityLevel: Integer
+end
+
+class Passenger
+  attributes
+    passengerId: Integer
+    name: String
+    mobileNumber: String
+    frequentFlyerPoints: Integer
+end
+
+class Airline
+  attributes
+    airlineId: Integer
+    type: String
+    flightCount: Integer
+    rating: Integer
+end
+
+-- Associations
+association ProfilePermission between
+  Profile [1] role profileRole
+  Permission [*] role permissionRole
+end
+
+association UserProfile between
+  User [1] role userRole
+  Profile [1] role profileRole
+end
+
+association EmployeeProfile between
+  Employee [1] role employeeRole
+  Profile [1] role profileRole
+end
+
+association UserMakesReservation between
+  User [1..*] role makingUser
+  Reservation [*] role madeReservation
+end
+
+association EmployeeHandlesQuery between
+  Employee [1] role handler
+  AirlineQuery [*] role handledQuery
+end
+
+association PassengerMakesReservation between
+  Passenger [1..*] role passengerRole
+  Reservation [1] role passengerReservation
+end
+
+association AirlineOffersReservation between
+  Airline [1] role offeringAirline
+  Reservation [*] role offeredReservation
+end
+
+-- Constraints
+constraints
+
+-- Profile
+context Profile inv profileIdPositive:
+  self.profileId > 0
+context Profile inv profileTitleNotEmpty:
+  self.profileTitle <> ''
+context Profile inv userCountNonNegative:
+  self.userCount >= 0
+context Profile inv hasPermissions:
+  self.permissionRole->size() >= 1
+context Profile inv uniqueProfileTitle:
+  Profile.allInstances()->isUnique(p | p.profileTitle)
+
+-- Permission
+context Permission inv permissionIdPositive:
+  self.permissionId > 0
+context Permission inv permissionTitleNotEmpty:
+  self.permissionTitle <> ''
+context Permission inv accessLevelInRange:
+  self.accessLevel >= 1 and self.accessLevel <= 10
+context Permission inv usedByProfiles:
+  self.profileRole->size() >= 1
+context Permission inv uniquePermissionTitle:
+  Permission.allInstances()->isUnique(p | p.permissionTitle)
+
+-- Reservation
+context Reservation inv reservationIdPositive:
+  self.reservationId > 0
+context Reservation inv passengerCountPositive:
+  self.passengerCount > 0
+context Reservation inv hasAirline:
+  Airline.allInstances()->exists(a | a.offeredReservation->includes(self))
+context Reservation inv madeByUserOrPassenger:
+  User.allInstances()->exists(u | u.madeReservation->includes(self)) or
+  Passenger.allInstances()->exists(p | p.passengerReservation = self)
+context Reservation inv uniqueConfirmationNumber:
+  Reservation.allInstances()->isUnique(r | r.confirmationNumber)
+
+-- User
+context User inv userIdPositive:
+  self.userId > 0
+context User inv nameNotEmpty:
+  self.name <> ''
+context User inv hasProfile:
+  self.profileRole <> null
+context User inv uniqueEmail:
+  User.allInstances()->isUnique(u | u.email)
+
+-- Employee
+context Employee inv employeeIdPositive:
+  self.employeeId > 0
+context Employee inv nameNotEmpty:
+  self.name <> ''
+context Employee inv mobileNotEmpty:
+  self.mobileNumber <> ''
+context Employee inv handlesQueries:
+  self.handledQuery->size() >= 1
+context Employee inv yearsOfServiceNonNegative:
+  self.yearsOfService >= 0
+
+-- AirlineQuery
+context AirlineQuery inv queryIdPositive:
+  self.queryId > 0
+context AirlineQuery inv titleNotEmpty:
+  self.title <> ''
+context AirlineQuery inv priorityLevelValid:
+  self.priorityLevel >= 1 and self.priorityLevel <= 5
+context AirlineQuery inv notBothInvs:
+  not ( self.priorityLevel >= 1 and self.priorityLevel <= 5 and   self.title <> '')
+  
+context AirlineQuery inv hasHandler:
+  Employee.allInstances()->exists(e | e.handledQuery->includes(self))
+context AirlineQuery inv uniqueTitle:
+  AirlineQuery.allInstances()->isUnique(q | q.title)
+
+-- Passenger
+context Passenger inv passengerIdPositive:
+  self.passengerId > 0
+context Passenger inv nameNotEmpty:
+  self.name <> ''
+context Passenger inv mobileNotEmpty:
+  self.mobileNumber <> ''
+context Passenger inv flyerPointsNonNegative:
+  self.frequentFlyerPoints >= 0
+context Passenger inv hasReservation:
+  self.passengerReservation <> null
+
+-- Airline
+context Airline inv airlineIdPositive:
+  self.airlineId > 0
+context Airline inv typeNotEmpty:
+  self.type <> ''
+context Airline inv flightCountNonNegative:
+  self.flightCount >= 0
+context Airline inv ratingValid:
+  self.rating >= 1 and self.rating <= 5
+context Airline inv hasReservations:
+  self.offeredReservation->size() >= 1

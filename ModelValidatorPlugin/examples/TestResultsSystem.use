@@ -1,0 +1,165 @@
+model TestResultsSystem
+
+-- Classes
+class Test
+  attributes
+    testId: Integer
+    duration: Integer
+    numberOfQuestions: Integer
+    totalMarks: Integer
+end
+
+class Examiner
+  attributes
+    examinerId: Integer
+    employeeCode: Integer
+    yearsOfExperience: Integer
+end
+
+class TestPaper
+  attributes
+    testPaperId: Integer
+    questionNumber: Integer
+    marksAllocated: Integer
+end
+
+class Result
+  attributes
+    marksObtained: Integer
+    ranking: Integer
+end
+
+class Student
+  attributes
+    studentId: Integer
+end
+
+class Admin
+  attributes
+    adminId: Integer
+    accessLevel: Integer
+end
+
+class Answer
+  attributes
+    isCorrect: Integer
+    marksAwarded: Integer
+end
+
+-- Associations
+association ExaminerPreparesTestPaper between
+  Examiner [1] role prepares
+  TestPaper [1..*] role preparedBy
+end
+
+association StudentGivesAnswer between
+  Student [1] role gives
+  Answer [1..*] role givenBy
+end
+
+association TestPaperHasAnswer between
+  TestPaper [1] role paper
+  Answer [1..*] role answer
+end
+
+association ExaminerDeclaresResult between
+  Examiner [1] role declares
+  Result [1..*] role declaredBy
+end
+
+association StudentChecksResult between
+  Student [1] role checks
+  Result [1..*] role checkedBy
+end
+
+association AdminSendsEmailToStudent between
+  Admin [1] role sendsEmail
+  Student [1..*] role receivesEmail
+end
+
+association AdminSendsResultToStudent between
+  Admin [1] role sendsResult
+  Result [1..*] role receivesResult
+end
+
+constraints
+
+-- Restricciones sobre la clase Test
+context Test inv testIdPositiveUnique:
+  self.testId > 0 and Test.allInstances()->isUnique(t | t.testId)
+
+context Test inv durationPositive:
+  self.duration > 0
+
+context Test inv questionsPositive:
+  self.numberOfQuestions > 0
+
+context Test inv totalMarksPositive:
+  self.totalMarks > 0
+
+context Test inv averageMarksPerQuestionReasonable:
+  if self.numberOfQuestions > 0 then self.totalMarks / self.numberOfQuestions <= 20 else true endif
+
+-- Restricciones sobre la clase Examiner
+context Examiner inv examinerIdPositiveUnique:
+  self.examinerId > 0 and Examiner.allInstances()->isUnique(e | e.examinerId)
+
+context Examiner inv employeeCodePositiveUnique:
+  self.employeeCode > 0 and Examiner.allInstances()->isUnique(e | e.employeeCode)
+
+context Examiner inv yearsOfExperienceNonNegative:
+  self.yearsOfExperience >= 0
+
+-- Restricciones sobre la clase TestPaper
+context TestPaper inv testPaperIdPositiveUnique:
+  self.testPaperId > 0 and TestPaper.allInstances()->isUnique(tp | tp.testPaperId)
+
+context TestPaper inv questionNumberPositive:
+  self.questionNumber > 0
+
+context TestPaper inv marksAllocatedNonNegative:
+  self.marksAllocated >= 0
+
+context TestPaper inv hasAnswersWithNonNegativeMarks:
+  self.answer->forAll(a | a.marksAwarded >= 0)
+
+context TestPaper inv marksAllocatedReasonable:
+  self.marksAllocated <= 20
+
+context TestPaper inv notBothInvs:
+  not ( self.marksAllocated <= 20 and self.answer->forAll(a | a.marksAwarded >= 0))
+
+-- Restricciones sobre la clase Result
+context Result inv marksObtainedNonNegative:
+  self.marksObtained >= 0
+
+context Result inv rankingPositive:
+  self.ranking > 0
+
+context Result inv rankingComparedToMarks:
+  self.ranking <= Result.allInstances()->select(r | r.marksObtained >= self.marksObtained)->size()
+
+-- Restricciones sobre la clase Student
+context Student inv studentIdPositiveUnique:
+  self.studentId > 0 and Student.allInstances()->isUnique(s | s.studentId)
+
+-- Restricciones sobre la clase Admin
+context Admin inv adminIdPositiveUnique:
+  self.adminId > 0 and Admin.allInstances()->isUnique(a | a.adminId)
+
+context Admin inv accessLevelNonNegative:
+  self.accessLevel >= 0
+
+-- Restricciones sobre la clase Answer
+context Answer inv isCorrectBooleanLike:
+  self.isCorrect >= 0 and self.isCorrect <= 1
+
+context Answer inv marksAwardedNonNegative:
+  self.marksAwarded >= 0
+
+context Answer inv marksAwardedZeroIfNotCorrect:
+  if self.isCorrect = 0 then self.marksAwarded = 0 else true endif
+
+context Answer inv belongsToAPaperWithPositiveMarksAllocated:
+  self.paper.marksAllocated > 0
+

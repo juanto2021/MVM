@@ -1,0 +1,167 @@
+model LibraryManagement
+
+class Copy
+  attributes
+    id: Integer
+    condition: String
+    shelfNumber: Integer
+    usageCount: Integer
+    acquisitionYear: Integer
+end
+
+class BookTitle
+  attributes
+    name: String
+    author: String
+    isbn: String
+    pageCount: Integer
+    edition: Integer
+    publicationYear: Integer
+end
+
+class MagazineTitle
+  attributes
+    title: String
+    volume: Integer
+    issue: Integer
+    frequency: String
+end
+
+class BookLoan
+  attributes
+    loanDay: Integer
+    loanMonth: Integer
+    loanYear: Integer
+    durationDays: Integer
+    loanCode: String
+end
+
+class BookReservation
+  attributes
+    reservationDay: Integer
+    reservationMonth: Integer
+    reservationYear: Integer
+    reservationCode: String
+    durationDays: Integer
+end
+
+class BorrowerInfo
+  attributes
+    name: String
+    code: String
+    age: Integer
+end
+
+association CopyBookTitle between
+  Copy [0..*] role copiesRole
+  BookTitle [1] role bookTitleRole
+end
+
+association BookTitleBookLoan between
+  BookTitle [0..1] role bookTitleRole
+  BookLoan [1] role bookLoanRole
+end
+
+association BookTitleMagazineTitle between
+  BookTitle [0..*] role bookTitlesRole
+  MagazineTitle [1] role magazineTitleRole
+end
+
+association BookTitleBookReservation between
+  BookTitle [0..*] role bookTitlesRole
+  BookReservation [1] role bookReservationRole
+end
+
+association BorrowerInfoBookLoan between
+  BorrowerInfo [0..*] role borrowersRole
+  BookLoan [1] role bookLoanRole
+end
+
+association BorrowerInfoBookReservation between
+  BorrowerInfo [1] role borrower
+  BookReservation [0..*] role reservations
+end
+
+constraints
+
+context Copy inv IdMustBeUnique:
+  Copy.allInstances()->isUnique(c | c.id)
+
+context Copy inv UsageLessThanAge:
+  self.usageCount < (2025 - self.acquisitionYear)
+
+context Copy inv ConditionNotEmpty:
+  self.condition <> ''
+
+context Copy inv MustBelongToBookTitle:
+  self.bookTitleRole->notEmpty()
+
+context BookTitle inv ISBNMustBeUnique:
+  BookTitle.allInstances()->isUnique(b | b.isbn)
+  
+context BookTitle inv NoMoreThanThreeReservations:
+  self.bookReservationRole->size() <= 3  
+
+context BookTitle inv PageCountGreaterThanEdition:
+  self.pageCount > self.edition
+
+context BookTitle inv HasAtLeastOneCopy:
+  Copy.allInstances()->exists(c | c.bookTitleRole = self)
+
+context BookTitle inv YearEarlierThanLoan:
+  self.bookLoanRole.loanYear > self.publicationYear
+
+context MagazineTitle inv VolumeGreaterThanIssue:
+  self.volume > self.issue
+
+context MagazineTitle inv TitleNotEmpty:
+  self.title <> ''
+
+context MagazineTitle inv MustHaveAtLeastTwoBooks:
+  self.bookTitlesRole->size() >= 1
+
+context MagazineTitle inv AllBooksMoreThan100Pages:
+  self.bookTitlesRole->forAll(b | b.pageCount > 100)
+
+context MagazineTitle inv NoDuplicateBookNames:
+  self.bookTitlesRole->isUnique(b | b.name)
+
+context BookLoan inv DurationLessThanYear:
+  self.durationDays <= 365
+
+context BookLoan inv LoanCodeUnique:
+  BookLoan.allInstances()->isUnique(l | l.loanCode)
+
+context BookLoan inv ValidDayMonthRange:
+  self.loanDay >= 1 and self.loanDay <= 31 and self.loanMonth >= 1 and self.loanMonth <= 12
+
+context BookLoan inv BorrowerOlderThan18:
+  self.borrowersRole->forAll(b | b.age > 18)
+
+context BookReservation inv ReservationCodeUnique:
+  BookReservation.allInstances()->isUnique(r | r.reservationCode)
+
+context BookReservation inv DurationGreaterThanZero:
+  self.durationDays > 0
+
+context BookReservation inv ReservationInSameYearAsLoan:
+  BookLoan.allInstances()->exists(l | l.loanYear = self.reservationYear)
+
+context BookReservation inv AssociatedToBookTitle:
+  self.bookTitlesRole->notEmpty()
+
+context BorrowerInfo inv CodeMustBeUnique:
+  BorrowerInfo.allInstances()->isUnique(b | b.code)
+
+context BorrowerInfo inv AgeInRange:
+  self.age >= 5 and self.age <= 120
+
+context BorrowerInfo inv AtLeastOneLoan: 
+  BookLoan.allInstances()->exists(l | l.borrowersRole->includes(self))
+
+context BorrowerInfo inv CannotReserveMoreThan3Books: 
+  self.reservations->size() <= 3
+
+context BorrowerInfo inv LoanedBooksLongerThanAWeek: 
+  BookLoan.allInstances()->select(l | l.borrowersRole->includes(self))->forAll(l | l.durationDays > 7)
+

@@ -1,0 +1,160 @@
+model SchoolManagement
+
+-- Classes
+class Admin
+  attributes
+    adminId: Integer
+    name: String
+end
+
+class Teachers
+  attributes
+    teacherId: Integer
+    name: String
+    employeeCode: Integer
+end
+
+class TestPaper
+  attributes
+    testPaperId: Integer
+    name: String
+    durationMinutes: Integer
+    totalMarks: Integer
+end
+
+class Student
+  attributes
+    studentId: Integer
+    name: String
+    rollNumber: Integer
+end
+
+class Division
+  attributes
+    divisionId: Integer
+    name: String
+    studentCapacity: Integer
+end
+
+class Class
+  attributes
+    classId: Integer
+    name: String
+    studentCapacityClass: Integer
+end
+
+-- Associations
+association AdminManagesTestPaper between
+  Admin [1] role admin
+  TestPaper [0..1] role managedTestPaper
+end
+
+association AdminManagesDivision between
+  Admin [1] role admin
+  Division [0..1] role managedDivision
+end
+
+association AdminManagesClass between
+  Admin [1] role admin
+  Class [1..*] role managedClasses
+end
+
+association TeacherCreatesTestPaper between
+  Teachers [1] role teacher
+  TestPaper [0..1] role createdTestPaper
+end
+
+association TeacherTeachesStudent between
+  Teachers [1..*] role teacher
+  Student [1] role taughtStudent
+end
+
+association StudentBelongsToClass between
+  Student [1..*] role student
+  Class [1] role studentClass
+end
+
+association ClassBelongsToDivision between
+  Class [1] role nameClass
+  Division [1] role classDivision
+end
+
+constraints
+
+-- Admin
+context Admin inv adminIdPositiveUnique:
+  self.adminId > 0 and Admin.allInstances()->isUnique(a | a.adminId)
+
+context Admin inv adminNameNotEmpty:
+  self.name <> ''
+
+context Admin inv managesReasonableNumberOfClasses:
+  self.managedClasses->size() <= 10
+
+context Admin inv managesATestPaperIfAnyHasPositiveDuration:
+  self.managedTestPaper.oclIsUndefined() or self.managedTestPaper.durationMinutes > 0
+
+context Admin inv managesADivisionIfAnyHasCapacityGreaterThanZero:
+  self.managedDivision.oclIsUndefined() or self.managedDivision.studentCapacity > 0
+
+-- Teachers
+context Teachers inv teacherIdPositiveUnique:
+  self.teacherId > 0 and Teachers.allInstances()->isUnique(t | t.teacherId)
+
+context Teachers inv teacherNameNotEmpty:
+  self.name <> ''
+
+context Teachers inv employeeCodePositiveUnique:
+  self.employeeCode > 0 and Teachers.allInstances()->isUnique(t | t.employeeCode)
+
+-- TestPaper
+context TestPaper inv testPaperIdPositiveUnique:
+  self.testPaperId > 0 and TestPaper.allInstances()->isUnique(tp | tp.testPaperId)
+
+context TestPaper inv testPaperNameNotEmpty:
+  self.name <> ''
+
+context TestPaper inv durationReasonable:
+  self.durationMinutes > 15 and self.durationMinutes <= 180
+
+context TestPaper inv totalMarksPositive:
+  self.totalMarks > 0
+
+context TestPaper inv createdByExistingTeacher:
+  not self.teacher.oclIsUndefined()
+
+-- Student
+context Student inv studentIdPositiveUnique:
+  self.studentId > 0 and Student.allInstances()->isUnique(s | s.studentId)
+
+context Student inv studentNameNotEmpty:
+  self.name <> ''
+
+context Student inv rollNumberPositiveUniqueInClass:
+  self.rollNumber > 0 and self.studentClass.student->forAll(st | st = self or st.rollNumber <> self.rollNumber)
+
+context Student inv belongsToAClassWithPositiveCapacity:
+  self.studentClass.studentCapacityClass > 0
+
+-- Division
+context Division inv divisionIdPositiveUnique:
+  self.divisionId > 0 and Division.allInstances()->isUnique(d | d.divisionId)
+
+context Division inv divisionNameNotEmpty:
+  self.name <> ''
+
+context Division inv studentCapacityPositive:
+  self.studentCapacity > 0
+
+context Division inv capacityGreaterThanNumberOfClasses:
+  self.studentCapacity > self.nameClass->size()
+
+-- Class
+context Class inv classIdPositiveUnique:
+  self.classId > 0 and Class.allInstances()->isUnique(c | c.classId)
+
+context Class inv classNameNotEmpty:
+    self.name <> ''
+
+context Class inv studentCapacityPositiveClass:
+  self.studentCapacityClass > 0

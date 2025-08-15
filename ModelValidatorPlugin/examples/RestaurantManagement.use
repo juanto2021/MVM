@@ -1,0 +1,146 @@
+model RestaurantManagement
+
+class Restaurant
+  attributes
+    name : String
+    address : String
+end
+
+class MenuItem
+  attributes
+    name : String
+    price : Integer
+end
+
+class Order
+  attributes
+    orderNumber : Integer
+    date : String
+end
+
+class Customer
+  attributes
+    name : String
+end
+
+class Staff
+  attributes
+    name : String
+    nomrole : String
+end
+
+class Table
+  attributes
+    tableNumber : Integer
+    capacity : Integer
+end
+
+association RestaurantMenu between
+  Restaurant[1] role restaurant
+  MenuItem[*] role menuItems
+end
+
+association OrderItems between
+  Order[1] role order
+  MenuItem[*] role items
+end
+
+association CustomerOrders between
+  Customer[1] role customer
+  Order[*] role orders
+end
+
+association OrderTable between
+  Order[1] role order
+  Table[1] role table
+end
+
+association RestaurantTables between
+  Restaurant[1] role restaurant
+  Table[*] role tables
+end
+
+association RestaurantStaff between
+  Restaurant[1] role restaurant
+  Staff[*] role staff
+end
+
+constraints
+
+-- Restaurant
+context Restaurant inv restaurantNameNotEmpty:
+  self.name <> ''    
+
+context Restaurant inv restaurantAddressNotEmpty:
+  self.address <> ''
+
+context Restaurant inv allMenuItemsHaveNames:
+  self.menuItems->notEmpty() and
+  self.menuItems->forAll(mi | mi.name <> '') 
+
+context Restaurant inv numberOfTablesReasonable:
+  self.tables->size <= 20
+
+context Restaurant inv allStaffAssignedRole:
+  self.staff->notEmpty() and
+  self.staff->forAll(s | s.nomrole <> '') 
+
+-- MenuItem
+context MenuItem inv itemNameNotEmpty:
+  self.name <> ''  
+
+context MenuItem inv itemPricePositive:
+  self.price > 0
+
+context MenuItem inv notTooExpensive:
+  Restaurant.allInstances()->exists(r | r.menuItems->exists(mi | mi = self and mi.price < 50))
+
+context MenuItem inv notBothInvs:
+  not (self.name <> '' and self.price > 0)
+  
+-- Order
+
+context Order inv allOrderedItemsHavePositivePrice:
+  self.items->notEmpty() and self.items->forAll(item | item.price > 0)
+
+context Order inv orderRelatedToCustomer:
+  Customer.allInstances()->exists(c | c.orders->includes(self))
+
+context Order inv numberOfItemsReasonable:
+  self.items->size <= 15
+
+-- Customer
+context Customer inv customerNameNotEmpty:
+  self.name <> ''      
+
+context Customer inv hasPlacedOrders:
+  self.orders->size > 0
+
+context Customer inv allOrdersHaveADate:
+  self.orders->notEmpty() and
+  self.orders->forAll(o | o.date <> '')
+
+-- Staff
+context Staff inv staffNameNotEmpty:
+  self.name <> ''  
+
+context Staff inv staffRoleNotEmpty:
+  self.nomrole <> '' 
+
+  
+context Staff inv worksAtARestaurant:
+  Restaurant.allInstances()->exists(r | r.staff->includes(self))
+
+-- Table
+context Table inv tableNumberPositiveValue:
+  self.tableNumber > 0
+
+context Table inv capacityNotExceedingLimit:
+  self.capacity <= 8
+
+context Table inv assignedToAnOrder:
+  Order.allInstances()->exists(o | o.table = self)
+
+context Table inv belongsToARestaurant:
+  Restaurant.allInstances()->exists(r | r.tables->includes(self))
+

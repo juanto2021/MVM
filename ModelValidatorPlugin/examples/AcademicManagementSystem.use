@@ -1,0 +1,182 @@
+model AcademicManagementSystem
+
+-- =========================
+--  CLASSES
+-- =========================
+class Faculty
+  attributes
+    facultyCode: String
+    facultyName: String
+    numberOfDepartments: Integer
+end
+
+class Program
+  attributes
+    programCode: String
+    durationInYears: Integer
+    numberOfStudents: Integer
+end
+
+class Teacher
+  attributes
+    documentId: String
+    firstName: String
+    yearsOfExperience: Integer
+    numberOfSubjectsTaught: Integer
+end
+
+class Student
+  attributes
+    documentId: String
+    creditsCompleted: Integer
+    currentSemester: Integer
+end
+
+class Subject
+  attributes
+    subjectCode: String
+    creditHours: Integer
+end
+
+class Classroom
+  attributes
+    classroomCode: String
+    capacity: Integer
+end
+
+-- =========================
+--  ASSOCIATIONS
+-- =========================
+association FacultyProgram between
+  Faculty[1]  role faculty
+  Program[*]  role programs
+end
+
+association ProgramStudent between
+  Program[1]  role program
+  Student[*]  role students
+end
+
+association SubjectStudent between
+  Subject[*]  role subjects
+  Student[*]  role students
+end
+
+association SubjectTeacher between
+  Subject[*]  role subjects
+  Teacher[*]  role teachers
+end
+
+association ClassroomSubject between
+  Classroom[*] role classrooms
+  Subject[*]   role subjects
+end
+
+-- =========================
+--  CONSTRAINTS
+-- =========================
+constraints
+
+-- ---------- Faculty ----------
+context Faculty inv codeNotEmpty:
+  self.facultyCode <> ''
+-- self.facultyCode.size() > 0     -- no soportado
+
+context Faculty inv nameNotEmpty:
+  self.facultyName <> ''
+-- self.facultyName.size() > 0     -- no soportado
+
+context Faculty inv hasDepartments:
+  self.numberOfDepartments > 0
+
+context Faculty inv hasMultiplePrograms:
+  self.programs->size > 1
+
+context Faculty inv uniqueCode:
+  Faculty.allInstances()->isUnique(f | f.facultyCode)
+
+-- ---------- Program ----------
+context Program inv codeNotEmpty:
+  self.programCode <> ''
+-- self.programCode.size() > 0     -- no soportado
+
+context Program inv durationPositive:
+  self.durationInYears > 0
+
+context Program inv studentsNonNegative:
+  self.numberOfStudents >= 0
+
+context Program inv allStudentsInPositiveSemester:
+  self.students->forAll(s | s.currentSemester > 0)
+
+context Program inv uniqueCode:
+  Program.allInstances()->isUnique(p | p.programCode)
+
+-- ---------- Teacher ----------
+context Teacher inv docIdNotEmpty:
+  self.documentId <> ''
+-- self.documentId.size() > 0      -- no soportado
+
+context Teacher inv nameNotEmpty:
+  self.firstName <> ''
+-- self.firstName.size() > 1       -- no soportado
+
+context Teacher inv experienceValid:
+  self.yearsOfExperience >= 0
+
+context Teacher inv supervisesSubjects:
+  self.subjects->size > 0
+
+context Teacher inv uniqueDocumentId:
+  Teacher.allInstances()->isUnique(t | t.documentId)
+
+-- ---------- Student ----------
+context Student inv docIdNotEmpty:
+  self.documentId <> ''
+-- self.documentId.size() > 0      -- no soportado
+
+context Student inv creditsNonNegative:
+  self.creditsCompleted >= 0
+
+context Student inv semesterPositive:
+  self.currentSemester > 0
+
+context Student inv enrolledInSubjects:
+  self.subjects->size > 0
+
+context Student inv uniqueDocumentId:
+  Student.allInstances()->isUnique(s | s.documentId)
+
+-- ---------- Subject ----------
+context Subject inv codeNotEmpty:
+  self.subjectCode <> ''
+-- self.subjectCode.size() > 0     -- no soportado
+
+context Subject inv creditPositive:
+  self.creditHours > 0
+
+context Subject inv hasStudents:
+  self.students->size > 0
+
+context Subject inv hasTeacherAssigned:
+  self.teachers->size > 0
+
+context Subject inv uniqueCode:
+  Subject.allInstances()->isUnique(s | s.subjectCode)
+
+-- ---------- Classroom ----------
+context Classroom inv codeNotEmpty:
+  self.classroomCode <> ''
+-- self.classroomCode.size() > 0   -- no soportado
+
+context Classroom inv capacityAboveZero:
+  self.capacity > 0
+
+context Classroom inv atLeastOneSubject:
+  self.subjects->size > 0
+
+context Classroom inv allSubjectsHaveTeacher:
+  self.subjects->forAll(s | s.teachers->size > 0)
+
+context Classroom inv uniqueCode:
+  Classroom.allInstances()->isUnique(c | c.classroomCode)

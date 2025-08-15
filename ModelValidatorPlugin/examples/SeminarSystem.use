@@ -1,0 +1,117 @@
+model SeminarSystem
+
+class Students
+  attributes
+    name: String
+    studentnumber: String
+    averagemark: Integer
+    numberOfCourses: Integer
+end
+
+class Seminar
+  attributes
+    name: String
+    seminarNumber: String
+    fees: Integer
+    capacity: Integer
+end
+
+class Professor
+  attributes
+    name: String
+    salary: Integer
+    employeeId: Integer
+    rank: String
+end
+
+class Enrollment
+  attributes
+    enrollmentId: Integer
+    grade: Integer
+    attendancePercentage: Integer
+end
+
+-- Relaciones
+association StudentHasEnrollments between
+  Students [1] role hasStudent
+  Enrollment [1..*] role hasEnrollment
+end
+
+association EnrollmentForSeminar between
+  Enrollment [1] role isForEnrollment
+  Seminar [1] role hasSeminar
+end
+
+association SeminarHasWaitingList between
+  Seminar [0..*] role hasSeminarWaiting
+  Students [0..*] role onWaitingList
+end
+
+association SeminarIsInstructedBy between
+  Seminar [0..*] role isLedBy
+  Professor [0..1] role instructs
+end
+
+constraints
+
+-- Restricciones sobre la clase Students
+context Students inv studentNumberNonEmptyUnique:
+  self.studentnumber <> '' and Students.allInstances()->isUnique(s | s.studentnumber)
+
+context Students inv averageMarkReasonable:
+  self.averagemark >= 0 and self.averagemark <= 10
+
+context Students inv numberOfCoursesPositive:
+  self.numberOfCourses >= 0
+
+context Students inv hasSomeEnrollmentsWithPassingGrade:
+  self.hasEnrollment->exists(e | e.grade >= 5)
+  
+context Students inv notBothInvs:
+  not (self.numberOfCourses >= 0 and self.hasEnrollment->exists(e | e.grade >= 5)  )
+
+context Students inv averageMarkComparedToCoursesTaken:
+  if self.numberOfCourses > 0 then self.averagemark * 10 >= self.numberOfCourses else true endif
+
+-- Restricciones sobre la clase Seminar
+context Seminar inv seminarNumberNonEmptyUnique:
+  self.seminarNumber <> '' and Seminar.allInstances()->isUnique(s | s.seminarNumber)
+
+context Seminar inv feesNonNegative:
+  self.fees >= 0
+
+context Seminar inv capacityReasonable:
+  self.capacity > 5
+
+context Seminar inv numberOfEnrolledStudentsWithinCapacity:
+  Enrollment.allInstances()->select(e | e.hasSeminar = self)->size() <= self.capacity
+
+
+-- Restricciones sobre la clase Professor
+context Professor inv nameNonEmpty:
+  self.name <> ''
+
+context Professor inv employeeIdPositiveUnique:
+  self.employeeId > 0 and Professor.allInstances()->isUnique(p | p.employeeId)
+
+context Professor inv salaryNonNegative:
+  self.salary >= 0
+
+--context Professor inv rankLengthReasonable:
+--  self.rank.size() < 30
+
+-- Restricciones sobre la clase Enrollment
+context Enrollment inv enrollmentIdPositiveUnique:
+  self.enrollmentId > 0 and Enrollment.allInstances()->isUnique(e | e.enrollmentId)
+
+context Enrollment inv gradeValid:
+  self.grade >= 0 and self.grade <= 10
+
+context Enrollment inv attendancePercentageValid:
+  self.attendancePercentage >= 0 and self.attendancePercentage <= 100
+
+context Enrollment inv belongsToStudentWithNameNotEmpty:
+  self.hasStudent.name <> ''
+
+context Enrollment inv isForSeminarWithPositiveFees:
+  self.hasSeminar.fees >= 0

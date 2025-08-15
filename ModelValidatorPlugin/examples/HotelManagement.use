@@ -1,0 +1,192 @@
+model HotelManagement
+
+-- Classes
+class Manager
+  attributes
+    managerId: Integer
+    yearsOfExperience: Integer
+    employeeCount: Integer
+end
+
+class Owner
+  attributes
+    ownerId: Integer
+    numberOfHotels: Integer
+    investmentAmount: Integer
+    sharesPercentage: Integer
+end
+
+class Inventory
+  attributes
+    inventoryId: Integer
+    quantity: Integer
+    purchasePrice: Integer
+end
+
+class Guest
+  attributes
+    guestId: Integer
+    numberOfNights: Integer
+    loyaltyPoints: Integer
+end
+
+class Room
+  attributes
+    roomNumber: Integer
+    capacity: Integer
+    ratePerNight: Integer
+    floorNumber: Integer
+end
+
+class FoodItem
+  attributes
+    foodItemId: Integer
+    price: Integer
+    preparationTime: Integer
+    calories: Integer
+end
+
+class Invoice
+  attributes
+    invoiceNumber: Integer
+    totalAmount: Integer
+    discountApplied: Integer
+end
+
+class Receptionist
+  attributes
+    receptionistId: Integer
+    yearsOfService: Integer
+    hourlyRate: Integer
+    shiftStartTime: Integer
+    shiftEndTime: Integer
+end
+
+-- Associations
+association ManagesInventory between
+  Manager [1] role managerRole
+  Inventory [0..1] role inventoryRole
+end
+
+association OwnsGuests between
+  Owner [1] role ownerRole
+  Guest [1..*] role guestRole
+end
+
+association StaysInRoom between
+  Guest [1] role guestRole
+  Room [1] role roomRole
+end
+
+association InvoiceHasFoodItems between
+  Invoice [0..1] role invoiceRole
+  FoodItem [1..*] role foodItemRole
+end
+
+association GuestHasInvoice between
+  Guest [1] role guestRole
+  Invoice [1] role invoiceRole
+end
+
+association HandlesGuest between
+  Receptionist [1] role receptionistRole
+  Guest [0..1] role guestRole
+end
+
+-- Constraints
+constraints
+-- Manager
+context Manager inv uniqueManagerId:
+  Manager.allInstances()->isUnique(m | m.managerId)
+context Manager inv experienceMoreThanEmployees:
+  self.yearsOfExperience >= self.employeeCount
+context Manager inv managesInventoryIfExperienced:
+  self.yearsOfExperience > 5 implies self.inventoryRole->size() > 0
+context Manager inv employeeCountReasonable:
+  self.employeeCount <= 100
+context Manager inv managesAtMostOneInventory:
+  self.inventoryRole->size() <= 1
+
+-- Owner
+context Owner inv uniqueOwnerId:
+  Owner.allInstances()->isUnique(o | o.ownerId)
+context Owner inv sharesPercentageCap:
+  self.sharesPercentage <= 100
+context Owner inv investmentRelatesToHotels:
+  self.numberOfHotels > 0 implies self.investmentAmount > 10000
+context Owner inv ownsGuestsCount:
+  self.guestRole->size() >= self.numberOfHotels
+context Owner inv ownsAtLeastOneGuest:
+  self.guestRole->size() >= 1
+
+-- Inventory
+context Inventory inv uniqueInventoryId:
+  Inventory.allInstances()->isUnique(i | i.inventoryId)
+context Inventory inv pricePositive:
+  self.purchasePrice > 0
+context Inventory inv quantityPositive:
+  self.quantity > 0
+context Inventory inv inventoryManaged:
+  Inventory.allInstances()->exists(i | i.managerRole->size() > 0)
+context Inventory inv reasonableQuantityPrice:
+  self.quantity * self.purchasePrice < 100000
+
+-- Guest
+context Guest inv uniqueGuestId:
+  Guest.allInstances()->isUnique(g | g.guestId)
+context Guest inv nightsNonNegative:
+  self.numberOfNights >= 0
+context Guest inv loyaltyPointsBound:
+  self.loyaltyPoints <= 1000
+context Guest inv hasInvoice:
+  self.invoiceRole->size() = 1
+context Guest inv staysInRoom:
+  self.roomRole->size() = 1
+
+-- Room
+context Room inv uniqueRoomNumber:
+  Room.allInstances()->isUnique(r | r.roomNumber)
+context Room inv positiveCapacity:
+  self.capacity > 0
+context Room inv rateAboveMinimum:
+  self.ratePerNight >= 30
+context Room inv guestsBelowCapacity:
+  Guest.allInstances()->select(g | g.roomRole = self)->size() <= self.capacity
+context Room inv roomFloorValid:
+  self.floorNumber >= 0 and self.floorNumber <= 50
+
+-- FoodItem
+context FoodItem inv uniqueFoodItemId:
+  FoodItem.allInstances()->isUnique(f | f.foodItemId)
+context FoodItem inv nonFreeFood:
+  self.price > 0
+context FoodItem inv caloriesPositive:
+  self.calories > 0
+context FoodItem inv fastPreparationIfLowCalories:
+  self.calories < 300 implies self.preparationTime <= 15
+--context FoodItem inv linkedToInvoice:
+--  Invoice.allInstances()->exists(inv | inv.foodItemRole->includes(self))
+
+-- Invoice
+context Invoice inv uniqueInvoiceNumber:
+  Invoice.allInstances()->isUnique(i | i.invoiceNumber)
+context Invoice inv amountNonNegative:
+  self.totalAmount >= 0
+context Invoice inv discountWithinLimit:
+  self.discountApplied >= 0 and self.discountApplied <= 50
+context Invoice inv atLeastOneFoodItem:
+  self.foodItemRole->size() >= 1
+context Invoice inv invoiceLinkedToGuest:
+  Guest.allInstances()->exists(g | g.invoiceRole = self)
+
+-- Receptionist
+context Receptionist inv uniqueReceptionistId:
+  Receptionist.allInstances()->isUnique(r | r.receptionistId)
+context Receptionist inv shiftTimeValid:
+  self.shiftStartTime < self.shiftEndTime
+context Receptionist inv serviceYearsMatchRate:
+  self.yearsOfService > 10 implies self.hourlyRate >= 20
+context Receptionist inv maxOneGuestHandled:
+  self.guestRole->size() <= 1
+context Receptionist inv workingHoursReasonable:
+  self.shiftEndTime - self.shiftStartTime <= 12

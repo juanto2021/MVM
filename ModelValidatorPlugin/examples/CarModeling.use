@@ -1,0 +1,228 @@
+model CarModeling
+
+-- Classes
+class CarModelingProject
+  attributes
+    title: String
+    projectId: Integer
+    budget: Integer
+end
+
+class GearboxType
+  attributes
+    name: String
+    typeId: Integer
+    maxGears: Integer
+end
+
+class Gearbox
+  attributes
+    currentGear: Integer
+    numberOfGears: Integer
+    gearboxId: Integer
+end
+
+class Car
+  attributes
+    vin: String
+    numberOfSeats: Integer
+end
+
+class Engine
+  attributes
+    engineId: Integer
+    horsepower: Integer
+end
+
+class Suspension
+  attributes
+    suspensionId: Integer
+    loadCapacity: Integer
+end
+
+class Wheel
+  attributes
+    wheelId: Integer
+    rimSize: Integer
+end
+
+class Tire
+  attributes
+    tireId: Integer
+    treadDepth: Real
+end
+
+class Brake
+  attributes
+    brakeId: Integer
+    numberOfPistons: Integer
+end
+
+class Body
+  attributes
+    numberOfDoors: Integer
+    materialStrength: Integer
+end
+
+-- Associations
+association GearboxTypeHasGearbox between
+  GearboxType [1] role gearboxTypeRole
+  Gearbox [1..*] role gearboxesRole
+end
+
+association CarHasGearbox between
+  Car [1] role carRole
+  Gearbox [1] role gearboxRole
+end
+
+association CarHasEngine between
+  Car [1] role carRole
+  Engine [1] role engineRole
+end
+
+association CarHasSuspension between
+  Car [1] role carRole
+  Suspension [1..*] role suspensionsRole
+end
+
+association SuspensionHasWheel between
+  Suspension [1] role suspensionRole
+  Wheel [1] role wheelRole
+end
+
+association WheelHasTire between
+  Wheel [1] role wheelRole
+  Tire [1] role tireRole
+end
+
+association CarHasBrake between
+  Car [1] role carRole
+  Brake [1] role brakeRole
+end
+
+association CarHasBody between
+  Car [1] role carRole
+  Body [1] role bodyRole
+end
+
+
+-- OCL Constraints
+constraints
+
+-- CarModelingProject
+context CarModelingProject inv titleNotEmpty:
+  self.title <> ''
+context CarModelingProject inv budgetComparison:
+  self.budget > self.projectId
+context CarModelingProject inv hasManyGearboxes:
+  Gearbox.allInstances()->exists(g | g.gearboxId = self.projectId)
+context CarModelingProject inv allProjectsUnique:
+  CarModelingProject.allInstances()->isUnique(p | p.projectId)
+context CarModelingProject inv budgetValid:
+  self.budget >= 0
+
+-- GearboxType
+context GearboxType inv nameNotEmpty:
+  self.name <> ''
+context GearboxType inv moreThanOneGearbox:
+  self.gearboxesRole->size() > 0
+context GearboxType inv automationVsGears:
+  self.maxGears >= 4
+context GearboxType inv typeIdUnique:
+  GearboxType.allInstances()->isUnique(g | g.typeId)
+context GearboxType inv hasManualOrAuto:
+  self.maxGears > 0 implies self.name <> ''
+
+-- Gearbox
+context Gearbox inv currentGearValid:
+  self.currentGear <= self.numberOfGears
+context Gearbox inv associatedTypeMaxGears:
+  self.gearboxTypeRole.maxGears >= self.numberOfGears
+context Gearbox inv gearboxIdUnique:
+  Gearbox.allInstances()->isUnique(g | g.gearboxId)
+context Gearbox inv gearDifference:
+  self.numberOfGears - self.currentGear >= 0
+context Gearbox inv mustHaveGearboxType:
+  self.gearboxTypeRole.name <> ''
+
+-- Car
+context Car inv vinNotEmpty:
+  self.vin <> ''
+context Car inv uniqueVin:
+  Car.allInstances()->isUnique(c | c.vin)
+context Car inv seatsReasonable:
+  self.numberOfSeats >= 2 and self.numberOfSeats <= 9
+context Car inv engineHorsepowerMatch:
+  self.engineRole.horsepower > 0
+context Car inv atLeastOneSuspension:
+  self.suspensionsRole->size() >= 1
+
+-- Engine
+context Engine inv engineIdUnique:
+  Engine.allInstances()->isUnique(e | e.engineId)
+context Engine inv horsepowerPositive:
+  self.horsepower > 0
+context Engine inv horsepowerGreaterThanCylinders:
+  self.horsepower > 50
+context Engine inv usedInCars:
+  Car.allInstances()->exists(c | c.engineRole = self)
+context Engine inv idGreaterThanHorsepower:
+  self.engineId < self.horsepower
+
+-- Suspension
+context Suspension inv loadCapacityPositive:
+  self.loadCapacity > 0
+context Suspension inv suspensionIdUnique:
+  Suspension.allInstances()->isUnique(s | s.suspensionId)
+context Suspension inv hasWheelAttached:
+  self.wheelRole.wheelId > 0
+context Suspension inv loadCapacityHigherThanRim:
+  self.loadCapacity > self.wheelRole.rimSize
+context Suspension inv hasValidWheel:
+  self.wheelRole.rimSize > 10
+
+-- Wheel
+context Wheel inv wheelIdUnique:
+  Wheel.allInstances()->isUnique(w | w.wheelId)
+context Wheel inv rimSizePositive:
+  self.rimSize > 0
+context Wheel inv hasTireAttached:
+  self.tireRole.tireId > 0
+context Wheel inv hasLargeRim:
+  self.rimSize > 13
+
+-- Tire
+context Tire inv treadDepthPositive:
+  self.treadDepth > 0.0
+context Tire inv tireIdUnique:
+  Tire.allInstances()->isUnique(t | t.tireId)
+context Tire inv treadDepthLimit:
+  self.treadDepth < 15.0
+context Tire inv hasValidWheel:
+  Wheel.allInstances()->exists(w | w.tireRole = self)
+context Tire inv treadDepthAboveMinimum:
+  self.treadDepth >= 1.6
+
+-- Brake
+context Brake inv brakeIdUnique:
+  Brake.allInstances()->isUnique(b | b.brakeId)
+context Brake inv pistonsMoreThanOne:
+  self.numberOfPistons > 1
+context Brake inv brakeUsedInCar:
+  Car.allInstances()->exists(c | c.brakeRole = self)
+--context Brake inv numberOfPistonsEven:
+--  self.numberOfPistons mod 2 = 0
+context Brake inv pistonsVsBodyStrength:
+  self.numberOfPistons < self.carRole.bodyRole.materialStrength
+
+-- Body
+context Body inv numberOfDoorsValid:
+  self.numberOfDoors >= 2 and self.numberOfDoors <= 5
+context Body inv materialStrengthPositive:
+  self.materialStrength > 0
+context Body inv uniqueMaterialStrength:
+  Body.allInstances()->isUnique(b | b.materialStrength)
+context Body inv doorStrengthRelation:
+  self.materialStrength > self.numberOfDoors
+context Body inv usedInCar:
+  Car.allInstances()->exists(c | c.bodyRole = self)

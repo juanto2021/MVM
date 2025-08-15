@@ -1,0 +1,237 @@
+model FileAndUserManagement
+
+-- Classes
+class Pricing
+  attributes
+    price: Integer
+    storage: Integer
+    planId: Integer
+    userLimit: Integer
+    transferLimit: Integer
+end
+
+class Payment
+  attributes
+    cardNumber: Integer
+    paymentId: Integer
+    amountPaid: Integer
+end
+
+class User
+  attributes
+    email: String
+    userId: Integer
+end
+
+class Files
+  attributes
+    name: String
+    size: Integer
+    fileId: Integer
+end
+
+class Upload
+  attributes
+    fileName: String
+    size: Integer
+    uploadId: Integer
+end
+
+class Account
+  attributes
+    email: String
+    accountId: Integer
+    storageQuotaGB: Integer
+    teamSizeLimit: Integer
+end
+
+class Pro
+  attributes
+    proId: Integer
+    featureCount: Integer
+    monthlyCost: Integer
+end
+
+class Basic
+  attributes
+    basicId: Integer
+    adCount: Integer
+end
+
+class Security
+  attributes
+    securityId: Integer
+    failedAttemptsThreshold: Integer
+end
+
+class Business
+  attributes
+    businessId: Integer
+    employeeCountLimit: Integer
+    storageLimitTB: Integer
+end
+
+-- Associations
+association UserManagesFiles between
+  User [1] role userRole
+  Files [*] role filesRole
+end
+
+association UploadBelongsToAccount between
+  Upload [1] role uploadRole
+  Account [1] role accountRole
+end
+
+association AccountContainsFiles between
+  Account [1] role accountRole
+  Files [*] role filesRole
+end
+
+association AccountSubscribesPro between
+  Account [0..1] role accountRole
+  Pro [0..1] role proRole
+end
+
+association AccountUsesBasic between
+  Account [0..1] role accountRole
+  Basic [0..1] role basicRole
+end
+
+association AccountHasSecuritySettings between
+  Account [1] role accountRole
+  Security [1] role securityRole
+end
+
+association AccountSubscribesBusiness between
+  Account [0..1] role accountRole
+  Business [0..1] role businessRole
+end
+
+association PaymentForUpgrade between
+  Payment [1] role paymentRole
+  Account [1] role accountRole
+end
+
+-- Constraints
+ constraints
+-- Pricing
+context Pricing inv planIdMustBeUnique:
+  Pricing.allInstances()->isUnique(p | p.planId)
+context Pricing inv priceMustBeLessThanTransferLimit:
+  self.price < self.transferLimit
+context Pricing inv atLeastOnePlanHasHighUserLimit:
+  Pricing.allInstances()->exists(p | p.userLimit > 100)
+context Pricing inv plansWithZeroPriceMustHaveZeroUserLimit:
+  self.price = 0 implies self.userLimit = 0
+context Pricing inv storageMustBeMultipleOf10:
+  self.storage.mod(10) = 0
+
+-- Payment
+context Payment inv paymentIdMustBeUnique:
+  Payment.allInstances()->isUnique(p | p.paymentId)
+context Payment inv cardNumberMustBePositive:
+  self.cardNumber > 0
+context Payment inv amountMustBeAboveZero:
+  self.amountPaid > 0
+context Payment inv noDuplicateCardNumber:
+  Payment.allInstances()->isUnique(p | p.cardNumber)
+context Payment inv atLeastOneLargePayment:
+  Payment.allInstances()->exists(p | p.amountPaid > 1000)
+
+-- User
+context User inv userIdMustBeUnique:
+  User.allInstances()->isUnique(u | u.userId)
+--context User inv emailMustContainAtSymbol:
+--  self.email.includes('@')
+context User inv userMustHaveAtMost5Files:
+  self.filesRole->size() <= 5
+context User inv emailMustBeUnique:
+  User.allInstances()->isUnique(u | u.email)
+context User inv eachUserMustManageAtLeastOneFile:
+  self.filesRole->size() >= 1
+
+-- Files
+context Files inv fileIdMustBeUnique:
+  Files.allInstances()->isUnique(f | f.fileId)
+context Files inv fileSizeMustBeNonNegative:
+  self.size >= 0
+context Files inv nameNotEmpty:
+  self.name <> ''
+--context Files inv filesMustBelongToAnAccount:
+--  Files.allInstances()->exists(f | f.AccountContainsFiles_accountRole->notEmpty())
+--context Files inv noTwoFilesWithSameNameInAccount:
+--  Files.allInstances()->forAll(f1, f2 | 
+--    f1 <> f2 implies f1.name <> f2.name or 
+--    f1.AccountContainsFiles_accountRole->intersection(f2.AccountContainsFiles_accountRole)->isEmpty())
+
+-- Upload
+context Upload inv uploadIdMustBeUnique:
+  Upload.allInstances()->isUnique(u | u.uploadId)
+context Upload inv uploadSizeMustBeLessThanAccountQuota:
+  self.accountRole.storageQuotaGB * 1024 > self.size
+context Upload inv fileNameNotEmpty:
+  self.fileName <> ''  
+context Upload inv totalUploadSizeForAccountBelowLimit:
+  Upload.allInstances()->select(u | u.accountRole = self.accountRole)->collect(u | u.size)->sum() < 10 * 1024
+context Upload inv eachUploadBelongsToAccount:
+  self.accountRole <> null
+
+-- Account
+context Account inv accountIdMustBeUnique:
+  Account.allInstances()->isUnique(a | a.accountId)
+--context Account inv emailMustContainAt:
+--  self.email.includes('@')
+context Account inv mustContainAtLeastOneFile:
+  self.filesRole->size() > 0
+context Account inv mustNotExceedTeamSizeLimit:
+  self.filesRole->size() <= self.teamSizeLimit
+context Account inv accountMustHaveSecuritySettings:
+  self.securityRole <> null
+
+-- Pro
+context Pro inv proIdMustBeUnique:
+  Pro.allInstances()->isUnique(p | p.proId)
+context Pro inv featureCountGreaterThanZero:
+  self.featureCount > 0
+context Pro inv costIncreasesWithFeatureCount:
+  self.featureCount > 50 implies self.monthlyCost > 100
+context Pro inv monthlyCostPositive:
+  self.monthlyCost > 0
+context Pro inv atLeastOneCheapProPlan:
+  Pro.allInstances()->exists(p | p.monthlyCost < 10)
+
+-- Basic
+context Basic inv basicIdMustBeUnique:
+  Basic.allInstances()->isUnique(b | b.basicId)
+context Basic inv adCountNonNegative:
+  self.adCount >= 0
+context Basic inv atLeastOneAdFreePlan:
+  Basic.allInstances()->exists(b | b.adCount = 0)
+context Basic inv plansWithHighAdsMustHaveLowBasicId:
+  self.adCount > 10 implies self.basicId < 100
+context Basic inv noTwoBasicsSameAdCount:
+  Basic.allInstances()->isUnique(b | b.adCount)
+
+-- Security
+context Security inv securityIdMustBeUnique:
+  Security.allInstances()->isUnique(s | s.securityId)
+context Security inv failedAttemptsMustBeLessThan20:
+  self.failedAttemptsThreshold < 20
+context Security inv eachSecurityUsedByOneAccount:
+  Account.allInstances()->select(a | a.securityRole = self)->size() = 1
+context Security inv atLeastOneStrictSecurity:
+  Security.allInstances()->exists(s | s.failedAttemptsThreshold < 5)
+context Security inv thresholdsMustBeNonNegative:
+  self.failedAttemptsThreshold >= 0
+
+-- Business
+context Business inv businessIdMustBeUnique:
+  Business.allInstances()->isUnique(b | b.businessId)
+context Business inv employeeLimitPositive:
+  self.employeeCountLimit > 0
+context Business inv storageLimitAtLeast1TB:
+  self.storageLimitTB >= 1
+context Business inv atLeastOneBusinessWithLargeEmployeeLimit:
+  Business.allInstances()->exists(b | b.employeeCountLimit > 500)
+context Business inv largeEmployeeLimitImpliesLargeStorage:
+  self.employeeCountLimit > 100 implies self.storageLimitTB >= 10

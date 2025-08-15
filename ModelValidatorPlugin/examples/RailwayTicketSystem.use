@@ -1,0 +1,146 @@
+model RailwayTicketSystem
+
+-- Classes
+class Passenger
+  attributes
+    name: String
+    age: Integer
+    passengerId: Integer
+end
+
+class Ticket
+  attributes
+    ticketNo: String
+    startingLocation: String
+    destinationLocation: String
+    price: Integer
+end
+
+class Train
+  attributes
+    mod: String
+    trainId: String
+    capacity: Integer
+end
+
+class TicketClerk
+  attributes
+    name: String
+    employeeId: Integer
+    location: String
+end
+
+class RailwayDatabase
+  attributes
+    databaseId: Integer
+    versionNumber: String
+end
+
+class Payment
+  attributes
+    paymentId: Integer
+    amount: Integer
+end
+
+-- Associations
+association PassengerHasTickets between
+  Passenger [0..1] role passenger
+  Ticket [1..*] role tickets
+end
+
+association PassengerMakesPayments between
+  Passenger [0..1] role passenger
+  Payment[1..*] role payments
+end
+
+association TicketBelongsToTrain between
+  Ticket [1] role ticket
+  Train [1] role train
+end
+
+association ClerkHandlesPassenger between
+  TicketClerk [1..*] role ticketClerk
+  Passenger [0..1] role passenger
+end
+
+association ClerkAccessesDatabase between
+  TicketClerk [1..*] role ticketClerk
+  RailwayDatabase [0..1] role railwayDatabase
+end
+
+constraints
+
+-- Passenger
+context Passenger inv passengerNameNotEmpty:
+  self.name <> ''
+
+context Passenger inv passengerAgePositive:
+  self.age > 0
+
+context Passenger inv passengerIdPositiveUnique:
+  Passenger.allInstances()->isUnique(p | p.passengerId)
+
+context Passenger inv hasAtLeastOneTicket:
+  self.tickets->size() >= 1
+
+-- Ticket
+context Ticket inv ticketNoLength:
+  self.ticketNo <> ''
+
+context Ticket inv ticketPriceNonNegative:
+  self.price >= 0
+
+context Ticket inv ticketBelongsToValidTrain:
+  not self.train.oclIsUndefined()
+
+context Ticket inv destinationAfterStart:
+  self.startingLocation <> self.destinationLocation
+
+-- Train
+context Train inv trainIdNotEmpty:
+  self.trainId <> ''
+
+context Train inv trainCapacityPositive:
+  self.capacity > 0
+
+context Train inv trainModelLength:
+  self.mod <> ''
+
+context Train inv hasAssociatedTickets:
+  Ticket.allInstances()->exists(t | t.train = self)
+  
+-- TicketClerk
+context TicketClerk inv clerkNameNotEmpty:
+  self.name <> ''
+
+context TicketClerk inv clerkEmployeeIdPositiveUnique:
+  TicketClerk.allInstances()->isUnique(tc | tc.employeeId)
+
+context TicketClerk inv clerkLocationNotEmpty:
+  self.location <> ''
+
+context TicketClerk inv handlesSomePassengers:
+  self.passenger->size() > 0
+
+-- RailwayDatabase
+context RailwayDatabase inv databaseIdPositiveUnique:
+  RailwayDatabase.allInstances()->isUnique(db | db.databaseId)
+
+context RailwayDatabase inv versionNumberNotEmpty:
+  self.versionNumber <> ''
+
+context RailwayDatabase inv accessedBySomeClerks:
+  self.ticketClerk->size() > 0
+
+-- Payment
+context Payment inv paymentIdPositiveUnique:
+  Payment.allInstances()->isUnique(p | p.paymentId)
+
+context Payment inv paymentAmountNonNegative:
+  self.amount >= 0
+  
+context Payment inv paymentAmountNonPositive:
+  self.amount < 0  
+
+context Payment inv paymentBelongsToPassenger:
+  not self.passenger.oclIsUndefined()
