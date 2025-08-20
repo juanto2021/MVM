@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
@@ -56,6 +57,10 @@ import org.tzi.use.kodkod.solution.ObjectDiagramCreator;
 import org.tzi.use.main.Session;
 import org.tzi.use.uml.mm.MClassInvariant;
 import org.tzi.use.uml.mm.MModel;
+import org.tzi.use.uml.sys.MLink;
+import org.tzi.use.uml.sys.MObject;
+import org.tzi.use.uml.sys.MSystemState;
+import org.tzi.use.uml.sys.soil.MLinkDeletionStatement;
 
 import kodkod.engine.Solution;
 /**
@@ -1005,19 +1010,48 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						if (solution.outcome().toString() == "SATISFIABLE"||bCheckInvs) {
 							Session session = kodParent.getSession();
 							try {
+
+								for (MLink oLink: session.system().state().allLinks()) {
+									session.system().execute(
+											new MLinkDeletionStatement(oLink));
+									System.out.println("Borro oLink " + oLink.association().name());
+								}
+								Set<MObject> allObjects = session.system().state().allObjects();
+								List<MObject> lObjs = new ArrayList<MObject>();
+								for (MObject oObj : allObjects) {
+									lObjs.add(oObj);
+								}
+								for (MObject oObj : lObjs) {
+									MSystemState state = session.system().state();
+									MObject fObject = state.objectByName(oObj.name());
+									state.deleteObject(fObject);
+									System.out.println("Borro fObject " + fObject.name());
+								}
+
+								JDesktopPane fDesk = parent.getFdesk();
+								JInternalFrame[] allframes = fDesk.getAllFrames();
+								for (JInternalFrame ifr: allframes) {
+									if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+										fDesk.remove(ifr);
+									}
+								}
+								boolean diaCreated=false;
 								checkExistDiagram();
 								if (!existDiagram) {
-//									if (odvGral!=null) {
-//										odvGral.removeAll();//Provis
-//									}
 									NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
 									odv.setName(NAMEFRAMEMVMDIAGRAM);
 									odvGral = odv;
 								}else {
-									if (odvGral!=null) {
+									if (odvGral!=null && !diaCreated) {
 										ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session
 										if (solution.instance()!=null) {
 											odc.create(solution.instance().relationTuples());
+											for (NewObjectDiagramView odv: parent.getObjectDiagrams()) {
+												if (odv.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+													odv.removeAll();
+													odv.repaint();
+												}
+											}
 										}else {
 											// de momento nada
 										}
@@ -1030,7 +1064,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 								}	
 
-								//--
 								tile();
 
 								//								dispose();//JG
@@ -1041,9 +1074,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								e.printStackTrace();
 							}
 						}else {
-							//							String st = "Unsatisfactory combinations don't create object diagram!!";//Provis
-							//							JOptionPane.showMessageDialog(null, st);//Provis
-							// lo creo igualmente
+							//	Do nothing
 						}
 
 					} catch (Exception e) {
