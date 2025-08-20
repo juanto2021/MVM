@@ -1063,6 +1063,10 @@ public abstract class KodkodModelValidator {
 						"All invariants are unsatisfiable",
 						"Information",
 						JOptionPane.ERROR_MESSAGE);
+				// Restablecer estado iconos de Calculo
+				MainWindow.instance().enableAction("ValidationMVMG", true);
+				MainWindow.instance().enableAction("ValidationMVMB", true);
+				MainWindow.instance().enableAction("StopCalcCmb", false);
 			}else {
 				if (tipoSearchMSS == "G") {
 					analysis_OCL(model, mModel,invClassSatisfiables, invClassUnSatisfiables,invClassOthers,

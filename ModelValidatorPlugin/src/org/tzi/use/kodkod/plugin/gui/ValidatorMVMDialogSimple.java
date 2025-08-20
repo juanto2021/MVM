@@ -191,6 +191,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	boolean existDiagram=false;
 	boolean existWizard=false;
 
+	NewObjectDiagramView odvGral=null;
+
 	public ValidatorMVMDialogSimple(ParamDialogValidator param, boolean doModal) {	
 		super(param.getParent(), "Validator with combinations", doModal); // The 'true' makes it modal AQUI
 		setName("ValidatorMVMDialogSimple");
@@ -482,7 +484,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return lNInv;
 	}
-// Valid if we use MC estrategy (CHG)
+	// Valid if we use MC estrategy (CHG)
 	//	private List<String> getListInvMC(String cmb){
 	//		List<String> lNInv = new ArrayList<String>();
 	//		if (cmb.equals("")) {
@@ -833,12 +835,19 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								if (!existDiagram) {
 									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
 									odv.setName(NAMEFRAMEMVMDIAGRAM);
+									odvGral = odv;
+								}else {
+									System.out.println("Aqui existe dia");
+									odvGral.repaint();//PROVIS
 								}
 								// Provis
 								if (!existWizard) {
 									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
 								}else {
-
+									// Si existe deberia hacerse un refreshcomponent en el wizard
+									System.out.println("Aqui");
+									WizardMVMView wizardMVMView= parent.getMVMWizard();
+									wizardMVMView.refreshComponents();
 								}		
 
 								//								closeDialog();
@@ -919,6 +928,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		for (JInternalFrame ifr: allframes) {
 			if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
 				existDiagram=true;
+				//				odvGral = (NewObjectDiagramView) ifr;
+
 			}
 			if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
 				existWizard=true;
@@ -995,20 +1006,31 @@ public class ValidatorMVMDialogSimple extends JDialog {
 							Session session = kodParent.getSession();
 							try {
 								checkExistDiagram();
+								if (!existDiagram) {
+//									if (odvGral!=null) {
+//										odvGral.removeAll();//Provis
+//									}
+									NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
+									odv.setName(NAMEFRAMEMVMDIAGRAM);
+									odvGral = odv;
+								}else {
+									if (odvGral!=null) {
+										ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session
+										if (solution.instance()!=null) {
+											odc.create(solution.instance().relationTuples());
+										}else {
+											// de momento nada
+										}
+									}
+								}
 								if (!existWizard) {
 									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
 								}else {
-									//									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);// Provis JG
 									parent.refreshMVMWizard();
 
-								}							
-								// PROVIS AQUI
-								if (!existDiagram) {
-									NewObjectDiagramView odv = createObjectDiagramCreator(strCmbSAT, solution,kodParent.getIModel(),  session);
-									odv.setName(NAMEFRAMEMVMDIAGRAM);
-								}
+								}	
 
-
+								//--
 								tile();
 
 								//								dispose();//JG
@@ -1413,6 +1435,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		tile();
 		odv.getDiagram().startLayoutFormatThread(LayoutType.HierarchicalUpsideDown, hSpace, vSpace, rootPaneCheckingEnabled);
 
+		odvGral = odv;
 		return odv;
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
@@ -1477,7 +1500,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 				if ("MVM Wizard".equals(f.getTitle())) {
 					try {
-						System.out.println("Aqui1");
+						//						System.out.println("Aqui1");
 						f.setIcon(false);
 						f.moveToFront();
 						f.setSelected(true);
