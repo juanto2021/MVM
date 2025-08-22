@@ -829,34 +829,98 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						if (solution.outcome().toString() == "SATISFIABLE" || bCheckInvs) {
 							Session session = kodParent.getSession();
 							try {
-								closeDialog();//Provis
-								checkExistDiagram();
+								//								closeDialog();//Provis
+								//								checkExistDiagram();
+								//								
+								//								//AQUI PROVIS
+								//								if (!existDiagram) {
+								//									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
+								//									odv.setName(NAMEFRAMEMVMDIAGRAM);
+								//									odvGral = odv;
+								//								}else {
+								//									System.out.println("Aqui existe dia");
+								//									if(odvGral!=null) {
+								//										odvGral.repaint();//PROVIS
+								//									}
+								//									
+								//								}
+								//								// Provis
 								//								if (!existWizard) {
 								//									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
 								//								}else {
+								//									// Si existe deberia hacerse un refreshcomponent en el wizard
+								//									System.out.println("Aqui");
+								//									WizardMVMView wizardMVMView= parent.getMVMWizard();
+								//									wizardMVMView.refreshComponents();
+								//								}		
 								//
-								//								}								
-								//AQUI PROVIS
+								//								//								closeDialog();
+								//								tile();
+
+								//-- provis
+
+								for (MLink oLink: session.system().state().allLinks()) {
+									session.system().execute(
+											new MLinkDeletionStatement(oLink));
+									//									System.out.println("Borro oLink " + oLink.association().name());
+								}
+								Set<MObject> allObjects = session.system().state().allObjects();
+								List<MObject> lObjs = new ArrayList<MObject>();
+								for (MObject oObj : allObjects) {
+									lObjs.add(oObj);
+								}
+								for (MObject oObj : lObjs) {
+									MSystemState state = session.system().state();
+									MObject fObject = state.objectByName(oObj.name());
+									state.deleteObject(fObject);
+									//									System.out.println("Borro fObject " + fObject.name());
+								}								JDesktopPane fDesk = parent.getFdesk();
+								JInternalFrame[] allframes = fDesk.getAllFrames();
+								for (JInternalFrame ifr: allframes) {
+									if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+										fDesk.remove(ifr);
+									}
+								}
+								boolean diaCreated=false;
+								checkExistDiagram();
 								if (!existDiagram) {
 									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
 									odv.setName(NAMEFRAMEMVMDIAGRAM);
 									odvGral = odv;
 								}else {
-									System.out.println("Aqui existe dia");
-									odvGral.repaint();//PROVIS
+									if (odvGral!=null && !diaCreated) {
+										ObjectDiagramCreator odc = new ObjectDiagramCreator(kodParent.getIModel(), session);// IModel, session
+										if (solution.instance()!=null) {
+											odc.create(solution.instance().relationTuples());
+											for (NewObjectDiagramView odv: parent.getObjectDiagrams()) {
+												if (odv.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+													odv.removeAll();
+													odv.repaint();
+												}
+											}
+										}else {
+											// de momento nada
+										}
+									}
 								}
-								// Provis
 								if (!existWizard) {
-									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
+									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
 								}else {
-									// Si existe deberia hacerse un refreshcomponent en el wizard
-									System.out.println("Aqui");
-									WizardMVMView wizardMVMView= parent.getMVMWizard();
-									wizardMVMView.refreshComponents();
-								}		
+									parent.refreshMVMWizard();
 
-								//								closeDialog();
+								}	
+
 								tile();
+
+								//								dispose();//JG
+								closeDialog();
+
+
+								//--
+
+
+
+
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -1014,7 +1078,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								for (MLink oLink: session.system().state().allLinks()) {
 									session.system().execute(
 											new MLinkDeletionStatement(oLink));
-									System.out.println("Borro oLink " + oLink.association().name());
+									//									System.out.println("Borro oLink " + oLink.association().name());
 								}
 								Set<MObject> allObjects = session.system().state().allObjects();
 								List<MObject> lObjs = new ArrayList<MObject>();
@@ -1025,7 +1089,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 									MSystemState state = session.system().state();
 									MObject fObject = state.objectByName(oObj.name());
 									state.deleteObject(fObject);
-									System.out.println("Borro fObject " + fObject.name());
+									//									System.out.println("Borro fObject " + fObject.name());
 								}
 
 								JDesktopPane fDesk = parent.getFdesk();
