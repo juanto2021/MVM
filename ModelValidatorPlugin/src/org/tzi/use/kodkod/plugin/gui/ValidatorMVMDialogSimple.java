@@ -995,13 +995,15 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JInternalFrame[] allframes = fDesk.getAllFrames();
 		//		Window[] ws = parent.getOwnedWindows();
 		for (JInternalFrame ifr: allframes) {
-			if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
-				existDiagram=true;
-				//				odvGral = (NewObjectDiagramView) ifr;
+			if (ifr.getName()!=null) {
+				if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+					existDiagram=true;
+					//				odvGral = (NewObjectDiagramView) ifr;
 
-			}
-			if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
-				existWizard=true;
+				}
+				if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
+					existWizard=true;
+				}
 			}
 		}
 	}
@@ -1095,8 +1097,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								JDesktopPane fDesk = parent.getFdesk();
 								JInternalFrame[] allframes = fDesk.getAllFrames();
 								for (JInternalFrame ifr: allframes) {
-									if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
-										fDesk.remove(ifr);
+									if (ifr.getName()!=null) {
+										if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
+											fDesk.remove(ifr);
+										}
 									}
 								}
 								boolean diaCreated=false;
