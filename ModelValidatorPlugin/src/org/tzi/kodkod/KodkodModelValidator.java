@@ -702,10 +702,6 @@ public abstract class KodkodModelValidator {
 			KodkodQueryCache.INSTANCE.setEvaluator(evaluator); 
 		}		
 
-		// Create an instance of the current model
-
-		//		TypeFactory tf = new PrimitiveTypeFactory();
-
 		// Create object of a class
 		ModelFactory mFactory = new ModelFactory();
 		//		IModelFactory iMFactory = new SimpleFactory();
@@ -1408,7 +1404,7 @@ public abstract class KodkodModelValidator {
 							}
 						}
 					}
-					// Posible AQUI
+
 					if (threadGreedy!=null) {
 						if (threadGreedy.isInterrupted()) {
 							System.out.println("Cancelación solicitada. Terminando cálculo...");
@@ -1417,7 +1413,6 @@ public abstract class KodkodModelValidator {
 					}
 					if (calON &&stopBrute) {
 						System.out.println("Cancelación solicitada. Terminando cálculo...");
-						//						stopBrute=false;
 						return listRes;
 					}
 				}
