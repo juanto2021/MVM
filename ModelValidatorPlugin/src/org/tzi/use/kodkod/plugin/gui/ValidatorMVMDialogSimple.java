@@ -90,9 +90,9 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	Collection<MClassInvariant> listInvUnSatisfiablesMC = null;
 	Collection<MClassInvariant> invClassTotalMC=null;
 
-	List<String> listStrSatisfiables = null;
-	List<String> listStrUnSatisfiables = null;
-	List<String> listStrGrupos = null;
+	List<String> listStrSatisfiables = new ArrayList<String>();
+	List<String> listStrUnSatisfiables = new ArrayList<String>();
+	List<String> listStrGrupos = new ArrayList<String>();
 
 	Map<Integer, IInvariant> mapInvSAT=null;
 	Map<Integer, MClassInvariant> mapInvSATMC=null;
@@ -1539,9 +1539,16 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
 		//		WizardMVMView o = parent.showMVMWizard("MVMWizard");
-		WizardMVMView o = parent.showMVMWizard(NAMEFRAMEMVMWIZARD);
+		WizardMVMView o = parent.showMVMWizard(NAMEFRAMEMVMWIZARD, listStrSatisfiables, listStrUnSatisfiables);
 		o.refreshComponents();
 		o.requestFocus();
+		parent.listStrSatisfiables=listStrSatisfiables;
+		parent.listStrUnSatisfiables=listStrUnSatisfiables;
+//		o.listSatisfiables=listStrSatisfiables;
+//		o.listUnSatisfiables=listStrUnSatisfiables;
+		
+//		this.listInvSatisfiables = param.getListInvSatisfiables();
+//		this.listInvUnSatisfiables = param.getListInvUnSatisfiables();
 
 		//---
 		//		JFrame wizardFrame = o.frame; // o como se exponga
