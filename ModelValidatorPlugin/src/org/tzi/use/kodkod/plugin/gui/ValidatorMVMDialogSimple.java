@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -285,7 +287,18 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		frame.setIconImage(icono);
 
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+//		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		
+		this.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		        parent.listStrSatisfiables = listStrSatisfiables;
+		        parent.listStrUnSatisfiables = listStrUnSatisfiables;
+		        closeDialog();
+		    }
+		});
+		
 		getContentPane().setLayout(new BorderLayout());
 
 		JPanel p = new JPanel();
@@ -346,7 +359,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			int pNumCmbsTOTAL, int pNumCmbsSAT, int pNumCmbsUNSAT) {
 		this.listStrSatisfiables = sortBynNumInvs(pListStrSatisfiables,true);
 		this.listStrUnSatisfiables = sortBynNumInvs(pListStrUnSatisfiables,false);
-		//		this.listStrOthers = pListStrOthers;
 		this.timeElapsed=pTimeElapsed;
 		this.numCallSolver=pNumCallSolver;
 		this.numCallSolverSAT=pNumCallSolverSAT;
@@ -392,6 +404,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				parent.listStrSatisfiables=listStrSatisfiables;
+				parent.listStrUnSatisfiables=listStrUnSatisfiables;
 				closeDialog();
 			}
 		});
@@ -764,7 +778,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 				String[] partes = valor.split("-");
 				String strOrden=partes[0];
-				//				int intOrder = Integer.parseInt(strOrden)-1;
 
 				lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");
 				lbTextOCLUnsat.setText("OCL for inv.: " + valor);
@@ -829,40 +842,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 						if (solution.outcome().toString() == "SATISFIABLE" || bCheckInvs) {
 							Session session = kodParent.getSession();
 							try {
-								//								closeDialog();//Provis
-								//								checkExistDiagram();
-								//								
-								//								//AQUI PROVIS
-								//								if (!existDiagram) {
-								//									NewObjectDiagramView odv = createObjectDiagramCreator(combinacion, solution,kodParent.getIModel(),  session);
-								//									odv.setName(NAMEFRAMEMVMDIAGRAM);
-								//									odvGral = odv;
-								//								}else {
-								//									System.out.println("Aqui existe dia");
-								//									if(odvGral!=null) {
-								//										odvGral.repaint();//PROVIS
-								//									}
-								//									
-								//								}
-								//								// Provis
-								//								if (!existWizard) {
-								//									createMVMWizard(combinacion, solution,kodParent.getIModel(), session);
-								//								}else {
-								//									// Si existe deberia hacerse un refreshcomponent en el wizard
-								//									System.out.println("Aqui");
-								//									WizardMVMView wizardMVMView= parent.getMVMWizard();
-								//									wizardMVMView.refreshComponents();
-								//								}		
-								//
-								//								//								closeDialog();
-								//								tile();
-
-								//-- provis
 
 								for (MLink oLink: session.system().state().allLinks()) {
 									session.system().execute(
 											new MLinkDeletionStatement(oLink));
-									//									System.out.println("Borro oLink " + oLink.association().name());
 								}
 								Set<MObject> allObjects = session.system().state().allObjects();
 								List<MObject> lObjs = new ArrayList<MObject>();
@@ -873,7 +856,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 									MSystemState state = session.system().state();
 									MObject fObject = state.objectByName(oObj.name());
 									state.deleteObject(fObject);
-									//									System.out.println("Borro fObject " + fObject.name());
 								}								JDesktopPane fDesk = parent.getFdesk();
 								JInternalFrame[] allframes = fDesk.getAllFrames();
 								for (JInternalFrame ifr: allframes) {
@@ -911,15 +893,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								}	
 
 								tile();
-
-								//								dispose();//JG
 								closeDialog();
-
-
-								//--
-
-
-
 
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -970,7 +944,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 			String[] partes = valor.split("-");
 			String strOrden=partes[0];
-			//			int intOrder = Integer.parseInt(strOrden)-1;
 
 			lbCmbWithoutInv.setText("Example instances without inv.: " + valor+ " ("+strOrden+")");	// JG Cambiado	
 		}else {
@@ -993,13 +966,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		//		Ver frames
 		JDesktopPane fDesk = parent.getFdesk();
 		JInternalFrame[] allframes = fDesk.getAllFrames();
-		//		Window[] ws = parent.getOwnedWindows();
 		for (JInternalFrame ifr: allframes) {
 			if (ifr.getName()!=null) {
 				if (ifr.getName().equals(NAMEFRAMEMVMDIAGRAM)) {
 					existDiagram=true;
-					//				odvGral = (NewObjectDiagramView) ifr;
-
 				}
 				if (ifr.getName().equals(NAMEFRAMEMVMWIZARD)) {
 					existWizard=true;
@@ -1080,7 +1050,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								for (MLink oLink: session.system().state().allLinks()) {
 									session.system().execute(
 											new MLinkDeletionStatement(oLink));
-									//									System.out.println("Borro oLink " + oLink.association().name());
 								}
 								Set<MObject> allObjects = session.system().state().allObjects();
 								List<MObject> lObjs = new ArrayList<MObject>();
@@ -1091,7 +1060,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 									MSystemState state = session.system().state();
 									MObject fObject = state.objectByName(oObj.name());
 									state.deleteObject(fObject);
-									//									System.out.println("Borro fObject " + fObject.name());
 								}
 
 								JDesktopPane fDesk = parent.getFdesk();
@@ -1129,14 +1097,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
 								}else {
 									parent.refreshMVMWizard();
-
 								}	
 
 								tile();
-
-								//								dispose();//JG
 								closeDialog();
-								//								setVisible(false);
 
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -1224,15 +1188,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 	}
 	public void closeDialog() {
 		try {
-			//			finalize();
 			dispose();
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		dispose();
-		//		setVisible(false);
 	}
 
 	/**
@@ -1305,7 +1266,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbNumCallsSAT.setPreferredSize(dl);
 
 		txNumCallsSAT = new JTextField(String.valueOf(numCallSolverSAT)); 
-		//		txNumCallsSAT = new JTextField(String.valueOf(numCmbsSAT));
 		txNumCallsSAT.setPreferredSize(dt);
 		txNumCallsSAT.setEditable(false);
 		txNumCallsSAT.setHorizontalAlignment(JTextField.RIGHT);
@@ -1318,7 +1278,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbNumCallsUNSAT.setPreferredSize(dl);
 
 		txNumCallsUNSAT = new JTextField(String.valueOf(numCallSolverUNSAT)); 
-		//		txNumCallsUNSAT = new JTextField(String.valueOf(numCmbsUNSAT)); 
 		txNumCallsUNSAT.setPreferredSize(dt);
 		txNumCallsUNSAT.setEditable(false);
 		txNumCallsUNSAT.setHorizontalAlignment(JTextField.RIGHT);
@@ -1330,7 +1289,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JLabel lbNumCmbTotal = new JLabel("Total number of combinations ");
 		lbNumCmbTotal.setPreferredSize(dl);
 
-		//		txNumCmbTotal = new JTextField(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
 		txNumCmbTotal = new JTextField(Integer.toString(numCmbsTOTAL));
 		txNumCmbTotal.setPreferredSize(dt);
 		txNumCmbTotal.setEditable(false);
@@ -1343,7 +1301,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JLabel lbNumCmbSAT = new JLabel("Total number of combinations satisfiable ");
 		lbNumCmbSAT.setPreferredSize(dl);
 
-		//		txNumCmbSAT = new JTextField(Integer.toString(listStrSatisfiables.size()));
 		txNumCmbSAT = new JTextField(Integer.toString(numCmbsSAT)); 
 		txNumCmbSAT.setPreferredSize(dt);
 		txNumCmbSAT.setEditable(false);
@@ -1356,7 +1313,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		JLabel lbNumCmbUNSAT = new JLabel("Total number of combinations unsatisfiable ");
 		lbNumCmbUNSAT.setPreferredSize(dl);
 
-		//		txNumCmbUNSAT = new JTextField(Integer.toString(listStrUnSatisfiables.size())); 
 		txNumCmbUNSAT = new JTextField(Integer.toString(numCmbsUNSAT));
 		txNumCmbUNSAT.setPreferredSize(dt);
 		txNumCmbUNSAT.setEditable(false);
@@ -1475,9 +1431,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		txNumCalls.setText(String.valueOf(numCallSolver)); 
 		txNumCallsSAT.setText(String.valueOf(numCallSolverSAT)); 
 		txNumCallsUNSAT.setText(String.valueOf(numCallSolverUNSAT)); 
-		//		txNumCmbTotal.setText(Integer.toString(listStrSatisfiables.size()+listStrUnSatisfiables.size())); 
-		//		txNumCmbSAT.setText(Integer.toString(listStrSatisfiables.size()));
-		//		txNumCmbUNSAT.setText(Integer.toString(listStrUnSatisfiables.size()));
 		txNumCmbTotal.setText(Integer.toString(numCmbsTOTAL)); 
 		txNumCmbSAT.setText(Integer.toString(numCmbsSAT));
 		txNumCmbUNSAT.setText(Integer.toString(numCmbsUNSAT));	
@@ -1538,27 +1491,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		return odv;
 	}
 	private void createMVMWizard(String combinacion, Solution solution,IModel iModel, Session session) {
-		//		WizardMVMView o = parent.showMVMWizard("MVMWizard");
+
 		WizardMVMView o = parent.showMVMWizard(NAMEFRAMEMVMWIZARD, listStrSatisfiables, listStrUnSatisfiables);
 		o.refreshComponents();
 		o.requestFocus();
 		parent.listStrSatisfiables=listStrSatisfiables;
 		parent.listStrUnSatisfiables=listStrUnSatisfiables;
-//		o.listSatisfiables=listStrSatisfiables;
-//		o.listUnSatisfiables=listStrUnSatisfiables;
-		
-//		this.listInvSatisfiables = param.getListInvSatisfiables();
-//		this.listInvUnSatisfiables = param.getListInvUnSatisfiables();
-
-		//---
-		//		JFrame wizardFrame = o.frame; // o como se exponga
-		//
-		//		wizardFrame.setVisible(true);
-		//		SwingUtilities.invokeLater(() -> {
-		//			o.requestFocusInWindow();
-		//		});	
-		//---
-
 	}
 
 	/**
