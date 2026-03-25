@@ -279,7 +279,7 @@ public abstract class KodkodModelValidator {
 		c.add(civ, BorderLayout.CENTER);
 
 		MainWindow.instance().addNewViewFrame(f);
-		System.out.println("Showed");
+		if (debMVM) System.out.println("Showed");
 		return res;
 	}
 
@@ -564,7 +564,6 @@ public abstract class KodkodModelValidator {
 	 * Checks the state of invariants
 	 */
 	public boolean check_inv_state() {
-		//		boolean bRes = false;
 
 		EvalResult[] fValues = load_Values();
 		MModel fModel = session.system().model();
@@ -721,11 +720,9 @@ public abstract class KodkodModelValidator {
 				}
 
 				Map<String, MElementAnnotation> oAnnot = model.getAllAnnotations();
-				//				int nAnnotations = oAnnot.size();
 
 				// Annotations
 				for (Entry<String, MElementAnnotation> item : oAnnot.entrySet()){
-					//					String key = item.getKey();
 					MElementAnnotation oME = item.getValue();
 					mModel.addAnnotation(oME);
 				}
@@ -889,7 +886,7 @@ public abstract class KodkodModelValidator {
 		numCmbsSAT=0;
 		numCmbsUNSAT=0;
 		numCmbsTOTAL=0;
-		//		debMVM=true;//provis
+
 		this.model = model;
 		evaluator = null;
 		kodkodSolver = new KodkodSolver();
@@ -953,12 +950,6 @@ public abstract class KodkodModelValidator {
 			for (IInvariant invClass: invClassTotal) {
 				invClass.deactivate();
 			}
-			// --- Podria ser si se cambia ... (CHG)
-			//			for (MClassInvariant invClassMC: invClassTotalMC) {
-			//				invClassMC.setActive(false);
-			//			}
-
-			//-----------------------
 
 			Instant end0 = Instant.now();
 			timeDeactivateAll = Duration.between(start0, end0);
@@ -979,8 +970,6 @@ public abstract class KodkodModelValidator {
 				}	
 
 				invClass.activate(); // Activate just one
-				// Podria ser si se cambia (CHG)
-				//				invMClassOActual.setActive(true);
 
 				solution = call_Solver(model);
 				numCallSolver+=1;
@@ -1022,8 +1011,6 @@ public abstract class KodkodModelValidator {
 
 				// At the end we deactivate the treated invariant to leave all of them deactivated.
 				invClass.deactivate();
-				// Could be if you change to MClassInvariant (CHG)
-				//				invMClassOActual.setActive(false);
 			}
 
 			if (debMVM) {
@@ -1033,8 +1020,10 @@ public abstract class KodkodModelValidator {
 					System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
 				}
 			}
-			for (int nInv = 0; nInv < tabInv.length; nInv++) {
-				System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
+			if (debMVM) {
+				for (int nInv = 0; nInv < tabInv.length; nInv++) {
+					System.out.println("[" + (nInv+1)+ "] ["+ tabInv[nInv].name()+"]");
+				}
 			}
 			Instant end1 = Instant.now();
 			timeCalcIndividually = Duration.between(start1, end1);
@@ -1050,7 +1039,7 @@ public abstract class KodkodModelValidator {
 			}
 
 			boolean bResInvs = check_inv_state();
-			bResInvs=false;//provis JG
+			bResInvs=false;
 			boolean bResAssocs = checkStructure();
 
 			if (invClassSatisfiables.size()==0) {
@@ -1092,7 +1081,9 @@ public abstract class KodkodModelValidator {
 						@Override
 						protected void done() {
 							// Aquí sabes que el hilo ha terminado
-							System.out.println("The calculation is complete.");
+							if (debMVM) {
+								System.out.println("The calculation is complete.");
+							}
 							MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 							MainWindow.instance().statusBar().showMessage("");
 							MainWindow.instance().enableAction("ValidationMVMG", true);
@@ -1153,20 +1144,6 @@ public abstract class KodkodModelValidator {
 			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
 		}
 
-		//-- possible if MClass is changed (CHG)
-		//		int i = 0;
-		//		for (MClassInvariant invClassMC: invClassSatisfiablesMC) {
-		//			// Search satisfiable inv in listInvRes to obtain then position
-		//			i = searchNumInvMC(invClassMC);
-		//			bCmbBase.set(i-1);
-		//			BitSet bit=new BitSet();
-		//			bit.set(i-1);
-		//			lBitCmbSAT = review_store_SAT(lBitCmbSAT,bit);
-		//		}
-		//---
-
-
-
 		lBitCmb = comRestoB(bCmbBase,true, null);
 
 		if (stopBrute) {
@@ -1188,19 +1165,6 @@ public abstract class KodkodModelValidator {
 			lBitCmbUNSAT = review_store_UNSAT(lBitCmbUNSAT,bit);
 		}
 
-		//-- posible si se cambia MClass (CHG)
-		//		i = 0;
-		//		for (MClassInvariant invClassMC: invClassUnSatisfiablesMC) {
-		//			// Search satisfiable inv in listInvRes to obtain then position
-		//			i = searchNumInvMC(invClassMC);
-		//			bCmbBase.set(i-1);
-		//			BitSet bit=new BitSet();
-		//			bit.set(i-1);
-		//			lBitCmbUNSAT = review_store_UNSAT(lBitCmbUNSAT,bit);
-		//		}		
-
-
-		// --------------------------------------------------------------------
 		// I add lists from the new structures
 		TraspasaCHB();
 		Instant end6 = Instant.now();
@@ -1243,7 +1207,6 @@ public abstract class KodkodModelValidator {
 				);
 		showValidatorMVMDialogSimple();
 
-
 	}
 	private void showValidatorMVMDialogSimple() {
 		JDialog dia = MainWindow.instance().getValidatorDialog();
@@ -1258,6 +1221,8 @@ public abstract class KodkodModelValidator {
 	}
 
 	private void model_metrics() {
+		if (!debMVM) return;
+
 		System.out.println("====================================");
 		System.out.println("Model metrics [" + model.name()+"]");
 		System.out.println("====================================");
@@ -1537,9 +1502,6 @@ public abstract class KodkodModelValidator {
 		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
 		col = makeCollectionInvs(invClassSatisfiables);
 
-		// Si cambiamos a MClassInvs seria lo siguienye (CHG)
-		//		col = makeCollectionInvsMC(invClassSatisfiablesMC);
-
 		BitSet cmbTotalHB = new BitSet();
 		cmbTotalHB = makeTotalCmbCHB(col);
 
@@ -1573,7 +1535,8 @@ public abstract class KodkodModelValidator {
 			// modeG = "N", random is used to start with an invariant		
 			// modeG = "T" All invariants are used to join results
 			String modeG="T";// Get the best results
-			modeG="R";//Test
+			modeG="R";
+			//			modeG="N";//Test
 			if (debMVM) {
 				LOG.info("MVM: Start Greedy");
 			}
@@ -1614,9 +1577,9 @@ public abstract class KodkodModelValidator {
 		tipoSearchMSS="G";	
 		int numberIter=numIterGreedy;
 		Instant insShowVal1 = Instant.now();
-
-		System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
-
+		if (debMVM) {
+			System.out.println("numCmbsSAT ["+numCmbsSAT+"] numCmbsUNSAT ["+numCmbsUNSAT+"] numCmbsTOTAL ["+numCmbsTOTAL+"]");
+		}
 		// If the dialogue exists, we delete it.
 		ValidatorMVMDialogSimple dia = MainWindow.instance().getValidatorDialog();
 
@@ -1664,6 +1627,7 @@ public abstract class KodkodModelValidator {
 	}
 
 	private void AddLogTime(String txtLog, Duration timeElapsed) {
+		if (!debMVM) return;
 		String textoFormateado = String.format("%-35s", txtLog);
 		String numeroFormateado = String.format("%10d", timeElapsed.toMillis());
 		System.out.println("[" + textoFormateado + "] ["+numeroFormateado+"]");
@@ -1766,7 +1730,9 @@ public abstract class KodkodModelValidator {
 		if (threadGreedy!=null) {
 			// see if the thread is running
 			if (threadGreedy.isAlive()) {
-				System.out.println("Esta vivo");
+				if (debMVM) {
+					System.out.println("Esta vivo");
+				}
 
 				if (threadGreedy != null) {
 					threadGreedy.requestStop();
@@ -1779,11 +1745,14 @@ public abstract class KodkodModelValidator {
 					threadGreedy = null;
 				}
 
-				//				System.out.println("lo paro");
-				System.out.println("Cancellation requested. Calculation is being completed...");
-				System.out.println("The calculation is complete.");
+				if (debMVM) {
+					System.out.println("Cancellation requested. Calculation is being completed...");
+					System.out.println("The calculation is complete.");
+				}
 			}else {
-				System.out.println("It has stopped");
+				if (debMVM) {
+					System.out.println("It has stopped");
+				}
 			}
 		}
 		if (calON) {
@@ -1956,12 +1925,6 @@ public abstract class KodkodModelValidator {
 		return col;
 	}
 
-	// Si cambiamos a MClassInvs seria lo siguienye (CHG)
-	//	private static Collection<MClassInvariant> makeCollectionInvsMC(Collection<MClassInvariant> invClassSatisfiables) {
-	//		Collection<MClassInvariant> col = new ArrayList<MClassInvariant>();
-	//		col = invClassSatisfiables;
-	//		return col;
-	//	}
 	/**
 	 * Build invariant relation tree using Visitor
 	 * @param col
@@ -2031,25 +1994,8 @@ public abstract class KodkodModelValidator {
 		return numInvGral;
 	}
 
-	//-- possible if MClass is changed (CHG)
-	//	private static int searchNumInvMC(MClassInvariant inv) {
-	//		int numInvGral=-1;
-	//		for (int nInv = 0; nInv < tabInvMClass.length; nInv++) {
-	//			if(inv.name().equals(tabInvMClass[nInv].name())) {
-	//				numInvGral=nInv+1;
-	//				continue;
-	//			}
-	//		}
-	//
-	//		if (debMVM) {
-	//			if (numInvGral<0) {
-	//				System.out.println("inv " + inv + " numInv<0 en searchNumInv");
-	//			}
-	//		}
-	//		return numInvGral;
-	//	}
 	private static int searchNumInv(IInvariant inv) {
-		// Search number by inv//JG
+		// Search number by inv
 		int numInvGral=-1;
 		for (int nInv = 0; nInv < tabInv.length; nInv++) {
 
@@ -2351,20 +2297,6 @@ public abstract class KodkodModelValidator {
 		}
 		return cmbHB;
 	}	
-
-	/**
-	 * Given a base combination obtained with greedy, look for relation of invariants
-	 * remaining and returns a combination with all of them
-	 * @param strCmbBase
-	 * @param strCmbTotal
-	 * @return
-	 */
-
-	//	private static BitSet makeRestCmbCHB(BitSet cmbBaseB, BitSet cmbTotalB) {
-	//		BitSet cmbResB = (BitSet) cmbBaseB.clone();
-	//		cmbResB.xor(cmbTotalB);
-	//		return cmbResB;
-	//	}	
 
 	/**
 	 * Print content of mapInfoInvSet
