@@ -281,24 +281,21 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		frame = new JFrame(titleFrame);
 		setTitle(titleFrame);
 
-		//JG Cambiar url resource MvMJG.png
-
 		Image icono = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Juanto\\git\\JuantoModelValidator\\ModelValidatorPlugin\\resources\\MvMJG.png");
 
 		frame.setIconImage(icono);
 
-//		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		
+
 		this.addWindowListener(new WindowAdapter() {
-		    @Override
-		    public void windowClosing(WindowEvent e) {
-		        parent.listStrSatisfiables = listStrSatisfiables;
-		        parent.listStrUnSatisfiables = listStrUnSatisfiables;
-		        closeDialog();
-		    }
+			@Override
+			public void windowClosing(WindowEvent e) {
+				parent.listStrSatisfiables = listStrSatisfiables;
+				parent.listStrUnSatisfiables = listStrUnSatisfiables;
+				closeDialog();
+			}
 		});
-		
+
 		getContentPane().setLayout(new BorderLayout());
 
 		JPanel p = new JPanel();
@@ -503,25 +500,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 		return lNInv;
 	}
-	// Valid if we use MC estrategy (CHG)
-	//	private List<String> getListInvMC(String cmb){
-	//		List<String> lNInv = new ArrayList<String>();
-	//		if (cmb.equals("")) {
-	//			return lNInv;
-	//		}
-	//		String[] partes = cmb.split("-");		
-	//		int numPartes=partes.length;
-	//		for (int nParte = 0 ; nParte < numPartes ; nParte++) {
-	//			String nInv = partes[nParte];
-	//			int order = Integer.parseInt(nInv);
-	//			// Nuevo
-	//			MClassInvariant inv = (tabInvMClass[order-1]);
-	//			String strInv = order+"-"+inv.getClass().getName()+"::"+inv.name();
-	//			lNInv.add(strInv);
-	//		}
-	//
-	//		return lNInv;
-	//	}
+
 	/**
 	 * Busca combinaciones satisfiables sin la invariante indicada
 	 * @param cmb
@@ -575,10 +554,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		boolean res=true;
 		int totalInv = listInvSatisfiables.size() + listInvUnSatisfiables.size() ;
 		String strFormat="%0"+String.valueOf(totalInv).length()+"d";
-
-		// Si hay cambio a MClass ... (CHG)
-		//		int totalInv = listInvSatisfiablesMC.size() + listInvUnSatisfiablesMC.size() ;
-		//		String strFormat="%0"+String.valueOf(totalInv).length()+"d";
 
 		Map<String,String> mapResLimpia = new HashMap<>();
 		String[] partesA = cmbA.split("-");
@@ -710,13 +685,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					String strLineList = nameInv;
 					lNamesInv.addElement(strLineList);
 				}
-				//--- si hay cambio a MClassInvariant será CHG)
-				// getListInvMC
-				//				for (String nameInv: getListInvMC(strCmb)) {
-				//					String strLineList = nameInv;
-				//					lNamesInv.addElement(strLineList);
-				//				}
-				//---
+
 				lNames.setModel(lNamesInv);
 				lNames.setSelectedIndex(0);
 
@@ -770,7 +739,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		scrollPaneNameErr = new JScrollPane (lNames, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 		
 
-		// Evento clic
+		//  clic Event
 		lNames.setSelectedIndex(0);
 		lNames.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
@@ -832,13 +801,12 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
 
 					Solution solution=null;
-					//					KodkodSolver kodkodSolver = new KodkodSolver();
-					// hay que ver sa el check de invariants es correcto
-					// Provisionalmente decimos que si
+
+					// We need to check if the invariants check is correct.
+					// Provisionally, we say yes.
 					boolean bCheckInvs = kodParent.check_inv_state();
 					try {
 						solution = kodParent.calcular( combinacion,  invClassTotal);
-						//						if (solution.outcome().toString() == "SATISFIABLE") {
 						if (solution.outcome().toString() == "SATISFIABLE" || bCheckInvs) {
 							Session session = kodParent.getSession();
 							try {
@@ -881,7 +849,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 												}
 											}
 										}else {
-											// de momento nada
+											// Do nothing
 										}
 									}
 								}
@@ -998,10 +966,10 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		pListCmbSat.setBorder(border);
 		pListCmbSat.setLayout(new BorderLayout());
 
-		// Hacer limpieza de combinaciones insatisfactibles que ya contengan combinaciones insatisfactibles menores
+		// Clean up unsatisfiable combinations that already contain smaller unsatisfiable combinations
 		listStrSATLimpia = limpiaSAT(listStrSatisfiables);		
 
-		// Lista con combinaciones satisfactibles 'limpias' de combinaciones superfluas
+		// List with satisfactory combinations 'clean' of superfluous combinations
 		lSAT = makeListMode(listStrSATLimpia);
 
 		lCombisSat = new JList<String>(lSAT);
@@ -1034,7 +1002,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 				String textOCLSat = getOCL(lNamesSol.getSelectedValue().trim());
 				textAreaOCLSat.setText(textOCLSat);
 				textAreaOCLSat.setCaretPosition(0);
-				// Crear object diagram
+				// Create object diagram
 
 				if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
 
@@ -1042,7 +1010,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 					try {
 						solution = kodParent.calcular( strCmbSAT,  invClassTotal);
 						boolean bCheckInvs = true;
-						//						if (solution.outcome().toString() == "SATISFIABLE") {
 						if (solution.outcome().toString() == "SATISFIABLE"||bCheckInvs) {
 							Session session = kodParent.getSession();
 							try {
@@ -1139,7 +1106,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		scrollPaneNameSat = new JScrollPane (lNamesSol,    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 		
 
-		// Evento clic
+		// Clic Event
 		lNamesSol.setSelectedIndex(0);
 		lNamesSol.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
@@ -1253,7 +1220,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 		lbNumCalls.setPreferredSize(dl);
 
 		txNumCalls = new JTextField(String.valueOf(numCallSolver));
-		//		txNumCalls = new JTextField(String.valueOf(numCmbsTOTAL));
 		txNumCalls.setPreferredSize(dt);
 		txNumCalls.setEditable(false);
 		txNumCalls.setHorizontalAlignment(JTextField.RIGHT);
@@ -1449,7 +1415,7 @@ public class ValidatorMVMDialogSimple extends JDialog {
 			if (solution.instance()!=null) {
 				odc.create(solution.instance().relationTuples());
 			}else {
-				// de momento nada
+				// Do nothing
 			}
 
 		} catch (UseApiException e) {
@@ -1544,7 +1510,6 @@ public class ValidatorMVMDialogSimple extends JDialog {
 
 				if ("MVM Wizard".equals(f.getTitle())) {
 					try {
-						//						System.out.println("Aqui1");
 						f.setIcon(false);
 						f.moveToFront();
 						f.setSelected(true);

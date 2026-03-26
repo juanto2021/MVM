@@ -205,6 +205,7 @@ public abstract class KodkodModelValidator {
 		evaluator = null;
 
 		kodkodSolver = new KodkodSolver();
+	
 		if (debMVM) {
 			LOG.info("MVM: Llama a solver desde validate en KodkodModelValidator");
 		}
@@ -875,6 +876,10 @@ public abstract class KodkodModelValidator {
 	 */
 	public void validateVariable(IModel model, MModel mModel, Session session, String tipoSearchMSS ) {
 		MainWindow.instance().statusBar().showMessage("Searching for combinations using Brute force...");
+		
+//		System.out.println("debMVM ["+debMVM+"]");
+		
+		
 		this.session=session;
 		invsMModel = mModel.classInvariants().size();
 		invsIModel = model.classInvariants().size();
