@@ -856,6 +856,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								if (!existWizard) {
 									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
 								}else {
+									parent.listStrSatisfiables = listStrSatisfiables;
+									parent.listStrUnSatisfiables = listStrUnSatisfiables;									
 									parent.refreshMVMWizard();
 
 								}	
@@ -1063,6 +1065,8 @@ public class ValidatorMVMDialogSimple extends JDialog {
 								if (!existWizard) {
 									createMVMWizard(strCmbSAT, solution,kodParent.getIModel(), session);
 								}else {
+									parent.listStrSatisfiables = listStrSatisfiables;
+									parent.listStrUnSatisfiables = listStrUnSatisfiables;
 									parent.refreshMVMWizard();
 								}	
 
