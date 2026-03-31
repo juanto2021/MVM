@@ -108,8 +108,9 @@ public class KodkodValidateMVMActionL  implements IPluginActionDelegate {
 				String tipoSearchMSS = "L";
 				uk2.validateVariable(model, mModel, session, tipoSearchMSS);
 				// We deactivate the hourglass		
-				MainWindow.instance().setCursor(Cursor.getDefaultCursor());
+//				MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 			});
+//			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
 		}
 	}
 

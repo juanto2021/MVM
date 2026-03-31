@@ -84,7 +84,7 @@ public class KodkodValidateMVMActionG  implements IPluginActionDelegate {
 			uk.validateVariable(model, mModel, session, tipoSearchMSS);
 			// We deactivate the hourglass		
 			MainWindow.instance().setCursor(Cursor.getDefaultCursor());
-			MainWindow.instance().setCursor(Cursor.getDefaultCursor());	
+//			MainWindow.instance().setCursor(Cursor.getDefaultCursor());	
 		}else {
 			JOptionPane.showMessageDialog(pluginAction.getParent(),
 					"A combination search already exists. Stop it first.", "Greedy calculation launches", JOptionPane.ERROR_MESSAGE);
