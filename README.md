@@ -4,8 +4,7 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Instructions for minimal installation for testing](#instructions-for-minimal-installation-for-testing)
-- [Instructions for full installation](#instructions-for-full-installation)
+- [Instructions for installation for testing](#instructions-for-minimal-installation-for-testing)
 - [Tool Description](#tool-description)
   - [Model](#model)
   - [Main window](#main-window)
