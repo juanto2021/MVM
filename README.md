@@ -46,79 +46,27 @@ Author: ***Juan Antonio Gómez Gutiérrez(2025)***
 
 ----
 
-# Instructions for minimal installation for testing
+# Instructions for installation for testing
 
-If you just want to try the tool, simply download the following compressed file:
-https://drive.google.com/file/d/1LIwjN9ij4VgNmRD4M1ZnvAnGz9txmMhd/view?usp=sharing
+To download and use MVM, simply follow these steps:
+1. Download the zip file from the following link:
 
+https://drive.google.com/file/d/14EeaRP86dlLBsfj_IFZgPsmaXpLX8iZS/view?usp=sharing
 
-Once downloaded, we will extract it to the folder we consider appropriate (e.g. C:\Temp) and we will notice that the folder created after extraction has the following contents:
+2. Have Java 11 (or higher) installed. If you don't have it, download it from the following link:
+https://adoptium.net/es/temurin/releases?version=11
 
-![](https://github.com/juanto2021/MVM/blob/main/04_Dir_MVM_Compact.png)
+3. Define the OPENAI_API_KEY environment variable with the key that allows the use of OpenAI. For example, open a CMD session and enter the following (each user has their own key):
+<div style="border: 1px solid #ccc; padding: 10px; border-radius: 6px;">
+setx OPENAI_API_KEY sk-proj-------xxxxxxxxx--------- K-NOFAoA
+</div>
 
-|Repository    |URL                                            |
-|:-------------|:----------------------------------------------|
-|**groupActions**   	   |Folder that will store the files with the action groups that we want to save.          |
-|**jre**	     |JRE using the tool.     |
-|**MVMUse**	 |Original USE content with the MVM-provided extension required for its execution.|
-|**wrkReplaceBodyInv**	 |MVM Toolkit for Compute and Storage of Invariant Alternatives.|
-|**command_use_Runtime.bat**	 |Batch process running MVM.|
-|**shop.properties**	 |Properties defined to test the sample model.|
-|**shop.use**	 |Definition of the example model.|
+Once you've downloaded the zip file to any folder, extract it and then simply run RUN from the extracted folder.
+If everything goes well, you should see the following:
 
-To run the application, double-click on the file:
+<img width="650" height="213" alt="image" src="https://github.com/user-attachments/assets/c2a171a4-e6b3-488f-ba37-da9d90cd2242" />
 
-```
-command_use_Runtime.bat
-```
-A CMD window will open:
-
-![](https://github.com/juanto2021/MVM/blob/main/05_CMD.png)
-
-Next, we'll see the application running:
-
-![](https://github.com/juanto2021/MVM/blob/main/06_MVM_Wizard.png)
-
-[(Up)](#Table-of-Contents)
-
-# Instructions for full installation
-
-
-To test **MVM** you need to have **Eclipse IDE for Java developers** (e.g. 2020-12 (4.18.0)) and download the following projects:
-
-|Repository    |URL                                            |
-|:-------------|:----------------------------------------------|
-|**MVM**   	   |https://github.com/juanto2021/MVM.git          |
-|**Use**	     |https://github.com/juanto2021/MVMUse.git     |
-|**Usecompi**	 |https://github.com/juanto2021/MVMUseCompi.git|
-
-
-
-Once downloaded to the same workspace, locate the **MVM project's** 'build.xml' file  and make sure the following properties are well defined:
-
-```html
-...
-<property name="use.path" value="..\..\MVMUseCompi\usecompi" />
-...
-<target name="deployDebug" depends="jar"\>
-  <copy file="dist/${filename}" todir="${use.path}/lib/plugins"/\>
-    <copy file="dist/${filename}" todir="../../MVMUse/use/lib/plugins"/\>
-  </target\>
-```
-
-Next, select the use '[MVMuse main]' project and create a Debug Configuration by setting the following values to Main:
-
-![](https://github.com/juanto2021/MVM/blob/main/01_Config.png)
-
-Click the **Debug** button and then, open the **shop.use** definition file:
-
-![](https://github.com/juanto2021/MVM/blob/main/02_Open_Specification.png)
-
-The first time you run the utility, you must also configure the properties through the **Plugins->Model Validator->Configuration** option to the following values:
-  
-![](https://github.com/juanto2021/MVM/blob/main/03_Shop_Properties.png)
-  
-Press Validate and verify that through the 'standard' validation of **USE**, the model is ***UNSATISFIABLE***.
+<img width="650" height="460" alt="image" src="https://github.com/user-attachments/assets/a4d657ec-5b69-40bd-8355-440cf757e30e" />
 
 [(Up)](#Table-of-Contents)
 
