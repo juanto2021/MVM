@@ -59,7 +59,7 @@ https://adoptium.net/es/temurin/releases?version=11
 ```
 **setx OPENAI_API_KEY sk-proj-------xxxxxxxxx---------K-NOFAoA**
 ```
-Once you've downloaded the zip file to any folder, extract it and then simply run RUN from the extracted folder.
+Once you've downloaded the zip file to any folder, extract it and then simply run **RUN** (or RUN nameFile)  bat from the extracted folder.
 If everything goes well, you should see the following:
 
 <img width="650" height="213" alt="image" src="https://github.com/user-attachments/assets/c2a171a4-e6b3-488f-ba37-da9d90cd2242" />
