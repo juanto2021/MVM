@@ -56,9 +56,12 @@ https://drive.google.com/file/d/14EeaRP86dlLBsfj_IFZgPsmaXpLX8iZS/view?usp=shari
 https://adoptium.net/es/temurin/releases?version=11
 
 3. Define the OPENAI_API_KEY environment variable with the key that allows the use of OpenAI. For example, open a CMD session and enter the following (each user has their own key):
-┌──────────────────────────────────────────────────────────────┐
-│  setx OPENAI_API_KEY sk-proj-------xxxxxxxxx---------K-NOFAoA │
-└──────────────────────────────────────────────────────────────┘
+╔══════════════════════════════════════════════════════════════╗
+
+║  🟦  setx OPENAI_API_KEY sk-proj-------xxxxxxxxx---------K-NOFAoA  ║
+
+╚══════════════════════════════════════════════════════════════╝
+
 
 Once you've downloaded the zip file to any folder, extract it and then simply run RUN from the extracted folder.
 If everything goes well, you should see the following:
