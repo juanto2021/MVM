@@ -110,7 +110,15 @@ If you click on this option, a message will appear requesting confirmation:
 
 <img src="imgREADME/01_03_ConfirmStop.png" width="400">
 
+When the search for combinations is complete, a dialog box appears containing the following tabs:
+- **Errors**: Displays groups of combinations that fail when active. Any set of joins that includes any of the groups shown in this tab will produce an unsatisfactory instance.
+- **Best approximate solutions**: Shows the groups of combinations that can be active simultaneously and that would produce a satisfactory instance.
+- **Statistics**: Provides statistical information such as:
+  - total time required to compute all combinations
+  - number of calls to the Solver
+  - number of satisfactory and unsatisfactory combinations
 
+In the title of the dialog box, you can see the selected method (Brute) and the name of the model being analyzed (Animals).
 
 -------------
 
