@@ -140,11 +140,26 @@ The **Close** button closes the dialog box and returns to the previous screen.
 
 In this tab, we can see the groups of joins that can generate satisfactory instances as long as the rest of the invariants that do not appear are disabled. Note that the groups are ordered from the highest number of satisfactory invariants to the least. 
 
+**_Panels_**
+
 The blocks that make up this tab are:
 - **Invariants**: Groups of invariants that generate a satisfactory instance. Similar to the one described in **Errors**, if we double-click on any line of the Invariants block, an instance is created and an object diagram opens showing it.
 -	**'1-2-3-4-5-7'**: shows the invariants that make up the group with their name.
 -	**OCL for inv: 1-Person::valildGreaterThanAge**: Displays the bodyexpression of the invariant selected in the previous block.
 
+### Statistics
+<img src="imgREADME/01_06_Statistics.png">
+
+**_Panels_**
+
+It displays the following information:
+-	**Execution time**: The time it takes for the process to complete.
+-	**Number of calls to the solver**: number of calls that are actually made to the solver.
+-	**Number of satisfied calls**: solver calls that are satisfactory.
+-	**Number of unsatisfied calls**: Calls to the solver that are unsatisfactory.
+-	**Total number of combinations**: Total number of combinations. 
+-	**Total number of satisfiable combinations**: number of total satisfactory combinations.
+-	**Total number of combinations unsatisfiable**: number of total unsatisfactory combinations.
 
 
 
