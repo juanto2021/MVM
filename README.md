@@ -188,6 +188,19 @@ To create an object diagram, simply double-click on one of the combinations show
 
 <img src="imgREADME/01_08_DO.png" width="3000">
 
+# MVM Wizard 
+This screen is the main screen from which the vast majority of the functionalities contained in MVM can be used or accessed.
+
+It is basically divided into 3 blocks:
+-	**Elements**: Manages existing objects in the current instance (additions, deletions, modifications, and queries)
+-	**Associations**: Manage existing links between objects
+-	**Actions**: access the utilities for repairing invariants, multiplicities, log of actions performed and consult OpenAI.
+
+<img src="imgREADME/02_01_Wizard_main.png">
+
+
+
+
 -------------
 
 # ACKNOWLEDGMENT
