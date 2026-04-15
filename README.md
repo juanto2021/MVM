@@ -126,7 +126,7 @@ In the title of the dialog box, you can see the selected method (Brute) and the 
 
 On this screen we can see different blocks that interact with each other so that, when we click on a row in the Faulty combinations panel, the rest of the blocks are synchronized and show the detail associated with the selected group.
 
-**Panels**
+**_Panels_**
 
 - Faulty combinations: In this example, we can see that 3 groups of MUS  (6, 4-8 and 5-8) have been detected. If we click on the first group (it contains the invariant '6'), we will see that the panel on the right shows the selected combination '6' as the title and inside it a line for each invariant of that combination.
 -	'6': panel showing all the invariants that make up the selected MUS group ('6'). When you select a line from this block, the instances without inv and OCL for inv Example panes  synchronize by displaying information associated with the invariant of the selected line.
