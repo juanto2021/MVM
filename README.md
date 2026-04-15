@@ -179,7 +179,7 @@ Regarding the dialog box shown during the search, it should be noted that when G
 
 To create an object diagram, simply double-click on one of the combinations shown in the Errors tab  or in Best approximate solutions:
 
-<img src="imgREADME/01_08_DO.png">
+<img src="imgREADME/01_08_DO.png" width="800">
 
 -------------
 
