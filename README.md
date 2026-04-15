@@ -224,13 +224,13 @@ context Orders inv distinctProductsInOrderLines:
 
 ```
 
-![](https://github.com/juanto2021/MVM/blob/main/07_Class_Diagram_Shop.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/07_Class_Diagram_Shop.png)
 
 ## Main window
 
 The listed functionalities are offered from several screens that are accessed from the following main screen:
 
-![](https://github.com/juanto2021/MVM/blob/main/08_Main_Window.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/08_Main_Window.png)
 
 To continue with the explanation, we can use the 'Fill' option and create an object from each of the classes. The panels are synchronized so that selecting a class displays its existing objects, and selecting an object displays its corresponding attributes and values.
 
@@ -238,17 +238,17 @@ To continue with the explanation, we can use the 'Fill' option and create an obj
 
 If we click on **Multiplicities**, we access the following screen:
 
-![](https://github.com/juanto2021/MVM/blob/main/09_W_Wizard_Association.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/09_W_Wizard_Association.png)
 
 This screen shows the existing associations and for each of them, the links created so far with information on connections, multiplicities, etc. that show a problem to be solved. At the bottom, actions are proposed to automatically resolve the problems associated with the link that we find previously selected in the **Links** table. Once a proposal has been selected, when we return to the main screen we will see the actions that have been carried out, such as the creation of objects and their assignment to establish links in an association:
 
-![](https://github.com/juanto2021/MVM/blob/main/10_W_Object_Diagram.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/10_W_Object_Diagram.png)
 
 ## Verify Object Satisfiability
 
 To check the satisfiability of the invariants in each of the existing objects, you can access the Check Satisfiability Object of MVM window by clicking on the OBJs button that is in red indicating the existence of a problem:
 
-![](https://github.com/juanto2021/MVM/blob/main/11_W_Objects_Satisfiability.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/11_W_Objects_Satisfiability.png)
 
 On this screen we can filter which objects have a problem and which invariant are not met in each case. When selecting an object, we can also see an auxiliary table where the expressions of each invariant are shown to facilitate comparison with the naked eye.
 
@@ -256,7 +256,7 @@ On this screen we can filter which objects have a problem and which invariant ar
 
 MVM records each of the actions performed (creation, modification and deletion of objects and links) in order to store collections of actions and retrieve them later to reproduce a certain situation. To access the management of these groups of actions we can click on the Actions button:
 
-![](https://github.com/juanto2021/MVM/blob/main/12_W_Wizard_Actions.png)  
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/12_W_Wizard_Actions.png)  
 
 On this screen we can save and/or retrieve groups of actions and within each group we can select a specific action to recreate all the objects and links that are displayed after the completion of that action. In this way we can reconstruct a situation over and over again easily and quickly.
 
@@ -269,18 +269,18 @@ To simplify the explanation, we omitted all the classic management of partial re
 ## Launch Brute force
 To test the tool, we can load the '**shop**' model into **USE** and then run the search for combinations for example using the '**Brute force**' method:
 
-![](https://github.com/juanto2021/MVM/blob/main/13_Launch_Brute_Force.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/13_Launch_Brute_Force.png)
 
 After you run this option, a dialog box with the search results will be displayed. If we look at the '**Best approximate solutions**' tab, we will see that it shows a group of invariants that allow us to make the model satisfactory:
 
-![](https://github.com/juanto2021/MVM/blob/main/14_Resultado_Brute_Force.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/14_Resultado_Brute_Force.png)
 
 
 ## Launch MVM Wizard & Object diagram
 
 Double-clicking on the line that contains this group (top-left panel) will cause the Wizard to open for the processing of objects and links, and an object diagram will also be displayed with the result of the previous search:
 
-![](https://github.com/juanto2021/MVM/blob/main/15_W_Pral.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/15_W_Pral.png)
 
 In this case, we see that all the necessary links have been satisfied so that the 'multiplicities' section is displayed without problems.
 
@@ -288,11 +288,11 @@ In this case, we see that all the necessary links have been satisfied so that th
 
 If we click on the **OBJs** button to see which invariants are met or not, the '**Check Objects Satisfiability**' dialog will appear showing the status of all the invariants so that we can start making decisions:
 
-![](https://github.com/juanto2021/MVM/blob/main/16_W_Check_Objects_Satisfiability.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/16_W_Check_Objects_Satisfiability.png)
 
 Analysing in a little more detail, we see that the invariants that fail are the following:
 
-![](https://github.com/juanto2021/MVM/blob/main/17_W_COS_Fail01.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/17_W_COS_Fail01.png)
 
 That is, in the **customers1** object, it fails because it does not have a  **long enough pwd** (**password_min_length**) and **orders1** (**calculate_total**) fails because the order total (**total = 2.0**) does not match the **sum of price*quantity of orders_line (2.0*10=20.0)**. 
 
@@ -301,25 +301,25 @@ That is, in the **customers1** object, it fails because it does not have a  **lo
 
 To make a richer example, we're going to add one more detail line to the current order. To do this, we close this dialog by clicking on the Exit button and, once on the main screen of the Wizard, we will select '**Orders_line**' from the list of classes and create a new one automatically by simply clicking on the '**+**'  button:
 
-![](https://github.com/juanto2021/MVM/blob/main/18_W_Add_orderline.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/18_W_Add_orderline.png)
 
 After creating the new object, we can see how it has been added to the object diagram and how the states relative to multiplicities and the state of invariants have changed so that now, the instance of this model is unsatisfiable:
 
-![](https://github.com/juanto2021/MVM/blob/main/19_W_After_Add_orderline.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/19_W_After_Add_orderline.png)
 
 ## Create new link
 
 Because the new **order_line2** requires a product, we could either associate the existing product (**products1**) or create a new one. To test the link building functionality, we're going to manually associate **products1** with **orders_line2**. To do this, we will select the association '**OrderLineProduct**', then in the **From** drop-down of **Object->Orders_line** we will select **orders_line2**. Then in the **To** drop-down of **Products**, we will select products1 and finally click on **Insert Link**:
 
-![](https://github.com/juanto2021/MVM/blob/main/20_W_Add_Link_orderline_products01.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/20_W_Add_Link_orderline_products01.png)
 
 Similarly, we will create a link between **orders1** and **orders_line2** by selecting the classes and objects corresponding to the new link we want to create and clicking on '**Insert Link**':
 
-![](https://github.com/juanto2021/MVM/blob/main/21_W_Add_Link_orderline2_orders1.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/21_W_Add_Link_orderline2_orders1.png)
 
 After the creation of this last link, we see how the multiplicities have been solved and reorganizing the object diagram, we will see a result similar to the following:
 
-![](https://github.com/juanto2021/MVM/blob/main/22_W_Add_Link_orderline2_orders1_diagram.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/22_W_Add_Link_orderline2_orders1_diagram.png)
 
 
 
@@ -327,14 +327,14 @@ After the creation of this last link, we see how the multiplicities have been so
 
 If we click on the **OBJs** button to see which invariants fail, we will see that the following ones fail:
 
-![](https://github.com/juanto2021/MVM/blob/main/23_W_Invs_fail01.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/23_W_Invs_fail01.png)
 
 
 ### password_min_length
 
 To start to solve problems, we'll close the dialog by pressing the **Exit** button   and move on to modifying the **customers1** pwd. In the main window of the wizard, select the **Customers** class, the **customer1** object and, after modifying the **password** to enter for example '**my_password**' we will click on the **Save Obj** button:
 
-![](https://github.com/juanto2021/MVM/blob/main/24_W_Modify_pwd.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/24_W_Modify_pwd.png)
 
 
 ### distinctProductsInOrderLines
@@ -348,31 +348,31 @@ Next, we see that the invariant 'distinctProductsInOrderLines' forces us to have
 
 #### Delete link between orders_line2 and products1
 
-![](https://github.com/juanto2021/MVM/blob/main/25_W_delete_line_orders_line2_products1.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/25_W_delete_line_orders_line2_products1.png)
 
 #### Create a new product (products2)
 
-![](https://github.com/juanto2021/MVM/blob/main/26_W_Create_products2.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/26_W_Create_products2.png)
 
 #### Create a link between it and categories1
 
-![](https://github.com/juanto2021/MVM/blob/main/27_W_insert_products2_categories1.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/27_W_insert_products2_categories1.png)
 
 #### Create link between orders_line2 and products2
 
-![](https://github.com/juanto2021/MVM/blob/main/28_W_insert_products2_orders_line2.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/28_W_insert_products2_orders_line2.png)
 
 ### calculate_total
 
 To solve this invariant, simply modify the total **orders1** attribute  and assign it the value of **50**,  which is the sum of the **product quantity*price** of all the lines of **order_lines**:
 
-![](https://github.com/juanto2021/MVM/blob/main/29_W_modif_total.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/29_W_modif_total.png)
 
 ### sufficient_stock
 
 If we click on the **OBJs** button to see how we have been solving problems, we will see that we have indeed only one left to solve:
 
-![](https://github.com/juanto2021/MVM/blob/main/30_W_stock01.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/30_W_stock01.png)
 
 The **current body** of the invariant is as follows:
 ```
@@ -389,34 +389,34 @@ If we look at the '**Body alternatives**' block, we see that one of the proposed
 ```
 If we select that alternative, we see how the 'New Invariant body' block shows a correct result:
 
-![](https://github.com/juanto2021/MVM/blob/main/31_W_alt_stock.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/31_W_alt_stock.png)
 
 Intuitively, we can notice that, if we type any **bodyexpression** in the text box associated with '**New Invariant body**' and click on the **Test** button, it will verify whether the text is a correct body or not.
 At this point, if we wanted to make a copy of the current model where we replaced the current invariant with the new alternative, it would be enough to click on the **Save file** button and give a name to the destination file (e.g. **shop_v2.use**):
 
-![](https://github.com/juanto2021/MVM/blob/main/32_W_save_file.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/32_W_save_file.png)
 
 ## Save actions
 
 Finally, if we wanted to save all the actions carried out regarding the creation of objects and links, we would exit this dialog by clicking on the **Exit** button and in the main wizard window we would click on the **Actions** button:
 
-![](https://github.com/juanto2021/MVM/blob/main/33_W_Actions01.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/33_W_Actions01.png)
 
 In the dialog that appears, we will simply give the file a name , enter a description (recommended) and click on **Save actions**:
 
-![](https://github.com/juanto2021/MVM/blob/main/34_W_Save_Actions.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/34_W_Save_Actions.png)
 
 One way to check the whole process described so far would be to abandon the current model (**shop.use**) and recover the copy we have made in the example (**shop_v2.use**).
 If we load **shop_v2.use** and invoke the wizard view, we can click on the **Actions** button to find the previously saved action file and finally load these actions to reproduce the changes made to get the desired objects, values and links to make almost the entire instance of the example satisfactory (except for the change of body expression for one of the proposed alternatives):
 
-![](https://github.com/juanto2021/MVM/blob/main/35_W_Test_new_model.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/35_W_Test_new_model.png)
 
 ## Check invariants state
 
 Finally, we see how we have indeed managed to get all the checks correct and an object diagram correct.
 If we click on the button with the text '**Correct**' in green that is associated with the '**State invariants**' label, we will see how all the invariants in show in green:
 
-![](https://github.com/juanto2021/MVM/blob/main/36_W_AllInvsCorrect_ClassInvariants.png)
+![](https://github.com/juanto2021/MVM/blob/main/imagesGitOld/36_W_AllInvsCorrect_ClassInvariants.png)
 
 [(Up)](#Table-of-Contents)
 
