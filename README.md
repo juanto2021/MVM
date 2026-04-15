@@ -6,6 +6,11 @@
 - [Introduction](#introduction)
   - [MVM – Overview](#mvm--overview)
 - [Instructions for installation for testing](#instructions-for-installation-for-testing)
+- [Strategy](#strategy)
+  - [Consistency Check](#consistency-check)
+  - [Diagnosis](#diagnosis)
+  - [Validation](#validation)
+  - [Guided Interactive Repair](#guided-interactive-repair)
 - [ACKNOWLEDGMENT](#acknowledgment)
 - [CITATION](#citation)
 - [REFERENCES](#references)
@@ -16,6 +21,8 @@
 
 This project is a extension of the **USE** Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
 for the UML-Based Specification Environment (https://sourceforge.net/projects/useocl/). The code is developed in Java.
+
+[(Up)](#Table-of-Contents)
 
 ## MVM – Overview
 MVM is the tool that supports our detection, validation, and repair strategy proposed in the following works:
@@ -60,6 +67,24 @@ If everything goes well, you should see the following:
 <img width="650" height="460" alt="image" src="https://github.com/user-attachments/assets/a4d657ec-5b69-40bd-8355-440cf757e30e" />
 
 [(Up)](#Table-of-Contents)
+
+# Strategy
+Our strategy includes the following sections:
+
+## Consistency Check  
+Determine if a UML/OCL diagram is consistent.
+
+## Diagnosis  
+Identify the unsatisfactory core, the minimum subsets of constraints involved in the inconsistency, as well as example instances that satisfy the maximum number of constraints in the model.
+
+## Validation  
+Create, visualize, and modify instances using a graphical user interface, and evaluate the validity of model constraints in the context of that instance.
+
+## Guided Interactive Repair  
+Propose possible solutions to identified inconsistencies—both graphical constraints in the class diagram (such as multiplicities) and textual constraints (such as OCL invariants).
+Evaluate the suitability of such candidate solutions and allow reversing previous decisions if they are deemed inadequate.
+
+In addition to determining whether a model is satisfactory or not, the intention is to indicate which elements cause unsatisfactoriness and propose alternatives for their repair, including the possibility of creating instances that demonstrate the viability of the model.
 
 # ACKNOWLEDGMENT
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
