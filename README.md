@@ -135,7 +135,15 @@ On this screen we can see different blocks that interact with each other so that
 
 The **Close** button closes the dialog box and returns to the previous screen.
 
+### Best approximate solutions
+<img src="imgREADME/01_05_BestSolutions.png">
 
+In this tab, we can see the groups of joins that can generate satisfactory instances as long as the rest of the invariants that do not appear are disabled. Note that the groups are ordered from the highest number of satisfactory invariants to the least. 
+
+The blocks that make up this tab are:
+- **Invariants**: Groups of invariants that generate a satisfactory instance. Similar to the one described in **Errors**, if we double-click on any line of the Invariants block, an instance is created and an object diagram opens showing it.
+-	**'1-2-3-4-5-7'**: shows the invariants that make up the group with their name.
+-	**OCL for inv: 1-Person::valildGreaterThanAge**: Displays the bodyexpression of the invariant selected in the previous block.
 
 
 
