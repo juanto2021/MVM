@@ -45,3 +45,27 @@ If everything goes well, you should see the following:
 <img width="650" height="460" alt="image" src="https://github.com/user-attachments/assets/a4d657ec-5b69-40bd-8355-440cf757e30e" />
 
 [(Up)](#Table-of-Contents)
+
+# ACKNOWLEDGMENT
+Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
+
+# CITATION
+
+Juan Antonio Gómez-Gutiérrez, Robert Clarisó.
+Interactive Repair of Inconsistencies in Conceptual Models. 
+In Proc. 44th International Conference on Conceptual Modeling (ER'2025). Lecture Notes in Computer Science, to appear, Springer.
+
+Juan Antonio Gómez-Gutiérrez, Robert Clarisó, Jordi Cabot.
+A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams.
+In Proc. 27th International Working Conference on Exploring Modeling Methods for Systems Analysis and Development (EMMSAD’2022). Lecture Notes in Business Information Processing vol. 450, pp. 267–275, Springer.
+
+https://link.springer.com/chapter/10.1007/978-3-031-07475-2_18
+
+   
+# REFERENCES
+
+* **Eclipse** - https://www.eclipse.org/downloads/
+* **GitHub**  - https://desktop.github.com/
+* **USE**     - https://github.com/useocl/use/
+
+[(Up)](#Table-of-Contents)
