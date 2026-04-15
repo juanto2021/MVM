@@ -4,8 +4,8 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Instructions for installation for testing](#instructions-for-installation-for-testing)
   - [MVM – Overview](#mvm--overview)
+- [Instructions for installation for testing](#instructions-for-installation-for-testing)
 - [ACKNOWLEDGMENT](#acknowledgment)
 - [CITATION](#citation)
 - [REFERENCES](#references)
