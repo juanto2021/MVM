@@ -175,6 +175,12 @@ Regarding the dialog box shown during the search, it should be noted that when G
 
 <img src="imgREADME/01_07_Greedy.png">
 
+## Creación diagrama desde diálogo MUS/MSS
+
+To create an object diagram, simply double-click on one of the combinations shown in the Errors tab  or in Best approximate solutions:
+
+<img src="imgREADME/01_08_DO.png">
+
 -------------
 
 # ACKNOWLEDGMENT
