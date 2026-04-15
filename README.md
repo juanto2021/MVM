@@ -161,7 +161,19 @@ It displays the following information:
 -	**Total number of satisfiable combinations**: number of total satisfactory combinations.
 -	**Total number of combinations unsatisfiable**: number of total unsatisfactory combinations.
 
+## Greedy
 
+Similar to **Brute force**, the **Greedy method** also searches for **MUS** and **MSS**, but it does so in 2 phases:
+-	**Look for a first result with satisfactory invariants**.
+-	**Look for the rest of the pending combinations**.
+
+In the first phase, **Greedy** determines the dependence of each invariant on the others by analyzing attributes and classes involved in it and fabricates a collection of invariants that do not interfere with each other. In this way, almost instantaneously we obtain a first result with which to produce a satisfactory instance. 
+
+The second phase looks for the rest of the pending combinations until all the possible ones are completed.
+
+Regarding the dialog box shown during the search, it should be noted that when Greedy gives the first result, in the title of the dialog, in addition to the Greedy method,  the word Initial is also shown  indicating that it is the first result. When the Greedy combination search is complete, End is displayed.
+
+<img src="imgREADME/01_07_Greedy.png">
 
 -------------
 
