@@ -86,7 +86,16 @@ Evaluate the suitability of such candidate solutions and allow reversing previou
 
 In addition to determining whether a model is satisfactory or not, the intention is to indicate which elements cause unsatisfactoriness and propose alternatives for their repair, including the possibility of creating instances that demonstrate the viability of the model.
 
+# MVM TOOL
+Search for MUS/MSS
+The first functionality that MVM provided was the search for MUS (Minimum Unsatisfiable Core) and MSS (Maximum Satisfiable Subset).
+To achieve this, MVM constructs all possible combinations between the invariants of the model and, relying on the Solver used by USE (kodkodSolver), generates lists containing groups of satisfiable and unsatisfiable invariants.
 
+The calculation of MUS/MSS can be performed in two ways:
+- **Brute force method**:  Searches all combinations before presenting any results.
+- **Greedy method**: Finds an initial group of invariants that are not related to each other and provides a result immediately, allowing the user to begin working while the system continues processing the remaining combinations in the background.
+
+Both methods are available in the menu or toolbar.
 
 # ACKNOWLEDGMENT
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
