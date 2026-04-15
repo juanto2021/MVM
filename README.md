@@ -230,7 +230,7 @@ context Orders inv distinctProductsInOrderLines:
 
 The listed functionalities are offered from several screens that are accessed from the following main screen:
 
-![](https://github.com/juanto2021/MVM/blob/main/08_Main_Window.png)
+![](https://github.com/juanto2021/MVM/blob/main/git status/08_Main_Window.png)
 
 To continue with the explanation, we can use the 'Fill' option and create an object from each of the classes. The panels are synchronized so that selecting a class displays its existing objects, and selecting an object displays its corresponding attributes and values.
 
