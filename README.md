@@ -86,6 +86,8 @@ Evaluate the suitability of such candidate solutions and allow reversing previou
 
 In addition to determining whether a model is satisfactory or not, the intention is to indicate which elements cause unsatisfactoriness and propose alternatives for their repair, including the possibility of creating instances that demonstrate the viability of the model.
 
+
+
 # ACKNOWLEDGMENT
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
 
