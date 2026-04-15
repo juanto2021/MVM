@@ -17,6 +17,19 @@
 This project is a extension of the **USE** Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
 for the UML-Based Specification Environment (https://sourceforge.net/projects/useocl/). The code is developed in Java.
 
+## MVM – Overview
+MVM is the tool that supports our detection, validation, and repair strategy proposed in the following works:
+- Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams (EMMSAD 2020)
+- Interactive Repair of Inconsistencies (ER 2025)
+- Interactive Repair in Conceptual Models Using LLM
+
+As a strategy, MVM could have been implemented in various programming languages. However, since we decided to use the USE tool as a starting point, MVM is developed in Java and implemented as an extension of USE.
+This approach allows MVM to:
+- Reuse many of the standard functionalities provided by USE
+- Extend the environment with additional capabilities
+- Leverage the robust and well‑established ecosystem of the USE tool
+
+
 Author: ***Juan Antonio Gómez Gutiérrez(2025)***
 
 [(Up)](#Table-of-Contents)
