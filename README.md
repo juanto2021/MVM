@@ -38,7 +38,6 @@ This approach allows MVM to:
 - Leverage the robust and well‑established ecosystem of the USE tool
 
 
-
 Author: ***Juan Antonio Gómez Gutiérrez(2025)***
 
 [(Up)](#Table-of-Contents)
@@ -119,6 +118,24 @@ When the search for combinations is complete, a dialog box appears containing th
   - number of satisfactory and unsatisfactory combinations
 
 In the title of the dialog box, you can see the selected method (Brute) and the name of the model being analyzed (Animals).
+
+
+### Errors
+<img src="imgREADME/01_04_Errors" width="400">
+
+On this screen we can see different blocks that interact with each other so that, when we click on a row in the Faulty combinations panel, the rest of the blocks are synchronized and show the detail associated with the selected group.
+
+**Panels**
+- Faulty combinations: In this example, we can see that 3 groups of MUS  (6, 4-8 and 5-8) have been detected. If we click on the first group (it contains the invariant '6'), we will see that the panel on the right shows the selected combination '6' as the title and inside it a line for each invariant of that combination.
+-	'6': panel showing all the invariants that make up the selected MUS group ('6'). When you select a line from this block, the instances without inv and OCL for inv Example panes  synchronize by displaying information associated with the invariant of the selected line.
+-	Example of instances without inv: '6': proposes satisfactory combinations that do not contain the  selected MUS group  and that can generate a satisfactory instance by simply double-clicking on any of its lines (e.g. '1-2-3-4-5-7').
+-	OCL for inv: '6': Displays the definition of the selected invariant to have a view of the possible problem to be solved. In this example it is clear that age cannot be simultaneously <=0 and >99.
+The **Close** button closes the dialog box and returns to the previous screen.
+
+
+
+
+
 
 -------------
 
