@@ -201,12 +201,12 @@ It is basically divided into 3 blocks:
 Below, we detail the purpose of each graphic element.
 
 ## 1: Classes
-Displays the existing classes in the model. When you click on a class, the Objects and Attributes blocks synchronize to show the existing objects of the selected class and the attributes and their values of the first object of that class.
+Displays the existing classes in the model. When you click on a class, the **Objects** and **Attributes** blocks synchronize to show the existing objects of the selected class and the attributes and their values of the first object of that class.
 
 <img src="imgREADME/02_02_Classes.png">
 
 ## 2: Objects
-Displays the existing objects in the current instance of the class selected in the Classes block. Each time an object is selected, the Attributes table  displays its corresponding attributes and values.
+Displays the existing objects in the current instance of the class selected in the **Classes** block. Each time an object is selected, the **Attributes table** displays its corresponding attributes and values.
 
 <img src="imgREADME/02_03_Objects.png">
 
