@@ -24,6 +24,7 @@ MVM is the tool that supports our detection, validation, and repair strategy pro
 - Interactive Repair in Conceptual Models Using LLM
 
 As a strategy, MVM could have been implemented in various programming languages. However, since we decided to use the USE tool as a starting point, MVM is developed in Java and implemented as an extension of USE.
+
 This approach allows MVM to:
 - Reuse many of the standard functionalities provided by USE
 - Extend the environment with additional capabilities
