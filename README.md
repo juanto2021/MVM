@@ -121,7 +121,8 @@ In the title of the dialog box, you can see the selected method (Brute) and the 
 
 
 ### Errors
-<img src="imgREADME/01_04_Errors.png" width="400">
+<!-- <img src="imgREADME/01_04_Errors.png" width="400"> -->
+<img src="imgREADME/01_04_Errors.png">
 
 On this screen we can see different blocks that interact with each other so that, when we click on a row in the Faulty combinations panel, the rest of the blocks are synchronized and show the detail associated with the selected group.
 
