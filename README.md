@@ -106,6 +106,12 @@ If the user wishes, they can stop this search by clicking on the **Stop calculat
 
 ![Stop calculating combinations](imgREADME/01_02_stopCalculateCmb.png)
 
+If you click on this option, a message will appear requesting confirmation:
+![Stop calculating combinations](imgREADME/01_03_ConfirmStop.png)
+
+
+
+-------------
 
 # ACKNOWLEDGMENT
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
