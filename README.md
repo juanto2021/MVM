@@ -258,19 +258,19 @@ If you enter a value that does not correspond to the expected type, an error mes
 
 ## 4: Object
 
-This text box is used to display the ID of the object that has the focus and is disabled when the treated object already exists. However, when we click on the New Obj button, it is enabled so that we can enter a new ID:
+This text box is used to display the **ID** of the object that has the focus and is disabled when the treated object already exists. However, when we click on the **New Obj** button, it is enabled so that we can enter a new **ID**:
 
 <img src="imgREADME/02_05_new_obj.png">
 
-If we enter an ID that already exists and click on Save Obj, an error message appears:
+If we enter an **ID** that already exists and click on **Save Obj**, an error message appears:
 
 <img src="imgREADME/02_06_new_obj_ya_existe.png">
 
-If we want to leave the object as it was before changing anything, we will simply press Cancel Obj.
+If we want to leave the object as it was before changing anything, we will simply press **Cancel Obj**.
 
 ## 5: New object
 
-Pressing this button enables the Object text box  to enter an ID and leaves the values in the attributes so that we can modify only those that are necessary.
+Pressing this button enables the Object text box  to enter an **ID** and leaves the values in the attributes so that we can modify only those that are necessary.
 
 <img src="imgREADME/02_07_new_obj02.png">
 
@@ -280,7 +280,7 @@ Applies to the instance the modifications made to the object.
 
 ## 7: Cancel object
 
-Leaves the object with the values it had before you modified it and clicked Save Obj.
+Leaves the object with the values it had before you modified it and clicked **Save Obj**.
 
 ## 8: Delete object
 
@@ -290,13 +290,13 @@ Allows you to delete the selected object, but first requests confirmation with t
 
 ## 9: +
 
-Allows you to create an object by copying the selected object. The object ID will be the name of the class followed by a number that it will get from a sequential number within the class. 
+Allows you to create an object by copying the selected object. The **object ID** will be the name of the class followed by a number that it will get from a sequential number within the class. 
 
 <img src="imgREADME/02_21_MasMas.png">
 
 ## 10: Fill
 
-Create one object of each class. The object ID will be the name of the class followed by a number that it will get from a sequential number within the class. 
+Create one object of each class. The **object ID** will be the name of the class followed by a number that it will get from a sequential number within the class. 
 
 <img src="imgREADME/02_20_FillObj.png">
 
@@ -308,7 +308,7 @@ Initialize attributes depending on their type:
 
 ## 11: Auto Layout
 
-Enables/disables the feature that automatically places objects on the diagram in a manner spaced apart.	
+**Enables**/**disables** the feature that automatically places objects on the diagram in a manner spaced apart.	
 
 ## 12: Refresh
 
@@ -351,31 +351,31 @@ Displays the **participating object** at the end endpoint.
 
 ## 19: From multiplicity
 
-Multiplicity at the origin extreme.
+**Multiplicity** at the **origin** extreme.
 
 <img src="imgREADME/02_14_FromMultiplicity.png">
 
 ## 20: To multiplicity
 
-Multiplicidad en el extremo final.
+**Multiplicity** at the **endpoint**.
 
 <img src="imgREADME/02_15_ToMultiplicity.png">
 
 ## 21: From Role
 
-Role on the origin endpoint.
+**Role** on the **origin** endpoint.
 
 <img src="imgREADME/02_16_FromRole.png">
 
 ## 22: To Role
 
-Role at the end endpoint.
+**Role** at the **end** endpoint.
 
 <img src="imgREADME/02_17_ToRole.png">
 
 ## 23: Insert link
 
-It allows you to insert a link between 2 objects. To do this, we have to select the source object and the final object and click on the Insert Link button:
+It allows you to insert a link between 2 objects. To do this, we have to select the source object and the final object and click on the **Insert Link button**:
 
 <img src="imgREADME/02_18_InsertLink.png">
 
@@ -387,7 +387,7 @@ Allows you to delete a link between 2 objects. To select a link, we can select t
 
 ## 25: Actions
 
-This button allows access to MVM Wizard Actions , which is the functionality in charge of managing the record of the actions carried out on a given instance.
+This button allows access to **MVM Wizard Actions**, which is the functionality in charge of managing the record of the actions carried out on a given instance.
 
 <img src="imgREADME/03_16_ActionsCall.png">
 
@@ -395,7 +395,7 @@ With this functionality, the user will be able to record a set of actions and re
 
 ## 26: Suggest fixes
 
-This button allows OpenAI to be invoked  to perform a query that allows us to get suggestions to detect errors in the model and correct them.
+This button allows **OpenAI** to be invoked  to perform a query that allows us to get suggestions to detect errors in the model and correct them.
 
 <img src="imgREADME/03_17_OpenAIcall.png">
 
@@ -415,17 +415,17 @@ This button allows access to the functionality that tells us which invariants ar
 
 ## 29: Multiplicities
 
-This button gives access to the screen that determines the multiplicity problems encountered in the current instance and helps to solve them by proposing the creation/deletion of objects and the creation of links between them.
+This button gives access to the screen that determines the multiplicity problems encountered in the current instance and helps to solve them by proposing the **creation**/**deletion** of objects and the creation of links between them.
 
 <img src="imgREADME/03_16_ActionsCall.png">
 
 ## 30: MSS/MUS
 
-Using this button, if accessible, we can display the dialog box that shows the previously obtained MUS/MSS. If it is not accessible, it means that they have not yet been calculated. It is equivalent to clicking on the icon that we have in the toolbar:
+Using this button, if accessible, we can display the dialog box that shows the previously obtained **MUS**/**MSS**. If it is not accessible, it means that they have not yet been calculated. It is equivalent to clicking on the icon that we have in the toolbar:
 
 <img src="imgREADME/07_01_MUS_MSS01.png">
 
-When you click on this option, you will see the dialog associated with the MUS/MSS:
+When you click on this option, you will see the dialog associated with the **MUS**/**MSS**:
 
 <img src="imgREADME/03_18_MUS_MSS_call.png">
 
