@@ -429,6 +429,17 @@ When you click on this option, you will see the dialog associated with the **MUS
 
 <img src="imgREADME/03_18_MUS_MSS_call.png">
 
+# MVM Check Objects Satisfiability
+
+This button also changes color depending on whether the invariants are satisfied or not. Clicking on it gives access to the following MVM  Check Objects 
+
+**Satisfiability screen**:
+
+<img src="imgREADME/05_SI_02_OBJ_Main.png">
+
+This screen shows the existing objects in the instance and for each object, the invariants in which they participate and also the associated attributes and values. Each time an object is selected, the other blocks are synchronized to display the information associated with it. Therefore, if an object appears as false in the **Satisfied** column, there is surely at least one invariant that is not satisfied for it.
+
+Below, we comment on the graphic elements that make it up.
 
 
 
