@@ -71,7 +71,6 @@
 - [REFERENCES](#references)
 
 
-
 # Introduction
 
 This project is a extension of the **USE** Model Validator plug-in from Martin Gogolla, Fabian Büttner, and Mark Richters 
@@ -288,6 +287,9 @@ If you enter a value that does not correspond to the expected type, an error mes
 
 <img src="imgREADME/02_04_err_type.png">
 
+[(Up)](#Table-of-Contents)
+
+
 ## 4: Object
 
 This text box is used to display the **ID** of the object that has the focus and is disabled when the treated object already exists. However, when we click on the **New Obj** button, it is enabled so that we can enter a new **ID**:
@@ -300,19 +302,29 @@ If we enter an **ID** that already exists and click on **Save Obj**, an error me
 
 If we want to leave the object as it was before changing anything, we will simply press **Cancel Obj**.
 
+[(Up)](#Table-of-Contents)
+
 ## 5: New object
 
 Pressing this button enables the Object text box  to enter an **ID** and leaves the values in the attributes so that we can modify only those that are necessary.
 
 <img src="imgREADME/02_07_new_obj02.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 6: Save object
 
+[(Up)](#Table-of-Contents)
+
 Applies to the instance the modifications made to the object.
+
+[(Up)](#Table-of-Contents)
 
 ## 7: Cancel object
 
 Leaves the object with the values it had before you modified it and clicked **Save Obj**.
+
+[(Up)](#Table-of-Contents)
 
 ## 8: Delete object
 
@@ -320,11 +332,15 @@ Allows you to delete the selected object, but first requests confirmation with t
 
 <img src="imgREADME/02_08_Confirm_Delete.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 9: +
 
 Allows you to create an object by copying the selected object. The **object ID** will be the name of the class followed by a number that it will get from a sequential number within the class. 
 
 <img src="imgREADME/02_21_MasMas.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 10: Fill
 
@@ -338,23 +354,33 @@ Initialize attributes depending on their type:
 -	**Integer**: 1
 -	**Real**: 1.0.
 
+[(Up)](#Table-of-Contents)
+
 ## 11: Auto Layout
 
 **Enables**/**disables** the feature that automatically places objects on the diagram in a manner spaced apart.	
+
+[(Up)](#Table-of-Contents)
 
 ## 12: Refresh
 
 Recreate the elements of the diagram.
 
+[(Up)](#Table-of-Contents)
+
 ## 13: Reset
 
 Deletes all objects from the instance and flushes the diagram.
+
+[(Up)](#Table-of-Contents)
 
 ## 14: Associations
 
 Lists the associations defined in the model.
 
 <img src="imgREADME/02_09_Associations.png">
+
+[(Up)](#Table-of-Contents)
 
 Selecting an association synchronizes the '**From**' and '**To**' information on the right.
 
@@ -363,11 +389,15 @@ Displays the **participating class** at the origin endpoint.
 
 <img src="imgREADME/02_10_FromClass.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 16: To Class
 
 Displays the **participating class** at the end endpoint.
 
 <img src="imgREADME/02_11_ToClass.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 17: From Object
 
@@ -375,11 +405,15 @@ Displays the **participating object** at the source endpoint.
 
 <img src="imgREADME/02_12_FromObject.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 18: To Object
 
 Displays the **participating object** at the end endpoint.
 
 <img src="imgREADME/02_13_ToObject.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 19: From multiplicity
 
@@ -387,11 +421,15 @@ Displays the **participating object** at the end endpoint.
 
 <img src="imgREADME/02_14_FromMultiplicity.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 20: To multiplicity
 
 **Multiplicity** at the **endpoint**.
 
 <img src="imgREADME/02_15_ToMultiplicity.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 21: From Role
 
@@ -399,11 +437,15 @@ Displays the **participating object** at the end endpoint.
 
 <img src="imgREADME/02_16_FromRole.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 22: To Role
 
 **Role** at the **end** endpoint.
 
 <img src="imgREADME/02_17_ToRole.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 23: Insert link
 
@@ -411,11 +453,15 @@ It allows you to insert a link between 2 objects. To do this, we have to select 
 
 <img src="imgREADME/02_18_InsertLink.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 24: Delete link
 
 Allows you to delete a link between 2 objects. To select a link, we can select the objects that are at each end or click on it in the diagram.
 
 <img src="imgREADME/02_19_DeleteLink.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 25: Actions
 
@@ -425,11 +471,15 @@ This button allows access to **MVM Wizard Actions**, which is the functionality 
 
 With this functionality, the user will be able to record a set of actions and retrieve them later to reproduce a given situation on the instance. You can even go back to a specific situation without needing to record any files beforehand.
 
+[(Up)](#Table-of-Contents)
+
 ## 26: Suggest fixes
 
 This button allows **OpenAI** to be invoked  to perform a query that allows us to get suggestions to detect errors in the model and correct them.
 
 <img src="imgREADME/03_17_OpenAIcall.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 27: State invariants
 
@@ -439,17 +489,23 @@ If we click on it, a screen appears where we can see which invariants are satisf
 
 <img src="imgREADME/05_SI_01_CheckInvs.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 28: OBJs
 
 This button allows access to the functionality that tells us which invariants are failing according to the existing objects in the instance and which are the alternatives proposed for their solution. The color of the button will depend on whether the invariants are satisfied or not.
 
 <img src="imgREADME/05_SI_24_OBJ_Call.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 29: Multiplicities
 
 This button gives access to the screen that determines the multiplicity problems encountered in the current instance and helps to solve them by proposing the **creation**/**deletion** of objects and the creation of links between them.
 
 <img src="imgREADME/03_16_ActionsCall.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 30: MSS/MUS
 
@@ -460,6 +516,8 @@ Using this button, if accessible, we can display the dialog box that shows the p
 When you click on this option, you will see the dialog associated with the **MUS**/**MSS**:
 
 <img src="imgREADME/03_18_MUS_MSS_call.png">
+
+[(Up)](#Table-of-Contents)
 
 # MVM Check Objects Satisfiability
 
@@ -473,6 +531,8 @@ This screen shows the existing objects in the instance and for each object, the 
 
 Below, we comment on the graphic elements that make it up.
 
+[(Up)](#Table-of-Contents)
+
 ## 1: Filter Objects
 
 This group of options allows you to display objects according to the selected option:
@@ -483,12 +543,15 @@ This group of options allows you to display objects according to the selected op
 | Correct  | <img src="imgREADME/05_SI_04_OBJ_FilObj2.png"> |
 | Incorrect| <img src="imgREADME/05_SI_05_OBJ_FilObj3.png"> |
 
+[(Up)](#Table-of-Contents)
 
 ## 2: Incorrect/Correct
 
 This label shows the general state of the instance so that at a glance it can be easily cataloged:
 
 <img src="imgREADME/05_SI_06_OBJ_CorrectIncorrect.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 3: Filter Invariants
 
@@ -500,6 +563,7 @@ When we select an object, the invariant block shows all the invariants in which 
 | Correct  | <img src="imgREADME/05_SI_08_OBJ_Inv2.png"> |
 | Incorrect| <img src="imgREADME/05_SI_09_OBJ_Inv3.png"> |
 
+[(Up)](#Table-of-Contents)
 
 ## 4: Objects
 
@@ -507,11 +571,15 @@ Displays the existing objects on the instance. When clicked, the rest of the blo
 
 <img src="imgREADME/05_SI_10_OBJ_Objs.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 5: Invariants
 
 Displays the invariants associated with the selected object.
 
 <img src="imgREADME/05_SI_11_OBJ_Invs.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 6: Attributes
 
@@ -519,11 +587,15 @@ Displays the attributes associated with the selected object.
 
 <img src="imgREADME/05_SI_12_OBJ_Attrs.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 7: Current invariant body
 
 Displays the bodyexpression currently held by the selected invariant.
 
 <img src="imgREADME/05_SI_13_OBJ_CurrentBody.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 8: Body alternatives
 
@@ -532,6 +604,8 @@ Displays the alternatives that have been calculated for the selected invariant.
 <img src="imgREADME/05_SI_14_OBJ_BodyAlternatives.png">
 
 For each of the proposed alternatives, the system calculates its satisfactibility.
+
+[(Up)](#Table-of-Contents)
 
 ## 9: Filter Alternatives
 
@@ -543,6 +617,8 @@ It allows you to visualize all the alternatives, only the correct ones or only t
 | Correct  | <img src="imgREADME/05_SI_16_OBJ_FilAlt2.png"> |
 | Incorrect| <img src="imgREADME/05_SI_17_OBJ_FilAlt3.png"> |
 
+[(Up)](#Table-of-Contents)
+
 ## 10: New Invariant body - Incorrect/Correct
 
 This label shows the result of the test of the alternative whose definition is found in the text box just below (13: Body expression). It can have any of the following values:
@@ -551,9 +627,13 @@ This label shows the result of the test of the alternative whose definition is f
 
 The ‘questions’ are displayed when the text box containing the definition of the bodyexpression receives focus and disappear when it loses it. 
 
+[(Up)](#Table-of-Contents)
+
 ## 11: Test
 
 This button allows you to run the test to check that the **bodyexpression** of the alternative in the text box is correct.
+
+[(Up)](#Table-of-Contents)
 
 ## 12: Model viable
 
@@ -564,11 +644,15 @@ Examples:
 |--------|-----------|
 | <img src="imgREADME/05_SI_19_01_OBJ_Viable1.png"> | <img src="imgREADME/05_SI_19_02_OBJ_Viable2.png"> |
 
+[(Up)](#Table-of-Contents)
+
 ## 13: Body expression
 
 This text box contains the bodyexpression that will replace the current one in the treated invariant in the new model. When we click on an alternative, the associated expression is placed in this text box. If the user wants, they can modify it manually and that's when questions appear on the label above this text box.
 
 <img src="imgREADME/05_SI_20_OBJ_NewBody.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 14: Show Source
 
@@ -584,6 +668,8 @@ In it you can see the old definition of the invariant **Availability**, and the 
 
 It is possible to synchronize both panels (**Current** and **New**) by activating the **Sync scroll** check.
 
+[(Up)](#Table-of-Contents)
+
 ## 15: File Name
 
 Indicate the name of the file to be proposed. The first proposal will be to add the suffix **_vX** with **X** being the version number that already exists. If no version exists, the suffix will be **_v1**. If a previous version exists, such as **_v4**, the proposed version will be **_v5**.
@@ -594,6 +680,8 @@ The default target directory will be **wrkReplaceBodyInv** which will be inside 
 
 If this directory does not exist, it will be created automatically.
  
+[(Up)](#Table-of-Contents)
+
 ##16: Save file
 
 This button allows you to save a file with the new model in which the previously selected invariant has been modified, replacing its definition with the new definition entered in the New invariant body text box.
@@ -602,9 +690,13 @@ Clicking on it will open the File to Save dialog proposing the default directory
 
 <img src="imgREADME/05_SI_22_OBJ_SaveFile.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 17: Exit
 
 Allows you to close the screen in progress and return to the previous one.
+
+[(Up)](#Table-of-Contents)
 
 
 -------------
