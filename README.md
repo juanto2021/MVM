@@ -237,6 +237,28 @@ If we enter an ID that already exists and click on Save Obj, an error message ap
 
 <img src="imgREADME/02_06_new_obj_ya_existe.png">
 
+If we want to leave the object as it was before changing anything, we will simply press Cancel Obj.
+
+## 5: New object
+
+Pressing this button enables the Object text box  to enter an ID and leaves the values in the attributes so that we can modify only those that are necessary.
+
+<img src="imgREADME/02_07_new_obj02.png">
+
+## 6: Save object
+
+Applies to the instance the modifications made to the object.
+
+## 7: Cancel object
+
+Leaves the object with the values it had before you modified it and clicked Save Obj.
+
+## 8: Delete object
+
+Allows you to delete the selected object, but first requests confirmation with this message:
+
+
+
 -------------
 
 # ACKNOWLEDGMENT
