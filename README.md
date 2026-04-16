@@ -532,6 +532,48 @@ Examples:
 |--------|-----------|
 | <img src="imgREADME/05_SI_19_01_OBJ_Viable1.png"> | <img src="imgREADME/05_SI_19_02_OBJ_Viable2.png"> |
 
+## 13: Body expression
+
+This text box contains the bodyexpression that will replace the current one in the treated invariant in the new model. When we click on an alternative, the associated expression is placed in this text box. If the user wants, they can modify it manually and that's when questions appear on the label above this text box.
+
+<img src="imgREADME/05_SI_20_OBJ_NewBody.png">
+
+## 14: Show Source
+
+It shows a screen with 2 parts: 
+-	The **current one**
+-	the **new one** as it would be after replacing the invariant with the alternative
+
+This screen looks like this:
+
+<img src="imgREADME/05_SI_21_OBJ_ShowSource.png">
+
+In it you can see the old definition of the invariant **Availability**, and the new one. Note that the old definition is converted to a comment (**--**) for the record, and the new one is added below.
+
+It is possible to synchronize both panels (**Current** and **New**) by activating the **Sync scroll** check.
+
+## 15: File Name
+
+Indicate the name of the file to be proposed. The first proposal will be to add the suffix **_vX** with **X** being the version number that already exists. If no version exists, the suffix will be **_v1**. If a previous version exists, such as **_v4**, the proposed version will be **_v5**.
+
+The default target directory will be **wrkReplaceBodyInv** which will be inside the working directory where the application is running.
+
+<img src="imgREADME/05_SI_23_OBJ_DirWorkFile.png">
+
+If this directory does not exist, it will be created automatically.
+ 
+##16: Save file
+
+This button allows you to save a file with the new model in which the previously selected invariant has been modified, replacing its definition with the new definition entered in the New invariant body text box.
+
+Clicking on it will open the File to Save dialog proposing the default directory and name, but the user can modify what is necessary according to their criteria:
+
+<img src="imgREADME/05_SI_22_OBJ_SaveFile.png">
+
+##17: Exit
+
+Allows you to close the screen in progress and return to the previous one.
+
 
 -------------
 
