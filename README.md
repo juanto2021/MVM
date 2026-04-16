@@ -219,6 +219,19 @@ It allows you to visualize and modify the attributes and values of an object. In
 
 <img src="imgREADME/02_21_Attr.png">
 
+The values assigned to the attributes of type String must be enclosed in single quotation marks ('**Example String**').
+
+When a value is modified, the **Save Obj** and **Cancel Obj** buttons are enabled  to make the changes permanent or leave the object as it was without changing anything respectively.
+
+If you enter a value that does not correspond to the expected type, an error message appears:
+
+<img src="imgREADME/02_04_err_type.png">
+
+## 4: Object
+
+This text box is used to display the ID of the object that has the focus and is disabled when the treated object already exists. However, when we click on the New Obj button, it is enabled so that we can enter a new ID:
+
+<img src="imgREADME/02_05_new_obj.png">
 
 -------------
 
