@@ -530,7 +530,7 @@ Examples:
 
 | Correct | Incorrect |
 |--------|-----------|
-| <img src="imgREADME/05_SI_19_01_OBJ_Viable1.png" width="200"> | <img src="imgREADME/05_SI_19_02_OBJ_Viable2.png" width="200"> |
+| <img src="imgREADME/05_SI_19_01_OBJ_Viable1.png"> | <img src="imgREADME/05_SI_19_02_OBJ_Viable2.png"> |
 
 
 -------------
