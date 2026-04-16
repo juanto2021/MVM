@@ -452,6 +452,71 @@ This group of options allows you to display objects according to the selected op
 | Incorrect| <img src="imgREADME/05_SI_05_OBJ_FilObj3.png"> |
 
 
+## 2: Incorrect/Correct
+
+This label shows the general state of the instance so that at a glance it can be easily cataloged:
+
+<img src="imgREADME/05_SI_06_OBJ_CorrectIncorrect.png">
+
+## 3: Filter Invariants
+
+When we select an object, the invariant block shows all the invariants in which it participates. In this case, it may be interesting to show them all, or only the correct or incorrect ones.
+
+| Vista    | Imagen |
+|----------|--------|
+| All      | <img src="imgREADME/05_SI_07_OBJ_Inv1.png"> |
+| Correct  | <img src="imgREADME/05_SI_08_OBJ_Inv2.png"> |
+| Incorrect| <img src="imgREADME/05_SI_09_OBJ_Inv3.png"> |
+
+
+## 4: Objects
+
+Displays the existing objects on the instance. When clicked, the rest of the blocks are synchronized to show the information associated with it.
+
+<img src="imgREADME/05_SI_10_OBJ_Objs.png">
+
+## 5: Invariants
+
+Displays the invariants associated with the selected object.
+
+<img src="imgREADME/05_SI_11_OBJ_Invs.png">
+
+## 6: Attributes
+
+Displays the attributes associated with the selected object.
+
+<img src="imgREADME/05_SI_12_OBJ_Attrs.png">
+
+## 7: Current invariant body
+
+Displays the bodyexpression currently held by the selected invariant.
+
+<img src="imgREADME/05_SI_13_OBJ_CurrentBody.png">
+
+## 8: Body alternatives
+
+Displays the alternatives that have been calculated for the selected invariant.
+
+<img src="imgREADME/05_SI_14_OBJ_BodyAlternatives.png">
+
+For each of the proposed alternatives, the system calculates its satisfactibility.
+
+## 9: Filter Alternatives
+
+It allows you to visualize all the alternatives, only the correct ones or only the wrong ones.
+
+| Vista    | Imagen |
+|----------|--------|
+| All      | <img src="imgREADME/05_SI_15_OBJ_FilAlt1.png"> |
+| Correct  | <img src="imgREADME/05_SI_16_OBJ_FilAlt2.png"> |
+| Incorrect| <img src="imgREADME/05_SI_17_OBJ_FilAlt3.png"> |
+
+## 10: New Invariant body - Incorrect/Correct
+
+This label shows the result of the test of the alternative whose definition is found in the text box just below (13: Body expression). It can have any of the following values:
+
+
+
 -------------
 
 # ACKNOWLEDGMENT
