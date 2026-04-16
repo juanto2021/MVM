@@ -271,7 +271,29 @@ Create one object of each class. The object ID will be the name of the class fol
 
 <img src="imgREADME/02_20_FillObj.png">
 
+Initialize attributes depending on their type:
+-	**String**: ‘x’.
+-	**Boolean**: true
+-	**Integer**: 1
+-	**Real**: 1.0.
 
+## 11: Auto Layout
+
+Enables/disables the feature that automatically places objects on the diagram in a manner spaced apart.	
+
+## 12: Refresh
+
+Recreate the elements of the diagram.
+
+## 13: Reset
+
+Deletes all objects from the instance and flushes the diagram.
+
+## 14: Associations
+
+Lists the associations defined in the model.
+
+<img src="imgREADME/02_09_Associations.png">
 
 -------------
 
