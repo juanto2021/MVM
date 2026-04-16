@@ -515,6 +515,22 @@ It allows you to visualize all the alternatives, only the correct ones or only t
 
 This label shows the result of the test of the alternative whose definition is found in the text box just below (13: Body expression). It can have any of the following values:
 
+<img src="imgREADME/05_SI_18_OBJ_StateTest.png">
+
+The ‘questions’ are displayed when the text box containing the definition of the bodyexpression receives focus and disappear when it loses it. 
+
+## 11: Test
+
+This button allows you to run the test to check that the **bodyexpression** of the alternative in the text box is correct.
+
+## 12: Model viable
+
+This text allows you to check whether the model definition has a good syntax or not after the replacement of the new **bodyexpression** over the old one.
+Examples:
+
+| Correct | Incorrect |
+|--------|-----------|
+| <img src="imgREADME/05_SI_19_01_OBJ_Viable1.png" width="200"> | <img src="imgREADME/05_SI_19_02_OBJ_Viable2.png" width="200"> |
 
 
 -------------
