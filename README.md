@@ -214,6 +214,12 @@ Displays the existing objects in the current instance of the class selected in t
 <img src="imgREADME/02_03_Objects.png">
 
 
+## 3: Attributes
+It allows you to visualize and modify the attributes and values of an object. In the case of an existing object, you can modify a value by selecting it and then clicking on the value you want to modify.
+
+<img src="imgREADME/02_21_Attr.png">
+
+
 -------------
 
 # ACKNOWLEDGMENT
