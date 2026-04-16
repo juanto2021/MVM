@@ -257,6 +257,20 @@ Leaves the object with the values it had before you modified it and clicked Save
 
 Allows you to delete the selected object, but first requests confirmation with this message:
 
+<img src="imgREADME/02_08_Confirm_Delete.png">
+
+## 9: +
+
+Allows you to create an object by copying the selected object. The object ID will be the name of the class followed by a number that it will get from a sequential number within the class. 
+
+<img src="imgREADME/02_21_MasMas.png">
+
+## 10: Fill
+
+Create one object of each class. The object ID will be the name of the class followed by a number that it will get from a sequential number within the class. 
+
+<img src="imgREADME/02_20_FillObj.png">
+
 
 
 -------------
