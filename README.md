@@ -682,7 +682,7 @@ If this directory does not exist, it will be created automatically.
  
 [(Up)](#Table-of-Contents)
 
-##16: Save file
+## 16: Save file
 
 This button allows you to save a file with the new model in which the previously selected invariant has been modified, replacing its definition with the new definition entered in the New invariant body text box.
 
