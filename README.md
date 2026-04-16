@@ -447,9 +447,9 @@ This group of options allows you to display objects according to the selected op
 
 | Vista    | Imagen |
 |----------|--------|
-| All      | <img src="imgREADME/05_SI_03_OBJ_FilObj1.png" width="300"> |
-| Correct  | <img src="imgREADME/05_SI_04_OBJ_FilObj2.png" width="300"> |
-| Incorrect| <img src="imgREADME/05_SI_05_OBJ_FilObj3.png" width="300"> |
+| All      | <img src="imgREADME/05_SI_03_OBJ_FilObj1.png"> |
+| Correct  | <img src="imgREADME/05_SI_04_OBJ_FilObj2.png"> |
+| Incorrect| <img src="imgREADME/05_SI_05_OBJ_FilObj3.png"> |
 
 
 -------------
