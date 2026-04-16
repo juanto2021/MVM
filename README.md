@@ -441,7 +441,15 @@ This screen shows the existing objects in the instance and for each object, the 
 
 Below, we comment on the graphic elements that make it up.
 
+## 1: Filter Objects
 
+This group of options allows you to display objects according to the selected option:
+
+| Vista    | Imagen |
+|----------|--------|
+| All      | <img src="imgREADME/05_SI_03_OBJ_FilObj1.png" width="300"> |
+| Correct  | <img src="imgREADME/05_SI_04_OBJ_FilObj2.png" width="300"> |
+| Incorrect| <img src="imgREADME/05_SI_05_OBJ_FilObj3.png" width="300"> |
 
 
 -------------
