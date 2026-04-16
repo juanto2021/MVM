@@ -295,6 +295,115 @@ Lists the associations defined in the model.
 
 <img src="imgREADME/02_09_Associations.png">
 
+Selecting an association synchronizes the '**From**' and '**To**' information on the right.
+
+## 15: From Class
+Displays the **participating class** at the origin endpoint.
+
+<img src="imgREADME/02_10_FromClass.png">
+
+## 16: To Class
+
+Displays the **participating class** at the end endpoint.
+
+<img src="imgREADME/02_11_ToClass.png">
+
+## 17: From Object
+
+Displays the **participating object** at the source endpoint.
+
+<img src="imgREADME/02_12_FromObject.png">
+
+## 18: To Object
+
+Displays the **participating object** at the end endpoint.
+
+<img src="imgREADME/02_13_ToObject.png">
+
+## 19: From multiplicity
+
+Multiplicity at the origin extreme.
+
+<img src="imgREADME/02_14_FromMultiplicity.png">
+
+## 20: To multiplicity
+
+Multiplicidad en el extremo final.
+
+<img src="imgREADME/02_15_ToMultiplicity.png">
+
+## 21: From Role
+
+Role on the origin endpoint.
+
+<img src="imgREADME/02_16_FromRole.png">
+
+## 22: To Role
+
+Role at the end endpoint.
+
+<img src="imgREADME/02_17_ToRole.png">
+
+## 23: Insert link
+
+It allows you to insert a link between 2 objects. To do this, we have to select the source object and the final object and click on the Insert Link button:
+
+<img src="imgREADME/02_18_InsertLink.png">
+
+## 24: Delete link
+
+Allows you to delete a link between 2 objects. To select a link, we can select the objects that are at each end or click on it in the diagram.
+
+<img src="imgREADME/02_19_DeleteLink.png">
+
+## 25: Actions
+
+This button allows access to MVM Wizard Actions , which is the functionality in charge of managing the record of the actions carried out on a given instance.
+
+<img src="imgREADME/03_16_ActionsCall.png">
+
+With this functionality, the user will be able to record a set of actions and retrieve them later to reproduce a given situation on the instance. You can even go back to a specific situation without needing to record any files beforehand.
+
+## 26: Suggest fixes
+
+This button allows OpenAI to be invoked  to perform a query that allows us to get suggestions to detect errors in the model and correct them.
+
+<img src="imgREADME/03_17_OpenAIcall.png">
+
+## 27: State invariants
+
+This section allows you to review the status of invariants. The color of the button indicates whether all the invariants are met or not so that, at a glance, we can check the status of the instance as far as invariants are concerned.
+
+If we click on it, a screen appears where we can see which invariants are satisfied and which are not.
+
+<img src="imgREADME/05_SI_01_CheckInvs.png">
+
+## 28: OBJs
+
+This button allows access to the functionality that tells us which invariants are failing according to the existing objects in the instance and which are the alternatives proposed for their solution. The color of the button will depend on whether the invariants are satisfied or not.
+
+<img src="imgREADME/05_SI_24_OBJ_Call.png">
+
+## 29: Multiplicities
+
+This button gives access to the screen that determines the multiplicity problems encountered in the current instance and helps to solve them by proposing the creation/deletion of objects and the creation of links between them.
+
+<img src="imgREADME/03_16_ActionsCall.png">
+
+## 30: MSS/MUS
+
+Using this button, if accessible, we can display the dialog box that shows the previously obtained MUS/MSS. If it is not accessible, it means that they have not yet been calculated. It is equivalent to clicking on the icon that we have in the toolbar:
+
+<img src="imgREADME/07_01_MUS_MSS01.png">
+
+When you click on this option, you will see the dialog associated with the MUS/MSS:
+
+<img src="imgREADME/03_18_MUS_MSS_call.png">
+
+
+
+
+
 -------------
 
 # ACKNOWLEDGMENT
