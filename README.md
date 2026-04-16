@@ -140,6 +140,8 @@ Evaluate the suitability of such candidate solutions and allow reversing previou
 
 In addition to determining whether a model is satisfactory or not, the intention is to indicate which elements cause unsatisfactoriness and propose alternatives for their repair, including the possibility of creating instances that demonstrate the viability of the model.
 
+[(Up)](#Table-of-Contents)
+
 # MVM TOOL
 Search for MUS/MSS
 The first functionality that MVM provided was the search for **MUS (Minimum Unsatisfiable Core)** and **MSS (Maximum Satisfiable Subset)**.
@@ -174,6 +176,7 @@ When the search for combinations is complete, a dialog box appears containing th
 
 In the title of the dialog box, you can see the selected method (Brute) and the name of the model being analyzed (Animals).
 
+[(Up)](#Table-of-Contents)
 
 ### Errors
 <!-- <img src="imgREADME/01_04_Errors.png" width="400"> -->
@@ -190,6 +193,8 @@ On this screen we can see different blocks that interact with each other so that
 
 The **Close** button closes the dialog box and returns to the previous screen.
 
+[(Up)](#Table-of-Contents)
+
 ### Best approximate solutions
 <img src="imgREADME/01_05_BestSolutions.png">
 
@@ -201,6 +206,8 @@ The blocks that make up this tab are:
 - **Invariants**: Groups of invariants that generate a satisfactory instance. Similar to the one described in **Errors**, if we double-click on any line of the Invariants block, an instance is created and an object diagram opens showing it.
 -	**'1-2-3-4-5-7'**: shows the invariants that make up the group with their name.
 -	**OCL for inv: 1-Person::valildGreaterThanAge**: Displays the bodyexpression of the invariant selected in the previous block.
+
+[(Up)](#Table-of-Contents)
 
 ### Statistics
 <img src="imgREADME/01_06_Statistics.png">
@@ -216,6 +223,8 @@ It displays the following information:
 -	**Total number of satisfiable combinations**: number of total satisfactory combinations.
 -	**Total number of combinations unsatisfiable**: number of total unsatisfactory combinations.
 
+[(Up)](#Table-of-Contents)
+
 ## Greedy
 
 Similar to **Brute force**, the **Greedy method** also searches for **MUS** and **MSS**, but it does so in 2 phases:
@@ -230,11 +239,15 @@ Regarding the dialog box shown during the search, it should be noted that when G
 
 <img src="imgREADME/01_07_Greedy.png">
 
+[(Up)](#Table-of-Contents)
+
 ## Creación diagrama desde diálogo MUS/MSS
 
 To create an object diagram, simply double-click on one of the combinations shown in the Errors tab  or in Best approximate solutions:
 
 <img src="imgREADME/01_08_DO.png" width="3000">
+
+[(Up)](#Table-of-Contents)
 
 # MVM Wizard 
 This screen is the main screen from which the vast majority of the functionalities contained in MVM can be used or accessed.
@@ -253,11 +266,14 @@ Displays the existing classes in the model. When you click on a class, the **Obj
 
 <img src="imgREADME/02_02_Classes.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 2: Objects
 Displays the existing objects in the current instance of the class selected in the **Classes** block. Each time an object is selected, the **Attributes table** displays its corresponding attributes and values.
 
 <img src="imgREADME/02_03_Objects.png">
 
+[(Up)](#Table-of-Contents)
 
 ## 3: Attributes
 It allows you to visualize and modify the attributes and values of an object. In the case of an existing object, you can modify a value by selecting it and then clicking on the value you want to modify.
