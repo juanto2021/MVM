@@ -49,7 +49,23 @@
   - [28: OBJs](#28-objs)
   - [29: Multiplicities](#29-multiplicities)
   - [30: MSS/MUS](#30-mssmus)
-
+- [MVM Check Objects Satisfiability](#mvm-check-objects-satisfiability)
+  - [1: Filter Objects](#1-filter-objects)
+  - [2: Incorrect/Correct](#2-incorrectcorrect)
+  - [3: Filter Invariants](#3-filter-invariants)
+  - [4: Objects](#4-objects)
+  - [5: Invariants](#5-invariants)
+  - [6: Attributes](#6-attributes)
+  - [7: Current invariant body](#7-current-invariant-body)
+  - [8: Body alternatives](#8-body-alternatives)
+  - [9: Filter Alternatives](#9-filter-alternatives)
+  - [10: New Invariant body - Incorrect/Correct](#10-new-invariant-body---incorrectcorrect)
+  - [11: Test](#11-test)
+  - [13: Body expression](#13-body-expression)
+  - [14: Show Source](#14-show-source)
+  - [15: File Name](#15-file-name)
+  - [16: Save file](#16-save-file)
+  - [17: Exit](#17-exit)
 - [ACKNOWLEDGMENT](#acknowledgment)
 - [CITATION](#citation)
 - [REFERENCES](#references)
@@ -570,7 +586,7 @@ Clicking on it will open the File to Save dialog proposing the default directory
 
 <img src="imgREADME/05_SI_22_OBJ_SaveFile.png">
 
-##17: Exit
+## 17: Exit
 
 Allows you to close the screen in progress and return to the previous one.
 
