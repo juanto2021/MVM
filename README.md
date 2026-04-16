@@ -233,6 +233,10 @@ This text box is used to display the ID of the object that has the focus and is 
 
 <img src="imgREADME/02_05_new_obj.png">
 
+If we enter an ID that already exists and click on Save Obj, an error message appears:
+
+<img src="imgREADME/02_06_new_obj_ya_existe.png">
+
 -------------
 
 # ACKNOWLEDGMENT
