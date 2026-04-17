@@ -2,7 +2,7 @@
 
 <img src="imgREADME/Portada02.png" width="600">
 
-## 📚 Table of Contents
+# 📚 Table of Contents
 
 <details>
   <summary><b>📘 Introduction</b></summary>
