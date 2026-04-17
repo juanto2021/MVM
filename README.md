@@ -91,6 +91,12 @@
   - [13: Load actions](#13-load-actions)
   - [14: Links](#14-links)
   - [15: Exit](#15-exit)
+- [Suggest fixes](#suggest-fixes)
+  - [Profile](#profile)
+  - [Task](#task)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+  - [Remarks](#remarks)
 - [ACKNOWLEDGMENT](#acknowledgment)
 - [CITATION](#citation)
 - [REFERENCES](#references)
@@ -1128,6 +1134,26 @@ If not provide MSS/MUS…
 	  10.invariantG
 
 ```
+
+## (UI – Suggest fixes)
+
+The main screen of this functionality looks like this:
+
+<img src="imgREADME/04_01_SF_Main.png">
+
+It basically has 3 blocks of suggestions:
+- **Potential fix 1 – Modify object diagram**: Indicates the objects and links that should exist in the instance. If in the query we have provided a list of objects and links in the INPUTs block, it will make suggestions on how to modify them to improve the instance. If we haven't provided any lists, it will suggest creating a set of items to instantiate.
+- **Potential fix 2 – Modify properties**: Proposes the modification of certain parameters contained in the model properties file (<ModelName>.properties).
+- **Potential fix 2 – Modify invariants**: indicates the invariants that should be modified to improve the satisfiability of the model. If  we have not provided the MUS/MSS in the INPUTs block, it will calculate them and show them to us. 
+
+Below, we detail the purpose of each graphic element.
+
+### 1: Objects
+
+It shows the objects that it suggests to participate in the instance we intend to achieve by adding/removing those that may already exist previously or modifying the values it deems necessary. If there was no list of objects previously, it will suggest a new one.
+
+
+
 -------------
 
 # ACKNOWLEDGMENT
