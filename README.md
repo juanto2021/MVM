@@ -699,7 +699,9 @@ This button also changes color depending on whether the invariants are satisfied
 
 **Satisfiability screen**:
 
-<img src="imgREADME/05_SI_02_OBJ_Main.png">
+<p align="center">
+   <img src="imgREADME/05_SI_02_OBJ_Main.png">
+</p>
 
 This screen shows the existing objects in the instance and for each object, the invariants in which they participate and also the associated attributes and values. Each time an object is selected, the other blocks are synchronized to display the information associated with it. Therefore, if an object appears as false in the **Satisfied** column, there is surely at least one invariant that is not satisfied for it.
 
@@ -723,7 +725,9 @@ This group of options allows you to display objects according to the selected op
 
 This label shows the general state of the instance so that at a glance it can be easily cataloged:
 
-<img src="imgREADME/05_SI_06_OBJ_CorrectIncorrect.png">
+<p align="center">
+   <img src="imgREADME/05_SI_06_OBJ_CorrectIncorrect.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -743,7 +747,9 @@ When we select an object, the invariant block shows all the invariants in which 
 
 Displays the existing objects on the instance. When clicked, the rest of the blocks are synchronized to show the information associated with it.
 
-<img src="imgREADME/05_SI_10_OBJ_Objs.png">
+<p align="center">
+   <img src="imgREADME/05_SI_10_OBJ_Objs.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -751,7 +757,9 @@ Displays the existing objects on the instance. When clicked, the rest of the blo
 
 Displays the invariants associated with the selected object.
 
-<img src="imgREADME/05_SI_11_OBJ_Invs.png">
+<p align="center">
+   <img src="imgREADME/05_SI_11_OBJ_Invs.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -759,7 +767,9 @@ Displays the invariants associated with the selected object.
 
 Displays the attributes associated with the selected object.
 
-<img src="imgREADME/05_SI_12_OBJ_Attrs.png">
+<p align="center">
+   <img src="imgREADME/05_SI_12_OBJ_Attrs.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -767,7 +777,9 @@ Displays the attributes associated with the selected object.
 
 Displays the bodyexpression currently held by the selected invariant.
 
-<img src="imgREADME/05_SI_13_OBJ_CurrentBody.png">
+<p align="center">
+   <img src="imgREADME/05_SI_13_OBJ_CurrentBody.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -775,7 +787,9 @@ Displays the bodyexpression currently held by the selected invariant.
 
 Displays the alternatives that have been calculated for the selected invariant.
 
-<img src="imgREADME/05_SI_14_OBJ_BodyAlternatives.png">
+<p align="center">
+   <img src="imgREADME/05_SI_14_OBJ_BodyAlternatives.png">
+</p>
 
 For each of the proposed alternatives, the system calculates its satisfactibility.
 
@@ -797,7 +811,9 @@ It allows you to visualize all the alternatives, only the correct ones or only t
 
 This label shows the result of the test of the alternative whose definition is found in the text box just below (**13: Body expression**). It can have any of the following values:
 
-<img src="imgREADME/05_SI_18_OBJ_StateTest.png">
+<p align="center">
+   <img src="imgREADME/05_SI_18_OBJ_StateTest.png">
+</p>
 
 The ‘questions’ are displayed when the text box containing the definition of the bodyexpression receives focus and disappear when it loses it. 
 
@@ -824,7 +840,9 @@ Examples:
 
 This text box contains the bodyexpression that will replace the current one in the treated invariant in the new model. When we click on an alternative, the associated expression is placed in this text box. If the user wants, they can modify it manually and that's when questions appear on the label above this text box.
 
-<img src="imgREADME/05_SI_20_OBJ_NewBody.png">
+<p align="center">
+   <img src="imgREADME/05_SI_20_OBJ_NewBody.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -836,7 +854,9 @@ It shows a screen with 2 parts:
 
 This screen looks like this:
 
-<img src="imgREADME/05_SI_21_OBJ_ShowSource.png">
+<p align="center">
+   <img src="imgREADME/05_SI_21_OBJ_ShowSource.png">
+</p>
 
 In it you can see the old definition of the invariant **Availability**, and the new one. Note that the old definition is converted to a comment (**--**) for the record, and the new one is added below.
 
@@ -850,7 +870,9 @@ Indicate the name of the file to be proposed. The first proposal will be to add 
 
 The default target directory will be **wrkReplaceBodyInv** which will be inside the working directory where the application is running.
 
-<img src="imgREADME/05_SI_23_OBJ_DirWorkFile.png">
+<p align="center">
+   <img src="imgREADME/05_SI_23_OBJ_DirWorkFile.png">
+</p>
 
 If this directory does not exist, it will be created automatically.
  
@@ -862,7 +884,9 @@ This button allows you to save a file with the new model in which the previously
 
 Clicking on it will open the File to Save dialog proposing the default directory and name, but the user can modify what is necessary according to their criteria:
 
-<img src="imgREADME/05_SI_22_OBJ_SaveFile.png">
+<p align="center">
+   <img src="imgREADME/05_SI_22_OBJ_SaveFile.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
