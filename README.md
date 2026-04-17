@@ -855,9 +855,10 @@ We can check the elements that are created by clicking on the first 3 actions:
 
 | **Actions** | **Links** |
 |------------|-----------|
-| <div style="background-color:#007acc; color:white; font-weight:bold; text-align:center; border-radius:4px;">1</div> | <img src="imgREADME/03_03_ActionsSeq1.png" width="260"> |
-| <div style="background-color:#007acc; color:white; font-weight:bold; text-align:center; border-radius:4px;">2</div> | <img src="imgREADME/03_04_ActionsSeq2.png" width="260"> |
-| <div style="background-color:#007acc; color:white; font-weight:bold; text-align:center; border-radius:4px;">3</div> | <img src="imgREADME/03_05_ActionsSeq3.png" width="260"> |
+| 1 | <img src="imgREADME/03_03_ActionsSeq1.png"> |
+| 2 | <img src="imgREADME/03_04_ActionsSeq2.png"> |
+| 3 | <img src="imgREADME/03_05_ActionsSeq3.png"> |
+
 
 
 
