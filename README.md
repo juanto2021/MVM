@@ -1025,8 +1025,56 @@ List of links: <List of links existing in the current instance>
 
 ```
 
+## Outputs
+This block aims to tell OpenAI what we should consider in the answer and how we want to obtain it in terms of the format and structure of the information.
 
-  
+Basically, the structure we require is:
+-	Comments
+-	Objects and Links
+-	Modified Invariants 
+
+We have indicated the following:
+
+```
+
+Comments
+1. Explanation:
+1.1. A brief discussion of the inconsistency problems in the model.
+1.2. For each problem, the model should identify the invariants involved and outline a potential way to solve the inconsistency
+1.3. Do not provide suggestions like “this value should be valid”
+1.4. Instead, provide informative statements like "this value should be larger\", "this values should be within the following range\", "the value of attribute X should be different to the value of attribute Y", "this value should be unique", etc.
+1.5. Each sentence must be on its own line.	
+
+Updated list of objects and links
+2. Updated list of objects and links:
+   2.1.1  If the input included an instance of the model, provide a modified list of objects and links, with minimal changes, such that the corresponding instance satisfies all invariants and graphical UML constraints.
+   2.1.2 Once the list of objects has been compiled, review it again in case any more need to be created and in case there are any classes without objects.
+   2.2.  If any object has an attribute whose value violates an invariant, please suggest a new value for that attribute and include it in the list of objects you provide at the end.
+   2.3.  Please ensure that all objects involved in any link of any association are part of the proposed object list. If an object does not exist in the object list, do not use it in any link.
+
+Changed Invariants
+3. ChangedInvariants:
+A JSON array containing ONLY the invariants whose text is actually modified.
+You MUST follow these rules:
+3.1. You MUST compare each proposed invariant with its corresponding entry in OriginalInvariants tag.
+3.2. If the proposal is the same as the original (both textually and semantically), it MUST NOT include that invariant.
+3.3. You MUST modify an invariant ONLY if it is impossible to satisfy the model without modifying it.
+3.4. If the MUS contains invariants that CAN be satisfied by adjusting objects or properties you MUST NOT modify those invariants.
+3.5. If the MUS contains invariants that CANNOT be satisfied without modifying them, you MUST generate a corrected version.
+3.6. The corrected version MUST be syntactically valid OCL.
+3.7. ChangedInvariants may be empty IF AND ONLY IF no invariant requires modification.
+3.8. If you mention in the Explanation that an invariant must be changed, you MUST include it in ChangedInvariants.
+3.9. Retain the numbering indicated in each invariant and indicate it in the results table.
+   Example format:
+"ChangedInvariants":[
+  {
+     "name":"1-validAge",
+     "original":"self.age <= 0 and self.age > 99",
+     "proposal":"self.age >= 0 and self.age < 99"
+   }
+  ]
+
+```  
 -------------
 
 # ACKNOWLEDGMENT
