@@ -1350,7 +1350,8 @@ Interactive Repair of Inconsistencies in Conceptual Models.
 In Proc. 44th International Conference on Conceptual Modeling (ER'2025). Lecture Notes in Computer Science, Springer.
 
 https://link.springer.com/chapter/10.1007/978-3-032-08623-5_1
-DOI [10.1007/978-3-032-08623-5_1]
+
+**DOI** 10.1007/978-3-032-08623-5_1
 
 
 Juan Antonio Gómez-Gutiérrez, Robert Clarisó, Jordi Cabot.
@@ -1358,6 +1359,8 @@ A Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagra
 In Proc. 27th International Working Conference on Exploring Modeling Methods for Systems Analysis and Development (EMMSAD’2022). Lecture Notes in Business Information Processing vol. 450, pp. 267–275, Springer.
 
 https://link.springer.com/chapter/10.1007/978-3-031-07475-2_18
+
+**DOI** 10.1007/978-3-030-64846-6_6
 
 [(Up)](#Table-of-Contents)
    
