@@ -1000,6 +1000,7 @@ We have indicated the following:
 
 
 ```
+
 Model
 -	Model: The UML model definition provided in the format of the USE tool UML-based Specification Environment) developed by the University of Bremen.
 Model definition: <model definition in text format>
@@ -1009,14 +1010,18 @@ Properties
 Properties definition: <properties definition in text format>
 
 Invariants
-•	Invariants: A summary of the invariants in the model, extracted from the USE definition model, and assigning an integer index to each invariant that will be used to refer to the invariant.
-•	List of invariants: <List of invariants of the model>
-•	Original Invariants: A JSON array containing the exact original text of each invariant.
+-	Invariants: A summary of the invariants in the model, extracted from the USE definition model, and assigning an integer index to each invariant that will be used to refer to the invariant.
+-	List of invariants: <List of invariants of the model>
+-	Original Invariants: A JSON array containing the exact original text of each invariant.
 Original Invariants definition: <List of invariants with their bodyExpressions>
 
-
-
-
+Others
+Optionally we can add the next groups of information:
+-	MUS/MSS found so far: MUS and MSS groups that we know at the time of the query, since depending on the search method, results may still be being searched in the background.
+-	List of MUS: <List of MUS>
+-	List of MSS: <List of MSS>
+-	List of objects: <List of objects existing in the current instance>
+List of links: <List of links existing in the current instance>
 
 ```
 
