@@ -123,9 +123,9 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 
 <img src="imgREADME/Logo03.png" width="400">
 
-MVM is the tool that supports our detection, validation, and repair strategy proposed in the following works:
-- Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams (EMMSAD 2020)
-- Interactive Repair of Inconsistencies (ER 2025)
+MVM is the tool that supports our **detection**, **validation**, and **repair strategy** proposed in the following works:
+- Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams (**EMMSAD 2020**)
+- Interactive Repair of Inconsistencies (**ER 2025**)
 - Interactive Repair in Conceptual Models Using LLM
 
 As a strategy, MVM could have been implemented in various programming languages. However, since we decided to use the USE tool as a starting point, MVM is developed in Java and implemented as an extension of USE.
@@ -145,14 +145,14 @@ Author: ***Juan Antonio Gómez Gutiérrez(2025)***
 # Instructions for installation for testing
 
 To download and use MVM, simply follow these steps:
-1. Download the zip file from the following link:
+1. **Download** the **zip** file from the following link:
 
 https://drive.google.com/file/d/1w6wcO8XAaGcZxgyI_BUNQxnjqLepJOwL/view?usp=sharing
 
-2. Have Java 11 (or higher) installed. If you don't have it, download it from the following link:
+2. Have **Java 11** (or higher) installed. If you don't have it, download it from the following link:
 https://adoptium.net/es/temurin/releases?version=11
 
-3. Define the OPENAI_API_KEY environment variable with the key that allows the use of OpenAI. For example, open a CMD session and enter the following (each user has their own key):
+3. Define the **OPENAI_API_KEY** environment variable with the key that allows the use of OpenAI. For example, open a CMD session and enter the following (each user has their own key):
 ```
 **setx OPENAI_API_KEY sk-proj-------xxxxxxxxx---------K-NOFAoA**
 ```
