@@ -6,24 +6,24 @@
 <details>
   <summary><a href="#introduction">📘 Introduction</a></summary>
 	
-  📄 [MVM – Overview](#mvm--overview)
+     📄 [MVM – Overview](#mvm--overview)
   
 </details>
 
 <details>
   <summary><a href="#instructions-for-installation-for-testing">🛠️ Instructions for installation for testing</a></summary>
 
-  🛠️ [Instructions for installation for testing](#instructions-for-installation-for-testing)
+     🛠️ [Instructions for installation for testing](#instructions-for-installation-for-testing)
 
 </details>
 
 <details>
   <summary><a href="#strategy">🧩 Strategy</a></summary>
 
-  🔎 [Consistency Check](#consistency-check)  
-  🧪 [Diagnosis](#diagnosis)  
-  ✔️ [Validation](#validation)  
-  🧭 [Guided Interactive Repair](#guided-interactive-repair)
+     🔎 [Consistency Check](#consistency-check)  
+     🧪 [Diagnosis](#diagnosis)  
+     ✔️ [Validation](#validation)  
+     🧭 [Guided Interactive Repair](#guided-interactive-repair)
 
 </details>
 
