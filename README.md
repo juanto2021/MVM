@@ -1347,7 +1347,7 @@ Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance
 
 Juan Antonio Gómez-Gutiérrez, Robert Clarisó.
 Interactive Repair of Inconsistencies in Conceptual Models. 
-In Proc. 44th International Conference on Conceptual Modeling (ER'2025). Lecture Notes in Computer Science, to appear, Springer.
+In Proc. 44th International Conference on Conceptual Modeling (ER'2025). Lecture Notes in Computer Science, Springer.
 
 https://link.springer.com/chapter/10.1007/978-3-032-08623-5_1
 
