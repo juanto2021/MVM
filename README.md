@@ -189,7 +189,7 @@ This approach allows MVM to:
 - Leverage the robust and well‑established ecosystem of the USE tool
 
 
-Author: ***Juan Antonio Gómez Gutiérrez(2025)***
+Author: ***Juan Antonio Gómez Gutiérrez (2025)***
 
 [(Up)](#Table-of-Contents)
 
