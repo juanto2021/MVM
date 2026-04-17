@@ -979,6 +979,8 @@ With this structure, we provide **OpenAI** with context, a set of tasks to perfo
 
 Below, we detail each of the blocks that make up the query.
 
+[(Up)](#Table-of-Contents)
+
 ## Profile 
 
 First, we contextualize OpenAI and indicate what its main role will be in this consultation.
@@ -987,6 +989,8 @@ We indicate the following:
 1  . You are a software modeling assistant, expert on software design, development and debugging.
 2. You provide concise, concrete and actionable feedback about software design errors.
 ```
+
+[(Up)](#Table-of-Contents)
 
 ## Task
 
@@ -1001,6 +1005,9 @@ Enumeramos el conjunto de tareas que OpenAI debe realizar utilizando la informac
 5. Produce a JSON output with Properties, Objects, Links, Comment and ChangedInvariants.
 This explanation should be usable by a software engineer to locate and correct the defects in the model.”
 ```
+
+[(Up)](#Table-of-Contents)
+
 ## Inputs
 
 The inputs provided may vary, although we always provide information about the definition of the model to be analyzed and the contents of the property file containing the values used by the **Solver** included in the **USE** tool  to describe the ranges of possible values that will be used in the proposed solution.
@@ -1012,7 +1019,6 @@ Therefore, the inputs we provide are as follows:
 -	**Others**: Optionally we can provide MUS, MSS,  and a list of objects and links
 
 We have indicated the following:
-
 
 ```
 
@@ -1039,6 +1045,8 @@ Optionally we can add the next groups of information:
 List of links: <List of links existing in the current instance>
 
 ```
+
+[(Up)](#Table-of-Contents)
 
 ## Outputs
 This block aims to tell OpenAI what we should consider in the answer and how we want to obtain it in terms of the format and structure of the information.
@@ -1090,6 +1098,8 @@ You MUST follow these rules:
   ]
 
 ```
+
+[(Up)](#Table-of-Contents)
 
 ## Remarks
 
@@ -1144,6 +1154,8 @@ If not provide MSS/MUS…
 
 ```
 
+[(Up)](#Table-of-Contents)
+
 ## (UI – Suggest fixes)
 
 The main screen of this functionality looks like this:
@@ -1157,11 +1169,15 @@ It basically has 3 blocks of suggestions:
 
 Below, we detail the purpose of each graphic element.
 
+[(Up)](#Table-of-Contents)
+
 ### 1: Objects
 
 It shows the objects that it suggests to participate in the instance we intend to achieve by adding/removing those that may already exist previously or modifying the values it deems necessary. If there was no list of objects previously, it will suggest a new one.
 
 <img src="imgREADME/04_02_SF_Objects.png">
+
+[(Up)](#Table-of-Contents)
 
 ### 2: Show Diff Objects
 
@@ -1192,11 +1208,15 @@ It has the following functionalities:
   </tr>
 </table>
 
+[(Up)](#Table-of-Contents)
+
 ### 3: Links
 
 Shows the links that it considers should exist in the instance. If links already existed previously, you can suggest modifying them. If they did not exist, it shall also propose the creation of those it deems appropriate.  
 
 <img src="imgREADME/04_07_SF_Links.png">
+
+[(Up)](#Table-of-Contents)
 
 ### 4: Show Diff Links
 
@@ -1206,6 +1226,8 @@ It shows the differences between existing links and the proposed new ones.
 
 The **Synchronize scroll**, **Maximize**/**Restore**, and **Exit** graphics work the same as those discussed in the **Objects** section.
 
+[(Up)](#Table-of-Contents)
+
 ### 5: Create Objects + Links
 
 This button allows the creation of the proposed objects and links, but before its creation it shows a summary screen:
@@ -1213,6 +1235,8 @@ This button allows the creation of the proposed objects and links, but before it
 <img src="imgREADME/04_09_SF_CreationObjLinks.png">
 
 If we press **Exit**, we close the screen without taking any action. If we press **Create**, the instance is recreated using the list of proposed elements.
+
+[(Up)](#Table-of-Contents)
 
 ### 6: Properties
 
@@ -1222,6 +1246,7 @@ Muestra los parámetros que sugiere modificar en el fichero **<nombreModelo>.pro
 
 If you choose to modify this file, you have to reload the model to refresh its properties.
 
+[(Up)](#Table-of-Contents)
 
 ### 7: Proposed changes
 
@@ -1232,6 +1257,8 @@ If we have not provided the MUS/MSS as INPUT in the query, OpenAI will calculate
 In the best of chaos, a table may be provided showing the current invariant (Original) and the proposal (Proposal):
 
 <img src="imgREADME/04_11_SF_ProposedChanges.png">
+
+[(Up)](#Table-of-Contents)
 
 ### 8: Show options
 
@@ -1246,10 +1273,12 @@ When you click on this button, the following set of additional buttons appears:
 - **JSON Request**: Copy query in JSON format. (See example in **ANNEXES**)
 - **JSON Result**: Copies the result received from **OpenAI**. (See example in **ANNEXES**)
 
+[(Up)](#Table-of-Contents)
+
 9: Exit
 Leave the dialogue without taking any action. 
 
-
+[(Up)](#Table-of-Contents)
 
 
 
