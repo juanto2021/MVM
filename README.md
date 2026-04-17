@@ -120,6 +120,9 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 [(Up)](#Table-of-Contents)
 
 ## MVM – Overview
+
+<img src="imgREADME/Logo03.png" width="400">
+
 MVM is the tool that supports our detection, validation, and repair strategy proposed in the following works:
 - Tool for Debugging Unsatisfiable Integrity Constraints in UML/OCL Class Diagrams (EMMSAD 2020)
 - Interactive Repair of Inconsistencies (ER 2025)
