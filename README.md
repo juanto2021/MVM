@@ -1152,6 +1152,24 @@ Below, we detail the purpose of each graphic element.
 
 It shows the objects that it suggests to participate in the instance we intend to achieve by adding/removing those that may already exist previously or modifying the values it deems necessary. If there was no list of objects previously, it will suggest a new one.
 
+<img src="imgREADME/04_02_SF_Objects.png">
+
+### 2: Show Diff Objects
+
+It shows the differences between the currently existing objects and those proposed in the new instance:
+
+<img src="imgREADME/04_03_SF_Diff_Objects.png">
+
+It has the following functionalities:
+
+|---|---|
+| <img src="imgREADME/04_04_SF_SynchronizeScroll.png"> | Moving the scroll bar allows you to synchronize the 2 panels. |
+| <img src="imgREADME/04_05_SF_MaxRestore.png"> | This button changes its label when you press it and has 2 functionalities:
+- **Maximize**: Expand the size of the dialogue so that it takes up the entire screen.
+- **Restore**: Restores to its initial size.
+ |
+| <img src="imgREADME/04_06_SF_Exit.png"> | Close the dialog box. |
+
 
 
 -------------
