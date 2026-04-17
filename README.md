@@ -267,7 +267,7 @@ Depending on the number of existing invariants, this search may take a considera
 If the user wishes, they can stop this search by clicking on the **Stop calculating combinations** icon:
 
 <p align="center">
-   <img src="imgREADME/01_02_stopCalculateCmb">
+   <img src="imgREADME/01_02_stopCalculateCmb.png">
 </p>
 
 If you click on this option, a message will appear requesting confirmation:
