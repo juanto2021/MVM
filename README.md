@@ -1094,7 +1094,9 @@ We can check the elements that are created by clicking on the first 3 actions:
 
 Displays existing objects after the selected action has been performed. When you select an object, the **Attributes block**  displays the values associated with each attribute of the object:
 
-<img src="imgREADME/03_06_ActionsObjAttrs.png">
+<p align="center">
+   <img src="imgREADME/03_06_ActionsObjAttrs.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -1106,21 +1108,29 @@ Displays the value of each of the attributes of the object that is selected. See
 
 This button allows you to open a file of sequences of actions.
 
-<img src="imgREADME/03_07_ActionsFileOpen.png">
+<p align="center">
+   <img src="imgREADME/03_07_ActionsFileOpen.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
 ## 11: Find Actions
 
-<img src="imgREADME/03_10_ActionsLaunchFind.png">
+<p align="center">
+   <img src="imgREADME/03_10_ActionsLaunchFind.png">
+</p>
 
 This button allows you to search for files with sequences of actions: 
 
-<img src="imgREADME/03_08_ActionsFindActions.png">
+<p align="center">
+   <img src="imgREADME/03_08_ActionsFindActions.png">
+</p>
 
 By default, it uses the model’s name to filter the files to be searched, but if we uncheck the **Filter model 'Animals'** check, it shows all the existing files:
 
-<img src="imgREADME/03_09_ActionsFindActionsAll.png">
+<p align="center">
+   <img src="imgREADME/03_09_ActionsFindActionsAll.png">
+</p>
 
 To load a file, just click on the line that contains it and click on the Load action button or double-click on that line.
 
@@ -1130,7 +1140,9 @@ To load a file, just click on the line that contains it and click on the Load ac
 
 It allows you to save a file with the actions carried out so far on the instance.
 
-<img src="imgREADME/03_11_ActionsSaveFile.png">
+<p align="center">
+   <img src="imgREADME/03_11_ActionsSaveFile.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -1138,7 +1150,9 @@ It allows you to save a file with the actions carried out so far on the instance
 
 This button allows you to create an instance with the elements indicated in the associated action. If a list of actions has for example 10 actions, but we select action 3, only the first 3 actions will be executed. This allows you to roll back the instance's situation to a certain point by undoing all subsequent instances.
 
-<img src="imgREADME/03_13_ActionsLoad02.png">
+<p align="center">
+   <img src="imgREADME/03_13_ActionsLoad02.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -1146,7 +1160,9 @@ This button allows you to create an instance with the elements indicated in the 
 
 Displays the existing links in the instance after the execution of the selected action.
 
-<img src="imgREADME/03_15_ActionsLinks.png">
+<p align="center">
+   <img src="imgREADME/03_15_ActionsLinks.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
