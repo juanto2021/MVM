@@ -156,6 +156,7 @@
 - ⚙️ [6: Properties](#6-properties)
 - 📝 [7: Proposed changes](#7-proposed-changes)
 - 🛠️ [8: Show options](#8-show-options)
+- ❌ [9: Exit](#9-exit)
 
 </details>
 
@@ -1332,7 +1333,7 @@ When you click on this button, the following set of additional buttons appears:
 
 [(Up)](#Table-of-Contents)
 
-9: Exit
+### 9: Exit
 Leave the dialogue without taking any action. 
 
 [(Up)](#Table-of-Contents)
