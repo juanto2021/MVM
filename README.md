@@ -1109,7 +1109,7 @@ Displays the value of each of the attributes of the object that is selected. See
 This button allows you to open a file of sequences of actions.
 
 <p align="center">
-   <img src="imgREADME/03_07_ActionsFileOpen.png">
+   <img src="imgREADME/03_07_ActionsFileOpen.png" width="700">
 </p>
 
 [(Up)](#Table-of-Contents)
