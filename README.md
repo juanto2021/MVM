@@ -825,6 +825,8 @@ Next, the main screen is shown and its graphic elements are commented on.
 
 <img src="imgREADME/03_01_ActionsMain.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 1: File Name
 
 Name of the file that will store our sequence of actions. This type of file is stored with the .mva extension.
@@ -875,11 +877,15 @@ We can check the elements that are created by clicking on the first 3 actions:
 | 2 | <img src="imgREADME/03_04_ActionsSeq2.png"> |
 | 3 | <img src="imgREADME/03_05_ActionsSeq3.png"> |
 
+[(Up)](#Table-of-Contents)
+
 ## 8: Objects
 
 Displays existing objects after the selected action has been performed. When you select an object, the **Attributes block**  displays the values associated with each attribute of the object:
 
 <img src="imgREADME/03_06_ActionsObjAttrs.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 9: Attributes
 
@@ -890,6 +896,8 @@ Displays the value of each of the attributes of the object that is selected. See
 This button allows you to open a file of sequences of actions.
 
 <img src="imgREADME/03_07_ActionsFileOpen.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 11: Find Actions
 
@@ -905,11 +913,15 @@ By default, it uses the model’s name to filter the files to be searched, but i
 
 To load a file, just click on the line that contains it and click on the Load action button or double-click on that line.
 
+[(Up)](#Table-of-Contents)
+
 ## 12: Save actions
 
 It allows you to save a file with the actions carried out so far on the instance.
 
 <img src="imgREADME/03_11_ActionsSaveFile.png">
+
+[(Up)](#Table-of-Contents)
 
 ## 13: Load actions
 
@@ -917,15 +929,22 @@ This button allows you to create an instance with the elements indicated in the 
 
 <img src="imgREADME/03_13_ActionsLoad02.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 14: Links
 
 Displays the existing links in the instance after the execution of the selected action.
 
 <img src="imgREADME/03_15_ActionsLinks.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 15: Exit
 
 Closes the dialog box.
+
+[(Up)](#Table-of-Contents)
+
 
 
 -------------
