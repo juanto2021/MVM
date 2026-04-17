@@ -158,12 +158,6 @@
 - 🛠️ [8: Show options](#8-show-options)
 
 </details>
-
----
-
-### ✔️ Secciones finales sin desplegable (como pediste)
-
-```md
 - 🙏 [ACKNOWLEDGMENT](#acknowledgment)
 - 📚 [CITATION](#citation)
 - 📖 [REFERENCES](#references)
