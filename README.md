@@ -1078,11 +1078,15 @@ When an action is selected, the **Objects** and **Links** blocks are synchronize
 
 We can check the elements that are created by clicking on the first 3 actions:
 
+<div align="center">
+	
 | **Actions** | **Links** |
 |------------|-----------|
 | 1 | <img src="imgREADME/03_03_ActionsSeq1.png"> |
 | 2 | <img src="imgREADME/03_04_ActionsSeq2.png"> |
 | 3 | <img src="imgREADME/03_05_ActionsSeq3.png"> |
+
+</div>
 
 [(Up)](#Table-of-Contents)
 
