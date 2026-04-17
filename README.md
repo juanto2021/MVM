@@ -74,6 +74,7 @@
   - [5: Proposals](#5-proposals)
   - [6: Apply](#6-apply)
   - [7: Exit](#7-exit)
+  - [Example multiplicities](#example-multiplicities)
 - [ACKNOWLEDGMENT](#acknowledgment)
 - [CITATION](#citation)
 - [REFERENCES](#references)
@@ -800,6 +801,63 @@ Click on **Apply** and we will get the following diagram of objects:
 <img src="imgREADME/06_06_Multi_ex04.png">
 
 We can see how the problem of multiplicities has already been solved.
+
+# Actions
+This button allows access to MVM Wizard Actions. This utility is responsible for managing the record of the actions performed on a given instance. In this way, we can record each action and return to a certain point in the sequence in case we want to undo any of them. It is also possible to store all actions with a name so that you can retrieve it later and replay them all at once instantly.
+
+Next, the main screen is shown and its graphic elements are commented on.
+
+<img src="imgREADME/03_01_ActionsMain.png">
+
+## 1: File Name
+
+Name of the file that will store our sequence of actions. This type of file is stored with the .mva extension.
+
+## 2: Creation Date
+
+Date and time of file creation .
+
+## 3: Mod. Date
+
+Date and time of the last modification of the file.
+
+## 4: Model
+
+Model on which the actions have been carried out.
+
+## 5: Source USE File
+
+File used in the MVM session and containing the model on which the actions have been performed.
+
+## 6: Description
+
+Description of the sequence of actions.
+
+## 7: Actions
+
+Actions performed on the instance listed in the order they were performed.
+
+<img src="imgREADME/03_02_ActionsTable.png">
+
+The types of actions are as follows:
+
+| **Abbrev** | **Meaning**            |
+|------------|-------------------------|
+| **CO**     | Create object           |
+| **CL**     | Create link             |
+| **DO**     | Delete object           |
+| **DL**     | Delete link             |
+| **MA**     | Modification object     |
+
+When an action is selected, the **Objects** and **Links** blocks are synchronized to show the objects and links that exist after the action is performed.
+
+We can check the elements that are created by clicking on the first 3 actions:
+
+| <span style="color:blue; font-weight:bold;">1</span> | <img src="imgREADME/03_03_ActionsSeq1.png" width="260"> |
+|------------------------------------------------------|--------------------------------------------------------|
+| <span style="color:green; font-weight:bold;">2</span> | <img src="imgREADME/03_04_ActionsSeq2.png" width="260"> |
+| <span style="color:red; font-weight:bold;">3</span> | <img src="imgREADME/03_05_ActionsSeq3.png" width="260"> |
+
 
 
 
