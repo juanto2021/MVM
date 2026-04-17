@@ -1141,7 +1141,7 @@ To load a file, just click on the line that contains it and click on the Load ac
 It allows you to save a file with the actions carried out so far on the instance.
 
 <p align="center">
-   <img src="imgREADME/03_11_ActionsSaveFile.png">
+   <img src="imgREADME/03_11_ActionsSaveFile.png" width="400">
 </p>
 
 [(Up)](#Table-of-Contents)
