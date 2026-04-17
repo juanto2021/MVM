@@ -1346,7 +1346,7 @@ Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance
 # CITATION
 
 Juan Antonio Gómez-Gutiérrez, Robert Clarisó.
-Interactive Repair in Conceptual Models Using LLM
+Interactive Repair in Conceptual Models Using LLM.
 (to appear)
 
 Juan Antonio Gómez-Gutiérrez, Robert Clarisó.
