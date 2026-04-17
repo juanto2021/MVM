@@ -969,22 +969,50 @@ Below, we detail each of the blocks that make up the query.
 First, we contextualize OpenAI and indicate what its main role will be in this consultation.
 We indicate the following:
 ```
-**1**. You are a software modeling assistant, expert on software design, development and debugging.
-**2**. You provide concise, concrete and actionable feedback about software design errors.
+1  . You are a software modeling assistant, expert on software design, development and debugging.
+2. You provide concise, concrete and actionable feedback about software design errors.
 ```
 
-`1. You are a software modeling assistant, expert on software design, development and debugging.`  
-`2. You provide concise, concrete and actionable feedback about software design errors.`
+## Task
 
-<blockquote>
-<b>1</b>. You are a software modeling assistant, expert on software design, development and debugging.<br>
-<b>2</b>. You provide concise, concrete and actionable feedback about software design errors.
-</blockquote>
+Enumeramos el conjunto de tareas que OpenAI debe realizar utilizando la información proporcionada para obtener una respuesta precisa. Indicamos lo siguiente:
 
-> **1**. You are a software modeling assistant, expert on software design, development and debugging.  
-> **2**. You provide concise, concrete and actionable feedback about software design errors.
+```
+“Given a UML class diagram annotated with OCL invariants that is inconsistent, you will:
+1. Identify the invariants that cause the inconsistency.
+2. Review the properties file to see if the specified ranges are correct, and if not, suggest values to change.
+3. Modify ONLY the invariants that MUST be changed to make the model satisfiable.
+4. Calculate the MUS/MSS if this prompt does not provide it later.
+5. Produce a JSON output with Properties, Objects, Links, Comment and ChangedInvariants.
+This explanation should be usable by a software engineer to locate and correct the defects in the model.”
+```
+## Inputs
+
+The inputs provided may vary, although we always provide information about the definition of the model to be analyzed and the contents of the property file containing the values used by the **Solver** included in the **USE** tool  to describe the ranges of possible values that will be used in the proposed solution.
+
+Therefore, the inputs we provide are as follows:
+-	**Model**: The contents of the model definition file
+-	**Properties**: The contents of the file defining the ranges to be used in the solution search
+-	**Invariants**: invariants of the model and its expressions
+-	**Others**: Optionally we can provide MUS, MSS,  and a list of objects and links
+
+We have indicated the following:
 
 
+```
+Model
+-	Model: The UML model definition provided in the format of the USE tool UML-based Specification Environment) developed by the University of Bremen.
+Model definition: <model definition in text format>
+```
+
+```
+Properties
+-	Properties: A textual description of the range of allowed values for each attribute in the model and the range on the number of objects per class and the number of links per association.
+Properties definition: <properties definition in text format>
+```
+
+
+  
 -------------
 
 # ACKNOWLEDGMENT
