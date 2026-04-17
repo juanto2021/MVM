@@ -1030,7 +1030,7 @@ This block aims to tell OpenAI what we should consider in the answer and how we 
 
 Basically, the structure we require is:
 -	Comments
--	Objects and Links
+-	Updated list of objects and links
 -	Modified Invariants 
 
 We have indicated the following:
@@ -1074,7 +1074,60 @@ You MUST follow these rules:
    }
   ]
 
-```  
+```
+
+## Remarks
+
+Finally, we added a block with several considerations to refine the query and force certain results to make the result more accurate.
+
+We indicate the following:
+
+```
+
+1. Please return only the JSON structure without any additional explanation, since the result must be delivered to an application. Therefore, the JSON structure must contain the following parts:
+1.1 Properties: properties to be modified. The properties tag only refers to the properties that exist in <NameProperties> and they should review the range limits to see if it is necessary to modify them to satisfy the invariants.
+1.2 Objects: A list of objects with their corresponding values as if the modified properties had already been applied. Please return the same field names indicated in the request corresponding to each class. Please ensure that when defining objects, you normalize the output using the tags 'class', 'name', and 'attributes'. If more objects are needed to satisfy the multiplicity of the association links, especially those multiplicities that require an endpoint, please indicate that these objects should be created and propose a sample in the list of proposed resulting objects.If you don't need to change your values, don't change them. However, if there is a value that violates an invariant, it suggests changing it.
+1.3 Links: For each link, specify the fields: codeLink, end1Class, end1Object, end1Role, end2Class, end2Object, end2Role, nomAssoc.
+Example: codeLink="1" | end1Class="Person" end1Object="person1" "end1Role="person" end2Class="Pet" end2Object="pet1" end2Role="person" nomAssoc="BelongsTo"
+For each association, respect its multiplicity. That is, in a multiplicity of 4, it verifies that there are 4 links.
+1.4 Above all, make sure that all links of associations only use objects indicated in the previous object list.
+1.5 Comment: Explanation of 'how to correct the model', taking into account the properties that have been indicated for correction as if they were already corrected. Focus only on modifying invariants (not objects or properties). 
+The explanation should not be in the past tense but in the present or future tense. The only tags to return should be: Properties, Objects, Links, Comment and ChangedInvariants. 
+Do not omit the creation of objects or links.
+If the ChangedInvariants tag contains modified invariants, don't forget to include the invariant number provided in the initial list.
+Return ONLY valid JSON.
+Do not include markdown.
+If MUS exist, then ChangedInvariants must always exist.
+Return each sentence on a separate line, using a line break between sentences.
+For example:
+Input:  Sentence1. Sentence2. Sentence3.
+Output:
+Sentence1.
+Sentence2.
+Sentence3.
+
+If not provide MSS/MUS…
+1.5 Include MUS and MSS in the Comment tag using EXACTLY this format:\n
+	ADDITIONAL INFORMATION ABOUT MUS/MSS
+	Minimal Unsatisfiable Subset:
+	 - Group1:
+	   1.invariantX
+	 - Group2:
+	   2.invariantY
+	   3.invariantZ
+	Maximal Satisfiable Subset:
+	 - Group1:
+	   4.invariantA
+	   5.invariantB
+	   6.invariantC
+	 - Group2:
+	   7.invariantD
+	   8.invariantE
+	 - Group3:
+	   9.invariantF
+	  10.invariantG
+
+```
 -------------
 
 # ACKNOWLEDGMENT
