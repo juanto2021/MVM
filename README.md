@@ -210,7 +210,7 @@ https://adoptium.net/es/temurin/releases?version=11
 ```
 setx OPENAI_API_KEY sk-proj-------xxxxxxxxx---------K-NOFAoA
 ```
-Once you've downloaded the zip file to any folder, extract it and then simply run **RUN** (or RUN nameFile)  bat from the extracted folder.
+Once you've downloaded the zip file to any folder, extract it and then simply run **RUN** (or **RUN nameFile**)  bat from the extracted folder.
 If everything goes well, you should see the following:
 
 <img width="650" height="213" alt="image" src="https://github.com/user-attachments/assets/c2a171a4-e6b3-488f-ba37-da9d90cd2242" />
@@ -340,7 +340,7 @@ Regarding the dialog box shown during the search, it should be noted that when G
 
 ## Creación diagrama desde diálogo MUS/MSS
 
-To create an object diagram, simply double-click on one of the combinations shown in the Errors tab  or in Best approximate solutions:
+To create an object diagram, simply double-click on one of the combinations shown in the Errors tab  or in **Best approximate solutions**:
 
 <img src="imgREADME/01_08_DO.png" width="3000">
 
@@ -619,7 +619,7 @@ When you click on this option, you will see the dialog associated with the **MUS
 
 # MVM Check Objects Satisfiability
 
-This button also changes color depending on whether the invariants are satisfied or not. Clicking on it gives access to the following MVM  Check Objects 
+This button also changes color depending on whether the invariants are satisfied or not. Clicking on it gives access to the following** MVM Check Objects** 
 
 **Satisfiability screen**:
 
@@ -719,7 +719,7 @@ It allows you to visualize all the alternatives, only the correct ones or only t
 
 ## 10: New Invariant body - Incorrect/Correct
 
-This label shows the result of the test of the alternative whose definition is found in the text box just below (13: Body expression). It can have any of the following values:
+This label shows the result of the test of the alternative whose definition is found in the text box just below (**13: Body expression**). It can have any of the following values:
 
 <img src="imgREADME/05_SI_18_OBJ_StateTest.png">
 
