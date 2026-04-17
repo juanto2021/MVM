@@ -854,6 +854,7 @@ When an action is selected, the **Objects** and **Links** blocks are synchronize
 We can check the elements that are created by clicking on the first 3 actions:
 
 | <span style="color:blue; font-weight:bold;">1</span> | <img src="imgREADME/03_03_ActionsSeq1.png"> |
+|------------------------------------------------------|--------------------------------------------------------|
 | <span style="color:blue; font-weight:bold;">2</span> | <img src="imgREADME/03_04_ActionsSeq2.png"> |
 | <span style="color:blue; font-weight:bold;">3</span> | <img src="imgREADME/03_05_ActionsSeq3.png"> |
 
