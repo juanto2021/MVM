@@ -1280,13 +1280,10 @@ Leave the dialogue without taking any action. 
 
 [(Up)](#Table-of-Contents)
 
-
-
-
--------------
-
 # ACKNOWLEDGMENT
 Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance and to ***Jordi Cabot*** for his many advices and very important suggestions.
+
+[(Up)](#Table-of-Contents)
 
 # CITATION
 
@@ -1302,6 +1299,7 @@ In Proc. 27th International Working Conference on Exploring Modeling Methods for
 
 https://link.springer.com/chapter/10.1007/978-3-031-07475-2_18
 
+[(Up)](#Table-of-Contents)
    
 # REFERENCES
 
