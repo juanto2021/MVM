@@ -257,7 +257,7 @@ Both methods are available in the menu or toolbar.
 
 
 <p align="center">
-  ![](https://github.com/juanto2021/MVM/blob/main/imgREADME/01_01_MUS_menu_bar.png)
+   <img src="imgREADME/01_01_MUS_menu_bar.png">
 </p>
 
 ## Brute force
