@@ -159,17 +159,14 @@
 
 </details>
 
-<details>
-  <summary><b>🙏 ACKNOWLEDGMENT</b></summary>
-</details>
+---
 
-<details>
-  <summary><b>📚 CITATION</b></summary>
-</details>
+### ✔️ Secciones finales sin desplegable (como pediste)
 
-<details>
-  <summary><b>📖 REFERENCES</b></summary>
-</details>
+```md
+- 🙏 [ACKNOWLEDGMENT](#acknowledgment)
+- 📚 [CITATION](#citation)
+- 📖 [REFERENCES](#references)
 
 
 
