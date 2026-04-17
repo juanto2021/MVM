@@ -915,7 +915,9 @@ This button gives access to the screen that helps solve problems of multiplicity
 
 The main screen of this utility is composed of the following graphic elements:
 
-<img src="imgREADME/06_01_Multiplicities_Main.png">
+<p align="center">
+   <img src="imgREADME/06_01_Multiplicities_Main.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -971,7 +973,9 @@ Closes the dialog box without taking any action.
 
 Suppose we have an instance with an object of each class:
 
-<img src="imgREADME/06_02_Multi01.png">
+<p align="center">
+   <img src="imgREADME/06_02_Multi01.png">
+</p>
 
 The **AbstractMachine** class is an abstract class that cannot be created directly by an object.
 
@@ -979,13 +983,17 @@ We note that **Multiplicities** is **Incorrect**.
 
 If we click on the **Incorrect** button to access the **Wizard Association** screen, we will see that it indicates that the **grinder1** object is not connected to any **Part** object and therefore the **Uses** association fails.
 
-<img src="imgREADME/06_03_Multi_ex01.png">
+<p align="center">
+   <img src="imgREADME/06_03_Multi_ex01.png">
+</p>
 
 We also see that one of the proposals is to assign **Part1** (since it is not associated), create 3 objects of type **Part** and insert a link between **grinder1**, the **part1** object and the new (**NEWS**) objects that it creates.
 
 If we select this option and click on **Apply**, we will get the following diagram of objects:
 
-<img src="imgREADME/06_04_Multi_ex02.png">
+<p align="center">
+   <img src="imgREADME/06_04_Multi_ex02.png">
+</p>
 
 We can see that the topic of multiplicities is still in an Incorrect state.
 
@@ -993,13 +1001,17 @@ We can click on that button again to continue with the solution of these multipl
 
 This time, multiplicity fails because the object **cutter1** is not connected properly.
 
-<img src="imgREADME/06_05_Multi_ex03.png">
+<p align="center">
+   <img src="imgREADME/06_05_Multi_ex03.png">
+</p>
 
 Similar to the previous case, we will accept the creation of **4 objects** of type **Part** and the creation of the link of the same (**NEWS**) with **cutter1**.
 
 Click on **Apply** and we will get the following diagram of objects:
 
-<img src="imgREADME/06_06_Multi_ex04.png">
+<p align="center">
+   <img src="imgREADME/06_06_Multi_ex04.png">
+</p>
 
 We can see how the problem of multiplicities has already been solved.
 
@@ -1008,7 +1020,9 @@ This button allows access to MVM Wizard Actions. This utility is responsible for
 
 Next, the main screen is shown and its graphic elements are commented on.
 
-<img src="imgREADME/03_01_ActionsMain.png">
+<p align="center">
+   <img src="imgREADME/03_01_ActionsMain.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -1042,9 +1056,13 @@ Description of the sequence of actions.
 
 Actions performed on the instance listed in the order they were performed.
 
-<img src="imgREADME/03_02_ActionsTable.png">
+<p align="center">
+   <img src="imgREADME/03_02_ActionsTable.png">
+</p>
 
 The types of actions are as follows:
+
+<div align="center">
 
 | **Abbrev** | **Meaning**            |
 |------------|-------------------------|
@@ -1053,6 +1071,8 @@ The types of actions are as follows:
 | **DO**     | Delete object           |
 | **DL**     | Delete link             |
 | **MA**     | Modification object     |
+
+</div>
 
 When an action is selected, the **Objects** and **Links** blocks are synchronized to show the objects and links that exist after the action is performed.
 
