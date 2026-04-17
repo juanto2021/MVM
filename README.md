@@ -976,6 +976,10 @@ We indicate the following:
 `1. You are a software modeling assistant, expert on software design, development and debugging.`  
 `2. You provide concise, concrete and actionable feedback about software design errors.`
 
+<blockquote>
+<b>1</b>. You are a software modeling assistant, expert on software design, development and debugging.<br>
+<b>2</b>. You provide concise, concrete and actionable feedback about software design errors.
+</blockquote>
 
 
 -------------
