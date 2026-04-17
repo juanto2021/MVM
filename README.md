@@ -715,39 +715,93 @@ The main screen of this utility is composed of the following graphic elements:
 
 <img src="imgREADME/06_01_Multiplicities_Main.png">
 
+[(Up)](#Table-of-Contents)
+
 ## 1: Associations
 
 Displays the list of associations that have a problem. When you click on an association, the rest of the blocks on the screen are synchronized to show the information of the links associated with it.
 
+[(Up)](#Table-of-Contents)
+
 ## 2:Links
 
-Displays objects that are potentially related to the selected association. When you click on a link, you will see that the rest of the blocks (except Associations) synchronize to show information related to the selected link.
+Displays objects that are potentially related to the selected association. When you click on a link, you will see that the rest of the blocks (except **Associations**) synchronize to show information related to the selected link.
+
+[(Up)](#Table-of-Contents)
 
 ## 3: Cause
 
-It shows the cause why the link is failing.
+It shows the **cause** why the link is failing.
+
+[(Up)](#Table-of-Contents)
 
 ## 4: Full Message
 
-Displays the  full error message associated with the selected link. 
+Displays the **full** error message associated with the selected link. 
+
+[(Up)](#Table-of-Contents)
 
 ## 5: Proposals
 
 It shows the proposals envisaged to try to solve the problem of multiplicity.
 
 The proposals that are made are based on the following actions:
--	Create elements that help respect the cardinality of links
--	Assign elements to create links
--	Crear links
--	Delete Items
+-	**Create elements** that help respect the cardinality of links
+-	**Assign elements** to create links
+-	**Crear links**
+-	**Delete Items**
+
+[(Up)](#Table-of-Contents)
 
 ## 6: Apply
 
-This button is responsible for applying the selected proposal. Once we click on Apply , the dialog closes and the proposed actions are executed.
+This button is responsible for applying the selected proposal. Once we click on **Apply** , the dialog closes and the proposed actions are executed.
+
+[(Up)](#Table-of-Contents)
 
 ## 7: Exit
 
 Closes the dialog box without taking any action.
+
+[(Up)](#Table-of-Contents)
+
+## Example multiplicities
+
+Suppose we have an instance with an object of each class:
+
+<img src="imgREADME/06_02_Multi01.png">
+
+The **AbstractMachine** class is an abstract class that cannot be created directly by an object.
+
+We note that **Multiplicities** is **Incorrect**.
+
+If we click on the **Incorrect** button to access the **Wizard Association** screen, we will see that it indicates that the **grinder1** object is not connected to any **Part** object and therefore the **Uses** association fails.
+
+<img src="imgREADME/06_03_Multi_ex01.png">
+
+We also see that one of the proposals is to assign **Part1** (since it is not associated), create 3 objects of type **Part** and insert a link between **grinder1**, the **part1** object and the new (**NEWS**) objects that it creates.
+
+If we select this option and click on **Apply**, we will get the following diagram of objects:
+
+<img src="imgREADME/06_04_Multi_ex02.png">
+
+We can see that the topic of multiplicities is still in an Incorrect state.
+
+We can click on that button again to continue with the solution of these multiplicities and we see that there are fewer to solve.
+
+This time, multiplicity fails because the object **cutter1** is not connected properly.
+
+<img src="imgREADME/06_05_Multi_ex03.png">
+
+Similar to the previous case, we will accept the creation of **4 objects** of type **Part** and the creation of the link of the same (**NEWS**) with **cutter1**.
+
+Click on **Apply** and we will get the following diagram of objects:
+
+<img src="imgREADME/06_06_Multi_ex04.png">
+
+We can see how the problem of multiplicities has already been solved.
+
+
 
 
 -------------
