@@ -1168,7 +1168,7 @@ It has the following functionalities:
     <td>Moving the scroll bar allows you to synchronize the 2 panels.</td>
   </tr>
   <tr>
-    <td><img src="imgREADME/04_05_SF_MaxRestore.png" width=500></td>
+    <td><img src="imgREADME/04_05_SF_MaxRestore.png" <img src="imgREADME/04_05_SF_MaxRestore.png" width="250"></td>
     <td>
       This button changes its label when you press it and has 2 functionalities:
       <ul>
