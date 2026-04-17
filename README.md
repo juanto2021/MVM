@@ -1370,7 +1370,9 @@ If not provide MSS/MUS…
 
 The main screen of this functionality looks like this:
 
-<img src="imgREADME/04_01_SF_Main.png">
+<p align="center">
+   <img src="imgREADME/04_01_SF_Main.png">
+</p>
 
 It basically has 3 blocks of suggestions:
 - **Potential fix 1 – Modify object diagram**: Indicates the objects and links that should exist in the instance. If in the query we have provided a list of objects and links in the INPUTs block, it will make suggestions on how to modify them to improve the instance. If we haven't provided any lists, it will suggest creating a set of items to instantiate.
@@ -1385,7 +1387,9 @@ Below, we detail the purpose of each graphic element.
 
 It shows the objects that it suggests to participate in the instance we intend to achieve by adding/removing those that may already exist previously or modifying the values it deems necessary. If there was no list of objects previously, it will suggest a new one.
 
-<img src="imgREADME/04_02_SF_Objects.png">
+<p align="center">
+   <img src="imgREADME/04_02_SF_Objects.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -1393,7 +1397,9 @@ It shows the objects that it suggests to participate in the instance we intend t
 
 It shows the differences between the currently existing objects and those proposed in the new instance:
 
-<img src="imgREADME/04_03_SF_Diff_Objects.png">
+<p align="center">
+   <img src="imgREADME/04_03_SF_Diff_Objects.png">
+</p>
 
 It has the following functionalities:
 
@@ -1424,7 +1430,9 @@ It has the following functionalities:
 
 Shows the links that it considers should exist in the instance. If links already existed previously, you can suggest modifying them. If they did not exist, it shall also propose the creation of those it deems appropriate.  
 
-<img src="imgREADME/04_07_SF_Links.png">
+<p align="center">
+   <img src="imgREADME/04_07_SF_Links.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -1432,7 +1440,10 @@ Shows the links that it considers should exist in the instance. If links already
 
 It shows the differences between existing links and the proposed new ones.
 
-<img src="imgREADME/04_08_SF_Diff_Links.png">
+<p align="center">
+   <img src="imgREADME/04_08_SF_Diff_Links.png">
+</p>
+
 
 The **Synchronize scroll**, **Maximize**/**Restore**, and **Exit** graphics work the same as those discussed in the **Objects** section.
 
@@ -1442,7 +1453,9 @@ The **Synchronize scroll**, **Maximize**/**Restore**, and **Exit** graphics work
 
 This button allows the creation of the proposed objects and links, but before its creation it shows a summary screen:
 
-<img src="imgREADME/04_09_SF_CreationObjLinks.png">
+<p align="center">
+   <img src="imgREADME/04_09_SF_CreationObjLinks.png">
+</p>
 
 If we press **Exit**, we close the screen without taking any action. If we press **Create**, the instance is recreated using the list of proposed elements.
 
@@ -1452,7 +1465,9 @@ If we press **Exit**, we close the screen without taking any action. If we press
 
 Muestra los parámetros que sugiere modificar en el fichero **<nombreModelo>.properties** para facilitar la búsqueda de soluciones por parte del **Solver** utilizado en el cálculo de **MUS**/**MSS**.
 
-<img src="imgREADME/04_10_SF_Properties.png">
+<p align="center">
+   <img src="imgREADME/04_10_SF_Properties.png">
+</p>
 
 If you choose to modify this file, you have to reload the model to refresh its properties.
 
@@ -1466,7 +1481,9 @@ If we have not provided the MUS/MSS as INPUT in the query, OpenAI will calculate
 
 In the best of chaos, a table may be provided showing the current invariant (Original) and the proposal (Proposal):
 
-<img src="imgREADME/04_11_SF_ProposedChanges.png">
+<p align="center">
+   <img src="imgREADME/04_11_SF_ProposedChanges.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -1476,7 +1493,9 @@ This option is intended to help review the query and response blocks that occur 
 
 When you click on this button, the following set of additional buttons appears:
 
-<img src="imgREADME/04_12_SF_ShowOptions.png">
+<p align="center">
+   <img src="imgREADME/04_12_SF_ShowOptions.png">
+</p>
 
 - **Copy Comment**: Allows you to copy the text that appears in the Proposed changes block to the clipboard. (See example in **ANNEXES**)
 - **Request txt**: Copy on the clipboard, the query as it has been made to OpenAI (See example in **ANNEXES**)
