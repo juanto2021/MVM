@@ -5,7 +5,7 @@
 
 # Table of Contents 📚
 
-### 📘 Introduction
+## 📘 Introduction
 <details>
   <summary><b>📘 Introduction</b></summary>
 
@@ -17,7 +17,7 @@
 
 ---
 
-### 🛠️ Instructions for installation for testing
+## 🛠️ Instructions for installation for testing
 <details>
   <summary><b>🛠️ Instructions for installation for testing</b></summary>
 
@@ -29,7 +29,7 @@
 
 ---
 
-### 🧩 Strategy
+## 🧩 Strategy
 <details>
   <summary><b>🧩 Strategy</b></summary>
 
@@ -44,7 +44,7 @@
 
 ---
 
-### 🧰 MVM TOOL
+## 🧰 MVM TOOL
 <details>
   <summary><b>🧰 MVM TOOL</b></summary>
 
@@ -61,7 +61,7 @@
 
 ---
 
-### 🧙‍♂️ MVM Wizard
+## 🧙‍♂️ MVM Wizard
 <details>
   <summary><b>🧙‍♂️ MVM Wizard</b></summary>
 
@@ -102,7 +102,7 @@
 
 ---
 
-### 🧪 MVM Check Objects Satisfiability
+## 🧪 MVM Check Objects Satisfiability
 <details>
   <summary><b>🧪 MVM Check Objects Satisfiability</b></summary>
 
@@ -129,7 +129,7 @@
 
 ---
 
-### 🔗 Wizard Association
+## 🔗 Wizard Association
 <details>
   <summary><b>🔗 Wizard Association</b></summary>
 
@@ -148,7 +148,7 @@
 
 ---
 
-### 🧾 Actions
+## 🧾 Actions
 <details>
   <summary><b>🧾 Actions</b></summary>
 
@@ -174,7 +174,7 @@
 
 ---
 
-### 🛠️ Suggest fixes
+## 🛠️ Suggest fixes
 <details>
   <summary><b>🛠️ Suggest fixes</b></summary>
 
@@ -190,7 +190,7 @@
 
 ---
 
-### 🖥️ (UI – Suggest fixes)
+## 🖥️ (UI – Suggest fixes)
 <details>
   <summary><b>🖥️ (UI – Suggest fixes)</b></summary>
 
