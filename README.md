@@ -1346,6 +1346,10 @@ Special thanks to ***Robert Clarisó*** for his invaluable help and perseverance
 # CITATION
 
 Juan Antonio Gómez-Gutiérrez, Robert Clarisó.
+Interactive Repair in Conceptual Models Using LLM
+(to appear)
+
+Juan Antonio Gómez-Gutiérrez, Robert Clarisó.
 Interactive Repair of Inconsistencies in Conceptual Models. 
 In Proc. 44th International Conference on Conceptual Modeling (ER'2025). Lecture Notes in Computer Science, Springer.
 
