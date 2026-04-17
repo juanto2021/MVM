@@ -1007,6 +1007,17 @@ Model definition: <model definition in text format>
 Properties
 -	Properties: A textual description of the range of allowed values for each attribute in the model and the range on the number of objects per class and the number of links per association.
 Properties definition: <properties definition in text format>
+
+Invariants
+•	Invariants: A summary of the invariants in the model, extracted from the USE definition model, and assigning an integer index to each invariant that will be used to refer to the invariant.
+•	List of invariants: <List of invariants of the model>
+•	Original Invariants: A JSON array containing the exact original text of each invariant.
+Original Invariants definition: <List of invariants with their bodyExpressions>
+
+
+
+
+
 ```
 
 
