@@ -1,6 +1,6 @@
 # _MVM (Model Validator Mixer)_
 
-![](https://github.com/juanto2021/MVM/blob/main/imgREADME/Portada2.png)
+![](https://github.com/juanto2021/MVM/blob/main/imgREADME/Portada02.png)
 
 ## Table of Contents
 
