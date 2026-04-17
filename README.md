@@ -851,6 +851,8 @@ File used in the MVM session and containing the model on which the actions have 
 
 Description of the sequence of actions.
 
+[(Up)](#Table-of-Contents)
+
 ## 7: Actions
 
 Actions performed on the instance listed in the order they were performed.
@@ -944,6 +946,25 @@ Displays the existing links in the instance after the execution of the selected 
 Closes the dialog box.
 
 [(Up)](#Table-of-Contents)
+
+# Suggest fixes
+
+Using this button, we make a query to OpenAI asking it mainly to help us determine what errors the model may contain and to tell us how we could solve it.
+
+In the consultation we may provide you with certain information such as **INPUT** in case we have already calculated or not the **MUS**/**MSS** previously or we already have a collection of objects and links.
+
+To provide **OpenAI** with the necessary context, the query will be performed with a block of text with the following structure:
+-	**PROFILE**: contextualiza a OpenAI
+-	**TASK**: lists the actions to be performed
+-	**INPUTS**: information we provide to you
+-	**OUTPUTS**: information we expect to receive and the required format
+-	**REMARKS**: Considerations for refining your query
+
+With this structure, we provide **OpenAI** with context, a set of tasks to perform, a set of information to analyze, and request an output to show to the designer and to perform other actions, such as creating a new instance as a result of the query. Obviously, we refined our query by adding additional instructions that improve the final answer.
+
+Below, we detail each of the blocks that make up the query.
+
+## Profile 
 
 
 
