@@ -289,7 +289,7 @@ In the title of the dialog box, you can see the selected method (Brute) and the 
 [(Up)](#Table-of-Contents)
 
 ### Errors
-<!-- <img src="imgREADME/01_04_Errors.png" width="400"> -->
+
 <img src="imgREADME/01_04_Errors.png">
 
 On this screen we can see different blocks that interact with each other so that, when we click on a row in the Faulty combinations panel, the rest of the blocks are synchronized and show the detail associated with the selected group.
@@ -347,7 +347,9 @@ The second phase looks for the rest of the pending combinations until all the po
 
 Regarding the dialog box shown during the search, it should be noted that when Greedy gives the first result, in the title of the dialog, in addition to the Greedy method,  the word Initial is also shown  indicating that it is the first result. When the Greedy combination search is complete, End is displayed.
 
-<img src="imgREADME/01_07_Greedy.png">
+<p align="center">
+   <img src="imgREADME/01_07_Greedy.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -355,7 +357,9 @@ Regarding the dialog box shown during the search, it should be noted that when G
 
 To create an object diagram, simply double-click on one of the combinations shown in the Errors tab  or in **Best approximate solutions**:
 
-<img src="imgREADME/01_08_DO.png" width="3000">
+<p align="center">
+   <img src="imgREADME/01_08_DO.png" width="3000">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -367,28 +371,36 @@ It is basically divided into 3 blocks:
 -	**Associations**: Manage existing links between objects
 -	**Actions**: access the utilities for repairing invariants, multiplicities, log of actions performed and consult OpenAI.
 
-<img src="imgREADME/02_01_Wizard_main.png">
+<p align="center">
+   <img src="imgREADME/02_01_Wizard_main.png">
+</p>
 
 Below, we detail the purpose of each graphic element.
 
 ## 1: Classes
 Displays the existing classes in the model. When you click on a class, the **Objects** and **Attributes** blocks synchronize to show the existing objects of the selected class and the attributes and their values of the first object of that class.
 
-<img src="imgREADME/02_02_Classes.png">
+<p align="center">
+   <img src="imgREADME/02_02_Classes.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
 ## 2: Objects
 Displays the existing objects in the current instance of the class selected in the **Classes** block. Each time an object is selected, the **Attributes table** displays its corresponding attributes and values.
 
-<img src="imgREADME/02_03_Objects.png">
+<p align="center">
+   <img src="imgREADME/02_03_Objects.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
 ## 3: Attributes
 It allows you to visualize and modify the attributes and values of an object. In the case of an existing object, you can modify a value by selecting it and then clicking on the value you want to modify.
 
-<img src="imgREADME/02_21_Attr.png">
+<p align="center">
+   <img src="imgREADME/02_21_Attr.png">
+</p>
 
 The values assigned to the attributes of type String must be enclosed in single quotation marks ('**Example String**').
 
@@ -396,7 +408,9 @@ When a value is modified, the **Save Obj** and **Cancel Obj** buttons are enable
 
 If you enter a value that does not correspond to the expected type, an error message appears:
 
-<img src="imgREADME/02_04_err_type.png">
+<p align="center">
+   <img src="imgREADME/02_04_err_type.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -405,11 +419,15 @@ If you enter a value that does not correspond to the expected type, an error mes
 
 This text box is used to display the **ID** of the object that has the focus and is disabled when the treated object already exists. However, when we click on the **New Obj** button, it is enabled so that we can enter a new **ID**:
 
-<img src="imgREADME/02_05_new_obj.png">
+<p align="center">
+   <img src="imgREADME/02_05_new_obj.png">
+</p>
 
 If we enter an **ID** that already exists and click on **Save Obj**, an error message appears:
 
-<img src="imgREADME/02_06_new_obj_ya_existe.png">
+<p align="center">
+   <img src="imgREADME/02_06_new_obj_ya_existe.png">
+</p>
 
 If we want to leave the object as it was before changing anything, we will simply press **Cancel Obj**.
 
@@ -419,7 +437,9 @@ If we want to leave the object as it was before changing anything, we will simpl
 
 Pressing this button enables the Object text box  to enter an **ID** and leaves the values in the attributes so that we can modify only those that are necessary.
 
-<img src="imgREADME/02_07_new_obj02.png">
+<p align="center">
+   <img src="imgREADME/02_07_new_obj02.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -441,7 +461,9 @@ Leaves the object with the values it had before you modified it and clicked **Sa
 
 Allows you to delete the selected object, but first requests confirmation with this message:
 
-<img src="imgREADME/02_08_Confirm_Delete.png">
+<p align="center">
+   <img src="imgREADME/02_08_Confirm_Delete.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -449,7 +471,9 @@ Allows you to delete the selected object, but first requests confirmation with t
 
 Allows you to create an object by copying the selected object. The **object ID** will be the name of the class followed by a number that it will get from a sequential number within the class. 
 
-<img src="imgREADME/02_21_MasMas.png">
+<p align="center">
+   <img src="imgREADME/02_21_MasMas.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -457,7 +481,9 @@ Allows you to create an object by copying the selected object. The **object ID**
 
 Create one object of each class. The **object ID** will be the name of the class followed by a number that it will get from a sequential number within the class. 
 
-<img src="imgREADME/02_20_FillObj.png">
+<p align="center">
+   <img src="imgREADME/02_20_FillObj.png">
+</p>
 
 Initialize attributes depending on their type:
 -	**String**: ‘x’.
@@ -489,7 +515,9 @@ Deletes all objects from the instance and flushes the diagram.
 
 Lists the associations defined in the model.
 
-<img src="imgREADME/02_09_Associations.png">
+<p align="center">
+   <img src="imgREADME/02_09_Associations.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -498,7 +526,9 @@ Selecting an association synchronizes the '**From**' and '**To**' information on
 ## 15: From Class
 Displays the **participating class** at the origin endpoint.
 
-<img src="imgREADME/02_10_FromClass.png">
+<p align="center">
+   <img src="imgREADME/02_10_FromClass.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -506,7 +536,9 @@ Displays the **participating class** at the origin endpoint.
 
 Displays the **participating class** at the end endpoint.
 
-<img src="imgREADME/02_11_ToClass.png">
+<p align="center">
+   <img src="imgREADME/02_11_ToClass.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -514,7 +546,9 @@ Displays the **participating class** at the end endpoint.
 
 Displays the **participating object** at the source endpoint.
 
-<img src="imgREADME/02_12_FromObject.png">
+<p align="center">
+   <img src="imgREADME/02_12_FromObject.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -522,7 +556,9 @@ Displays the **participating object** at the source endpoint.
 
 Displays the **participating object** at the end endpoint.
 
-<img src="imgREADME/02_13_ToObject.png">
+<p align="center">
+   <img src="imgREADME/02_13_ToObject.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -530,7 +566,9 @@ Displays the **participating object** at the end endpoint.
 
 **Multiplicity** at the **origin** extreme.
 
-<img src="imgREADME/02_14_FromMultiplicity.png">
+<p align="center">
+   <img src="imgREADME/02_14_FromMultiplicity.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -538,7 +576,9 @@ Displays the **participating object** at the end endpoint.
 
 **Multiplicity** at the **endpoint**.
 
-<img src="imgREADME/02_15_ToMultiplicity.png">
+<p align="center">
+   <img src="imgREADME/02_15_ToMultiplicity.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -546,7 +586,9 @@ Displays the **participating object** at the end endpoint.
 
 **Role** on the **origin** endpoint.
 
-<img src="imgREADME/02_16_FromRole.png">
+<p align="center">
+   <img src="imgREADME/02_16_FromRole.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -554,7 +596,9 @@ Displays the **participating object** at the end endpoint.
 
 **Role** at the **end** endpoint.
 
-<img src="imgREADME/02_17_ToRole.png">
+<p align="center">
+   <img src="imgREADME/02_17_ToRole.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -562,7 +606,9 @@ Displays the **participating object** at the end endpoint.
 
 It allows you to insert a link between 2 objects. To do this, we have to select the source object and the final object and click on the **Insert Link button**:
 
-<img src="imgREADME/02_18_InsertLink.png">
+<p align="center">
+   <img src="imgREADME/02_18_InsertLink.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -570,7 +616,9 @@ It allows you to insert a link between 2 objects. To do this, we have to select 
 
 Allows you to delete a link between 2 objects. To select a link, we can select the objects that are at each end or click on it in the diagram.
 
-<img src="imgREADME/02_19_DeleteLink.png">
+<p align="center">
+   <img src="imgREADME/02_19_DeleteLink.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -578,7 +626,9 @@ Allows you to delete a link between 2 objects. To select a link, we can select t
 
 This button allows access to **MVM Wizard Actions**, which is the functionality in charge of managing the record of the actions carried out on a given instance.
 
-<img src="imgREADME/03_16_ActionsCall.png">
+<p align="center">
+   <img src="imgREADME/03_16_ActionsCall.png">
+</p>
 
 With this functionality, the user will be able to record a set of actions and retrieve them later to reproduce a given situation on the instance. You can even go back to a specific situation without needing to record any files beforehand.
 
@@ -588,7 +638,9 @@ With this functionality, the user will be able to record a set of actions and re
 
 This button allows **OpenAI** to be invoked  to perform a query that allows us to get suggestions to detect errors in the model and correct them.
 
-<img src="imgREADME/03_17_OpenAIcall.png">
+<p align="center">
+   <img src="imgREADME/03_17_OpenAIcall.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -598,7 +650,9 @@ This section allows you to review the status of invariants. The color of the but
 
 If we click on it, a screen appears where we can see which invariants are satisfied and which are not.
 
-<img src="imgREADME/05_SI_01_CheckInvs.png">
+<p align="center">
+   <img src="imgREADME/05_SI_01_CheckInvs.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -606,7 +660,9 @@ If we click on it, a screen appears where we can see which invariants are satisf
 
 This button allows access to the functionality that tells us which invariants are failing according to the existing objects in the instance and which are the alternatives proposed for their solution. The color of the button will depend on whether the invariants are satisfied or not.
 
-<img src="imgREADME/05_SI_24_OBJ_Call.png">
+<p align="center">
+  <img src="imgREADME/05_SI_24_OBJ_Call.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -614,7 +670,9 @@ This button allows access to the functionality that tells us which invariants ar
 
 This button gives access to the screen that determines the multiplicity problems encountered in the current instance and helps to solve them by proposing the **creation**/**deletion** of objects and the creation of links between them.
 
-<img src="imgREADME/03_16_ActionsCall.png">
+<p align="center">
+   <img src="imgREADME/03_16_ActionsCall.png">
+</p>
 
 [(Up)](#Table-of-Contents)
 
@@ -622,11 +680,16 @@ This button gives access to the screen that determines the multiplicity problems
 
 Using this button, if accessible, we can display the dialog box that shows the previously obtained **MUS**/**MSS**. If it is not accessible, it means that they have not yet been calculated. It is equivalent to clicking on the icon that we have in the toolbar:
 
-<img src="imgREADME/07_01_MUS_MSS01.png">
+<p align="center">
+   <img src="imgREADME/07_01_MUS_MSS01.png">
+</p>
 
 When you click on this option, you will see the dialog associated with the **MUS**/**MSS**:
 
-<img src="imgREADME/03_18_MUS_MSS_call.png">
+<p align="center">
+   <img src="imgREADME/03_18_MUS_MSS_call.png">
+</p>
+
 
 [(Up)](#Table-of-Contents)
 
