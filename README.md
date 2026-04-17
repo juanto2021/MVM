@@ -2,159 +2,157 @@
 
 <img src="imgREADME/Portada02.png" width="600">
 
-## 📚 Table of Contents
-
 <details>
   <summary><b>📘 Introduction</b></summary>
 
-- [MVM – Overview](#mvm--overview)
+- 📄 [MVM – Overview](#mvm--overview)
 
 </details>
 
 <details>
   <summary><b>🛠️ Instructions for installation for testing</b></summary>
 
-- [Instructions for installation for testing](#instructions-for-installation-for-testing)
+- 🛠️ [Instructions for installation for testing](#instructions-for-installation-for-testing)
 
 </details>
 
 <details>
   <summary><b>🧩 Strategy</b></summary>
 
-- [Consistency Check](#consistency-check)
-- [Diagnosis](#diagnosis)
-- [Validation](#validation)
-- [Guided Interactive Repair](#guided-interactive-repair)
+- 🔎 [Consistency Check](#consistency-check)
+- 🧪 [Diagnosis](#diagnosis)
+- ✔️ [Validation](#validation)
+- 🧭 [Guided Interactive Repair](#guided-interactive-repair)
 
 </details>
 
 <details>
   <summary><b>🧰 MVM TOOL</b></summary>
 
-- [Brute force](#brute-force)  
-  - [Errors](#errors)  
-  - [Best approximate solutions](#best-approximate-solutions)  
-  - [Statistics](#statistics)
-- [Greedy](#greedy)
-- [Creación diagrama desde diálogo MUS/MSS](#creación-diagrama-desde-diálogo-musmss)
+- ⚙️ [Brute force](#brute-force)  
+  - ❗ [Errors](#errors)  
+  - 🎯 [Best approximate solutions](#best-approximate-solutions)  
+  - 📊 [Statistics](#statistics)
+- ⚡ [Greedy](#greedy)
+- 🧱 [Creación diagrama desde diálogo MUS/MSS](#creación-diagrama-desde-diálogo-musmss)
 
 </details>
 
 <details>
   <summary><b>🧙‍♂️ MVM Wizard</b></summary>
 
-- [1: Classes](#1-classes)
-- [2: Objects](#2-objects)
-- [3: Attributes](#3-attributes)
-- [4: Object](#4-object)
-- [5: New object](#5-new-object)
-- [6: Save object](#6-save-object)
-- [7: Cancel object](#7-cancel-object)
-- [8: Delete object](#8-delete-object)
-- [9: +](#9-)
-- [10: Fill](#10-fill)
-- [11: Auto Layout](#11-auto-layout)
-- [12: Refresh](#12-refresh)
-- [13: Reset](#13-reset)
-- [14: Associations](#14-associations)
-- [15: From Class](#15-from-class)
-- [16: To Class](#16-to-class)
-- [17: From Object](#17-from-object)
-- [18: To Object](#18-to-object)
-- [19: From multiplicity](#19-from-multiplicity)
-- [20: To multiplicity](#20-to-multiplicity)
-- [21: From Role](#21-from-role)
-- [22: To Role](#22-to-role)
-- [23: Insert link](#23-insert-link)
-- [24: Delete link](#24-delete-link)
-- [25: Actions](#25-actions)
-- [26: Suggest fixes](#26-suggest-fixes)
-- [27: State invariants](#27-state-invariants)
-- [28: OBJs](#28-objs)
-- [29: Multiplicities](#29-multiplicities)
-- [30: MSS/MUS](#30-mssmus)
+- 🏷️ [1: Classes](#1-classes)
+- 🧱 [2: Objects](#2-objects)
+- 🧬 [3: Attributes](#3-attributes)
+- 🧍 [4: Object](#4-object)
+- ➕ [5: New object](#5-new-object)
+- 💾 [6: Save object](#6-save-object)
+- ❌ [7: Cancel object](#7-cancel-object)
+- 🗑️ [8: Delete object](#8-delete-object)
+- ➕ [9: +](#9-)
+- 🪣 [10: Fill](#10-fill)
+- 🗺️ [11: Auto Layout](#11-auto-layout)
+- 🔄 [12: Refresh](#12-refresh)
+- 🔁 [13: Reset](#13-reset)
+- 🔗 [14: Associations](#14-associations)
+- 🧭 [15: From Class](#15-from-class)
+- 🧭 [16: To Class](#16-to-class)
+- 🧍 [17: From Object](#17-from-object)
+- 🧍 [18: To Object](#18-to-object)
+- 🔢 [19: From multiplicity](#19-from-multiplicity)
+- 🔢 [20: To multiplicity](#20-to-multiplicity)
+- 🏷️ [21: From Role](#21-from-role)
+- 🏷️ [22: To Role](#22-to-role)
+- 🔗 [23: Insert link](#23-insert-link)
+- ❌ [24: Delete link](#24-delete-link)
+- 🛠️ [25: Actions](#25-actions)
+- 💡 [26: Suggest fixes](#26-suggest-fixes)
+- 📐 [27: State invariants](#27-state-invariants)
+- 📦 [28: OBJs](#28-objs)
+- 🔢 [29: Multiplicities](#29-multiplicities)
+- 🧮 [30: MSS/MUS](#30-mssmus)
 
 </details>
 
 <details>
   <summary><b>🧪 MVM Check Objects Satisfiability</b></summary>
 
-- [1: Filter Objects](#1-filter-objects)
-- [2: Incorrect/Correct](#2-incorrectcorrect)
-- [3: Filter Invariants](#3-filter-invariants)
-- [4: Objects](#4-objects)
-- [5: Invariants](#5-invariants)
-- [6: Attributes](#6-attributes)
-- [7: Current invariant body](#7-current-invariant-body)
-- [8: Body alternatives](#8-body-alternatives)
-- [9: Filter Alternatives](#9-filter-alternatives)
-- [10: New Invariant body - Incorrect/Correct](#10-new-invariant-body---incorrectcorrect)
-- [11: Test](#11-test)
-- [13: Body expression](#13-body-expression)
-- [14: Show Source](#14-show-source)
-- [15: File Name](#15-file-name)
-- [16: Save file](#16-save-file)
-- [17: Exit](#17-exit)
+- 🔍 [1: Filter Objects](#1-filter-objects)
+- ✔️❌ [2: Incorrect/Correct](#2-incorrectcorrect)
+- 🔍 [3: Filter Invariants](#3-filter-invariants)
+- 🧱 [4: Objects](#4-objects)
+- 📐 [5: Invariants](#5-invariants)
+- 🧬 [6: Attributes](#6-attributes)
+- 🧩 [7: Current invariant body](#7-current-invariant-body)
+- 🔄 [8: Body alternatives](#8-body-alternatives)
+- 🔍 [9: Filter Alternatives](#9-filter-alternatives)
+- 🆕 [10: New Invariant body - Incorrect/Correct](#10-new-invariant-body---incorrectcorrect)
+- 🧪 [11: Test](#11-test)
+- 🧩 [13: Body expression](#13-body-expression)
+- 📄 [14: Show Source](#14-show-source)
+- 🗂️ [15: File Name](#15-file-name)
+- 💾 [16: Save file](#16-save-file)
+- ❌ [17: Exit](#17-exit)
 
 </details>
 
 <details>
   <summary><b>🔗 Wizard Association</b></summary>
 
-- [1: Associations](#1-associations)
-- [2: Links](#2-links)
-- [3: Cause](#3-cause)
-- [4: Full Message](#4-full-message)
-- [5: Proposals](#5-proposals)
-- [6: Apply](#6-apply)
-- [7: Exit](#7-exit)
-- [Example multiplicities](#example-multiplicities)
+- 🔗 [1: Associations](#1-associations)
+- 🔗 [2: Links](#2-links)
+- ⚠️ [3: Cause](#3-cause)
+- 💬 [4: Full Message](#4-full-message)
+- 💡 [5: Proposals](#5-proposals)
+- ✔️ [6: Apply](#6-apply)
+- ❌ [7: Exit](#7-exit)
+- 🔢 [Example multiplicities](#example-multiplicities)
 
 </details>
 
 <details>
   <summary><b>🧾 Actions</b></summary>
 
-- [1: File Name](#1-file-name)
-- [2: Creation Date](#2-creation-date)
-- [3: Mod. Date](#3-mod-date)
-- [4: Model](#4-model)
-- [5: Source USE File](#5-source-use-file)
-- [6: Description](#6-description)
-- [7: Actions](#7-actions)
-- [8: Objects](#8-objects)
-- [9: Attributes](#9-attributes)
-- [10: Open actions](#10-open-actions)
-- [11: Find Actions](#11-find-actions)
-- [12: Save actions](#12-save-actions)
-- [13: Load actions](#13-load-actions)
-- [14: Links](#14-links)
-- [15: Exit](#15-exit)
+- 🗂️ [1: File Name](#1-file-name)
+- 📅 [2: Creation Date](#2-creation-date)
+- 📅 [3: Mod. Date](#3-mod-date)
+- 🧩 [4: Model](#4-model)
+- 📄 [5: Source USE File](#5-source-use-file)
+- 📝 [6: Description](#6-description)
+- 🛠️ [7: Actions](#7-actions)
+- 🧱 [8: Objects](#8-objects)
+- 🧬 [9: Attributes](#9-attributes)
+- 📂 [10: Open actions](#10-open-actions)
+- 🔍 [11: Find Actions](#11-find-actions)
+- 💾 [12: Save actions](#12-save-actions)
+- 📥 [13: Load actions](#13-load-actions)
+- 🔗 [14: Links](#14-links)
+- ❌ [15: Exit](#15-exit)
 
 </details>
 
 <details>
   <summary><b>🛠️ Suggest fixes</b></summary>
 
-- [Profile](#profile)
-- [Task](#task)
-- [Inputs](#inputs)
-- [Outputs](#outputs)
-- [Remarks](#remarks)
+- 🧩 [Profile](#profile)
+- 🧪 [Task](#task)
+- 📥 [Inputs](#inputs)
+- 📤 [Outputs](#outputs)
+- 📝 [Remarks](#remarks)
 
 </details>
 
 <details>
   <summary><b>🖥️ (UI – Suggest fixes)</b></summary>
 
-- [1: Objects](#1-objects)
-- [2: Show Diff Objects](#2-show-diff-objects)
-- [3: Links](#3-links)
-- [4: Show Diff Links](#4-show-diff-links)
-- [5: Create Objects + Links](#5-create-objects--links)
-- [6: Properties](#6-properties)
-- [7: Proposed changes](#7-proposed-changes)
-- [8: Show options](#8-show-options)
+- 🧱 [1: Objects](#1-objects)
+- 🔍 [2: Show Diff Objects](#2-show-diff-objects)
+- 🔗 [3: Links](#3-links)
+- 🔍 [4: Show Diff Links](#4-show-diff-links)
+- 🏗️ [5: Create Objects + Links](#5-create-objects--links)
+- ⚙️ [6: Properties](#6-properties)
+- 📝 [7: Proposed changes](#7-proposed-changes)
+- 🛠️ [8: Show options](#8-show-options)
 
 </details>
 
@@ -169,8 +167,6 @@
 <details>
   <summary><b>📖 REFERENCES</b></summary>
 </details>
-
-
 
 
 
