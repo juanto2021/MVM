@@ -3,8 +3,7 @@
 <img src="imgREADME/Portada03.png" width="600">
 
 
-# Table of Contents 📚
-
+### 📘 [Introduction](#introduction)
 <details>
   <summary><b>📘 Introduction</b></summary>
 
@@ -12,6 +11,7 @@
 
 </details>
 
+### 🛠️ [Instructions for installation for testing](#instructions-for-installation-for-testing)
 <details>
   <summary><b>🛠️ Instructions for installation for testing</b></summary>
 
@@ -19,6 +19,7 @@
 
 </details>
 
+### 🧩 [Strategy](#strategy)
 <details>
   <summary><b>🧩 Strategy</b></summary>
 
@@ -29,6 +30,7 @@
 
 </details>
 
+### 🧰 [MVM TOOL](#mvm-tool)
 <details>
   <summary><b>🧰 MVM TOOL</b></summary>
 
@@ -41,6 +43,7 @@
 
 </details>
 
+### 🧙‍♂️ [MVM Wizard](#mvm-wizard)
 <details>
   <summary><b>🧙‍♂️ MVM Wizard</b></summary>
 
@@ -77,6 +80,7 @@
 
 </details>
 
+### 🧪 [MVM Check Objects Satisfiability](#mvm-check-objects-satisfiability)
 <details>
   <summary><b>🧪 MVM Check Objects Satisfiability</b></summary>
 
@@ -99,6 +103,7 @@
 
 </details>
 
+### 🔗 [Wizard Association](#wizard-association)
 <details>
   <summary><b>🔗 Wizard Association</b></summary>
 
@@ -113,6 +118,7 @@
 
 </details>
 
+### 🧾 [Actions](#actions)
 <details>
   <summary><b>🧾 Actions</b></summary>
 
@@ -134,6 +140,7 @@
 
 </details>
 
+### 🛠️ [Suggest fixes](#suggest-fixes)
 <details>
   <summary><b>🛠️ Suggest fixes</b></summary>
 
@@ -145,6 +152,7 @@
 
 </details>
 
+### 🖥️ [(UI – Suggest fixes)](#ui--suggest-fixes)
 <details>
   <summary><b>🖥️ (UI – Suggest fixes)</b></summary>
 
@@ -157,8 +165,8 @@
 - 📝 [7: Proposed changes](#7-proposed-changes)
 - 🛠️ [8: Show options](#8-show-options)
 - ❌ [9: Exit](#9-exit)
-</details>
 
+</details>
 - 🙏 [ACKNOWLEDGMENT](#acknowledgment)
 - 📚 [CITATION](#citation)
 - 📖 [REFERENCES](#references)
