@@ -426,7 +426,7 @@ This text box is used to display the **ID** of the object that has the focus and
 If we enter an **ID** that already exists and click on **Save Obj**, an error message appears:
 
 <p align="center">
-   <img src="imgREADME/02_06_new_obj_ya_existe.png">
+   <img src="imgREADME/02_06_new_obj_ya_existe.png" width="300">
 </p>
 
 If we want to leave the object as it was before changing anything, we will simply press **Cancel Obj**.
