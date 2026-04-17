@@ -1183,6 +1183,65 @@ It has the following functionalities:
   </tr>
 </table>
 
+### 3: Links
+
+Shows the links that it considers should exist in the instance. If links already existed previously, you can suggest modifying them. If they did not exist, it shall also propose the creation of those it deems appropriate.  
+
+<img src="imgREADME/04_07_SF_Links.png">
+
+### 4: Show Diff Links
+
+It shows the differences between existing links and the proposed new ones.
+
+<img src="imgREADME/04_08_SF_Diff_Links.png">
+
+The **Synchronize scroll**, **Maximize**/**Restore**, and **Exit** graphics work the same as those discussed in the **Objects** section.
+
+### 5: Create Objects + Links
+
+This button allows the creation of the proposed objects and links, but before its creation it shows a summary screen:
+
+<img src="imgREADME/04_09_SF_CreationObjLinks.png">
+
+If we press **Exit**, we close the screen without taking any action. If we press **Create**, the instance is recreated using the list of proposed elements.
+
+### 6: Properties
+
+Muestra los parámetros que sugiere modificar en el fichero **<nombreModelo>.properties** para facilitar la búsqueda de soluciones por parte del **Solver** utilizado en el cálculo de **MUS**/**MSS**.
+
+<img src="imgREADME/04_10_SF_Properties.png">
+
+If you choose to modify this file, you have to reload the model to refresh its properties.
+
+
+### 7: Proposed changes
+
+This Block shows textually the changes that should be made in the model and, especially, in the invariants it contains.
+
+If we have not provided the MUS/MSS as INPUT in the query, OpenAI will calculate and display them here.
+
+In the best of chaos, a table may be provided showing the current invariant (Original) and the proposal (Proposal):
+
+<img src="imgREADME/04_11_SF_ProposedChanges.png">
+
+### 8: Show options
+
+This option is intended to help review the query and response blocks that occur during the call to **OpenAI**. It is an option more oriented to the debugging of the process than to its use, but sometimes, it can help to understand how the query was carried out internally.
+
+When you click on this button, the following set of additional buttons appears:
+
+<img src="imgREADME/04_12_SF_ShowOptions.png">
+
+- **Copy Comment**: Allows you to copy the text that appears in the Proposed changes block to the clipboard. (See example in **ANNEXES**)
+- **Request txt**: Copy on the clipboard, the query as it has been made to OpenAI (See example in **ANNEXES**)
+- **JSON Request**: Copy query in JSON format. (See example in **ANNEXES**)
+- **JSON Result**: Copies the result received from **OpenAI**. (See example in **ANNEXES**)
+
+9: Exit
+Leave the dialogue without taking any action. 
+
+
+
 
 
 
