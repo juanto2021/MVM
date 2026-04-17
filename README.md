@@ -172,11 +172,8 @@ for the UML-Based Specification Environment (https://sourceforge.net/projects/us
 
 ## MVM – Overview
 
-<img src="imgREADME/Logo03.png" width="400">
-
 <p align="center">
-  <img src="imgREADME/Logo03.png" width="300"><br>
-  <em>Figura 1 — Diagrama MVM</em>
+  <img src="imgREADME/Logo03.png" width="400"><br>
 </p>
 
 
