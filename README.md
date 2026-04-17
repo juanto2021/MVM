@@ -409,7 +409,7 @@ When a value is modified, the **Save Obj** and **Cancel Obj** buttons are enable
 If you enter a value that does not correspond to the expected type, an error message appears:
 
 <p align="center">
-   <img src="imgREADME/02_04_err_type.png" width="400">
+   <img src="imgREADME/02_04_err_type.png" width="500">
 </p>
 
 [(Up)](#Table-of-Contents)
