@@ -1003,9 +1003,7 @@ We have indicated the following:
 Model
 -	Model: The UML model definition provided in the format of the USE tool UML-based Specification Environment) developed by the University of Bremen.
 Model definition: <model definition in text format>
-```
 
-```
 Properties
 -	Properties: A textual description of the range of allowed values for each attribute in the model and the range on the number of objects per class and the number of links per association.
 Properties definition: <properties definition in text format>
