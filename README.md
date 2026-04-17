@@ -205,7 +205,7 @@ https://adoptium.net/es/temurin/releases?version=11
 
 3. Define the **OPENAI_API_KEY** environment variable with the key that allows the use of OpenAI. For example, open a CMD session and enter the following (each user has their own key):
 ```
-**setx OPENAI_API_KEY sk-proj-------xxxxxxxxx---------K-NOFAoA**
+setx OPENAI_API_KEY sk-proj-------xxxxxxxxx---------K-NOFAoA
 ```
 Once you've downloaded the zip file to any folder, extract it and then simply run **RUN** (or RUN nameFile)  bat from the extracted folder.
 If everything goes well, you should see the following:
@@ -220,13 +220,13 @@ If everything goes well, you should see the following:
 Our strategy includes the following sections:
 
 ## Consistency Check  
-Determine if a UML/OCL diagram is consistent.
+**Determine** if a UML/OCL diagram is **consistent**.
 
 ## Diagnosis  
-Identify the unsatisfactory core, the minimum subsets of constraints involved in the inconsistency, as well as example instances that satisfy the maximum number of constraints in the model.
+**Identify the unsatisfactory core**, the minimum subsets of constraints involved in the inconsistency, as well as example instances that satisfy the maximum number of constraints in the model.
 
 ## Validation  
-Create, visualize, and modify instances using a graphical user interface, and evaluate the validity of model constraints in the context of that instance.
+**Create**, **visualize**, and **modify** **instances** using a graphical user interface, and evaluate the validity of model constraints in the context of that instance.
 
 ## Guided Interactive Repair  
 Propose possible solutions to identified inconsistencies—both graphical constraints in the class diagram (such as multiplicities) and textual constraints (such as OCL invariants).
