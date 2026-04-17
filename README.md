@@ -1196,7 +1196,7 @@ Below, we detail each of the blocks that make up the query.
 First, we contextualize OpenAI and indicate what its main role will be in this consultation.
 We indicate the following:
 ```
-1  . You are a software modeling assistant, expert on software design, development and debugging.
+1. You are a software modeling assistant, expert on software design, development and debugging.
 2. You provide concise, concrete and actionable feedback about software design errors.
 ```
 
