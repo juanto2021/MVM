@@ -1,6 +1,6 @@
 # _MVM (Model Validator Mixer)_
 
-<img src="imgREADME/Portada02.png" width="400">
+<img src="imgREADME/Portada02.png" width="600">
 
 ## Table of Contents
 
