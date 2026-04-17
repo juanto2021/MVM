@@ -157,6 +157,7 @@
   🛠️ [8: Show options](#8-show-options)  
   ❌ [9: Exit](#9-exit)
 </details>
+
 - 🙏 [ACKNOWLEDGMENT](#acknowledgment)
 - 📚 [CITATION](#citation)
 - 📖 [REFERENCES](#references)
