@@ -830,12 +830,20 @@ This button allows you to run the test to check that the **bodyexpression** of t
 This text allows you to check whether the model definition has a good syntax or not after the replacement of the new **bodyexpression** over the old one.
 Examples:
 
-<p align="center">
-| Correct | Incorrect |
-|--------|-----------|
-| <img src="imgREADME/05_SI_19_01_OBJ_Viable1.png"> | <img src="imgREADME/05_SI_19_02_OBJ_Viable2.png"> |
-</p>
+<div align="center">
 
+<table>
+<tr>
+  <th>Correct</th>
+  <th>Incorrect</th>
+</tr>
+<tr>
+  <td><img src="imgREADME/05_SI_19_01_OBJ_Viable1.png"></td>
+  <td><img src="imgREADME/05_SI_19_02_OBJ_Viable2.png"></td>
+</tr>
+</table>
+
+</div>
 
 
 [(Up)](#Table-of-Contents)
