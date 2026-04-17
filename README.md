@@ -5,10 +5,7 @@
 # Table of Contents 📚
 <details>
   <summary><a href="#introduction">📘 Introduction</a></summary>
-
-  📘 MAIN — [Introduction](#introduction)  
   📄 [MVM – Overview](#mvm--overview)
-
 </details>
 
 <details>
