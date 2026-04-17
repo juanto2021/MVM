@@ -158,6 +158,7 @@
 - 🛠️ [8: Show options](#8-show-options)
 
 </details>
+
 - 🙏 [ACKNOWLEDGMENT](#acknowledgment)
 - 📚 [CITATION](#citation)
 - 📖 [REFERENCES](#references)
