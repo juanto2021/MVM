@@ -266,11 +266,15 @@ Depending on the number of existing invariants, this search may take a considera
 
 If the user wishes, they can stop this search by clicking on the **Stop calculating combinations** icon:
 
-![Stop calculating combinations](imgREADME/01_02_stopCalculateCmb.png)
+<p align="center">
+   <img src="imgREADME/01_02_stopCalculateCmb">
+</p>
 
 If you click on this option, a message will appear requesting confirmation:
 
-<img src="imgREADME/01_03_ConfirmStop.png" width="400">
+<p align="center">
+   <img src="imgREADME/01_03_ConfirmStop.png" width="400">
+</p>
 
 When the search for combinations is complete, a dialog box appears containing the following tabs:
 - **Errors**: Displays groups of combinations that fail when active. Any set of joins that includes any of the groups shown in this tab will produce an unsatisfactory instance.
