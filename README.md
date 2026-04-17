@@ -13,7 +13,6 @@
 <details>
   <summary><a href="#instructions-for-installation-for-testing">🛠️ Instructions for installation for testing</a></summary>
 
-  🛠️ MAIN — [Instructions for installation for testing](#instructions-for-installation-for-testing)  
   🛠️ [Instructions for installation for testing](#instructions-for-installation-for-testing)
 
 </details>
@@ -21,7 +20,6 @@
 <details>
   <summary><a href="#strategy">🧩 Strategy</a></summary>
 
-  🧩 MAIN — [Strategy](#strategy)  
   🔎 [Consistency Check](#consistency-check)  
   🧪 [Diagnosis](#diagnosis)  
   ✔️ [Validation](#validation)  
@@ -32,7 +30,6 @@
 <details>
   <summary><a href="#mvm-tool">🧰 MVM TOOL</a></summary>
 
-  🧰 MAIN — [MVM TOOL](#mvm-tool)  
   ⚙️ [Brute force](#brute-force)  
   ❗ [Errors](#errors)  
   🎯 [Best approximate solutions](#best-approximate-solutions)  
@@ -45,7 +42,6 @@
 <details>
   <summary><a href="#mvm-wizard">🧙‍♂️ MVM Wizard</a></summary>
 
-  🧙‍♂️ MAIN — [MVM Wizard](#mvm-wizard)  
   🏷️ [1: Classes](#1-classes)  
   🧱 [2: Objects](#2-objects)  
   🧬 [3: Attributes](#3-attributes)  
@@ -82,7 +78,6 @@
 <details>
   <summary><a href="#mvm-check-objects-satisfiability">🧪 MVM Check Objects Satisfiability</a></summary>
 
-  🧪 MAIN — [MVM Check Objects Satisfiability](#mvm-check-objects-satisfiability)  
   🔍 [1: Filter Objects](#1-filter-objects)  
   ✔️❌ [2: Incorrect/Correct](#2-incorrectcorrect)  
   🔍 [3: Filter Invariants](#3-filter-invariants)  
@@ -105,7 +100,6 @@
 <details>
   <summary><a href="#wizard-association">🔗 Wizard Association</a></summary>
 
-  🔗 MAIN — [Wizard Association](#wizard-association)  
   🔗 [1: Associations](#1-associations)  
   🔗 [2: Links](#2-links)  
   ⚠️ [3: Cause](#3-cause)  
@@ -120,7 +114,6 @@
 <details>
   <summary><a href="#actions">🧾 Actions</a></summary>
 
-  🧾 MAIN — [Actions](#actions)  
   🗂️ [1: File Name](#1-file-name)  
   📅 [2: Creation Date](#2-creation-date)  
   📅 [3: Mod. Date](#3-mod-date)  
@@ -142,7 +135,6 @@
 <details>
   <summary><a href="#suggest-fixes">🛠️ Suggest fixes</a></summary>
 
-  🛠️ MAIN — [Suggest fixes](#suggest-fixes)  
   🧩 [Profile](#profile)  
   🧪 [Task](#task)  
   📥 [Inputs](#inputs)  
@@ -154,7 +146,6 @@
 <details>
   <summary><a href="#ui--suggest-fixes">🖥️ (UI – Suggest fixes)</a></summary>
 
-  🖥️ MAIN — [(UI – Suggest fixes)](#ui--suggest-fixes)  
   🧱 [1: Objects](#1-objects)  
   🔍 [2: Show Diff Objects](#2-show-diff-objects)  
   🔗 [3: Links](#3-links)  
@@ -168,7 +159,6 @@
 - 🙏 [ACKNOWLEDGMENT](#acknowledgment)
 - 📚 [CITATION](#citation)
 - 📖 [REFERENCES](#references)
-
 
 
 # Introduction
