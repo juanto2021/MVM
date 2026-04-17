@@ -4,207 +4,168 @@
 
 
 # Table of Contents 📚
-
-## 📘 Introduction
 <details>
-  <summary><b>📘 Introduction</b></summary>
+  <summary>📘 Introduction</summary>
 
-  **📘 MAIN — [Introduction](#introduction)**
-
-  - 📄 [MVM – Overview](#mvm--overview)
+  📘 MAIN — Introduction  
+  📄 MVM – Overview  
 
 </details>
 
----
-
-## 🛠️ Instructions for installation for testing
 <details>
-  <summary><b>🛠️ Instructions for installation for testing</b></summary>
+  <summary>🛠️ Instructions for installation for testing</summary>
 
-  **🛠️ MAIN — [Instructions for installation for testing](#instructions-for-installation-for-testing)**
-
-  - 🛠️ [Instructions for installation for testing](#instructions-for-installation-for-testing)
+  🛠️ MAIN — Instructions for installation for testing  
+  🛠️ Instructions for installation for testing  
 
 </details>
 
----
-
-## 🧩 Strategy
 <details>
-  <summary><b>🧩 Strategy</b></summary>
+  <summary>🧩 Strategy</summary>
 
-  **🧩 MAIN — [Strategy](#strategy)**
-
-  - 🔎 [Consistency Check](#consistency-check)
-  - 🧪 [Diagnosis](#diagnosis)
-  - ✔️ [Validation](#validation)
-  - 🧭 [Guided Interactive Repair](#guided-interactive-repair)
+  🧩 MAIN — Strategy  
+  🔎 Consistency Check  
+  🧪 Diagnosis  
+  ✔️ Validation  
+  🧭 Guided Interactive Repair  
 
 </details>
 
----
-
-## 🧰 MVM TOOL
 <details>
-  <summary><b>🧰 MVM TOOL</b></summary>
+  <summary>🧰 MVM TOOL</summary>
 
-  **🧰 MAIN — [MVM TOOL](#mvm-tool)**
-
-  - ⚙️ [Brute force](#brute-force)
-    - ❗ [Errors](#errors)
-    - 🎯 [Best approximate solutions](#best-approximate-solutions)
-    - 📊 [Statistics](#statistics)
-  - ⚡ [Greedy](#greedy)
-  - 🧱 [Creación diagrama desde diálogo MUS/MSS](#creación-diagrama-desde-diálogo-musmss)
+  🧰 MAIN — MVM TOOL  
+  ⚙️ Brute force  
+  ❗ Errors  
+  🎯 Best approximate solutions  
+  📊 Statistics  
+  ⚡ Greedy  
+  🧱 Creación diagrama desde diálogo MUS/MSS  
 
 </details>
 
----
-
-## 🧙‍♂️ MVM Wizard
 <details>
-  <summary><b>🧙‍♂️ MVM Wizard</b></summary>
+  <summary>🧙‍♂️ MVM Wizard</summary>
 
-  **🧙‍♂️ MAIN — [MVM Wizard](#mvm-wizard)**
-
-  - 🏷️ [1: Classes](#1-classes)
-  - 🧱 [2: Objects](#2-objects)
-  - 🧬 [3: Attributes](#3-attributes)
-  - 🧍 [4: Object](#4-object)
-  - ➕ [5: New object](#5-new-object)
-  - 💾 [6: Save object](#6-save-object)
-  - ❌ [7: Cancel object](#7-cancel-object)
-  - 🗑️ [8: Delete object](#8-delete-object)
-  - ➕ [9: +](#9-)
-  - 🪣 [10: Fill](#10-fill)
-  - 🗺️ [11: Auto Layout](#11-auto-layout)
-  - 🔄 [12: Refresh](#12-refresh)
-  - 🔁 [13: Reset](#13-reset)
-  - 🔗 [14: Associations](#14-associations)
-  - 🧭 [15: From Class](#15-from-class)
-  - 🧭 [16: To Class](#16-to-class)
-  - 🧍 [17: From Object](#17-from-object)
-  - 🧍 [18: To Object](#18-to-object)
-  - 🔢 [19: From multiplicity](#19-from-multiplicity)
-  - 🔢 [20: To multiplicity](#20-to-multiplicity)
-  - 🏷️ [21: From Role](#21-from-role)
-  - 🏷️ [22: To Role](#22-to-role)
-  - 🔗 [23: Insert link](#23-insert-link)
-  - ❌ [24: Delete link](#24-delete-link)
-  - 🛠️ [25: Actions](#25-actions)
-  - 💡 [26: Suggest fixes](#26-suggest-fixes)
-  - 📐 [27: State invariants](#27-state-invariants)
-  - 📦 [28: OBJs](#28-objs)
-  - 🔢 [29: Multiplicities](#29-multiplicities)
-  - 🧮 [30: MSS/MUS](#30-mssmus)
+  🧙‍♂️ MAIN — MVM Wizard  
+  🏷️ 1: Classes  
+  🧱 2: Objects  
+  🧬 3: Attributes  
+  🧍 4: Object  
+  ➕ 5: New object  
+  💾 6: Save object  
+  ❌ 7: Cancel object  
+  🗑️ 8: Delete object  
+  ➕ 9: +  
+  🪣 10: Fill  
+  🗺️ 11: Auto Layout  
+  🔄 12: Refresh  
+  🔁 13: Reset  
+  🔗 14: Associations  
+  🧭 15: From Class  
+  🧭 16: To Class  
+  🧍 17: From Object  
+  🧍 18: To Object  
+  🔢 19: From multiplicity  
+  🔢 20: To multiplicity  
+  🏷️ 21: From Role  
+  🏷️ 22: To Role  
+  🔗 23: Insert link  
+  ❌ 24: Delete link  
+  🛠️ 25: Actions  
+  💡 26: Suggest fixes  
+  📐 27: State invariants  
+  📦 28: OBJs  
+  🔢 29: Multiplicities  
+  🧮 30: MSS/MUS  
 
 </details>
 
----
-
-## 🧪 MVM Check Objects Satisfiability
 <details>
-  <summary><b>🧪 MVM Check Objects Satisfiability</b></summary>
+  <summary>🧪 MVM Check Objects Satisfiability</summary>
 
-  **🧪 MAIN — [MVM Check Objects Satisfiability](#mvm-check-objects-satisfiability)**
-
-  - 🔍 [1: Filter Objects](#1-filter-objects)
-  - ✔️❌ [2: Incorrect/Correct](#2-incorrectcorrect)
-  - 🔍 [3: Filter Invariants](#3-filter-invariants)
-  - 🧱 [4: Objects](#4-objects)
-  - 📐 [5: Invariants](#5-invariants)
-  - 🧬 [6: Attributes](#6-attributes)
-  - 🧩 [7: Current invariant body](#7-current-invariant-body)
-  - 🔄 [8: Body alternatives](#8-body-alternatives)
-  - 🔍 [9: Filter Alternatives](#9-filter-alternatives)
-  - 🆕 [10: New Invariant body - Incorrect/Correct](#10-new-invariant-body---incorrectcorrect)
-  - 🧪 [11: Test](#11-test)
-  - 🧩 [13: Body expression](#13-body-expression)
-  - 📄 [14: Show Source](#14-show-source)
-  - 🗂️ [15: File Name](#15-file-name)
-  - 💾 [16: Save file](#16-save-file)
-  - ❌ [17: Exit](#17-exit)
+  🧪 MAIN — MVM Check Objects Satisfiability  
+  🔍 1: Filter Objects  
+  ✔️❌ 2: Incorrect/Correct  
+  🔍 3: Filter Invariants  
+  🧱 4: Objects  
+  📐 5: Invariants  
+  🧬 6: Attributes  
+  🧩 7: Current invariant body  
+  🔄 8: Body alternatives  
+  🔍 9: Filter Alternatives  
+  🆕 10: New Invariant body - Incorrect/Correct  
+  🧪 11: Test  
+  🧩 13: Body expression  
+  📄 14: Show Source  
+  🗂️ 15: File Name  
+  💾 16: Save file  
+  ❌ 17: Exit  
 
 </details>
 
----
-
-## 🔗 Wizard Association
 <details>
-  <summary><b>🔗 Wizard Association</b></summary>
+  <summary>🔗 Wizard Association</summary>
 
-  **🔗 MAIN — [Wizard Association](#wizard-association)**
-
-  - 🔗 [1: Associations](#1-associations)
-  - 🔗 [2: Links](#2-links)
-  - ⚠️ [3: Cause](#3-cause)
-  - 💬 [4: Full Message](#4-full-message)
-  - 💡 [5: Proposals](#5-proposals)
-  - ✔️ [6: Apply](#6-apply)
-  - ❌ [7: Exit](#7-exit)
-  - 🔢 [Example multiplicities](#example-multiplicities)
+  🔗 MAIN — Wizard Association  
+  🔗 1: Associations  
+  🔗 2: Links  
+  ⚠️ 3: Cause  
+  💬 4: Full Message  
+  💡 5: Proposals  
+  ✔️ 6: Apply  
+  ❌ 7: Exit  
+  🔢 Example multiplicities  
 
 </details>
 
----
-
-## 🧾 Actions
 <details>
-  <summary><b>🧾 Actions</b></summary>
+  <summary>🧾 Actions</summary>
 
-  **🧾 MAIN — [Actions](#actions)**
-
-  - 🗂️ [1: File Name](#1-file-name)
-  - 📅 [2: Creation Date](#2-creation-date)
-  - 📅 [3: Mod. Date](#3-mod-date)
-  - 🧩 [4: Model](#4-model)
-  - 📄 [5: Source USE File](#5-source-use-file)
-  - 📝 [6: Description](#6-description)
-  - 🛠️ [7: Actions](#7-actions)
-  - 🧱 [8: Objects](#8-objects)
-  - 🧬 [9: Attributes](#9-attributes)
-  - 📂 [10: Open actions](#10-open-actions)
-  - 🔍 [11: Find Actions](#11-find-actions)
-  - 💾 [12: Save actions](#12-save-actions)
-  - 📥 [13: Load actions](#13-load-actions)
-  - 🔗 [14: Links](#14-links)
-  - ❌ [15: Exit](#15-exit)
+  🧾 MAIN — Actions  
+  🗂️ 1: File Name  
+  📅 2: Creation Date  
+  📅 3: Mod. Date  
+  🧩 4: Model  
+  📄 5: Source USE File  
+  📝 6: Description  
+  🛠️ 7: Actions  
+  🧱 8: Objects  
+  🧬 9: Attributes  
+  📂 10: Open actions  
+  🔍 11: Find Actions  
+  💾 12: Save actions  
+  📥 13: Load actions  
+  🔗 14: Links  
+  ❌ 15: Exit  
 
 </details>
 
----
-
-## 🛠️ Suggest fixes
 <details>
-  <summary><b>🛠️ Suggest fixes</b></summary>
+  <summary>🛠️ Suggest fixes</summary>
 
-  **🛠️ MAIN — [Suggest fixes](#suggest-fixes)**
-
-  - 🧩 [Profile](#profile)
-  - 🧪 [Task](#task)
-  - 📥 [Inputs](#inputs)
-  - 📤 [Outputs](#outputs)
-  - 📝 [Remarks](#remarks)
+  🛠️ MAIN — Suggest fixes  
+  🧩 Profile  
+  🧪 Task  
+  📥 Inputs  
+  📤 Outputs  
+  📝 Remarks  
 
 </details>
 
----
-
-## 🖥️ (UI – Suggest fixes)
 <details>
-  <summary><b>🖥️ (UI – Suggest fixes)</b></summary>
+  <summary>🖥️ (UI – Suggest fixes)</summary>
 
-  **🖥️ MAIN — [(UI – Suggest fixes)](#ui--suggest-fixes)**
-
-  - 🧱 [1: Objects](#1-objects)
-  - 🔍 [2: Show Diff Objects](#2-show-diff-objects)
-  - 🔗 [3: Links](#3-links)
-  - 🔍 [4: Show Diff Links](#4-show-diff-links)
-  - 🏗️ [5: Create Objects + Links](#5-create-objects--links)
-  - ⚙️ [6: Properties](#6-properties)
-  - 📝 [7: Proposed changes](#7-proposed-changes)
-  - 🛠️ [8: Show options](#8-show-options)
-  - ❌ [9: Exit](#9-exit)
+  🖥️ MAIN — (UI – Suggest fixes)  
+  🧱 1: Objects  
+  🔍 2: Show Diff Objects  
+  🔗 3: Links  
+  🔍 4: Show Diff Links  
+  🏗️ 5: Create Objects + Links  
+  ⚙️ 6: Properties  
+  📝 7: Proposed changes  
+  🛠️ 8: Show options  
+  ❌ 9: Exit  
 </details>
 - 🙏 [ACKNOWLEDGMENT](#acknowledgment)
 - 📚 [CITATION](#citation)
