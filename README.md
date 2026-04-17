@@ -157,7 +157,6 @@
 - 📝 [7: Proposed changes](#7-proposed-changes)
 - 🛠️ [8: Show options](#8-show-options)
 - ❌ [9: Exit](#9-exit)
-
 </details>
 
 - 🙏 [ACKNOWLEDGMENT](#acknowledgment)
