@@ -222,8 +222,6 @@ If everything goes well, you should see the following:
 </p>
 
 
-
-
 [(Up)](#Table-of-Contents)
 
 # Strategy
@@ -256,7 +254,11 @@ The calculation of **MUS/MSS** can be performed in two ways:
 - **Greedy method**: Finds an initial group of invariants that are not related to each other and provides a result immediately, allowing the user to begin working while the system continues processing the remaining combinations in the background.
 
 Both methods are available in the menu or toolbar.
-![](https://github.com/juanto2021/MVM/blob/main/imgREADME/01_01_MUS_menu_bar.png)
+
+
+<p align="center">
+  ![](https://github.com/juanto2021/MVM/blob/main/imgREADME/01_01_MUS_menu_bar.png)
+</p>
 
 ## Brute force
 When this option is executed, the search for all combinations between invariants is launched in order to internally build the lists of groups of satisfactory and unsatisfactory combinations.
