@@ -859,13 +859,57 @@ We can check the elements that are created by clicking on the first 3 actions:
 | 2 | <img src="imgREADME/03_04_ActionsSeq2.png"> |
 | 3 | <img src="imgREADME/03_05_ActionsSeq3.png"> |
 
+## 8: Objects
 
+Displays existing objects after the selected action has been performed. When you select an object, the **Attributes block**  displays the values associated with each attribute of the object:
 
+<img src="imgREADME/03_06_ActionsObjAttrs.png">
 
+## 9: Attributes
 
+Displays the value of each of the attributes of the object that is selected. See figure shown in the previous section (8: Objects).
 
+## 10: Open actions
 
+This button allows you to open a file of sequences of actions.
 
+<img src="imgREADME/03_07_ActionsFileOpen.png">
+
+## 11: Find Actions
+
+<img src="imgREADME/03_10_ActionsLaunchFind.png">
+
+This button allows you to search for files with sequences of actions: 
+
+<img src="imgREADME/03_08_ActionsFindActions.png">
+
+By default, it uses the model’s name to filter the files to be searched, but if we uncheck the **Filter model 'Animals'** check, it shows all the existing files:
+
+<img src="imgREADME/03_09_ActionsFindActionsAll.png">
+
+To load a file, just click on the line that contains it and click on the Load action button or double-click on that line.
+
+## 12: Save actions
+
+It allows you to save a file with the actions carried out so far on the instance.
+
+<img src="imgREADME/03_11_ActionsSaveFile.png">
+
+## 13: Load actions
+
+This button allows you to create an instance with the elements indicated in the associated action. If a list of actions has for example 10 actions, but we select action 3, only the first 3 actions will be executed. This allows you to roll back the instance's situation to a certain point by undoing all subsequent instances.
+
+<img src="imgREADME/03_13_ActionsLoad02.png">
+
+## 14: Links
+
+Displays the existing links in the instance after the execution of the selected action.
+
+<img src="imgREADME/03_15_ActionsLinks.png">
+
+## 15: Exit
+
+Closes the dialog box.
 
 
 -------------
