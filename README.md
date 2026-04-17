@@ -66,6 +66,14 @@
   - [15: File Name](#15-file-name)
   - [16: Save file](#16-save-file)
   - [17: Exit](#17-exit)
+- [Wizard Association](#wizard-association)
+  - [1: Associations](#1-associations)
+  - [2: Links](#2-links)
+  - [3: Cause](#3-cause)
+  - [4: Full Message](#4-full-message)
+  - [5: Proposals](#5-proposals)
+  - [6: Apply](#6-apply)
+  - [7: Exit](#7-exit)
 - [ACKNOWLEDGMENT](#acknowledgment)
 - [CITATION](#citation)
 - [REFERENCES](#references)
@@ -697,6 +705,49 @@ Clicking on it will open the File to Save dialog proposing the default directory
 Allows you to close the screen in progress and return to the previous one.
 
 [(Up)](#Table-of-Contents)
+
+
+# Wizard Association
+
+This button gives access to the screen that helps solve problems of multiplicity by proposing the creation/deletion of objects and the creation of links between them.
+
+The main screen of this utility is composed of the following graphic elements:
+
+<img src="imgREADME/06_01_Multiplicities_Main.png">
+
+## 1: Associations
+
+Displays the list of associations that have a problem. When you click on an association, the rest of the blocks on the screen are synchronized to show the information of the links associated with it.
+
+## 2:Links
+
+Displays objects that are potentially related to the selected association. When you click on a link, you will see that the rest of the blocks (except Associations) synchronize to show information related to the selected link.
+
+## 3: Cause
+
+It shows the cause why the link is failing.
+
+## 4: Full Message
+
+Displays the  full error message associated with the selected link. 
+
+## 5: Proposals
+
+It shows the proposals envisaged to try to solve the problem of multiplicity.
+
+The proposals that are made are based on the following actions:
+-	Create elements that help respect the cardinality of links
+-	Assign elements to create links
+-	Crear links
+-	Delete Items
+
+## 6: Apply
+
+This button is responsible for applying the selected proposal. Once we click on Apply , the dialog closes and the proposed actions are executed.
+
+## 7: Exit
+
+Closes the dialog box without taking any action.
 
 
 -------------
