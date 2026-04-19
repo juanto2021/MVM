@@ -17,7 +17,7 @@
 <details>
   <summary><a href="#instructions-for-installation-for-testing">🛠️ Instructions for installation for testing</a></summary>
 
-  🛠️ [Instructions for installation for testing](#instructions-for-installation-for-testing)
+  🛠️ [Instructions for test installation](#Instructions-for-test-installation)
 
 </details>
 
@@ -199,7 +199,7 @@ Author: ***Juan Antonio Gómez Gutiérrez (2025)***
 
 ----
 
-# Instructions for installation for testing
+# Instructions for test installation
 
 To download and use MVM, simply follow these steps:
 1. **Download** the **zip** file from the following link:
