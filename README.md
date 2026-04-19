@@ -15,7 +15,7 @@
 </details>
 
 <details>
-  <summary><a href="#instructions-for-installation-for-testing">🛠️ Instructions for installation for testing</a></summary>
+  <summary><a href="#Instructions-for-test-installation">🛠️ Instructions for test installation</a></summary>
 
   🛠️ [Instructions for test installation](#Instructions-for-test-installation)
 
