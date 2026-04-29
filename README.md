@@ -39,7 +39,7 @@
   🎯 [Best approximate solutions](#best-approximate-solutions)  
   📊 [Statistics](#statistics)  
   ⚡ [Greedy](#greedy)  
-  🧱 [Creating a diagram from the MUS/MSS dialog](#Creating_a_diagram_from_the_MUSMSS_dialog)
+  🧱 [Creating a diagram from the MUS/MSS dialog](#creating-a-diagram-from-the-musmss-dialog)
 
 </details>
 
