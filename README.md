@@ -39,7 +39,7 @@
   🎯 [Best approximate solutions](#best-approximate-solutions)  
   📊 [Statistics](#statistics)  
   ⚡ [Greedy](#greedy)  
-  🧱 [Creación diagrama desde diálogo MUS/MSS](#creación-diagrama-desde-diálogo-musmss)
+  🧱 [Creating a diagram from the MUS/MSS dialog](#Creating_a_diagram_from_the_MUSMSS_dialog)
 
 </details>
 
@@ -353,7 +353,7 @@ Regarding the dialog box shown during the search, it should be noted that when G
 
 [(Up)](#Table-of-Contents)
 
-## Creación diagrama desde diálogo MUS/MSS
+## Creating a diagram from the MUS/MSS dialog
 
 To create an object diagram, simply double-click on one of the combinations shown in the Errors tab  or in **Best approximate solutions**:
 
