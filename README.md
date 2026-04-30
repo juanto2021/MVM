@@ -1204,7 +1204,7 @@ We indicate the following:
 
 ## Task
 
-Enumeramos el conjunto de tareas que OpenAI debe realizar utilizando la información proporcionada para obtener una respuesta precisa. Indicamos lo siguiente:
+We list the set of tasks that OpenAI must perform using the provided information to obtain an accurate answer. We indicate the following:
 
 ```
 “Given a UML class diagram annotated with OCL invariants that is inconsistent, you will:
