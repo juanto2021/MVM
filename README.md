@@ -1179,7 +1179,7 @@ Using this button, we make a query to OpenAI asking it mainly to help us determi
 In the consultation we may provide you with certain information such as **INPUT** in case we have already calculated or not the **MUS**/**MSS** previously or we already have a collection of objects and links.
 
 To provide **OpenAI** with the necessary context, the query will be performed with a block of text with the following structure:
--	**PROFILE**: contextualize a OpenAI
+-	**PROFILE**: contextualize an OpenAI
 -	**TASK**: lists the actions to be performed
 -	**INPUTS**: information we provide to you
 -	**OUTPUTS**: information we expect to receive and the required format
